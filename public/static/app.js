@@ -1,3 +1,98 @@
+// Animated Starfield Background (Star Trek Warp Effect)
+(() => {
+  const canvas = document.getElementById('bgCanvas');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+  let animationFrameId;
+
+  // Star Trek "Warp" / Data Stream Effect
+  const stars = [];
+  const starCount = 800;
+  const colors = ['#FF9C00', '#99CCFF', '#CC99CC', '#FFFFFF'];
+
+  for (let i = 0; i < starCount; i++) {
+    stars.push({
+      x: (Math.random() - 0.5) * width,
+      y: (Math.random() - 0.5) * height,
+      z: Math.random() * width,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    });
+  }
+
+  const render = () => {
+    // Create trailing effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.fillRect(0, 0, width, height);
+    
+    const cx = width / 2;
+    const cy = height / 2;
+
+    stars.forEach(star => {
+      // Move star closer
+      star.z -= 4; // Speed
+      if (star.z <= 0) {
+        star.z = width;
+        star.x = (Math.random() - 0.5) * width;
+        star.y = (Math.random() - 0.5) * height;
+      }
+
+      const x = (star.x / star.z) * width + cx;
+      const y = (star.y / star.z) * height + cy;
+      
+      // Calculate size based on depth
+      const rawSize = (1 - star.z / width) * 3;
+      const size = Math.max(0, rawSize);
+
+      if (x >= 0 && x <= width && y >= 0 && y <= height && size > 0) {
+        ctx.fillStyle = star.color;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+
+    // Grid Overlay (Holodeck style)
+    ctx.strokeStyle = 'rgba(153, 204, 255, 0.05)';
+    ctx.lineWidth = 1;
+    const gridSize = 100;
+    
+    for(let x = 0; x <= width; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+    for(let y = 0; y <= height; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+
+    animationFrameId = requestAnimationFrame(render);
+  };
+
+  render();
+
+  const handleResize = () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  };
+
+  window.addEventListener('resize', handleResize);
+  
+  // Cleanup
+  window.addEventListener('beforeunload', () => {
+    window.removeEventListener('resize', handleResize);
+    cancelAnimationFrame(animationFrameId);
+  });
+})();
+
 // Modal management
 function openModal(type) {
   const modal = document.getElementById(`${type}Modal`);
@@ -50,24 +145,24 @@ document.getElementById('brandForm').addEventListener('submit', async (e) => {
   const submitButton = e.target.querySelector('button[type="submit"]');
   const originalText = submitButton.innerHTML;
   submitButton.disabled = true;
-  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>TRANSMITTING...';
   
   try {
     const response = await axios.post('/api/register/brand', data);
     
     const messageEl = document.getElementById('brandFormMessage');
     messageEl.classList.remove('hidden');
-    messageEl.className = 'mt-4 p-4 bg-green-900/50 border border-green-500 rounded-lg text-green-300';
-    messageEl.innerHTML = `
-      <div class="flex items-start">
-        <i class="fas fa-check-circle text-2xl mr-3 mt-1"></i>
-        <div>
-          <strong class="block mb-1">Success!</strong>
-          <p>${response.data.message}</p>
-          <p class="mt-2 text-sm">We'll reach out within 24 hours to schedule your Digital Leon consultation.</p>
+    messageEl.className = 'mt-4 p-4 bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300';
+    messageEl.innerHTML = \`
+      <div class="flex items-start gap-3">
+        <i class="fas fa-check-circle text-2xl"></i>
+        <div class="font-mono">
+          <strong class="block mb-2 text-lg uppercase tracking-wider">✓ Registration Successful!</strong>
+          <p class="text-sm">\${response.data.message}</p>
+          <p class="mt-2 text-xs opacity-75">Digital Leon will contact you within 24 hours to schedule your growth diagnosis.</p>
         </div>
       </div>
-    `;
+    \`;
     
     e.target.reset();
     
@@ -79,16 +174,16 @@ document.getElementById('brandForm').addEventListener('submit', async (e) => {
   } catch (error) {
     const messageEl = document.getElementById('brandFormMessage');
     messageEl.classList.remove('hidden');
-    messageEl.className = 'mt-4 p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-300';
-    messageEl.innerHTML = `
-      <div class="flex items-start">
-        <i class="fas fa-exclamation-circle text-2xl mr-3 mt-1"></i>
-        <div>
-          <strong class="block mb-1">Error</strong>
-          <p>${error.response?.data?.message || 'Registration failed. Please try again.'}</p>
+    messageEl.className = 'mt-4 p-4 bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300';
+    messageEl.innerHTML = \`
+      <div class="flex items-start gap-3">
+        <i class="fas fa-exclamation-circle text-2xl"></i>
+        <div class="font-mono">
+          <strong class="block mb-2 text-lg uppercase tracking-wider">✗ System Error</strong>
+          <p class="text-sm">\${error.response?.data?.message || 'Registration failed. Please try again.'}</p>
         </div>
       </div>
-    `;
+    \`;
   } finally {
     submitButton.disabled = false;
     submitButton.innerHTML = originalText;
@@ -105,24 +200,24 @@ document.getElementById('agencyForm').addEventListener('submit', async (e) => {
   const submitButton = e.target.querySelector('button[type="submit"]');
   const originalText = submitButton.innerHTML;
   submitButton.disabled = true;
-  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>TRANSMITTING...';
   
   try {
     const response = await axios.post('/api/register/agency', data);
     
     const messageEl = document.getElementById('agencyFormMessage');
     messageEl.classList.remove('hidden');
-    messageEl.className = 'mt-4 p-4 bg-green-900/50 border border-green-500 rounded-lg text-green-300';
-    messageEl.innerHTML = `
-      <div class="flex items-start">
-        <i class="fas fa-check-circle text-2xl mr-3 mt-1"></i>
-        <div>
-          <strong class="block mb-1">Application Received!</strong>
-          <p>${response.data.message}</p>
-          <p class="mt-2 text-sm">Our Digital Leon AI will review your profile and we'll contact you with next steps.</p>
+    messageEl.className = 'mt-4 p-4 bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300';
+    messageEl.innerHTML = \`
+      <div class="flex items-start gap-3">
+        <i class="fas fa-check-circle text-2xl"></i>
+        <div class="font-mono">
+          <strong class="block mb-2 text-lg uppercase tracking-wider">✓ Application Received!</strong>
+          <p class="text-sm">\${response.data.message}</p>
+          <p class="mt-2 text-xs opacity-75">Our Digital Leon AI will review your profile and contact you with next steps.</p>
         </div>
       </div>
-    `;
+    \`;
     
     e.target.reset();
     
@@ -134,16 +229,16 @@ document.getElementById('agencyForm').addEventListener('submit', async (e) => {
   } catch (error) {
     const messageEl = document.getElementById('agencyFormMessage');
     messageEl.classList.remove('hidden');
-    messageEl.className = 'mt-4 p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-300';
-    messageEl.innerHTML = `
-      <div class="flex items-start">
-        <i class="fas fa-exclamation-circle text-2xl mr-3 mt-1"></i>
-        <div>
-          <strong class="block mb-1">Error</strong>
-          <p>${error.response?.data?.message || 'Application failed. Please try again.'}</p>
+    messageEl.className = 'mt-4 p-4 bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300';
+    messageEl.innerHTML = \`
+      <div class="flex items-start gap-3">
+        <i class="fas fa-exclamation-circle text-2xl"></i>
+        <div class="font-mono">
+          <strong class="block mb-2 text-lg uppercase tracking-wider">✗ System Error</strong>
+          <p class="text-sm">\${error.response?.data?.message || 'Application failed. Please try again.'}</p>
         </div>
       </div>
-    `;
+    \`;
   } finally {
     submitButton.disabled = false;
     submitButton.innerHTML = originalText;
@@ -164,48 +259,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Add scroll animation effects
-const observerOptions = {
-  threshold: 0.1,
-  rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = '1';
-      entry.target.style.transform = 'translateY(0)';
-    }
-  });
-}, observerOptions);
-
-// Observe sections for fade-in animation
-document.addEventListener('DOMContentLoaded', () => {
-  const sections = document.querySelectorAll('section');
-  sections.forEach(section => {
-    section.style.opacity = '0';
-    section.style.transform = 'translateY(30px)';
-    section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(section);
-  });
-});
-
-// Add dynamic stats counter animation
-function animateCounter(element, target, duration = 2000) {
-  let start = 0;
-  const increment = target / (duration / 16);
-  
-  const timer = setInterval(() => {
-    start += increment;
-    if (start >= target) {
-      element.textContent = target;
-      clearInterval(timer);
-    } else {
-      element.textContent = Math.floor(start);
-    }
-  }, 16);
-}
-
-// Initialize on page load
-console.log('NexSpark Landing Page initialized');
-console.log('Ready to transform growth for brands and agencies!');
+// Initialize
+console.log('%c⚡ NEXSPARK GROWTH OS - v2.0', 'color: #FF9C00; font-size: 20px; font-weight: bold; font-family: Antonio;');
+console.log('%cSYSTEM ONLINE | AI LAYER ACTIVE | ESCROW VAULT SECURED', 'color: #99CCFF; font-family: JetBrains Mono;');
+console.log('%cReady to transform growth for brands and agencies!', 'color: #CC99CC; font-family: JetBrains Mono;');

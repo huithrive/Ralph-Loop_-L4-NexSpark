@@ -14,8 +14,6 @@ app.use('/static/*', serveStatic({ root: './public' }))
 app.post('/api/register/brand', async (c) => {
   try {
     const data = await c.req.json()
-    
-    // Here you would typically save to database (D1, KV, or external API)
     console.log('Brand Registration:', data)
     
     return c.json({ 
@@ -32,8 +30,6 @@ app.post('/api/register/brand', async (c) => {
 app.post('/api/register/agency', async (c) => {
   try {
     const data = await c.req.json()
-    
-    // Here you would typically save to database (D1, KV, or external API)
     console.log('Agency Registration:', data)
     
     return c.json({ 
@@ -46,7 +42,7 @@ app.post('/api/register/agency', async (c) => {
   }
 })
 
-// Main landing page
+// Main landing page with LCARS/Jarvis-inspired design
 app.get('/', (c) => {
   return c.html(`
     <!DOCTYPE html>
@@ -54,518 +50,619 @@ app.get('/', (c) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>NexSpark - The Airbnb for Market Growth | AI-Powered Growth OS</title>
-        <meta name="description" content="Connect with world-class growth experts at affordable prices. AI-powered strategy, escrow protection, and proven results for D2C and SaaS brands.">
+        <title>NexSpark | The Airbnb for Market Growth</title>
+        <meta name="description" content="AI-Powered Operating System for the $372B Agency Economy. Connect with world-class growth experts at affordable prices.">
+        
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+        
         <script>
           tailwind.config = {
             theme: {
               extend: {
+                fontFamily: {
+                  sans: ['Rajdhani', 'sans-serif'],
+                  header: ['Antonio', 'sans-serif'],
+                  mono: ['JetBrains Mono', 'monospace'],
+                },
                 colors: {
-                  brand: {
-                    primary: '#6366f1',
-                    secondary: '#8b5cf6',
-                    accent: '#ec4899',
+                  nexspark: {
+                    bg: '#000000',
+                    gold: '#FF9C00',
+                    pale: '#FFCC99',
+                    red: '#CC3333',
+                    blue: '#99CCFF',
+                    purple: '#CC99CC',
+                    dark: '#111111',
+                    panel: 'rgba(20, 20, 25, 0.9)'
                   }
                 }
               }
             }
           }
         </script>
+        
         <style>
-          @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+          body {
+            background-color: #000000;
+            color: #99CCFF;
+            overflow-x: hidden;
           }
-          .float-animation {
-            animation: float 3s ease-in-out infinite;
+          
+          /* Custom Scrollbar */
+          ::-webkit-scrollbar {
+            width: 12px;
+            background: #000;
           }
-          .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+          ::-webkit-scrollbar-track {
+            background: #000;
+            border-left: 1px solid #333;
           }
-          .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+          ::-webkit-scrollbar-thumb {
+            background: #FF9C00;
+            border-radius: 6px;
+            border: 2px solid #000;
           }
-          .scroll-smooth {
-            scroll-behavior: smooth;
+          
+          /* LCARS Brackets */
+          .lcars-bracket {
+            position: relative;
+            border-left: 12px solid #FF9C00;
+            border-top: 12px solid #FF9C00;
+            border-top-left-radius: 24px;
+            padding-left: 20px;
+            padding-top: 20px;
+          }
+          
+          .lcars-bracket-alt {
+            position: relative;
+            border-right: 12px solid #99CCFF;
+            border-bottom: 12px solid #99CCFF;
+            border-bottom-right-radius: 24px;
+            padding-right: 20px;
+            padding-bottom: 20px;
+          }
+          
+          .lcars-btn {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Antonio', sans-serif;
+            font-weight: 700;
+            transition: all 0.2s;
+          }
+          
+          .lcars-btn:hover {
+            filter: brightness(1.2);
+            transform: translateX(5px);
+          }
+          
+          /* Animated Background */
+          @keyframes warp {
+            0% { transform: translateZ(0) scale(1); }
+            100% { transform: translateZ(100px) scale(1.5); }
+          }
+          
+          @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+          }
+          
+          @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+          }
+          
+          .scan-line {
+            animation: scan 2s linear infinite;
+          }
+          
+          .blink {
+            animation: blink 1s step-end infinite;
           }
         </style>
     </head>
-    <body class="bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white scroll-smooth">
-        <!-- Navigation -->
-        <nav class="fixed top-0 w-full z-50 glass-effect">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    <div class="flex items-center">
-                        <i class="fas fa-bolt text-3xl text-yellow-400 mr-2"></i>
-                        <span class="text-2xl font-bold gradient-text">NexSpark</span>
-                    </div>
-                    <div class="hidden md:flex space-x-8">
-                        <a href="#for-brands" class="hover:text-purple-400 transition">For Brands</a>
-                        <a href="#for-agencies" class="hover:text-purple-400 transition">For Agencies</a>
-                        <a href="#how-it-works" class="hover:text-purple-400 transition">How It Works</a>
-                        <a href="#pricing" class="hover:text-purple-400 transition">Pricing</a>
-                    </div>
-                    <div class="flex space-x-4">
-                        <button onclick="openModal('brand')" class="bg-brand-primary hover:bg-purple-700 px-4 py-2 rounded-lg transition">
-                            Get Started
-                        </button>
-                    </div>
+    <body class="font-sans selection:bg-cyan-500/30 selection:text-cyan-100">
+        <!-- Animated Background Canvas -->
+        <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+        <!-- Top Navigation Bar -->
+        <div class="fixed top-0 left-0 w-full flex items-center justify-between p-4 gap-2 opacity-90 z-50 backdrop-blur-sm">
+            <div class="flex items-center gap-2 flex-1">
+                <div class="h-12 bg-white rounded-full flex items-center justify-center px-6 min-w-[180px]">
+                    <i class="fas fa-bolt text-3xl text-yellow-500 mr-2"></i>
+                    <span class="text-2xl font-header font-bold text-black tracking-wider">NEXSPARK</span>
+                </div>
+                <div class="h-8 w-16 bg-nexspark-red rounded-full self-start mt-2 hidden md:block"></div>
+                <div class="h-8 w-64 bg-nexspark-blue rounded-full flex items-center justify-center px-6 self-start mt-2 hidden lg:flex">
+                    <span class="text-black font-header font-bold tracking-widest text-sm">GROWTH OS - v2.0</span>
                 </div>
             </div>
-        </nav>
+            
+            <div class="flex gap-2 mt-2">
+                <button onclick="openModal('brand')" class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-6 py-2 rounded-lg">
+                    I'M A BRAND
+                </button>
+                <button onclick="openModal('agency')" class="lcars-btn bg-nexspark-purple hover:bg-nexspark-blue text-black px-6 py-2 rounded-lg">
+                    I'M AN EXPERT
+                </button>
+            </div>
+        </div>
 
         <!-- Hero Section -->
-        <section class="pt-32 pb-20 px-4">
-            <div class="max-w-7xl mx-auto text-center">
-                <div class="float-animation inline-block mb-8">
-                    <i class="fas fa-rocket text-6xl text-yellow-400"></i>
-                </div>
-                <h1 class="text-5xl md:text-7xl font-bold mb-6">
-                    The <span class="gradient-text">Airbnb</span> for Market Growth
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                    Connect with world-class growth experts at affordable prices. 
-                    <span class="text-purple-400 font-semibold">AI-powered strategy</span>, 
-                    <span class="text-green-400 font-semibold">escrow protection</span>, and 
-                    <span class="text-yellow-400 font-semibold">proven results</span>.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-                    <button onclick="openModal('brand')" class="bg-brand-primary hover:bg-purple-700 px-8 py-4 rounded-lg text-lg font-semibold transition transform hover:scale-105">
-                        <i class="fas fa-building mr-2"></i>
-                        I'm a Brand
-                    </button>
-                    <button onclick="openModal('agency')" class="bg-brand-accent hover:bg-pink-700 px-8 py-4 rounded-lg text-lg font-semibold transition transform hover:scale-105">
-                        <i class="fas fa-user-tie mr-2"></i>
-                        I'm an Expert
-                    </button>
-                </div>
-                
-                <!-- Trust Indicators -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mt-16">
-                    <div class="text-center">
-                        <div class="text-4xl font-bold text-purple-400">100%</div>
-                        <div class="text-gray-400">Client Retention</div>
+        <section class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12 md:py-20">
+            <div class="max-w-7xl w-full mt-16 md:mt-20">
+                <div class="flex flex-col lg:flex-row gap-12">
+                    
+                    <!-- LCARS Sidebar -->
+                    <div class="hidden lg:flex flex-col w-32 shrink-0">
+                        <div class="h-40 w-full bg-nexspark-gold rounded-tl-3xl mb-2 flex items-end justify-end p-2">
+                            <span class="text-black font-header text-6xl font-bold">01</span>
+                        </div>
+                        <div class="h-32 w-full bg-nexspark-pale rounded-l-lg mb-2"></div>
+                        <div class="flex-1 min-h-[200px] w-16 bg-nexspark-purple rounded-bl-3xl ml-auto border-r-8 border-black"></div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-4xl font-bold text-green-400">300%</div>
-                        <div class="text-gray-400">Avg ROAS Lift</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl font-bold text-yellow-400">20x</div>
-                        <div class="text-gray-400">Client Scale</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl font-bold text-pink-400">$372B</div>
-                        <div class="text-gray-400">Market Size</div>
+
+                    <div class="flex-1">
+                        <!-- Main Headline -->
+                        <h1 class="text-5xl md:text-7xl lg:text-8xl font-header font-bold text-white tracking-tighter uppercase leading-[0.9] mb-8">
+                            The <span class="text-nexspark-gold">Airbnb</span><br/>
+                            <span class="text-nexspark-blue">For Market Growth</span>
+                        </h1>
+
+                        <!-- Sub-Headline with Data Panel -->
+                        <div class="mb-8 max-w-4xl">
+                            <h2 class="text-2xl md:text-3xl text-nexspark-gold font-header uppercase mb-4 tracking-wide">
+                                AI-Powered Operating System for the $372B Agency Economy
+                            </h2>
+                            
+                            <div class="bg-nexspark-blue/10 border-l-4 border-nexspark-blue p-4 md:p-6 mb-8 rounded-r-lg backdrop-blur-sm">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-database text-nexspark-blue text-xl mt-1"></i>
+                                    <div>
+                                        <div class="text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-1">
+                                            System Training Dataset:
+                                        </div>
+                                        <p class="text-white/90 font-mono text-sm md:text-base leading-relaxed">
+                                            Built by operators who scaled to <span class="text-nexspark-gold">$100M+ IPO</span>. 
+                                            Just as Airbnb built the trust layer for housing, we're doing the same for the marketing industry.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trust Indicators Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl">
+                            <div class="bg-black/60 border-t-4 border-nexspark-gold p-4 backdrop-blur-sm">
+                                <div class="text-4xl font-header font-bold text-nexspark-gold mb-1">100%</div>
+                                <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Client Retention</div>
+                            </div>
+                            <div class="bg-black/60 border-t-4 border-nexspark-blue p-4 backdrop-blur-sm">
+                                <div class="text-4xl font-header font-bold text-nexspark-blue mb-1">300%</div>
+                                <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Avg ROAS Lift</div>
+                            </div>
+                            <div class="bg-black/60 border-t-4 border-nexspark-purple p-4 backdrop-blur-sm">
+                                <div class="text-4xl font-header font-bold text-nexspark-purple mb-1">20x</div>
+                                <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Client Scale</div>
+                            </div>
+                            <div class="bg-black/60 border-t-4 border-nexspark-red p-4 backdrop-blur-sm">
+                                <div class="text-4xl font-header font-bold text-nexspark-red mb-1">$372B</div>
+                                <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Market Size</div>
+                            </div>
+                        </div>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4 mb-16">
+                            <button onclick="openModal('brand')" class="lcars-btn bg-nexspark-blue hover:bg-white text-black px-10 py-4 rounded-lg text-xl flex items-center justify-center gap-2">
+                                <i class="fas fa-building"></i> START GROWTH JOURNEY
+                            </button>
+                            <button onclick="openModal('agency')" class="lcars-btn bg-nexspark-purple hover:bg-nexspark-pale text-black px-10 py-4 rounded-lg text-xl flex items-center justify-center gap-2">
+                                <i class="fas fa-user-tie"></i> JOIN AS EXPERT
+                            </button>
+                        </div>
+
+                        <!-- 2-Step Process -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-3xl">
+                            <div class="bg-black/40 border-t border-white/10 p-4 flex gap-4 items-start">
+                                <div class="bg-nexspark-gold/20 text-nexspark-gold font-bold font-header text-xs px-2 py-1 rounded mt-1">REF 01</div>
+                                <div>
+                                    <h3 class="text-nexspark-gold font-header uppercase tracking-wider text-sm mb-1">The AI Layer</h3>
+                                    <p class="text-slate-400 font-mono text-xs leading-relaxed">
+                                        80% workflow automation with Fortune 500 quality output. Digital Leon AI interviews and strategizes.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="bg-black/40 border-t border-white/10 p-4 flex gap-4 items-start">
+                                <div class="bg-nexspark-red/20 text-nexspark-red font-bold font-header text-xs px-2 py-1 rounded mt-1">REF 02</div>
+                                <div>
+                                    <h3 class="text-nexspark-red font-header uppercase tracking-wider text-sm mb-1">The Trust Layer</h3>
+                                    <p class="text-slate-400 font-mono text-xs leading-relaxed">
+                                        Escrow vault ensures financial safety. Money released only on verified proof of work.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- For Brands Section -->
-        <section id="for-brands" class="py-20 px-4 bg-gradient-to-r from-purple-900/30 to-pink-900/30">
+        <section id="for-brands" class="relative z-10 py-20 px-4">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                        <i class="fas fa-building text-purple-400 mr-3"></i>
-                        For D2C & SaaS Brands
-                    </h2>
-                    <p class="text-xl text-gray-300">Stop wasting money on agencies that don't deliver. Get proven growth strategies and execution.</p>
+                <!-- Section Header with LCARS style -->
+                <div class="flex items-center gap-4 mb-12">
+                    <div class="h-20 w-20 bg-nexspark-blue rounded-tl-3xl flex items-center justify-center">
+                        <span class="text-black font-header text-4xl font-bold">02</span>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
+                            <i class="fas fa-building text-nexspark-gold mr-3"></i>
+                            For Brands
+                        </h2>
+                        <p class="text-nexspark-blue font-mono text-sm uppercase tracking-widest mt-2">D2C & SaaS Growth Protocol</p>
+                    </div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-8 mb-12">
-                    <!-- Problem Statement -->
-                    <div class="glass-effect rounded-2xl p-8">
-                        <h3 class="text-2xl font-bold mb-6 text-red-400">
-                            <i class="fas fa-exclamation-triangle mr-2"></i>
-                            The Agency Problem
-                        </h3>
+                <!-- Problem vs Solution Grid -->
+                <div class="grid md:grid-cols-2 gap-8 mb-16">
+                    <!-- Problem -->
+                    <div class="lcars-bracket bg-nexspark-red/5 backdrop-blur-sm">
+                        <div class="bg-nexspark-red/10 px-3 py-1 rounded inline-block mb-4">
+                            <span class="text-nexspark-red font-header text-sm uppercase tracking-widest">⚠ System Error</span>
+                        </div>
+                        <h3 class="text-2xl font-header font-bold text-white mb-6 uppercase">The Agency Problem</h3>
                         <ul class="space-y-4">
-                            <li class="flex items-start">
-                                <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
-                                <span><strong>$2,500+/month</strong> retainers for single-channel management</span>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-times-circle text-nexspark-red text-xl mt-1"></i>
+                                <div>
+                                    <span class="text-white font-mono text-sm"><strong class="text-nexspark-red">$2,500+/month</strong> retainers for single-channel</span>
+                                </div>
                             </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
-                                <span><strong>Opaque pricing</strong> with no guaranteed results</span>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-times-circle text-nexspark-red text-xl mt-1"></i>
+                                <div>
+                                    <span class="text-white font-mono text-sm"><strong class="text-nexspark-red">Opaque pricing</strong> with no guaranteed results</span>
+                                </div>
                             </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
-                                <span><strong>Zero trust</strong> - "Will they deliver? Will I get my money back?"</span>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-times-circle text-nexspark-red text-xl mt-1"></i>
+                                <div>
+                                    <span class="text-white font-mono text-sm"><strong class="text-nexspark-red">Zero trust</strong> - Will they deliver?</span>
+                                </div>
                             </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
-                                <span><strong>Slow turnaround</strong> and inconsistent quality</span>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-times-circle text-nexspark-red text-xl mt-1"></i>
+                                <div>
+                                    <span class="text-white font-mono text-sm"><strong class="text-nexspark-red">Slow turnaround</strong> and inconsistent quality</span>
+                                </div>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Solution -->
-                    <div class="glass-effect rounded-2xl p-8 border-2 border-purple-500">
-                        <h3 class="text-2xl font-bold mb-6 text-green-400">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            The NexSpark Solution
-                        </h3>
+                    <div class="lcars-bracket-alt bg-nexspark-blue/5 backdrop-blur-sm border-2 border-nexspark-blue/30">
+                        <div class="bg-nexspark-blue/10 px-3 py-1 rounded inline-block mb-4">
+                            <span class="text-nexspark-blue font-header text-sm uppercase tracking-widest">✓ System Online</span>
+                        </div>
+                        <h3 class="text-2xl font-header font-bold text-white mb-6 uppercase">The NexSpark Solution</h3>
                         <ul class="space-y-4">
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                                <span><strong>$800/month</strong> for expert execution with AI support</span>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-nexspark-blue text-xl mt-1"></i>
+                                <div>
+                                    <span class="text-white font-mono text-sm"><strong class="text-nexspark-gold">$800/month</strong> for expert execution with AI</span>
+                                </div>
                             </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                                <span><strong>Escrow protection</strong> - Money released only on proof of work</span>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-nexspark-blue text-xl mt-1"></i>
+                                <div>
+                                    <span class="text-white font-mono text-sm"><strong class="text-nexspark-gold">Escrow protection</strong> - Money on verified work only</span>
+                                </div>
                             </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                                <span><strong>AI-powered strategy</strong> from Digital Leon (scaled to $100M+)</span>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-nexspark-blue text-xl mt-1"></i>
+                                <div>
+                                    <span class="text-white font-mono text-sm"><strong class="text-nexspark-gold">AI strategy</strong> from Digital Leon ($100M+ experience)</span>
+                                </div>
                             </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
-                                <span><strong>Fortune 500 quality</strong> with 80% workflow automation</span>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-nexspark-blue text-xl mt-1"></i>
+                                <div>
+                                    <span class="text-white font-mono text-sm"><strong class="text-nexspark-gold">Fortune 500 quality</strong> with 80% automation</span>
+                                </div>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- How It Works for Brands -->
+                <!-- 4-Step Process -->
                 <div class="grid md:grid-cols-4 gap-6">
-                    <div class="glass-effect rounded-xl p-6 text-center">
-                        <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-comments text-2xl"></i>
+                    <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-6 backdrop-blur-sm">
+                        <div class="w-16 h-16 bg-nexspark-gold rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
+                            01
                         </div>
-                        <h4 class="text-xl font-bold mb-3">1. Growth Diagnosis</h4>
-                        <p class="text-gray-300">Interview with Digital Leon AI. Get a custom growth strategy based on $100M+ scaling experience.</p>
+                        <h4 class="text-lg font-header font-bold text-nexspark-gold uppercase mb-3 tracking-wider">Growth Diagnosis</h4>
+                        <p class="text-white/70 font-mono text-xs leading-relaxed">
+                            Interview with Digital Leon AI. Get custom strategy based on $100M+ scaling experience.
+                        </p>
                     </div>
 
-                    <div class="glass-effect rounded-xl p-6 text-center">
-                        <div class="w-16 h-16 bg-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-book text-2xl"></i>
+                    <div class="bg-nexspark-panel border-t-4 border-nexspark-blue p-6 backdrop-blur-sm">
+                        <div class="w-16 h-16 bg-nexspark-blue rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
+                            02
                         </div>
-                        <h4 class="text-xl font-bold mb-3">2. Your Playbook</h4>
-                        <p class="text-gray-300">3-6 month channel portfolio: which channels to build, test, and how much to spend for max ROI.</p>
+                        <h4 class="text-lg font-header font-bold text-nexspark-blue uppercase mb-3 tracking-wider">Your Playbook</h4>
+                        <p class="text-white/70 font-mono text-xs leading-relaxed">
+                            3-6 month channel portfolio: which channels to build, test, and optimize for max ROI.
+                        </p>
                     </div>
 
-                    <div class="glass-effect rounded-xl p-6 text-center">
-                        <div class="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-users text-2xl"></i>
+                    <div class="bg-nexspark-panel border-t-4 border-nexspark-purple p-6 backdrop-blur-sm">
+                        <div class="w-16 h-16 bg-nexspark-purple rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
+                            03
                         </div>
-                        <h4 class="text-xl font-bold mb-3">3. Expert Matching</h4>
-                        <p class="text-gray-300">Get matched with world-class growth experts at affordable prices. Vetted and verified.</p>
+                        <h4 class="text-lg font-header font-bold text-nexspark-purple uppercase mb-3 tracking-wider">Expert Matching</h4>
+                        <p class="text-white/70 font-mono text-xs leading-relaxed">
+                            Get matched with world-class growth experts at affordable prices. Vetted and verified.
+                        </p>
                     </div>
 
-                    <div class="glass-effect rounded-xl p-6 text-center">
-                        <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-shield-alt text-2xl"></i>
+                    <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-6 backdrop-blur-sm">
+                        <div class="w-16 h-16 bg-nexspark-gold rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
+                            04
                         </div>
-                        <h4 class="text-xl font-bold mb-3">4. Escrow Safety</h4>
-                        <p class="text-gray-300">Your money is protected. Released only when you verify the work is done. Zero risk.</p>
+                        <h4 class="text-lg font-header font-bold text-nexspark-gold uppercase mb-3 tracking-wider">Escrow Safety</h4>
+                        <p class="text-white/70 font-mono text-xs leading-relaxed">
+                            Your money is protected. Released only when you verify work is done. Zero risk.
+                        </p>
                     </div>
                 </div>
 
                 <div class="text-center mt-12">
-                    <button onclick="openModal('brand')" class="bg-purple-600 hover:bg-purple-700 px-10 py-4 rounded-lg text-xl font-semibold transition transform hover:scale-105">
-                        <i class="fas fa-rocket mr-2"></i>
-                        Start Your Growth Journey
+                    <button onclick="openModal('brand')" class="lcars-btn bg-nexspark-blue hover:bg-white text-black px-12 py-5 rounded-lg text-xl">
+                        <i class="fas fa-rocket mr-2"></i> INITIATE GROWTH PROTOCOL
                     </button>
                 </div>
             </div>
         </section>
 
         <!-- For Agencies Section -->
-        <section id="for-agencies" class="py-20 px-4">
+        <section id="for-agencies" class="relative z-10 py-20 px-4">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                        <i class="fas fa-user-tie text-pink-400 mr-3"></i>
-                        For Growth Agencies & Freelancers
-                    </h2>
-                    <p class="text-xl text-gray-300">Double your income. Halve your admin time. Get paid what you deserve.</p>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-8 mb-12">
-                    <div class="glass-effect rounded-2xl p-8 hover:border-2 hover:border-pink-500 transition">
-                        <div class="text-4xl mb-4">🚀</div>
-                        <h3 class="text-2xl font-bold mb-4">4x Your Capacity</h3>
-                        <p class="text-gray-300 mb-4">Go from 5 clients to <strong class="text-green-400">20 clients</strong> with our AI automation.</p>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Auto-generated performance reports</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>AI strategy recommendations</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>0% admin time (vs 50% traditional)</span>
-                            </li>
-                        </ul>
+                <!-- Section Header with LCARS style -->
+                <div class="flex items-center gap-4 mb-12">
+                    <div class="h-20 w-20 bg-nexspark-purple rounded-tl-3xl flex items-center justify-center">
+                        <span class="text-black font-header text-4xl font-bold">03</span>
                     </div>
-
-                    <div class="glass-effect rounded-2xl p-8 hover:border-2 hover:border-pink-500 transition">
-                        <div class="text-4xl mb-4">💰</div>
-                        <h3 class="text-2xl font-bold mb-4">Guaranteed Income</h3>
-                        <p class="text-gray-300 mb-4">Earn <strong class="text-yellow-400">$10,000+/month</strong> managing 20 clients at $500 each.</p>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Escrow-protected payments</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Automated lead generation</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Focus 100% on strategy</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="glass-effect rounded-2xl p-8 hover:border-2 hover:border-pink-500 transition">
-                        <div class="text-4xl mb-4">🎯</div>
-                        <h3 class="text-2xl font-bold mb-4">Get Recognized</h3>
-                        <p class="text-gray-300 mb-4">Digital Leon interviews you to identify your <strong class="text-purple-400">unique strengths</strong>.</p>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Matched with right-fit clients</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Fair competition based on quality</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Bonuses for retention & ROAS</span>
-                            </li>
-                        </ul>
+                    <div class="flex-1">
+                        <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
+                            <i class="fas fa-user-tie text-nexspark-purple mr-3"></i>
+                            For Agencies
+                        </h2>
+                        <p class="text-nexspark-purple font-mono text-sm uppercase tracking-widest mt-2">Growth Experts & Freelancers</p>
                     </div>
                 </div>
 
-                <!-- Income Comparison -->
-                <div class="glass-effect rounded-2xl p-8 max-w-4xl mx-auto mb-12">
-                    <h3 class="text-3xl font-bold mb-8 text-center">Income Comparison</h3>
+                <!-- Income Comparison Panel -->
+                <div class="bg-nexspark-panel rounded-2xl p-8 mb-12 border border-nexspark-blue/30 backdrop-blur-sm">
+                    <h3 class="text-3xl font-header font-bold text-white mb-8 text-center uppercase tracking-wider">
+                        <span class="text-nexspark-gold">Income Transformation</span>
+                    </h3>
                     <div class="grid md:grid-cols-2 gap-8">
-                        <div class="text-center p-6 bg-red-900/30 rounded-xl">
-                            <div class="text-gray-400 text-lg mb-2">Traditional Agency Model</div>
-                            <div class="text-4xl font-bold mb-4">$2,500<span class="text-xl">/mo</span></div>
-                            <div class="text-gray-300">Managing 5 clients</div>
-                            <div class="text-red-400 mt-2">50% time on admin</div>
+                        <div class="text-center p-6 bg-nexspark-red/20 rounded-xl border-2 border-nexspark-red/50">
+                            <div class="text-nexspark-red/70 font-mono text-sm mb-2 uppercase tracking-widest">Traditional Model</div>
+                            <div class="text-5xl font-header font-bold text-white mb-2">$2,500<span class="text-2xl text-white/50">/mo</span></div>
+                            <div class="text-white/70 font-mono text-sm mb-4">Managing 5 clients</div>
+                            <div class="text-nexspark-red font-mono text-xs uppercase tracking-wider">
+                                <i class="fas fa-exclamation-triangle mr-1"></i> 50% time on admin
+                            </div>
                         </div>
-                        <div class="text-center p-6 bg-green-900/30 rounded-xl border-2 border-green-500">
-                            <div class="text-gray-400 text-lg mb-2">NexSpark Model</div>
-                            <div class="text-4xl font-bold mb-4 text-green-400">$10,000<span class="text-xl">/mo</span></div>
-                            <div class="text-gray-300">Managing 20 clients</div>
-                            <div class="text-green-400 mt-2">0% time on admin</div>
+                        <div class="text-center p-6 bg-nexspark-gold/20 rounded-xl border-2 border-nexspark-gold">
+                            <div class="text-nexspark-gold font-mono text-sm mb-2 uppercase tracking-widest">NexSpark AI Model</div>
+                            <div class="text-5xl font-header font-bold text-nexspark-gold mb-2">$10,000<span class="text-2xl text-nexspark-pale">/mo</span></div>
+                            <div class="text-white/70 font-mono text-sm mb-4">Managing 20 clients</div>
+                            <div class="text-nexspark-blue font-mono text-xs uppercase tracking-wider">
+                                <i class="fas fa-check-circle mr-1"></i> 0% time on admin
+                            </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- 3 Key Benefits -->
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="bg-nexspark-panel border-l-8 border-nexspark-gold p-6 backdrop-blur-sm hover:border-nexspark-pale transition-all">
+                        <div class="text-5xl mb-4">🚀</div>
+                        <h3 class="text-2xl font-header font-bold text-nexspark-gold mb-4 uppercase tracking-wider">4x Your Capacity</h3>
+                        <p class="text-white/80 font-mono text-sm mb-4">
+                            Go from 5 clients to <strong class="text-nexspark-blue">20 clients</strong> with our AI automation.
+                        </p>
+                        <ul class="space-y-2 text-xs font-mono">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-blue"></i>
+                                <span class="text-white/70">Auto-generated performance reports</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-blue"></i>
+                                <span class="text-white/70">AI strategy recommendations</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-blue"></i>
+                                <span class="text-white/70">0% admin time (vs 50% traditional)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-nexspark-panel border-l-8 border-nexspark-blue p-6 backdrop-blur-sm hover:border-nexspark-pale transition-all">
+                        <div class="text-5xl mb-4">💰</div>
+                        <h3 class="text-2xl font-header font-bold text-nexspark-blue mb-4 uppercase tracking-wider">Guaranteed Income</h3>
+                        <p class="text-white/80 font-mono text-sm mb-4">
+                            Earn <strong class="text-nexspark-gold">$10,000+/month</strong> managing 20 clients at $500 each.
+                        </p>
+                        <ul class="space-y-2 text-xs font-mono">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-gold"></i>
+                                <span class="text-white/70">Escrow-protected payments</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-gold"></i>
+                                <span class="text-white/70">Automated lead generation</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-gold"></i>
+                                <span class="text-white/70">Focus 100% on strategy</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-nexspark-panel border-l-8 border-nexspark-purple p-6 backdrop-blur-sm hover:border-nexspark-pale transition-all">
+                        <div class="text-5xl mb-4">🎯</div>
+                        <h3 class="text-2xl font-header font-bold text-nexspark-purple mb-4 uppercase tracking-wider">Get Recognized</h3>
+                        <p class="text-white/80 font-mono text-sm mb-4">
+                            Digital Leon interviews you to identify your <strong class="text-nexspark-gold">unique strengths</strong>.
+                        </p>
+                        <ul class="space-y-2 text-xs font-mono">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-purple"></i>
+                                <span class="text-white/70">Matched with right-fit clients</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-purple"></i>
+                                <span class="text-white/70">Fair competition based on quality</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-purple"></i>
+                                <span class="text-white/70">Bonuses for retention & ROAS</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
                 <div class="text-center">
-                    <button onclick="openModal('agency')" class="bg-pink-600 hover:bg-pink-700 px-10 py-4 rounded-lg text-xl font-semibold transition transform hover:scale-105">
-                        <i class="fas fa-briefcase mr-2"></i>
-                        Join as a Growth Expert
+                    <button onclick="openModal('agency')" class="lcars-btn bg-nexspark-purple hover:bg-nexspark-pale text-black px-12 py-5 rounded-lg text-xl">
+                        <i class="fas fa-briefcase mr-2"></i> JOIN EXPERT NETWORK
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- How It Works Section -->
-        <section id="how-it-works" class="py-20 px-4 bg-gradient-to-r from-gray-900 to-purple-900/30">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                        <i class="fas fa-cogs text-yellow-400 mr-3"></i>
-                        How NexSpark Works
-                    </h2>
-                    <p class="text-xl text-gray-300">The Operating System for Growth</p>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-12">
-                    <!-- AI Layer -->
-                    <div class="glass-effect rounded-2xl p-8">
-                        <div class="flex items-center mb-6">
-                            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mr-4">
-                                <i class="fas fa-robot text-3xl"></i>
-                            </div>
-                            <h3 class="text-3xl font-bold">The AI Layer</h3>
-                        </div>
-                        <p class="text-gray-300 mb-6">80% of workflow automated with Fortune 500 quality output</p>
-                        <div class="space-y-4">
-                            <div class="flex items-start">
-                                <i class="fas fa-lightbulb text-yellow-400 mr-3 mt-1"></i>
-                                <div>
-                                    <strong>Strategy Generation</strong>
-                                    <p class="text-gray-400 text-sm">AI-powered growth strategies based on proven $100M+ playbooks</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-chart-line text-green-400 mr-3 mt-1"></i>
-                                <div>
-                                    <strong>Analytics & Reporting</strong>
-                                    <p class="text-gray-400 text-sm">Automated performance tracking and insights</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-sync text-blue-400 mr-3 mt-1"></i>
-                                <div>
-                                    <strong>Cross-channel Integration</strong>
-                                    <p class="text-gray-400 text-sm">Unified data across all marketing channels</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Trust Layer -->
-                    <div class="glass-effect rounded-2xl p-8">
-                        <div class="flex items-center mb-6">
-                            <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mr-4">
-                                <i class="fas fa-shield-alt text-3xl"></i>
-                            </div>
-                            <h3 class="text-3xl font-bold">The Trust Layer</h3>
-                        </div>
-                        <p class="text-gray-300 mb-6">Escrow vault ensures financial safety for both sides</p>
-                        <div class="space-y-4">
-                            <div class="flex items-start">
-                                <i class="fas fa-lock text-yellow-400 mr-3 mt-1"></i>
-                                <div>
-                                    <strong>Secure Payments</strong>
-                                    <p class="text-gray-400 text-sm">Funds held in escrow until work is verified</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-user-check text-green-400 mr-3 mt-1"></i>
-                                <div>
-                                    <strong>Client Protection</strong>
-                                    <p class="text-gray-400 text-sm">Protected from non-delivery and poor quality work</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-dollar-sign text-blue-400 mr-3 mt-1"></i>
-                                <div>
-                                    <strong>Expert Protection</strong>
-                                    <p class="text-gray-400 text-sm">Guaranteed payment for verified work completion</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Pricing Section -->
-        <section id="pricing" class="py-20 px-4">
+        <section id="pricing" class="relative z-10 py-20 px-4">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                        <i class="fas fa-tag text-green-400 mr-3"></i>
-                        Simple, Transparent Pricing
-                    </h2>
-                    <p class="text-xl text-gray-300">No hidden fees. Pay only for results.</p>
+                <!-- Section Header -->
+                <div class="flex items-center gap-4 mb-12">
+                    <div class="h-20 w-20 bg-nexspark-gold rounded-tl-3xl flex items-center justify-center">
+                        <span class="text-black font-header text-4xl font-bold">04</span>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
+                            <i class="fas fa-tag text-nexspark-gold mr-3"></i>
+                            Pricing
+                        </h2>
+                        <p class="text-nexspark-gold font-mono text-sm uppercase tracking-widest mt-2">Transparent. Simple. Fair.</p>
+                    </div>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <!-- Starter -->
-                    <div class="glass-effect rounded-2xl p-8 hover:border-2 hover:border-purple-500 transition">
-                        <h3 class="text-2xl font-bold mb-4">Starter</h3>
-                        <div class="text-4xl font-bold mb-2">$800<span class="text-xl">/mo</span></div>
-                        <p class="text-gray-400 mb-6">Perfect for testing</p>
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Single channel management</span>
+                    <div class="bg-nexspark-panel border-t-4 border-nexspark-blue p-8 backdrop-blur-sm hover:border-nexspark-pale transition-all">
+                        <div class="bg-nexspark-blue/20 px-3 py-1 rounded inline-block mb-4">
+                            <span class="text-nexspark-blue font-header text-xs uppercase tracking-widest">Starter</span>
+                        </div>
+                        <div class="text-5xl font-header font-bold text-white mb-2">$800<span class="text-xl text-white/50">/mo</span></div>
+                        <p class="text-white/60 font-mono text-sm mb-6">Perfect for testing</p>
+                        <ul class="space-y-3 mb-8 text-sm font-mono">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-blue"></i>
+                                <span class="text-white/80">Single channel management</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>AI strategy consultation</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-blue"></i>
+                                <span class="text-white/80">AI strategy consultation</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Monthly reporting</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-blue"></i>
+                                <span class="text-white/80">Monthly reporting</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Escrow protection</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-blue"></i>
+                                <span class="text-white/80">Escrow protection</span>
                             </li>
                         </ul>
-                        <button onclick="openModal('brand')" class="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-lg transition">
-                            Get Started
+                        <button onclick="openModal('brand')" class="lcars-btn w-full bg-nexspark-blue hover:bg-white text-black py-3 rounded-lg">
+                            GET STARTED
                         </button>
                     </div>
 
                     <!-- Growth (Most Popular) -->
-                    <div class="glass-effect rounded-2xl p-8 border-2 border-yellow-500 transform scale-105">
-                        <div class="bg-yellow-500 text-gray-900 px-4 py-1 rounded-full text-sm font-semibold inline-block mb-4">
-                            MOST POPULAR
+                    <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-8 backdrop-blur-sm transform scale-105 relative">
+                        <div class="absolute -top-4 right-4 bg-nexspark-gold text-black px-4 py-1 rounded-full font-header text-xs font-bold uppercase tracking-wider">
+                            Most Popular
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Growth</h3>
-                        <div class="text-4xl font-bold mb-2">$2,400<span class="text-xl">/mo</span></div>
-                        <p class="text-gray-400 mb-6">For scaling businesses</p>
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Multi-channel strategy</span>
+                        <div class="bg-nexspark-gold/20 px-3 py-1 rounded inline-block mb-4">
+                            <span class="text-nexspark-gold font-header text-xs uppercase tracking-widest">Growth</span>
+                        </div>
+                        <div class="text-5xl font-header font-bold text-nexspark-gold mb-2">$2,400<span class="text-xl text-nexspark-pale">/mo</span></div>
+                        <p class="text-white/60 font-mono text-sm mb-6">For scaling businesses</p>
+                        <ul class="space-y-3 mb-8 text-sm font-mono">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-gold"></i>
+                                <span class="text-white/80">Multi-channel strategy</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Dedicated growth team</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-gold"></i>
+                                <span class="text-white/80">Dedicated growth team</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Weekly performance reviews</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-gold"></i>
+                                <span class="text-white/80">Weekly performance reviews</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Priority support</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-gold"></i>
+                                <span class="text-white/80">Priority support</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Advanced analytics</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-gold"></i>
+                                <span class="text-white/80">Advanced analytics</span>
                             </li>
                         </ul>
-                        <button onclick="openModal('brand')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 py-3 rounded-lg font-semibold transition">
-                            Start Growing
+                        <button onclick="openModal('brand')" class="lcars-btn w-full bg-nexspark-gold hover:bg-nexspark-pale text-black py-3 rounded-lg font-bold">
+                            START GROWING
                         </button>
                     </div>
 
                     <!-- Enterprise -->
-                    <div class="glass-effect rounded-2xl p-8 hover:border-2 hover:border-purple-500 transition">
-                        <h3 class="text-2xl font-bold mb-4">Enterprise</h3>
-                        <div class="text-4xl font-bold mb-2">Custom</div>
-                        <p class="text-gray-400 mb-6">For large organizations</p>
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Full-stack growth OS</span>
+                    <div class="bg-nexspark-panel border-t-4 border-nexspark-purple p-8 backdrop-blur-sm hover:border-nexspark-pale transition-all">
+                        <div class="bg-nexspark-purple/20 px-3 py-1 rounded inline-block mb-4">
+                            <span class="text-nexspark-purple font-header text-xs uppercase tracking-widest">Enterprise</span>
+                        </div>
+                        <div class="text-5xl font-header font-bold text-white mb-2">Custom</div>
+                        <p class="text-white/60 font-mono text-sm mb-6">For large organizations</p>
+                        <ul class="space-y-3 mb-8 text-sm font-mono">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-purple"></i>
+                                <span class="text-white/80">Full-stack growth OS</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Custom integrations</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-purple"></i>
+                                <span class="text-white/80">Custom integrations</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Dedicated account manager</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-purple"></i>
+                                <span class="text-white/80">Dedicated account manager</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>SLA guarantees</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-purple"></i>
+                                <span class="text-white/80">SLA guarantees</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>White-label options</span>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-nexspark-purple"></i>
+                                <span class="text-white/80">White-label options</span>
                             </li>
                         </ul>
-                        <button onclick="openModal('brand')" class="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-lg transition">
-                            Contact Sales
+                        <button onclick="openModal('brand')" class="lcars-btn w-full bg-nexspark-purple hover:bg-nexspark-pale text-black py-3 rounded-lg">
+                            CONTACT SALES
                         </button>
                     </div>
                 </div>
@@ -573,70 +670,70 @@ app.get('/', (c) => {
         </section>
 
         <!-- CTA Section -->
-        <section class="py-20 px-4 bg-gradient-to-r from-purple-900 to-pink-900">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6">
-                    Ready to Transform Your Growth?
-                </h2>
-                <p class="text-xl text-gray-300 mb-8">
-                    Join hundreds of brands and experts already winning with NexSpark
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <button onclick="openModal('brand')" class="bg-white text-purple-900 hover:bg-gray-100 px-10 py-4 rounded-lg text-xl font-semibold transition transform hover:scale-105">
-                        <i class="fas fa-rocket mr-2"></i>
-                        Get Started as a Brand
-                    </button>
-                    <button onclick="openModal('agency')" class="bg-pink-600 hover:bg-pink-700 px-10 py-4 rounded-lg text-xl font-semibold transition transform hover:scale-105">
-                        <i class="fas fa-user-tie mr-2"></i>
-                        Join as an Expert
-                    </button>
+        <section class="relative z-10 py-20 px-4 my-20">
+            <div class="max-w-5xl mx-auto">
+                <div class="bg-gradient-to-r from-nexspark-gold/20 via-nexspark-blue/20 to-nexspark-purple/20 border-4 border-nexspark-gold/50 rounded-3xl p-12 backdrop-blur-sm text-center">
+                    <h2 class="text-4xl md:text-5xl font-header font-bold text-white mb-6 uppercase tracking-tight">
+                        Ready to Transform <span class="text-nexspark-gold">Your Growth?</span>
+                    </h2>
+                    <p class="text-xl text-white/80 font-mono mb-8">
+                        Join hundreds of brands and experts already winning with NexSpark
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="openModal('brand')" class="lcars-btn bg-white hover:bg-nexspark-gold text-black px-12 py-5 rounded-lg text-xl">
+                            <i class="fas fa-rocket mr-2"></i> GET STARTED AS A BRAND
+                        </button>
+                        <button onclick="openModal('agency')" class="lcars-btn bg-nexspark-purple hover:bg-nexspark-pale text-black px-12 py-5 rounded-lg text-xl">
+                            <i class="fas fa-user-tie mr-2"></i> JOIN AS AN EXPERT
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer class="py-12 px-4 bg-gray-900">
+        <footer class="relative z-10 py-12 px-4 border-t border-nexspark-blue/20">
             <div class="max-w-7xl mx-auto">
                 <div class="grid md:grid-cols-4 gap-8 mb-8">
                     <div>
                         <div class="flex items-center mb-4">
-                            <i class="fas fa-bolt text-2xl text-yellow-400 mr-2"></i>
-                            <span class="text-xl font-bold">NexSpark</span>
+                            <i class="fas fa-bolt text-3xl text-nexspark-gold mr-2"></i>
+                            <span class="text-2xl font-header font-bold text-white">NEXSPARK</span>
                         </div>
-                        <p class="text-gray-400">The AI-Powered Operating System for the Agency Economy</p>
+                        <p class="text-white/60 font-mono text-xs">The AI-Powered Operating System for the Agency Economy</p>
                     </div>
                     <div>
-                        <h4 class="font-bold mb-4">For Brands</h4>
-                        <ul class="space-y-2 text-gray-400">
-                            <li><a href="#for-brands" class="hover:text-purple-400">How It Works</a></li>
-                            <li><a href="#pricing" class="hover:text-purple-400">Pricing</a></li>
-                            <li><a href="#" class="hover:text-purple-400">Case Studies</a></li>
+                        <h4 class="font-header font-bold text-white mb-4 uppercase tracking-wider">For Brands</h4>
+                        <ul class="space-y-2 text-white/60 font-mono text-sm">
+                            <li><a href="#for-brands" class="hover:text-nexspark-gold transition">How It Works</a></li>
+                            <li><a href="#pricing" class="hover:text-nexspark-gold transition">Pricing</a></li>
+                            <li><a href="#" class="hover:text-nexspark-gold transition">Case Studies</a></li>
                         </ul>
                     </div>
                     <div>
-                        <h4 class="font-bold mb-4">For Experts</h4>
-                        <ul class="space-y-2 text-gray-400">
-                            <li><a href="#for-agencies" class="hover:text-purple-400">Join Platform</a></li>
-                            <li><a href="#" class="hover:text-purple-400">Income Calculator</a></li>
-                            <li><a href="#" class="hover:text-purple-400">Success Stories</a></li>
+                        <h4 class="font-header font-bold text-white mb-4 uppercase tracking-wider">For Experts</h4>
+                        <ul class="space-y-2 text-white/60 font-mono text-sm">
+                            <li><a href="#for-agencies" class="hover:text-nexspark-purple transition">Join Platform</a></li>
+                            <li><a href="#" class="hover:text-nexspark-purple transition">Income Calculator</a></li>
+                            <li><a href="#" class="hover:text-nexspark-purple transition">Success Stories</a></li>
                         </ul>
                     </div>
                     <div>
-                        <h4 class="font-bold mb-4">Company</h4>
-                        <ul class="space-y-2 text-gray-400">
-                            <li><a href="#" class="hover:text-purple-400">About Us</a></li>
-                            <li><a href="mailto:founders@nexspark.io" class="hover:text-purple-400">Contact</a></li>
-                            <li><a href="https://nexspark.io" class="hover:text-purple-400">Blog</a></li>
+                        <h4 class="font-header font-bold text-white mb-4 uppercase tracking-wider">Company</h4>
+                        <ul class="space-y-2 text-white/60 font-mono text-sm">
+                            <li><a href="#" class="hover:text-nexspark-blue transition">About Us</a></li>
+                            <li><a href="mailto:founders@nexspark.io" class="hover:text-nexspark-blue transition">Contact</a></li>
+                            <li><a href="https://nexspark.io" class="hover:text-nexspark-blue transition">Blog</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <div class="border-t border-nexspark-blue/20 pt-8 text-center text-white/50 font-mono text-xs">
                     <p>&copy; 2025 NexSpark. The Airbnb for Market Growth. All rights reserved.</p>
-                    <div class="mt-4 space-x-4">
-                        <a href="https://linkedin.com/company/nexspark" class="hover:text-purple-400">
+                    <div class="mt-4 space-x-6">
+                        <a href="https://linkedin.com/company/nexspark" class="hover:text-nexspark-blue transition">
                             <i class="fab fa-linkedin text-2xl"></i>
                         </a>
-                        <a href="mailto:founders@nexspark.io" class="hover:text-purple-400">
+                        <a href="mailto:founders@nexspark.io" class="hover:text-nexspark-gold transition">
                             <i class="fas fa-envelope text-2xl"></i>
                         </a>
                     </div>
@@ -644,38 +741,38 @@ app.get('/', (c) => {
             </div>
         </footer>
 
-        <!-- Registration Modals -->
-        <div id="brandModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-            <div class="glass-effect rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8">
+        <!-- Brand Registration Modal -->
+        <div id="brandModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-nexspark-panel border-2 border-nexspark-blue rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 backdrop-blur-xl">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-3xl font-bold">
-                        <i class="fas fa-building text-purple-400 mr-2"></i>
+                    <h3 class="text-3xl font-header font-bold text-white uppercase tracking-wider">
+                        <i class="fas fa-building text-nexspark-gold mr-2"></i>
                         Register Your Brand
                     </h3>
-                    <button onclick="closeModal('brand')" class="text-gray-400 hover:text-white text-2xl">
+                    <button onclick="closeModal('brand')" class="text-white/60 hover:text-white text-3xl transition">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <form id="brandForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Company Name *</label>
-                        <input type="text" name="companyName" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none">
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Company Name *</label>
+                        <input type="text" name="companyName" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Your Name *</label>
-                        <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none">
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Your Name *</label>
+                        <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Email *</label>
-                        <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none">
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Email *</label>
+                        <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Phone</label>
-                        <input type="tel" name="phone" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none">
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Phone</label>
+                        <input type="tel" name="phone" class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Business Type *</label>
-                        <select name="businessType" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none">
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Business Type *</label>
+                        <select name="businessType" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                             <option value="">Select type...</option>
                             <option value="d2c">D2C / E-commerce</option>
                             <option value="saas">SaaS</option>
@@ -684,8 +781,8 @@ app.get('/', (c) => {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Monthly Ad Spend *</label>
-                        <select name="adSpend" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none">
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Monthly Ad Spend *</label>
+                        <select name="adSpend" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                             <option value="">Select range...</option>
                             <option value="0-2k">$0 - $2,000</option>
                             <option value="2k-10k">$2,000 - $10,000</option>
@@ -695,53 +792,53 @@ app.get('/', (c) => {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Website</label>
-                        <input type="url" name="website" placeholder="https://" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none">
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Website</label>
+                        <input type="url" name="website" placeholder="https://" class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">What channels are you currently using?</label>
-                        <textarea name="currentChannels" rows="3" placeholder="e.g., Facebook Ads, Google Ads, SEO..." class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none"></textarea>
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Current Channels</label>
+                        <textarea name="currentChannels" rows="2" placeholder="e.g., Facebook Ads, Google Ads, SEO..." class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition"></textarea>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">What's your biggest growth challenge?</label>
-                        <textarea name="challenge" rows="3" placeholder="Tell us about your main growth obstacles..." class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-purple-500 focus:outline-none"></textarea>
+                        <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Biggest Growth Challenge</label>
+                        <textarea name="challenge" rows="2" placeholder="Tell us about your main growth obstacles..." class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-blue/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition"></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-lg font-semibold text-lg transition">
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        Submit Registration
+                    <button type="submit" class="lcars-btn w-full bg-nexspark-gold hover:bg-nexspark-pale text-black py-4 rounded-lg font-bold text-lg">
+                        <i class="fas fa-paper-plane mr-2"></i> SUBMIT REGISTRATION
                     </button>
                 </form>
                 <div id="brandFormMessage" class="mt-4 hidden"></div>
             </div>
         </div>
 
-        <div id="agencyModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-            <div class="glass-effect rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8">
+        <!-- Agency Registration Modal -->
+        <div id="agencyModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-nexspark-panel border-2 border-nexspark-purple rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 backdrop-blur-xl">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-3xl font-bold">
-                        <i class="fas fa-user-tie text-pink-400 mr-2"></i>
+                    <h3 class="text-3xl font-header font-bold text-white uppercase tracking-wider">
+                        <i class="fas fa-user-tie text-nexspark-purple mr-2"></i>
                         Join as Growth Expert
                     </h3>
-                    <button onclick="closeModal('agency')" class="text-gray-400 hover:text-white text-2xl">
+                    <button onclick="closeModal('agency')" class="text-white/60 hover:text-white text-3xl transition">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <form id="agencyForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Your Name *</label>
-                        <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Your Name *</label>
+                        <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Email *</label>
-                        <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Email *</label>
+                        <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Phone</label>
-                        <input type="tel" name="phone" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Phone</label>
+                        <input type="tel" name="phone" class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">I am a... *</label>
-                        <select name="expertType" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">I am a... *</label>
+                        <select name="expertType" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                             <option value="">Select type...</option>
                             <option value="freelancer">Freelancer</option>
                             <option value="agency">Micro Agency (2-10 people)</option>
@@ -749,12 +846,12 @@ app.get('/', (c) => {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Company/Agency Name (if applicable)</label>
-                        <input type="text" name="companyName" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Company/Agency Name</label>
+                        <input type="text" name="companyName" class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Your Specialization *</label>
-                        <select name="specialization" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Specialization *</label>
+                        <select name="specialization" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                             <option value="">Select specialization...</option>
                             <option value="facebook-ads">Facebook/Instagram Ads</option>
                             <option value="google-ads">Google Ads</option>
@@ -767,8 +864,8 @@ app.get('/', (c) => {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Years of Experience *</label>
-                        <select name="experience" required class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Years of Experience *</label>
+                        <select name="experience" required class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                             <option value="">Select years...</option>
                             <option value="1-2">1-2 years</option>
                             <option value="3-5">3-5 years</option>
@@ -777,24 +874,23 @@ app.get('/', (c) => {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Current Number of Clients</label>
-                        <input type="number" name="currentClients" placeholder="e.g., 5" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Current Clients</label>
+                        <input type="number" name="currentClients" placeholder="e.g., 5" class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Portfolio/LinkedIn URL</label>
-                        <input type="url" name="portfolio" placeholder="https://" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none">
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Portfolio/LinkedIn URL</label>
+                        <input type="url" name="portfolio" placeholder="https://" class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Notable Results/Case Studies</label>
-                        <textarea name="results" rows="3" placeholder="e.g., Scaled client from $10k to $100k monthly revenue in 6 months..." class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none"></textarea>
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Notable Results</label>
+                        <textarea name="results" rows="2" placeholder="e.g., Scaled client from $10k to $100k monthly revenue..." class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition"></textarea>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold mb-2">Why do you want to join NexSpark?</label>
-                        <textarea name="motivation" rows="3" placeholder="Tell us what interests you about the platform..." class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-500 focus:outline-none"></textarea>
+                        <label class="block text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-2">Why Join NexSpark?</label>
+                        <textarea name="motivation" rows="2" placeholder="Tell us what interests you..." class="w-full px-4 py-3 rounded-lg bg-black border-2 border-nexspark-purple/50 text-white font-mono focus:border-nexspark-gold focus:outline-none transition"></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 py-4 rounded-lg font-semibold text-lg transition">
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        Submit Application
+                    <button type="submit" class="lcars-btn w-full bg-nexspark-purple hover:bg-nexspark-pale text-black py-4 rounded-lg font-bold text-lg">
+                        <i class="fas fa-paper-plane mr-2"></i> SUBMIT APPLICATION
                     </button>
                 </form>
                 <div id="agencyFormMessage" class="mt-4 hidden"></div>
