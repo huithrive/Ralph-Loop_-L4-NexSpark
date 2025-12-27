@@ -134,6 +134,8 @@ function loadUserData() {
 function updateInterviewStatus(interview) {
   const interviewCard = document.getElementById('interviewCard');
   const interviewStatus = document.getElementById('interviewStatus');
+  const growthPlanCard = document.getElementById('growthPlanCard');
+  const growthPlanStatus = document.getElementById('growthPlanStatus');
   
   if (interview.completed) {
     interviewStatus.className = 'status-indicator status-completed';
@@ -145,13 +147,161 @@ function updateInterviewStatus(interview) {
       <h3 class="text-xl font-header font-bold text-nexspark-blue uppercase mb-2">Voice Interview</h3>
       <p class="text-white/70 font-mono text-sm">Interview completed successfully</p>
       <div class="mt-4 text-nexspark-blue font-mono text-xs">
-        <i class="fas fa-check-circle mr-1"></i> COMPLETED
+        <i class="fas fa-check-circle mr-1"></i> COMPLETED ${new Date(interview.completedAt).toLocaleDateString()}
       </div>
     `;
     
-    // Unlock growth plan
-    // TODO: Enable growth plan card
+    // Show growth plan if available
+    if (interview.analysis && interview.strategy) {
+      growthPlanStatus.className = 'status-indicator status-completed';
+      growthPlanCard.innerHTML = `
+        <div class="flex items-center justify-between mb-4">
+          <i class="fas fa-chart-line text-3xl text-nexspark-purple"></i>
+          <span class="status-indicator status-completed"></span>
+        </div>
+        <h3 class="text-xl font-header font-bold text-nexspark-purple uppercase mb-2">Growth Plan</h3>
+        <p class="text-white/70 font-mono text-sm">AI-generated strategy ready</p>
+        <div class="mt-4">
+          <button onclick="viewGrowthStrategy()" class="lcars-btn bg-nexspark-purple hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs">
+            <i class="fas fa-file-alt mr-1"></i> VIEW STRATEGY
+          </button>
+        </div>
+      `;
+      
+      // Show analysis summary
+      displayAnalysisSummary(interview.analysis);
+    } else {
+      growthPlanStatus.className = 'status-indicator status-pending';
+      growthPlanCard.innerHTML = `
+        <div class="flex items-center justify-between mb-4">
+          <i class="fas fa-chart-line text-3xl text-nexspark-purple"></i>
+          <span class="status-indicator status-pending"></span>
+        </div>
+        <h3 class="text-xl font-header font-bold text-nexspark-purple uppercase mb-2">Growth Plan</h3>
+        <p class="text-white/70 font-mono text-sm">Being prepared by our team</p>
+        <div class="mt-4 text-nexspark-purple font-mono text-xs">
+          <i class="fas fa-clock mr-1"></i> PROCESSING
+        </div>
+      `;
+    }
   }
+}
+
+// Display analysis summary
+function displayAnalysisSummary(analysis) {
+  const systemInfo = document.querySelector('.bg-nexspark-blue\\/10.border-l-4');
+  if (!systemInfo) return;
+  
+  const summaryHTML = `
+    <div class="bg-nexspark-purple/10 border-l-4 border-nexspark-purple p-6 rounded-r-lg backdrop-blur-sm mt-6">
+      <div class="flex items-start gap-3">
+        <i class="fas fa-lightbulb text-nexspark-purple text-xl mt-1"></i>
+        <div class="flex-1">
+          <div class="text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-3">
+            Growth Analysis Summary
+          </div>
+          
+          <div class="space-y-4">
+            <!-- Brand Profile -->
+            <div>
+              <h4 class="text-white font-header text-sm uppercase mb-2">Your Brand</h4>
+              <div class="text-white/70 font-mono text-xs space-y-1">
+                <p><span class="text-nexspark-blue">Industry:</span> ${analysis.brandProfile.industry}</p>
+                <p><span class="text-nexspark-blue">Stage:</span> ${analysis.brandProfile.stage}</p>
+                <p><span class="text-nexspark-blue">Current Channels:</span> ${analysis.brandProfile.currentChannels.join(', ')}</p>
+              </div>
+            </div>
+            
+            <!-- Main Challenges -->
+            <div>
+              <h4 class="text-white font-header text-sm uppercase mb-2">Main Challenges</h4>
+              <ul class="text-white/70 font-mono text-xs space-y-1">
+                ${analysis.brandProfile.mainChallenges.map(c => `<li><i class="fas fa-chevron-right text-nexspark-gold mr-2"></i>${c}</li>`).join('')}
+              </ul>
+            </div>
+            
+            <!-- Recommendations -->
+            <div>
+              <h4 class="text-white font-header text-sm uppercase mb-2">Priority Actions</h4>
+              <div class="text-white/70 font-mono text-xs space-y-1">
+                <p class="text-nexspark-gold mb-2">${analysis.recommendations.priority}</p>
+                <p><span class="text-nexspark-blue">Recommended Channels:</span> ${analysis.recommendations.channels.join(', ')}</p>
+                <p><span class="text-nexspark-blue">Budget Range:</span> ${analysis.recommendations.budget}</p>
+                <p><span class="text-nexspark-blue">Timeline:</span> ${analysis.recommendations.timeline}</p>
+              </div>
+            </div>
+            
+            <!-- Next Steps -->
+            <div>
+              <h4 class="text-white font-header text-sm uppercase mb-2">Next Steps</h4>
+              <ol class="text-white/70 font-mono text-xs space-y-1 pl-5">
+                ${analysis.nextSteps ? analysis.nextSteps.map((step, i) => `<li>${i+1}. ${step}</li>`).join('') : ''}
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  systemInfo.insertAdjacentHTML('afterend', summaryHTML);
+}
+
+// View full growth strategy in modal
+function viewGrowthStrategy() {
+  const interviewData = localStorage.getItem('nexspark_interview');
+  if (!interviewData) return;
+  
+  try {
+    const interview = JSON.parse(interviewData);
+    if (!interview.strategy) return;
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4';
+    modal.innerHTML = `
+      <div class="bg-black border-2 border-nexspark-purple rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-black border-b-2 border-nexspark-purple p-6 flex items-center justify-between">
+          <h2 class="text-2xl font-header font-bold text-nexspark-purple uppercase">
+            <i class="fas fa-file-alt mr-2"></i> Your Growth Strategy
+          </h2>
+          <button onclick="this.closest('.fixed').remove()" class="text-white hover:text-nexspark-purple">
+            <i class="fas fa-times text-2xl"></i>
+          </button>
+        </div>
+        <div class="p-6">
+          <div class="prose prose-invert max-w-none">
+            <div class="text-white/90 font-mono text-sm whitespace-pre-wrap leading-relaxed">
+${interview.strategy}
+            </div>
+          </div>
+          <div class="mt-8 flex gap-4">
+            <button onclick="downloadStrategy()" class="lcars-btn bg-nexspark-blue hover:bg-white text-black px-6 py-3 rounded">
+              <i class="fas fa-download mr-2"></i> DOWNLOAD PDF
+            </button>
+            <button onclick="scheduleCall()" class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-6 py-3 rounded">
+              <i class="fas fa-calendar mr-2"></i> SCHEDULE CALL
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+  } catch (e) {
+    console.error('Failed to load strategy:', e);
+    alert('Failed to load growth strategy');
+  }
+}
+
+// Download strategy as PDF (placeholder)
+function downloadStrategy() {
+  alert('PDF download feature coming soon! For now, you can copy the text or take a screenshot.');
+}
+
+// Schedule call (placeholder)
+function scheduleCall() {
+  alert('Scheduling feature coming soon! Please email founders@nexspark.io to schedule a call.');
 }
 
 // Start interview

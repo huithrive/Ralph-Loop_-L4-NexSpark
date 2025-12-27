@@ -1,6 +1,13 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/cloudflare-workers'
+import { 
+  transcribeAudio, 
+  analyzeInterview, 
+  generateGrowthStrategy,
+  DEFAULT_INTERVIEW_QUESTIONS,
+  type InterviewResponse
+} from './services/voice-interview'
 
 const app = new Hono()
 
@@ -90,34 +97,79 @@ app.post('/api/interview/save', async (c) => {
   }
 })
 
-// API endpoint for OpenAI Whisper transcription (placeholder)
+// API endpoint for OpenAI Whisper transcription
 app.post('/api/transcribe', async (c) => {
   try {
-    // This will integrate with OpenAI Whisper API
-    // For now, return a placeholder response
-    
     const formData = await c.req.formData()
     const audioFile = formData.get('audio')
     
-    if (!audioFile) {
+    if (!audioFile || !(audioFile instanceof File)) {
       return c.json({ success: false, message: 'No audio file provided' }, 400)
     }
     
-    console.log('Audio file received for transcription');
+    console.log('Audio file received for transcription:', audioFile.name, audioFile.type, audioFile.size);
     
-    // TODO: Send to OpenAI Whisper API
-    // const transcript = await transcribeWithWhisper(audioFile);
+    // Convert File to ArrayBuffer
+    const arrayBuffer = await audioFile.arrayBuffer();
     
-    // Placeholder response
+    // Transcribe using OpenAI Whisper
+    const transcript = await transcribeAudio(arrayBuffer);
+    
+    console.log('Transcription successful:', transcript.substring(0, 100));
+    
     return c.json({ 
       success: true, 
-      transcript: '[Transcription will appear here after OpenAI Whisper API integration]',
+      transcript: transcript,
       confidence: 0.95
     })
   } catch (error) {
     console.error('Transcription error:', error);
-    return c.json({ success: false, message: 'Transcription failed.' }, 500)
+    return c.json({ 
+      success: false, 
+      message: 'Transcription failed: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500)
   }
+})
+
+// API endpoint for analyzing interview and generating growth strategy
+app.post('/api/interview/analyze', async (c) => {
+  try {
+    const { responses } = await c.req.json() as { responses: InterviewResponse[] }
+    
+    if (!responses || responses.length === 0) {
+      return c.json({ success: false, message: 'No interview responses provided' }, 400)
+    }
+    
+    console.log('Analyzing interview with', responses.length, 'responses');
+    
+    // Analyze the interview
+    const analysis = await analyzeInterview(responses);
+    
+    // Generate growth strategy
+    const strategy = await generateGrowthStrategy(analysis);
+    
+    console.log('Analysis complete:', analysis.brandProfile.industry);
+    
+    return c.json({ 
+      success: true, 
+      analysis,
+      strategy
+    })
+  } catch (error) {
+    console.error('Analysis error:', error);
+    return c.json({ 
+      success: false, 
+      message: 'Analysis failed: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500)
+  }
+})
+
+// API endpoint to get default interview questions
+app.get('/api/interview/questions', (c) => {
+  return c.json({ 
+    success: true, 
+    questions: DEFAULT_INTERVIEW_QUESTIONS
+  })
 })
 
 // Main landing page with LCARS/Jarvis-inspired design

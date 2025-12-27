@@ -270,33 +270,46 @@ function stopRecording() {
 // Process audio response - This will integrate with OpenAI Whisper API
 async function processAudioResponse(audioBlob) {
   try {
-    // TODO: Send audio to OpenAI Whisper API for transcription
-    // For now, simulate with a delay
-    
     document.getElementById('statusText').innerHTML = `
       <div class="text-nexspark-blue font-header text-2xl uppercase tracking-wider mb-2">
         Processing...
       </div>
       <div class="text-white/70 font-mono text-sm">
-        Analyzing your response
+        Transcribing your response with AI...
       </div>
     `;
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Send audio to OpenAI Whisper API for transcription
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
     
-    // Mock transcription result (will be replaced with actual Whisper API response)
-    const mockTranscript = "[User's response will appear here after Whisper API integration]";
+    const response = await fetch('/api/transcribe', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.message || 'Transcription failed');
+    }
+    
+    const transcript = result.transcript;
+    console.log('Transcription received:', transcript);
     
     // Save response
     interviewState.responses.push({
+      questionId: `q${interviewState.currentQuestion + 1}`,
       question: interviewQuestions[interviewState.currentQuestion],
-      answer: mockTranscript,
+      answer: transcript,
       timestamp: new Date().toISOString()
     });
     
     // Add to transcript
-    addToTranscript('user', mockTranscript);
+    addToTranscript('user', transcript);
+    
+    // Save progress
+    saveInterviewProgress();
     
     // Move to next question
     interviewState.currentQuestion++;
@@ -322,17 +335,39 @@ async function processAudioResponse(audioBlob) {
     
   } catch (error) {
     console.error('Error processing audio:', error);
-    alert('Failed to process audio. Please try again.');
     
     document.getElementById('statusText').innerHTML = `
       <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
         Error
       </div>
       <div class="text-white/70 font-mono text-sm">
-        Please try recording again
+        ${error.message || 'Failed to process audio. Please try recording again.'}
       </div>
     `;
+    
+    // Allow user to retry
+    setTimeout(() => {
+      document.getElementById('statusText').innerHTML = `
+        <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+          Ready
+        </div>
+        <div class="text-white/70 font-mono text-sm">
+          Click the microphone to try again
+        </div>
+      `;
+    }, 3000);
   }
+}
+
+// Save interview progress
+function saveInterviewProgress() {
+  const progressData = {
+    currentQuestion: interviewState.currentQuestion,
+    totalQuestions: interviewState.totalQuestions,
+    responses: interviewState.responses,
+    lastUpdated: new Date().toISOString()
+  };
+  localStorage.setItem('nexspark_interview_progress', JSON.stringify(progressData));
 }
 
 // Add message to transcript
@@ -388,46 +423,109 @@ function endInterview() {
 }
 
 // Complete interview
-function completeInterview() {
+async function completeInterview() {
   interviewState.isActive = false;
   
   if (interviewState.isRecording) {
     stopRecording();
   }
   
-  // Save interview data
-  const interviewData = {
-    completed: true,
-    completedAt: new Date().toISOString(),
-    responses: interviewState.responses,
-    progress: interviewState.currentQuestion / interviewState.totalQuestions
-  };
-  
-  localStorage.setItem('nexspark_interview', JSON.stringify(interviewData));
-  
-  // Update UI
+  // Update UI immediately
   document.getElementById('statusText').innerHTML = `
     <div class="text-nexspark-blue font-header text-2xl uppercase tracking-wider mb-2">
       Interview Complete!
     </div>
     <div class="text-white/70 font-mono text-sm">
-      Generating your growth strategy...
+      Analyzing your responses...
     </div>
   `;
   
   document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-nexspark-blue flex items-center justify-center shadow-lg shadow-nexspark-blue/50';
-  document.getElementById('micIcon').className = 'fas fa-check text-5xl text-black';
+  document.getElementById('micIcon').className = 'fas fa-spinner fa-spin text-5xl text-black';
   
   document.getElementById('pauseBtn').classList.add('hidden');
   document.getElementById('endBtn').classList.add('hidden');
   
-  // Show completion message
-  setTimeout(() => {
-    alert('Interview completed successfully! Redirecting to dashboard...');
-    window.location.href = '/dashboard';
-  }, 2000);
-  
-  console.log('Interview completed:', interviewData);
+  try {
+    // Send interview data for analysis
+    const response = await fetch('/api/interview/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        responses: interviewState.responses
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Save complete interview data with analysis
+      const interviewData = {
+        completed: true,
+        completedAt: new Date().toISOString(),
+        responses: interviewState.responses,
+        analysis: result.analysis,
+        strategy: result.strategy,
+        progress: 1.0
+      };
+      
+      localStorage.setItem('nexspark_interview', JSON.stringify(interviewData));
+      
+      // Update UI with success
+      document.getElementById('statusText').innerHTML = `
+        <div class="text-nexspark-blue font-header text-2xl uppercase tracking-wider mb-2">
+          Analysis Complete!
+        </div>
+        <div class="text-white/70 font-mono text-sm">
+          Your personalized growth strategy is ready
+        </div>
+      `;
+      
+      document.getElementById('micIcon').className = 'fas fa-check text-5xl text-black';
+      
+      // Show completion message and redirect
+      setTimeout(() => {
+        alert('Your growth strategy has been generated! Redirecting to dashboard...');
+        window.location.href = '/dashboard';
+      }, 2000);
+      
+      console.log('Interview completed and analyzed:', result);
+    } else {
+      throw new Error(result.message || 'Analysis failed');
+    }
+  } catch (error) {
+    console.error('Error completing interview:', error);
+    
+    // Save basic interview data without analysis
+    const interviewData = {
+      completed: true,
+      completedAt: new Date().toISOString(),
+      responses: interviewState.responses,
+      progress: interviewState.currentQuestion / interviewState.totalQuestions,
+      analysisError: error.message
+    };
+    
+    localStorage.setItem('nexspark_interview', JSON.stringify(interviewData));
+    
+    // Update UI
+    document.getElementById('statusText').innerHTML = `
+      <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+        Interview Saved
+      </div>
+      <div class="text-white/70 font-mono text-sm">
+        Our team will analyze your responses manually
+      </div>
+    `;
+    
+    document.getElementById('micIcon').className = 'fas fa-check text-5xl text-black';
+    
+    setTimeout(() => {
+      alert('Interview completed! Our team will review your responses and contact you within 24 hours.');
+      window.location.href = '/dashboard';
+    }, 2000);
+  }
 }
 
 // Initialize on load
