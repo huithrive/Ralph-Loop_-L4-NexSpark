@@ -42,6 +42,84 @@ app.post('/api/register/agency', async (c) => {
   }
 })
 
+// Google OAuth callback simulation (placeholder - requires actual OAuth setup)
+app.get('/auth/google/callback', async (c) => {
+  // TODO: Implement actual Google OAuth flow
+  // For now, simulate successful authentication
+  const mockUser = {
+    id: 'user_' + Date.now(),
+    email: 'demo@example.com',
+    name: 'Demo User',
+    picture: 'https://via.placeholder.com/150',
+    created_at: new Date().toISOString()
+  };
+  
+  // In production, store user in database and create session
+  console.log('User authenticated:', mockUser);
+  
+  // Redirect to dashboard with user data (in production, use secure session)
+  return c.html(`
+    <script>
+      localStorage.setItem('nexspark_user', JSON.stringify(${JSON.stringify(mockUser)}));
+      window.location.href = '/dashboard';
+    </script>
+  `);
+})
+
+// Dashboard route - redirect to static file
+app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
+
+// Interview route - redirect to static file
+app.get('/interview', (c) => c.redirect('/static/interview.html'))
+
+// API endpoint for saving interview responses
+app.post('/api/interview/save', async (c) => {
+  try {
+    const data = await c.req.json()
+    console.log('Interview Data:', data)
+    
+    // TODO: Save to database (Cloudflare D1)
+    
+    return c.json({ 
+      success: true, 
+      message: 'Interview responses saved successfully.',
+      data: data
+    })
+  } catch (error) {
+    return c.json({ success: false, message: 'Failed to save interview data.' }, 400)
+  }
+})
+
+// API endpoint for OpenAI Whisper transcription (placeholder)
+app.post('/api/transcribe', async (c) => {
+  try {
+    // This will integrate with OpenAI Whisper API
+    // For now, return a placeholder response
+    
+    const formData = await c.req.formData()
+    const audioFile = formData.get('audio')
+    
+    if (!audioFile) {
+      return c.json({ success: false, message: 'No audio file provided' }, 400)
+    }
+    
+    console.log('Audio file received for transcription');
+    
+    // TODO: Send to OpenAI Whisper API
+    // const transcript = await transcribeWithWhisper(audioFile);
+    
+    // Placeholder response
+    return c.json({ 
+      success: true, 
+      transcript: '[Transcription will appear here after OpenAI Whisper API integration]',
+      confidence: 0.95
+    })
+  } catch (error) {
+    console.error('Transcription error:', error);
+    return c.json({ success: false, message: 'Transcription failed.' }, 500)
+  }
+})
+
 // Main landing page with LCARS/Jarvis-inspired design
 app.get('/', (c) => {
   return c.html(`
@@ -753,6 +831,28 @@ app.get('/', (c) => {
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
+                
+                <!-- Google Sign-In Option -->
+                <div class="mb-6">
+                    <button type="button" onclick="signInWithGoogle()" class="w-full bg-white hover:bg-gray-100 text-black px-6 py-4 rounded-lg font-semibold text-base flex items-center justify-center gap-3 transition shadow-lg">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span class="font-header uppercase tracking-wider">Sign in with Google</span>
+                    </button>
+                    <div class="relative my-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-nexspark-blue/30"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-4 bg-nexspark-panel text-nexspark-blue/70 font-mono uppercase tracking-wider">Or register manually</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <form id="brandForm" class="space-y-4">
                     <div>
                         <label class="block text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">Company Name *</label>

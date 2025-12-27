@@ -119,6 +119,28 @@ function closeModal(type) {
   }
 }
 
+// Google Sign-In (Simulated - requires actual OAuth setup)
+function signInWithGoogle() {
+  // In production, this would redirect to Google OAuth
+  // For demo, simulate successful authentication
+  const mockUser = {
+    id: 'user_' + Date.now(),
+    email: 'demo@nexspark.com',
+    name: 'Demo User',
+    picture: 'https://via.placeholder.com/150',
+    created_at: new Date().toISOString()
+  };
+  
+  // Save user data
+  localStorage.setItem('nexspark_user', JSON.stringify(mockUser));
+  
+  // Show success message
+  alert('Successfully signed in with Google! Redirecting to dashboard...');
+  
+  // Redirect to dashboard
+  window.location.href = '/dashboard';
+}
+
 // Close modal on outside click
 document.addEventListener('click', (e) => {
   if (e.target.id === 'brandModal' || e.target.id === 'agencyModal') {
