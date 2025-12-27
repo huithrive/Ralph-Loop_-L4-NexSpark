@@ -125,11 +125,20 @@ function checkAuth() {
 
 // Start interview
 async function startInterview() {
+  console.log('startInterview() called');
   const user = checkAuth();
-  if (!user) return;
+  if (!user) {
+    console.log('No user found, redirecting...');
+    return;
+  }
+  
+  console.log('User authenticated:', user);
+  console.log('Setting interview state to active...');
   
   interviewState.isActive = true;
   interviewState.currentQuestion = 0;
+  
+  console.log('Interview state:', interviewState);
   
   // Update UI
   document.getElementById('startBtn').classList.add('hidden');
@@ -141,13 +150,23 @@ async function startInterview() {
   document.getElementById('pauseBtn').disabled = false;
   document.getElementById('endBtn').disabled = false;
   
+  // Update status to show it's ready
+  document.getElementById('statusText').innerHTML = `
+    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+      Listening...
+    </div>
+    <div class="text-white/70 font-mono text-sm">
+      Click the microphone to answer
+    </div>
+  `;
+  
   // Show first question
   showQuestion(0);
   
   // Speak the question using Text-to-Speech
   speakQuestion(interviewQuestions[0]);
   
-  console.log('Interview started');
+  console.log('Interview started - microphone should now be active!');
 }
 
 // Show question
@@ -190,14 +209,19 @@ function speakQuestion(text) {
 
 // Toggle recording
 async function toggleRecording() {
+  console.log('toggleRecording called, isActive:', interviewState.isActive, 'isRecording:', interviewState.isRecording);
+  
   if (!interviewState.isActive) {
-    alert('Please start the interview first');
+    console.log('Interview not active! Please click START INTERVIEW button first.');
+    alert('Please click the "START INTERVIEW" button below first');
     return;
   }
   
   if (interviewState.isRecording) {
+    console.log('Stopping recording...');
     stopRecording();
   } else {
+    console.log('Starting recording...');
     startRecording();
   }
 }
