@@ -175,16 +175,16 @@ document.getElementById('brandForm').addEventListener('submit', async (e) => {
     const messageEl = document.getElementById('brandFormMessage');
     messageEl.classList.remove('hidden');
     messageEl.className = 'mt-4 p-4 bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300';
-    messageEl.innerHTML = \`
+    messageEl.innerHTML = `
       <div class="flex items-start gap-3">
         <i class="fas fa-check-circle text-2xl"></i>
         <div class="font-mono">
           <strong class="block mb-2 text-lg uppercase tracking-wider">✓ Registration Successful!</strong>
-          <p class="text-sm">\${response.data.message}</p>
+          <p class="text-sm">${response.data.message}</p>
           <p class="mt-2 text-xs opacity-75">Digital Leon will contact you within 24 hours to schedule your growth diagnosis.</p>
         </div>
       </div>
-    \`;
+    `;
     
     e.target.reset();
     
@@ -197,15 +197,15 @@ document.getElementById('brandForm').addEventListener('submit', async (e) => {
     const messageEl = document.getElementById('brandFormMessage');
     messageEl.classList.remove('hidden');
     messageEl.className = 'mt-4 p-4 bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300';
-    messageEl.innerHTML = \`
+    messageEl.innerHTML = `
       <div class="flex items-start gap-3">
         <i class="fas fa-exclamation-circle text-2xl"></i>
         <div class="font-mono">
           <strong class="block mb-2 text-lg uppercase tracking-wider">✗ System Error</strong>
-          <p class="text-sm">\${error.response?.data?.message || 'Registration failed. Please try again.'}</p>
+          <p class="text-sm">${error.response?.data?.message || 'Registration failed. Please try again.'}</p>
         </div>
       </div>
-    \`;
+    `;
   } finally {
     submitButton.disabled = false;
     submitButton.innerHTML = originalText;
@@ -230,16 +230,16 @@ document.getElementById('agencyForm').addEventListener('submit', async (e) => {
     const messageEl = document.getElementById('agencyFormMessage');
     messageEl.classList.remove('hidden');
     messageEl.className = 'mt-4 p-4 bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300';
-    messageEl.innerHTML = \`
+    messageEl.innerHTML = `
       <div class="flex items-start gap-3">
         <i class="fas fa-check-circle text-2xl"></i>
         <div class="font-mono">
           <strong class="block mb-2 text-lg uppercase tracking-wider">✓ Application Received!</strong>
-          <p class="text-sm">\${response.data.message}</p>
+          <p class="text-sm">${response.data.message}</p>
           <p class="mt-2 text-xs opacity-75">Our Digital Leon AI will review your profile and contact you with next steps.</p>
         </div>
       </div>
-    \`;
+    `;
     
     e.target.reset();
     
@@ -252,15 +252,15 @@ document.getElementById('agencyForm').addEventListener('submit', async (e) => {
     const messageEl = document.getElementById('agencyFormMessage');
     messageEl.classList.remove('hidden');
     messageEl.className = 'mt-4 p-4 bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300';
-    messageEl.innerHTML = \`
+    messageEl.innerHTML = `
       <div class="flex items-start gap-3">
         <i class="fas fa-exclamation-circle text-2xl"></i>
         <div class="font-mono">
           <strong class="block mb-2 text-lg uppercase tracking-wider">✗ System Error</strong>
-          <p class="text-sm">\${error.response?.data?.message || 'Application failed. Please try again.'}</p>
+          <p class="text-sm">${error.response?.data?.message || 'Application failed. Please try again.'}</p>
         </div>
       </div>
-    \`;
+    `;
   } finally {
     submitButton.disabled = false;
     submitButton.innerHTML = originalText;
