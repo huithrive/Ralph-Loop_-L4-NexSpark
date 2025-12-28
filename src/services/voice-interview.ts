@@ -37,9 +37,16 @@ export interface InterviewAnalysis {
 }
 
 // Initialize OpenAI client
-function getOpenAIClient(): OpenAI {
-  const apiKey = process.env.OPENAI_API_KEY;
-  const baseURL = process.env.OPENAI_BASE_URL;
+function getOpenAIClient(env?: any): OpenAI {
+  // Try to get from env parameter (Cloudflare Workers)
+  let apiKey = env?.OPENAI_API_KEY;
+  let baseURL = env?.OPENAI_BASE_URL;
+  
+  // Fallback to process.env (for Node.js/local dev)
+  if (!apiKey && typeof process !== 'undefined') {
+    apiKey = process.env.OPENAI_API_KEY;
+    baseURL = process.env.OPENAI_BASE_URL;
+  }
 
   if (!apiKey) {
     throw new Error('OPENAI_API_KEY is not configured. Please set it in your environment or use .dev.vars file.');
@@ -54,9 +61,9 @@ function getOpenAIClient(): OpenAI {
 /**
  * Transcribe audio using OpenAI Whisper
  */
-export async function transcribeAudio(audioBuffer: ArrayBuffer): Promise<string> {
+export async function transcribeAudio(audioBuffer: ArrayBuffer, env?: any): Promise<string> {
   try {
-    const client = getOpenAIClient();
+    const client = getOpenAIClient(env);
     
     // Convert ArrayBuffer to File
     const blob = new Blob([audioBuffer], { type: 'audio/webm' });

@@ -112,8 +112,8 @@ app.post('/api/transcribe', async (c) => {
     // Convert File to ArrayBuffer
     const arrayBuffer = await audioFile.arrayBuffer();
     
-    // Transcribe using OpenAI Whisper
-    const transcript = await transcribeAudio(arrayBuffer);
+    // Transcribe using OpenAI Whisper - pass environment
+    const transcript = await transcribeAudio(arrayBuffer, c.env);
     
     console.log('Transcription successful:', transcript.substring(0, 100));
     
