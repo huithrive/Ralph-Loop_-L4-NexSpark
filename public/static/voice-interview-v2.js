@@ -255,6 +255,7 @@ async function setupVoiceActivityDetection(stream) {
 // Monitor audio level for Voice Activity Detection
 function monitorAudioLevel() {
   if (!interviewState.isRecording || !interviewState.analyser) {
+    console.log('VAD stopped: isRecording=', interviewState.isRecording, 'analyser=', !!interviewState.analyser);
     return;
   }
   
@@ -266,6 +267,13 @@ function monitorAudioLevel() {
   const average = dataArray.reduce((a, b) => a + b) / bufferLength;
   const volumeDb = 20 * Math.log10(average / 255);
   
+  // Debug: Log volume every 30 frames (~500ms)
+  if (!window.vadFrameCount) window.vadFrameCount = 0;
+  window.vadFrameCount++;
+  if (window.vadFrameCount % 30 === 0) {
+    console.log('VAD: volume=', volumeDb.toFixed(2), 'dB, threshold=', interviewState.silenceThreshold, 'dB, active=', interviewState.vadActive);
+  }
+  
   // Update waveform visualization
   updateWaveform(dataArray);
   
@@ -273,15 +281,16 @@ function monitorAudioLevel() {
   if (volumeDb < interviewState.silenceThreshold) {
     // User is silent
     if (!interviewState.silenceTimeout && interviewState.vadActive) {
-      console.log('Silence detected, starting timeout...');
+      console.log('✅ Silence detected! Starting', interviewState.silenceDuration/1000, 'second timeout...');
       interviewState.silenceTimeout = setTimeout(() => {
-        console.log('Silence duration exceeded, auto-stopping recording...');
+        console.log('⏹️  Silence duration exceeded, auto-stopping recording...');
         stopRecording();
       }, interviewState.silenceDuration);
     }
   } else {
     // User is speaking
     if (interviewState.silenceTimeout) {
+      console.log('🎤 Speech detected, canceling silence timeout');
       clearTimeout(interviewState.silenceTimeout);
       interviewState.silenceTimeout = null;
     }
@@ -350,7 +359,14 @@ async function startRecording() {
     `;
     document.getElementById('waveform').classList.remove('hidden');
     
+    // Show manual stop button
+    const manualBtn = document.getElementById('manualStopBtn');
+    if (manualBtn) {
+      manualBtn.classList.remove('hidden');
+    }
+    
     console.log('Recording started with Voice Activity Detection');
+    console.log('VAD settings: threshold=', interviewState.silenceThreshold, 'dB, duration=', interviewState.silenceDuration, 'ms');
   } catch (err) {
     console.error('Error accessing microphone:', err);
     alert('Could not access microphone. Please check your permissions.');
