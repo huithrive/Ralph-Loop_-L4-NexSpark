@@ -387,14 +387,21 @@ async function processAudioResponse(audioBlob) {
       // Show next question
       setTimeout(() => {
         showQuestion(interviewState.currentQuestion);
-        speakQuestion(interviewQuestions[interviewState.currentQuestion]);
+        
+        // Speak question and auto-start recording when done
+        speakQuestion(interviewQuestions[interviewState.currentQuestion], () => {
+          console.log('Next question finished speaking, auto-starting recording...');
+          setTimeout(() => {
+            startRecording();
+          }, 500);
+        });
         
         document.getElementById('statusText').innerHTML = `
           <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
             Listening...
           </div>
           <div class="text-white/70 font-mono text-sm">
-            Click the microphone to answer
+            Speak your answer, click to stop
           </div>
         `;
       }, 1000);
