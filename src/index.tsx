@@ -76,8 +76,8 @@ app.get('/auth/google/callback', async (c) => {
 // Dashboard route - redirect to static file
 app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
 
-// Interview route - redirect to static file
-app.get('/interview', (c) => c.redirect('/static/interview.html'))
+// Interview route - redirect to NEW natural conversation interface
+app.get('/interview', (c) => c.redirect('/static/interview-v2.html'))
 
 // API endpoint for saving interview responses
 app.post('/api/interview/save', async (c) => {
