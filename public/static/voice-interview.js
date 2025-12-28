@@ -152,21 +152,27 @@ async function startInterview() {
   
   // Update status to show it's ready
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
-      Listening...
+    <div class="text-nexspark-blue font-header text-2xl uppercase tracking-wider mb-2">
+      Digital Leon is speaking...
     </div>
     <div class="text-white/70 font-mono text-sm">
-      Click the microphone to answer
+      Please listen to the question
     </div>
   `;
   
   // Show first question
   showQuestion(0);
   
-  // Speak the question using Text-to-Speech
-  speakQuestion(interviewQuestions[0]);
+  // Speak the question using Text-to-Speech, then auto-start recording
+  speakQuestion(interviewQuestions[0], () => {
+    // After question is spoken, automatically start recording
+    console.log('Question finished speaking, auto-starting recording...');
+    setTimeout(() => {
+      startRecording();
+    }, 500); // Small delay for better UX
+  });
   
-  console.log('Interview started - microphone should now be active!');
+  console.log('Interview started - will auto-record after question!');
 }
 
 // Show question
@@ -189,18 +195,57 @@ function showQuestion(index) {
 }
 
 // Speak question using Web Speech API
-function speakQuestion(text) {
+function speakQuestion(text, onFinish) {
   if ('speechSynthesis' in window) {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
+    utterance.rate = 0.95; // Slightly slower for clarity
+    utterance.pitch = 0.9; // Lower pitch for male voice
     utterance.volume = 1;
     
-    // Use a more professional voice if available
+    // Find a natural male voice (similar to ChatGPT voice agent)
     const voices = speechSynthesis.getVoices();
-    const preferredVoice = voices.find(voice => voice.name.includes('Google US English')) || voices[0];
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
+    
+    // Priority order for natural male voices (best quality first)
+    const maleVoiceNames = [
+      'Microsoft David',  // Windows - natural, deep male voice
+      'Alex',             // macOS - natural male voice  
+      'Microsoft Mark',   // Windows - clear male voice
+      'Daniel',           // macOS - British male voice
+      'Google UK English Male',  // Clear British accent
+      'Fred',             // macOS - older male voice
+      'Google US English Male'   // Fallback
+    ];
+    
+    let selectedVoice = null;
+    for (const voiceName of maleVoiceNames) {
+      selectedVoice = voices.find(voice => 
+        voice.name.includes(voiceName) || 
+        (voice.name.toLowerCase().includes('male') && voice.lang.startsWith('en'))
+      );
+      if (selectedVoice) break;
+    }
+    
+    // Fallback: find any English male voice
+    if (!selectedVoice) {
+      selectedVoice = voices.find(voice => 
+        voice.lang.startsWith('en') && 
+        (voice.name.toLowerCase().includes('male') || voice.name.toLowerCase().includes('david') || voice.name.toLowerCase().includes('mark'))
+      );
+    }
+    
+    // Final fallback: use first English voice
+    if (!selectedVoice) {
+      selectedVoice = voices.find(voice => voice.lang.startsWith('en-US')) || voices[0];
+    }
+    
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      console.log('Using voice:', selectedVoice.name);
+    }
+    
+    // Add callback when speech ends
+    if (onFinish) {
+      utterance.onend = onFinish;
     }
     
     speechSynthesis.speak(utterance);
