@@ -277,8 +277,21 @@ async function startInterview() {
   // Show question
   showQuestion(interviewState.currentQuestion);
   
-  // Speak question
+  // Speak question and auto-start recording after it's spoken
   speakQuestion(interviewQuestions[interviewState.currentQuestion]);
+  
+  // Auto-start recording after 2 seconds (let question start speaking)
+  setTimeout(() => {
+    startRecording();
+    document.getElementById('statusText').innerHTML = `
+      <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
+        Listening...
+      </div>
+      <div class="text-white/70 font-mono text-sm">
+        Speak naturally - click "Finished" when done
+      </div>
+    `;
+  }, 2000);
   
   console.log('Interview started!');
 }
@@ -515,14 +528,18 @@ async function finishedSpeaking() {
       showQuestion(interviewState.currentQuestion);
       speakQuestion(interviewQuestions[interviewState.currentQuestion]);
       
-      document.getElementById('statusText').innerHTML = `
-        <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
-          Ready to Listen
-        </div>
-        <div class="text-white/70 font-mono text-sm">
-          Click microphone to start speaking
-        </div>
-      `;
+      // Auto-start recording after question is spoken
+      setTimeout(() => {
+        startRecording();
+        document.getElementById('statusText').innerHTML = `
+          <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
+            Listening...
+          </div>
+          <div class="text-white/70 font-mono text-sm">
+            Speak naturally - click "Finished" when done
+          </div>
+        `;
+      }, 2000); // Wait 2 seconds for question to be spoken
     }, 500);
   } else {
     completeInterview();
