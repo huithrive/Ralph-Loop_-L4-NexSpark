@@ -128,6 +128,174 @@ function loadUserData() {
       console.error('Failed to parse interview data:', e);
     }
   }
+  
+  // Load interview history
+  loadInterviewHistory();
+}
+
+// Load interview history from database
+async function loadInterviewHistory() {
+  try {
+    const user = checkAuth();
+    if (!user) return;
+    
+    const response = await fetch(`/api/interview/history?userId=${encodeURIComponent(user.email)}`);
+    const data = await response.json();
+    
+    if (data.success && data.interviews) {
+      displayInterviewHistory(data.interviews);
+    }
+  } catch (error) {
+    console.error('Failed to load interview history:', error);
+  }
+}
+
+// Display interview history in the dashboard
+function displayInterviewHistory(interviews) {
+  const historyContainer = document.getElementById('interviewHistory');
+  if (!historyContainer) return;
+  
+  if (!interviews || interviews.length === 0) {
+    historyContainer.innerHTML = `
+      <div class="text-center py-12 text-white/50">
+        <i class="fas fa-inbox text-4xl mb-4"></i>
+        <p class="font-mono text-sm">No interviews yet. Start your first interview!</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Sort by created_at descending (newest first)
+  const sortedInterviews = interviews.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  
+  historyContainer.innerHTML = sortedInterviews.map((interview, index) => {
+    const date = new Date(interview.created_at);
+    const formattedDate = date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+    const formattedTime = date.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+    
+    const statusClass = interview.completed ? 'status-completed' : 'status-pending';
+    const statusText = interview.completed ? 'COMPLETED' : 'IN PROGRESS';
+    const borderColor = interview.completed ? 'border-nexspark-gold' : 'border-nexspark-blue';
+    
+    return `
+      <div class="bg-nexspark-panel border-l-4 ${borderColor} p-6 backdrop-blur-sm hover:bg-nexspark-panel/80 transition-all">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="status-indicator ${statusClass}"></span>
+              <h3 class="text-xl font-header font-bold text-white uppercase">
+                ${formattedDate}, Version ${interview.version}
+              </h3>
+            </div>
+            <p class="text-nexspark-blue font-mono text-xs">
+              <i class="fas fa-clock mr-1"></i> ${formattedTime}
+            </p>
+          </div>
+          <div class="text-right">
+            <div class="text-nexspark-gold font-mono text-xs uppercase tracking-wider mb-1">${statusText}</div>
+            <div class="text-white/50 font-mono text-xs">
+              ${interview.question_count || 0}/10 Questions
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex gap-2">
+          <button onclick="viewInterview('${interview.id}')" 
+                  class="lcars-btn bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs flex-1">
+            <i class="fas fa-eye mr-1"></i> VIEW
+          </button>
+          ${!interview.completed ? `
+            <button onclick="continueInterview('${interview.id}')" 
+                    class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
+              <i class="fas fa-play mr-1"></i> CONTINUE
+            </button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// View interview details
+async function viewInterview(interviewId) {
+  try {
+    const response = await fetch(`/api/interview/${interviewId}`);
+    const data = await response.json();
+    
+    if (data.success && data.interview) {
+      showInterviewModal(data.interview);
+    }
+  } catch (error) {
+    console.error('Failed to load interview:', error);
+    alert('Failed to load interview details');
+  }
+}
+
+// Continue an incomplete interview
+function continueInterview(interviewId) {
+  localStorage.setItem('nexspark_continue_interview', interviewId);
+  window.location.href = '/interview';
+}
+
+// Show interview modal
+function showInterviewModal(interview) {
+  const responses = typeof interview.responses === 'string' ? JSON.parse(interview.responses) : interview.responses;
+  
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.remove();
+  };
+  
+  const date = new Date(interview.created_at);
+  const formattedDate = date.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  modal.innerHTML = `
+    <div class="bg-nexspark-panel border border-nexspark-gold max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
+      <div class="sticky top-0 bg-nexspark-dark border-b border-nexspark-gold p-6 z-10">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-3xl font-header font-bold text-nexspark-gold uppercase">
+              Interview - ${formattedDate}
+            </h2>
+            <p class="text-nexspark-blue font-mono text-sm mt-1">Version ${interview.version}</p>
+          </div>
+          <button onclick="this.closest('.fixed').remove()" class="lcars-btn bg-nexspark-red hover:bg-red-700 text-white px-4 py-2 rounded">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="p-6 space-y-4">
+        ${responses.map((r, i) => `
+          <div class="bg-nexspark-dark/50 border border-nexspark-blue/30 p-4 rounded">
+            <div class="flex items-start gap-3 mb-2">
+              <span class="text-nexspark-gold font-header text-lg">${i + 1}.</span>
+              <div class="flex-1">
+                <p class="text-nexspark-blue font-mono text-sm mb-2">${r.question}</p>
+                <p class="text-white font-sans">${r.answer || '<em class="text-white/50">No response recorded</em>'}</p>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
 }
 
 // Update interview status card

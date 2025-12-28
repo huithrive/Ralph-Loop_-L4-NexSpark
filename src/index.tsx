@@ -79,20 +79,157 @@ app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
 // Interview route - redirect to v3 with real-time transcription
 app.get('/interview', (c) => c.redirect('/static/interview-v3.html'))
 
-// API endpoint for saving interview responses
+// API: Check for existing interview
+app.get('/api/interview/check', async (c) => {
+  try {
+    const userId = c.req.query('userId');
+    
+    if (!userId) {
+      return c.json({ success: false, message: 'User ID required' }, 400);
+    }
+    
+    // Check if DB binding exists
+    if (!c.env.DB) {
+      console.log('D1 database not configured, using localStorage fallback');
+      return c.json({ exists: false });
+    }
+    
+    const { getIncompleteInterview } = await import('./services/database');
+    const interview = await getIncompleteInterview(c.env.DB, userId);
+    
+    return c.json({
+      exists: !!interview,
+      interview: interview
+    });
+  } catch (error) {
+    console.error('Error checking interview:', error);
+    return c.json({ exists: false });
+  }
+})
+
+// API: Get interview history
+app.get('/api/interview/history', async (c) => {
+  try {
+    const userId = c.req.query('userId');
+    
+    if (!userId) {
+      return c.json({ success: false, message: 'User ID required' }, 400);
+    }
+    
+    // Check if DB binding exists
+    if (!c.env.DB) {
+      console.log('D1 database not configured');
+      return c.json({ success: true, interviews: [] });
+    }
+    
+    const { getInterviewHistory } = await import('./services/database');
+    const interviews = await getInterviewHistory(c.env.DB, userId);
+    
+    return c.json({
+      success: true,
+      interviews: interviews
+    });
+  } catch (error) {
+    console.error('Error getting history:', error);
+    return c.json({ success: false, message: 'Failed to load history' }, 500);
+  }
+})
+
+// API: Get specific interview
+app.get('/api/interview/:id', async (c) => {
+  try {
+    const interviewId = c.req.param('id');
+    
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+    
+    const { getInterview } = await import('./services/database');
+    const interview = await getInterview(c.env.DB, interviewId);
+    
+    if (!interview) {
+      return c.json({ success: false, message: 'Interview not found' }, 404);
+    }
+    
+    return c.json({
+      success: true,
+      interview: interview
+    });
+  } catch (error) {
+    console.error('Error getting interview:', error);
+    return c.json({ success: false, message: 'Failed to load interview' }, 500);
+  }
+})
+
+// API: Complete interview
+app.post('/api/interview/complete', async (c) => {
+  try {
+    const data = await c.req.json();
+    const { interviewId, responses, userId } = data;
+    
+    console.log('Completing interview:', interviewId);
+    
+    // If DB exists, use it
+    if (c.env.DB && interviewId) {
+      const { completeInterview, saveInterview } = await import('./services/database');
+      
+      // Save final responses
+      await saveInterview(c.env.DB, {
+        userId,
+        interviewId,
+        currentQuestion: responses.length,
+        responses,
+        completed: true
+      });
+      
+      // Mark as completed
+      await completeInterview(c.env.DB, interviewId);
+      
+      return c.json({
+        success: true,
+        message: 'Interview completed successfully',
+        interviewId
+      });
+    }
+    
+    // Fallback: just acknowledge
+    return c.json({
+      success: true,
+      message: 'Interview completed (localStorage mode)',
+      interviewId: interviewId || 'local_' + Date.now()
+    });
+  } catch (error) {
+    console.error('Error completing interview:', error);
+    return c.json({ success: false, message: 'Failed to complete interview' }, 500);
+  }
+})
+
+// API endpoint for saving interview responses (updated with DB)
 app.post('/api/interview/save', async (c) => {
   try {
     const data = await c.req.json()
-    console.log('Interview Data:', data)
+    console.log('Saving interview data:', data.userId, data.interviewId);
     
-    // TODO: Save to database (Cloudflare D1)
+    // If DB exists, use it
+    if (c.env.DB) {
+      const { saveInterview } = await import('./services/database');
+      const result = await saveInterview(c.env.DB, data);
+      
+      return c.json({
+        success: true,
+        message: 'Interview saved to database',
+        interviewId: result.interviewId
+      });
+    }
     
+    // Fallback: just acknowledge (localStorage will handle it)
     return c.json({ 
       success: true, 
-      message: 'Interview responses saved successfully.',
-      data: data
+      message: 'Interview saved (localStorage mode)',
+      interviewId: data.interviewId || 'local_' + Date.now()
     })
   } catch (error) {
+    console.error('Error saving interview:', error);
     return c.json({ success: false, message: 'Failed to save interview data.' }, 400)
   }
 })
