@@ -651,7 +651,7 @@ async function completeInterview() {
       Interview Complete!
     </div>
     <div class="text-white/70 font-mono text-sm">
-      Generating your growth strategy...
+      Processing your responses...
     </div>
   `;
   
@@ -660,10 +660,145 @@ async function completeInterview() {
   document.getElementById('pauseBtn').classList.add('hidden');
   document.getElementById('endBtn').classList.add('hidden');
   
-  // Redirect to dashboard after 2 seconds
+  // Show completion confirmation popup
   setTimeout(() => {
-    window.location.href = '/dashboard';
-  }, 2000);
+    showCompletionPopup();
+  }, 1500);
+}
+
+function showCompletionPopup() {
+  // Extract website from first question response
+  const firstResponse = interviewState.responses[0]?.answer || '';
+  const websiteMatch = firstResponse.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/);
+  const detectedWebsite = websiteMatch ? websiteMatch[0] : '';
+  
+  // Extract company name
+  const companyMatch = firstResponse.match(/(?:company name|called|named)\s+(?:is\s+)?([A-Z][a-zA-Z\s&]+?)(?:\s+and|\s+which|\.|,|$)/i);
+  const detectedCompany = companyMatch ? companyMatch[1].trim() : '';
+  
+  // Create popup overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'completionPopup';
+  overlay.className = 'fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4';
+  overlay.style.animation = 'fadeIn 0.3s ease-out';
+  
+  overlay.innerHTML = `
+    <div class="bg-nexspark-panel border-4 border-nexspark-gold rounded-2xl p-8 max-w-2xl w-full" style="animation: slideUp 0.4s ease-out;">
+      <div class="text-center mb-6">
+        <i class="fas fa-check-circle text-6xl text-nexspark-gold mb-4"></i>
+        <h2 class="text-4xl font-header font-bold text-white uppercase mb-2">
+          Interview Complete!
+        </h2>
+        <p class="text-nexspark-blue font-mono text-lg">
+          🎉 Great job! Here's what we captured:
+        </p>
+      </div>
+      
+      <div class="bg-nexspark-dark rounded-xl p-6 mb-6 space-y-4">
+        <div class="border-b border-nexspark-blue/30 pb-3">
+          <label class="block text-nexspark-gold font-bold mb-2 uppercase text-sm">
+            <i class="fas fa-building mr-2"></i>Company Name
+          </label>
+          <input 
+            type="text" 
+            id="companyNameInput" 
+            value="${detectedCompany}"
+            class="w-full px-4 py-3 bg-black border-2 border-nexspark-purple rounded-lg text-white font-mono focus:border-nexspark-gold focus:outline-none"
+            placeholder="Enter your company name"
+          >
+        </div>
+        
+        <div class="border-b border-nexspark-blue/30 pb-3">
+          <label class="block text-nexspark-gold font-bold mb-2 uppercase text-sm">
+            <i class="fas fa-globe mr-2"></i>Website URL
+          </label>
+          <input 
+            type="text" 
+            id="websiteInput" 
+            value="${detectedWebsite}"
+            class="w-full px-4 py-3 bg-black border-2 border-nexspark-purple rounded-lg text-white font-mono focus:border-nexspark-gold focus:outline-none"
+            placeholder="e.g., www.yourcompany.com"
+          >
+          <p class="text-white/50 text-xs font-mono mt-2">
+            <i class="fas fa-info-circle mr-1"></i>
+            We'll verify this website and analyze your top competitors
+          </p>
+        </div>
+        
+        <div>
+          <label class="block text-nexspark-gold font-bold mb-2 uppercase text-sm">
+            <i class="fas fa-comments mr-2"></i>Total Responses Captured
+          </label>
+          <div class="text-white font-mono text-2xl">
+            ${interviewState.responses.length} / ${interviewState.totalQuestions} Questions
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-gradient-to-r from-nexspark-gold/20 to-nexspark-blue/20 rounded-xl p-6 mb-6 border border-nexspark-gold/30">
+        <h3 class="text-white font-header text-xl uppercase mb-3">
+          <i class="fas fa-magic mr-2 text-nexspark-gold"></i>
+          What Happens Next?
+        </h3>
+        <div class="space-y-2 text-white/80 font-mono text-sm">
+          <div class="flex items-start gap-2">
+            <span class="text-nexspark-gold">1.</span>
+            <span>We'll analyze your interview with Claude AI</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-nexspark-gold">2.</span>
+            <span>Automatically identify your top 3 competitors</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-nexspark-gold">3.</span>
+            <span>Generate a comprehensive 6-month GTM strategy</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-nexspark-gold">4.</span>
+            <span>Provide budget allocation and CAC projections</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex gap-4">
+        <button 
+          onclick="goToDashboard()" 
+          class="flex-1 py-4 bg-nexspark-dark hover:bg-nexspark-purple text-white rounded-lg font-bold text-lg transition border border-nexspark-purple">
+          <i class="fas fa-arrow-left mr-2"></i> BACK TO DASHBOARD
+        </button>
+        <button 
+          onclick="startAnalysis()" 
+          class="flex-1 py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black rounded-lg font-bold text-lg transition shadow-lg">
+          <i class="fas fa-rocket mr-2"></i> START ANALYSIS
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+}
+
+function goToDashboard() {
+  window.location.href = '/dashboard';
+}
+
+function startAnalysis() {
+  const companyName = document.getElementById('companyNameInput').value.trim();
+  const website = document.getElementById('websiteInput').value.trim();
+  
+  if (!website) {
+    alert('Please enter your website URL to continue');
+    return;
+  }
+  
+  // Save company name and website to localStorage for strategy analysis
+  const existingInterview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+  existingInterview.companyName = companyName;
+  existingInterview.website = website;
+  localStorage.setItem('nexspark_interview', JSON.stringify(existingInterview));
+  
+  // Redirect to strategy analysis
+  window.location.href = '/strategy-analysis';
 }
 
 // Initialize on page load

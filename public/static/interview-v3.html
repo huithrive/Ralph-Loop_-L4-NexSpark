@@ -145,6 +145,27 @@
             border-color: var(--nexspark-gold);
             background: rgba(255, 156, 0, 0.1);
         }
+        
+        /* Popup Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
     
     <script>
