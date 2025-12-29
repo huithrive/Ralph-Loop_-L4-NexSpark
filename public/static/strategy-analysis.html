@@ -98,6 +98,15 @@
         50% { opacity: 1; }
       }
       
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      
       .payment-card {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 20px;
@@ -355,6 +364,16 @@
         
         // Initialize
         window.addEventListener('DOMContentLoaded', async () => {
+            // Check for demo mode first
+            const urlParams = new URLSearchParams(window.location.search);
+            const isDemoMode = urlParams.get('demo') === 'true';
+            
+            if (isDemoMode) {
+                console.log('🎭 Demo Mode Activated');
+                await runDemoFlow();
+                return;
+            }
+            
             if (!user.id || !interview.id) {
                 alert('No interview found. Please complete an interview first.');
                 window.location.href = '/dashboard';
@@ -609,6 +628,295 @@
             stepEl.classList.remove('active');
             stepEl.classList.add('completed');
             stepEl.innerHTML = '<i class="fas fa-check"></i>';
+        }
+        
+        // Demo Mode - Simulated Flow
+        async function runDemoFlow() {
+            console.log('🎭 Starting Demo Flow...');
+            
+            // Get demo data from localStorage
+            const demoInterview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+            businessProfile = {
+                brandName: demoInterview.companyName || 'Acme Pool Supply',
+                website: demoInterview.website || 'www.acmepoolsupply.com',
+                industry: 'Pool Supplies & Chemicals',
+                targetMarket: 'Sunbelt States (FL, CA, TX, AZ)',
+                currentStage: 'Growth',
+                mainChallenges: ['High CAC', 'Low margin efficiency', 'Limited channel diversity'],
+                goals: ['Scale from $150K to $300K MRR', 'Maintain profit margins', 'Lower CAC by 30%'],
+                budget: '$10,000/month'
+            };
+            
+            competitors = ['hthpools.com', 'lesliespool.com', 'cloroxpool.com'];
+            
+            // Step 1: Analysis (simulated)
+            updateProgress(1);
+            setStepActive(1);
+            document.getElementById('analysisStep').classList.remove('hidden');
+            
+            await sleep(2000);
+            displayBusinessProfile();
+            
+            await sleep(2000);
+            setStepCompleted(1);
+            
+            // Step 2: Research (simulated)
+            updateProgress(2);
+            setStepActive(2);
+            showVerificationStep();
+            
+            // Pre-fill and auto-verify
+            document.getElementById('websiteInput').value = businessProfile.website;
+            document.getElementById('verifyBtn').disabled = true;
+            document.getElementById('researchStatus').classList.remove('hidden');
+            
+            const competitorsList = document.getElementById('competitorsList');
+            competitorsList.innerHTML = '<div class="text-white/50 font-mono text-sm mb-2">Analyzing website and market...</div>';
+            
+            await sleep(3000);
+            
+            competitorsList.innerHTML = competitors.map((c, i) => 
+                `<div class="text-nexspark-blue animate-fadeIn" style="animation-delay: ${i * 0.2}s">✓ Competitor ${i + 1}: ${c}</div>`
+            ).join('');
+            
+            await sleep(2000);
+            setStepCompleted(2);
+            
+            // Step 3: Payment (demo - auto-skip)
+            updateProgress(3);
+            setStepActive(3);
+            showPaymentStepDemo();
+            
+            await sleep(3000);
+            
+            // Show "payment processing" animation
+            const paymentBtn = document.getElementById('paymentBtn');
+            if (paymentBtn) {
+                paymentBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> PROCESSING DEMO PAYMENT...';
+                paymentBtn.disabled = true;
+            }
+            
+            await sleep(2000);
+            setStepCompleted(3);
+            
+            // Step 4: Generate Report (simulated)
+            updateProgress(4);
+            setStepActive(4);
+            await generateDemoStrategy();
+        }
+        
+        function showPaymentStepDemo() {
+            document.getElementById('paymentStep').classList.remove('hidden');
+            document.getElementById('paymentStep').scrollIntoView({ behavior: 'smooth' });
+            
+            // Add demo notice
+            const demoNotice = document.createElement('div');
+            demoNotice.className = 'bg-nexspark-purple/20 border-2 border-nexspark-purple rounded-lg p-4 mb-6';
+            demoNotice.innerHTML = `
+                <div class="flex items-center gap-3 text-white font-mono">
+                    <i class="fas fa-info-circle text-nexspark-purple text-2xl"></i>
+                    <div>
+                        <div class="font-bold mb-1">🎭 DEMO MODE</div>
+                        <div class="text-sm text-white/70">Payment step will be simulated - no actual charge</div>
+                    </div>
+                </div>
+            `;
+            
+            const paymentCard = document.querySelector('.payment-card');
+            if (paymentCard) {
+                paymentCard.insertBefore(demoNotice, paymentCard.firstChild);
+            }
+        }
+        
+        async function generateDemoStrategy() {
+            document.getElementById('reportStep').classList.remove('hidden');
+            document.getElementById('reportStep').scrollIntoView({ behavior: 'smooth' });
+            
+            const statusMessages = [
+                'Claude AI analyzing your business model...',
+                'Pulling real traffic data for competitors...',
+                'Identifying market opportunities...',
+                'Building 6-month growth roadmap...',
+                'Calculating budget allocations...',
+                'Projecting CAC and LTV metrics...',
+                'Generating final report...'
+            ];
+            
+            const generationStatus = document.getElementById('generationStatus');
+            
+            for (let i = 0; i < statusMessages.length; i++) {
+                await sleep(1500);
+                const icons = ['fa-brain', 'fa-chart-bar', 'fa-lightbulb', 'fa-calendar-alt', 'fa-dollar-sign', 'fa-calculator', 'fa-file-alt'];
+                generationStatus.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <i class="fas ${icons[i]} fa-spin text-nexspark-gold text-xl"></i>
+                        <span class="text-white font-mono">${statusMessages[i]}</span>
+                    </div>
+                `;
+            }
+            
+            await sleep(2000);
+            
+            // Create demo report HTML
+            htmlReport = generateDemoReportHTML();
+            
+            setStepCompleted(4);
+            document.getElementById('generationStatus').classList.add('hidden');
+            document.getElementById('reportReady').classList.remove('hidden');
+        }
+        
+        function generateDemoReportHTML() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Growth Strategy Report - Acme Pool Supply (DEMO)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; }
+        .demo-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 30px; border-radius: 10px; }
+        h1 { color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+        h2 { color: #764ba2; margin-top: 30px; }
+        .metric { background: #f0f0f0; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea; }
+        .highlight { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        ul { line-height: 1.8; }
+        .footer { margin-top: 50px; text-align: center; color: #999; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-banner">
+            🎭 DEMO REPORT - For Testing Purposes
+        </div>
+        
+        <h1>🚀 Growth Strategy Report</h1>
+        <h3>Acme Pool Supply • Generated ${new Date().toLocaleDateString()}</h3>
+        
+        <div class="highlight">
+            <h2 style="color: white; margin-top: 0;">📋 Executive Summary</h2>
+            <p>Acme Pool Supply is positioned in the $15B residential pool care market with strong fundamentals but faces rising CAC challenges. This strategy focuses on channel diversification, customer retention, and strategic positioning to achieve the target of doubling revenue to $300K MRR while maintaining healthy margins.</p>
+        </div>
+        
+        <h2>📊 Market Analysis</h2>
+        <div class="metric"><strong>Market Size:</strong> $15 Billion (US Pool Supplies Market)</div>
+        <div class="metric"><strong>Growth Rate:</strong> 6.2% CAGR through 2028</div>
+        <div class="metric"><strong>Target Segment:</strong> 10.4M residential pools in sunbelt states</div>
+        
+        <h2>🎯 Competitive Analysis</h2>
+        <h3>Top Competitors:</h3>
+        <ul>
+            <li><strong>HTH Pool Care</strong> - 850K monthly visits, strong brand recognition</li>
+            <li><strong>Leslie's Pools</strong> - 1.2M monthly visits, retail + online hybrid</li>
+            <li><strong>Clorox Pool & Spa</strong> - 600K monthly visits, mass market focus</li>
+        </ul>
+        
+        <h2>📢 Recommended Channel Strategy</h2>
+        <div class="metric">
+            <strong>1. Google Ads (35% budget)</strong> - Already performing, scale with long-tail keywords<br>
+            Expected ROI: 4.5x → 5.2x
+        </div>
+        <div class="metric">
+            <strong>2. Content Marketing + SEO (25% budget)</strong> - Build authority and organic traffic<br>
+            Expected ROI: 8-10x (long-term)
+        </div>
+        <div class="metric">
+            <strong>3. Email Marketing + Retention (20% budget)</strong> - Increase LTV through repeat purchases<br>
+            Expected ROI: 12x
+        </div>
+        <div class="metric">
+            <strong>4. Facebook/Instagram Ads (15% budget)</strong> - Brand awareness and retargeting<br>
+            Expected ROI: 3.5x
+        </div>
+        <div class="metric">
+            <strong>5. Partnerships (5% budget)</strong> - Pool service companies, home improvement stores<br>
+            Expected ROI: 6x
+        </div>
+        
+        <h2>🗓️ 6-Month Roadmap</h2>
+        <h3>Month 1-2: Foundation</h3>
+        <ul>
+            <li>Audit current campaigns and optimize Google Ads</li>
+            <li>Launch content hub with 20 educational articles</li>
+            <li>Implement email automation flows</li>
+            <li>Expected: $175K MRR, 700 leads/mo</li>
+        </ul>
+        
+        <h3>Month 3-4: Scale</h3>
+        <ul>
+            <li>Scale Google Ads to new keywords</li>
+            <li>Launch Facebook retargeting campaigns</li>
+            <li>Publish 30 more content pieces</li>
+            <li>Expected: $225K MRR, 1000 leads/mo</li>
+        </ul>
+        
+        <h3>Month 5-6: Optimize</h3>
+        <ul>
+            <li>Launch partnership program</li>
+            <li>Optimize entire funnel for conversions</li>
+            <li>Scale winning channels</li>
+            <li>Expected: $300K MRR, 1400 leads/mo</li>
+        </ul>
+        
+        <h2>💰 Budget Projections</h2>
+        <div class="highlight">
+            <h3 style="color: white; margin-top: 0;">Financial Targets</h3>
+            <div class="metric" style="background: rgba(255,255,255,0.2); border-color: white;">
+                <strong>Current CAC:</strong> $50 → <strong>Target CAC:</strong> $35 (-30%)
+            </div>
+            <div class="metric" style="background: rgba(255,255,255,0.2); border-color: white;">
+                <strong>Current LTV:</strong> $180 → <strong>Target LTV:</strong> $280 (+55%)
+            </div>
+            <div class="metric" style="background: rgba(255,255,255,0.2); border-color: white;">
+                <strong>Projected ROI:</strong> 5.8x (blended across all channels)
+            </div>
+        </div>
+        
+        <h2>📈 Key Performance Indicators</h2>
+        <table border="1" cellpadding="10" width="100%">
+            <tr style="background: #667eea; color: white;">
+                <th>Metric</th>
+                <th>Current</th>
+                <th>6-Month Target</th>
+            </tr>
+            <tr>
+                <td>Monthly Revenue</td>
+                <td>$150,000</td>
+                <td>$300,000</td>
+            </tr>
+            <tr>
+                <td>Monthly Leads</td>
+                <td>500</td>
+                <td>1,400</td>
+            </tr>
+            <tr>
+                <td>Conversion Rate</td>
+                <td>2.5%</td>
+                <td>3.5%</td>
+            </tr>
+            <tr>
+                <td>Customer Lifetime Value</td>
+                <td>$180</td>
+                <td>$280</td>
+            </tr>
+            <tr>
+                <td>Customer Acquisition Cost</td>
+                <td>$50</td>
+                <td>$35</td>
+            </tr>
+        </table>
+        
+        <div class="footer">
+            <p>Generated by NexSpark Growth OS • Powered by Claude AI</p>
+            <p><em>This is a demo report for testing purposes</em></p>
+        </div>
+    </div>
+</body>
+</html>
+            `;
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         }
     </script>
 </body>

@@ -801,6 +801,96 @@ function startAnalysis() {
   window.location.href = '/strategy-analysis';
 }
 
+// Demo Mode - Skip Interview with Sample Data
+function skipToDemo() {
+  // Create demo user if not exists
+  const demoUser = {
+    id: 'demo_user_' + Date.now(),
+    email: 'demo@nexspark.io',
+    name: 'Demo User',
+    created_at: new Date().toISOString()
+  };
+  localStorage.setItem('nexspark_user', JSON.stringify(demoUser));
+  
+  // Create demo interview data
+  const demoInterview = {
+    id: 'demo_interview_' + Date.now(),
+    companyName: 'Acme Pool Supply',
+    website: 'www.acmepoolsupply.com',
+    responses: [
+      {
+        question: "Welcome! I'm Digital Leon, your AI growth strategist. Let's start with the basics - what's your company name and what product or service do you offer? Please also mention your website URL so we can research it for you later.",
+        answer: "My company is Acme Pool Supply and we sell pool chemicals and maintenance supplies to residential pool owners. Our website is www.acmepoolsupply.com",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "Great! What's your current monthly revenue?",
+        answer: "We're currently doing about $150,000 per month in revenue",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "How much are you spending on marketing each month?",
+        answer: "We spend around $25,000 per month on marketing",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "Which marketing channels are you currently using?",
+        answer: "We're using Google Ads, Facebook Ads, and some local SEO. We also do email marketing to our existing customers",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "What's your best performing channel and what metrics can you share?",
+        answer: "Google Ads is our best channel with about a 4.5x ROAS. We get about 500 leads per month from search",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "What's the biggest challenge you're facing with growth right now?",
+        answer: "Our biggest challenge is customer acquisition cost. It's been climbing and eating into our margins. We need to find more efficient channels",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "Who is your ideal customer? Describe them in detail.",
+        answer: "Homeowners aged 35-65 with household income over $75k. They own pools in the sunbelt states like Florida, California, Arizona, and Texas. They value quality and convenience",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "Who are your top 3 competitors and what makes you different?",
+        answer: "Our top competitors are HTH Pool Care, Leslie's Pools, and Clorox Pool & Spa. We differentiate with faster shipping, better customer service, and educational content about pool maintenance",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "What's your main goal for the next 6 months?",
+        answer: "We want to scale from $150k to $300k per month while maintaining our profit margins. That means we need to lower CAC and increase LTV",
+        timestamp: new Date().toISOString()
+      },
+      {
+        question: "What's your budget range for working with growth experts?",
+        answer: "We can allocate up to $10,000 per month for expert help and strategy development",
+        timestamp: new Date().toISOString()
+      }
+    ],
+    completed: true,
+    completedAt: new Date().toISOString(),
+    demo: true
+  };
+  
+  localStorage.setItem('nexspark_interview', JSON.stringify(demoInterview));
+  
+  // Show a brief notification
+  const notification = document.createElement('div');
+  notification.className = 'fixed top-4 right-4 bg-nexspark-gold text-black px-6 py-4 rounded-lg shadow-lg z-50 font-bold';
+  notification.innerHTML = `
+    <i class="fas fa-magic mr-2"></i>
+    Demo Mode Activated! Redirecting to analysis...
+  `;
+  document.body.appendChild(notification);
+  
+  // Redirect to strategy analysis after brief delay
+  setTimeout(() => {
+    window.location.href = '/strategy-analysis?demo=true';
+  }, 1500);
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Voice Interview v3 initialized - Real-time transcription + Simplified UI');
