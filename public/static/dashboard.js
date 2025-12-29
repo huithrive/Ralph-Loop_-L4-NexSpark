@@ -211,12 +211,17 @@ function displayInterviewHistory(interviews) {
                   class="lcars-btn bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs flex-1">
             <i class="fas fa-eye mr-1"></i> VIEW
           </button>
-          ${!interview.completed ? `
+          ${interview.completed ? `
+            <button onclick="analyzeInterview('${interview.id}')" 
+                    class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
+              <i class="fas fa-rocket mr-1"></i> ANALYZE
+            </button>
+          ` : `
             <button onclick="continueInterview('${interview.id}')" 
                     class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
               <i class="fas fa-play mr-1"></i> CONTINUE
             </button>
-          ` : ''}
+          `}
         </div>
       </div>
     `;
@@ -242,6 +247,55 @@ async function viewInterview(interviewId) {
 function continueInterview(interviewId) {
   localStorage.setItem('nexspark_continue_interview', interviewId);
   window.location.href = '/interview';
+}
+
+// Analyze a completed interview
+async function analyzeInterview(interviewId) {
+  try {
+    // Load the interview from database
+    const response = await fetch(`/api/interview/${interviewId}`);
+    const data = await response.json();
+    
+    if (data.success && data.interview) {
+      const interview = data.interview;
+      
+      // Parse responses if string
+      const responses = typeof interview.responses === 'string' 
+        ? JSON.parse(interview.responses) 
+        : interview.responses;
+      
+      // Extract company name and website from first response
+      const firstResponse = responses[0]?.answer || '';
+      const websiteMatch = firstResponse.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/);
+      const detectedWebsite = websiteMatch ? websiteMatch[0] : '';
+      
+      const companyMatch = firstResponse.match(/(?:company name|called|named)\s+(?:is\s+)?([A-Z][a-zA-Z\s&]+?)(?:\s+and|\s+which|\.|,|$)/i);
+      const detectedCompany = companyMatch ? companyMatch[1].trim() : '';
+      
+      if (!detectedWebsite) {
+        alert('No website URL found in interview. Please complete a new interview with your website.');
+        return;
+      }
+      
+      // Save to localStorage for analysis
+      const interviewData = {
+        id: interview.id,
+        companyName: detectedCompany,
+        website: detectedWebsite,
+        responses: responses,
+        completed: true,
+        completedAt: interview.completed_at || interview.created_at
+      };
+      
+      localStorage.setItem('nexspark_interview', JSON.stringify(interviewData));
+      
+      // Redirect to strategy analysis
+      window.location.href = '/strategy-analysis';
+    }
+  } catch (error) {
+    console.error('Failed to load interview:', error);
+    alert('Failed to load interview. Please try again.');
+  }
 }
 
 // Show interview modal
@@ -314,8 +368,13 @@ function updateInterviewStatus(interview) {
       </div>
       <h3 class="text-xl font-header font-bold text-nexspark-blue uppercase mb-2">Voice Interview</h3>
       <p class="text-white/70 font-mono text-sm">Interview completed successfully</p>
-      <div class="mt-4 text-nexspark-blue font-mono text-xs">
+      <div class="mt-4 mb-4 text-nexspark-blue font-mono text-xs">
         <i class="fas fa-check-circle mr-1"></i> COMPLETED ${new Date(interview.completedAt).toLocaleDateString()}
+      </div>
+      <div class="mt-4">
+        <button onclick="proceedToAnalysis()" class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded-lg text-sm w-full">
+          <i class="fas fa-rocket mr-1"></i> START ANALYSIS
+        </button>
       </div>
     `;
     
@@ -479,6 +538,46 @@ function startInterview() {
   
   // Redirect to interview page
   window.location.href = '/interview';
+}
+
+// Proceed to analysis (for completed interviews)
+function proceedToAnalysis() {
+  const interviewData = localStorage.getItem('nexspark_interview');
+  if (!interviewData) {
+    alert('No interview data found. Please complete an interview first.');
+    return;
+  }
+  
+  try {
+    const interview = JSON.parse(interviewData);
+    
+    // Check if interview has company name and website
+    if (!interview.companyName || !interview.website) {
+      // Extract from first response
+      const firstResponse = interview.responses[0]?.answer || '';
+      const websiteMatch = firstResponse.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/);
+      const detectedWebsite = websiteMatch ? websiteMatch[0] : '';
+      
+      const companyMatch = firstResponse.match(/(?:company name|called|named)\s+(?:is\s+)?([A-Z][a-zA-Z\s&]+?)(?:\s+and|\s+which|\.|,|$)/i);
+      const detectedCompany = companyMatch ? companyMatch[1].trim() : '';
+      
+      if (!detectedWebsite) {
+        alert('Please provide your website URL in the interview to continue with analysis.');
+        return;
+      }
+      
+      // Save extracted data
+      interview.companyName = detectedCompany;
+      interview.website = detectedWebsite;
+      localStorage.setItem('nexspark_interview', JSON.stringify(interview));
+    }
+    
+    // Redirect to strategy analysis
+    window.location.href = '/strategy-analysis';
+  } catch (e) {
+    console.error('Failed to parse interview data:', e);
+    alert('Failed to load interview data. Please try again.');
+  }
 }
 
 // Logout function
