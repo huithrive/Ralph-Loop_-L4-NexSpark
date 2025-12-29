@@ -98,8 +98,11 @@ app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
 // Growth Audit Agent route
 app.get('/growth-audit', (c) => c.redirect('/static/growth-audit.html'))
 
-// Strategy Analysis route (post-interview)
-app.get('/strategy-analysis', (c) => c.redirect('/static/strategy-analysis.html'))
+// Strategy Analysis route (post-interview) - preserve query params
+app.get('/strategy-analysis', (c) => {
+  const query = new URL(c.req.url).search;
+  return c.redirect(`/static/strategy-analysis.html${query}`)
+})
 
 // Interview route - redirect to v3 with real-time transcription
 app.get('/interview', (c) => c.redirect('/static/interview-v3.html'))

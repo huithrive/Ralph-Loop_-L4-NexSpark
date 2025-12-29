@@ -364,13 +364,23 @@
         
         // Initialize
         window.addEventListener('DOMContentLoaded', async () => {
+            console.log('📄 Strategy Analysis Page v2.1 Loaded');
+            
             // Check for demo mode first
             const urlParams = new URLSearchParams(window.location.search);
             const isDemoMode = urlParams.get('demo') === 'true';
             
+            console.log('🔍 URL Params:', window.location.search);
+            console.log('🎭 Demo Mode:', isDemoMode);
+            
             if (isDemoMode) {
-                console.log('🎭 Demo Mode Activated');
-                await runDemoFlow();
+                console.log('✅ Starting Demo Flow...');
+                try {
+                    await runDemoFlow();
+                } catch (error) {
+                    console.error('❌ Demo Flow Error:', error);
+                    alert('Demo flow failed: ' + error.message);
+                }
                 return;
             }
             
@@ -636,6 +646,8 @@
             
             // Get demo data from localStorage
             const demoInterview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+            console.log('📦 Demo Interview Data:', demoInterview);
+            
             businessProfile = {
                 brandName: demoInterview.companyName || 'Acme Pool Supply',
                 website: demoInterview.website || 'www.acmepoolsupply.com',
@@ -648,13 +660,23 @@
             };
             
             competitors = ['hthpools.com', 'lesliespool.com', 'cloroxpool.com'];
+            console.log('✅ Business Profile Created:', businessProfile);
             
             // Step 1: Analysis (simulated)
+            console.log('📊 Step 1: Starting Analysis...');
             updateProgress(1);
             setStepActive(1);
-            document.getElementById('analysisStep').classList.remove('hidden');
+            
+            const analysisStep = document.getElementById('analysisStep');
+            console.log('🔍 Analysis Step Element:', analysisStep);
+            if (analysisStep) {
+                analysisStep.classList.remove('hidden');
+            } else {
+                console.error('❌ Analysis Step Element Not Found!');
+            }
             
             await sleep(2000);
+            console.log('✅ Displaying Business Profile...');
             displayBusinessProfile();
             
             await sleep(2000);
