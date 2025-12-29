@@ -13,6 +13,20 @@ import {
   fetchTrafficData,
   type CompetitorData
 } from './services/growth-audit-agent'
+import {
+  analyzeInterview as analyzeInterviewTranscript,
+  verifyWebsiteAndResearch,
+  generateGTMStrategy,
+  generateStrategyReport,
+  type InterviewTranscript,
+  type GTMStrategy
+} from './services/post-interview-analysis'
+import {
+  createPaymentIntent,
+  verifyPayment,
+  recordPayment,
+  hasUserPaid
+} from './services/stripe-payment'
 
 const app = new Hono()
 
@@ -83,6 +97,9 @@ app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
 
 // Growth Audit Agent route
 app.get('/growth-audit', (c) => c.redirect('/static/growth-audit.html'))
+
+// Strategy Analysis route (post-interview)
+app.get('/strategy-analysis', (c) => c.redirect('/static/strategy-analysis.html'))
 
 // Interview route - redirect to v3 with real-time transcription
 app.get('/interview', (c) => c.redirect('/static/interview-v3.html'))
@@ -410,6 +427,327 @@ app.get('/api/growth-audit/status', (c) => {
     },
     version: '1.0.0'
   });
+});
+
+// ==========================================
+// POST-INTERVIEW ANALYSIS & PAYMENT ENDPOINTS
+// ==========================================
+
+// API: Analyze completed interview and generate business profile
+app.post('/api/analysis/start', async (c) => {
+  try {
+    const { env } = c;
+    const { interviewId, userId } = await c.req.json();
+
+    if (!interviewId || !userId) {
+      return c.json({ 
+        success: false, 
+        message: 'Interview ID and User ID are required' 
+      }, 400);
+    }
+
+    // Get interview data from database
+    if (!env.DB) {
+      return c.json({ 
+        success: false, 
+        message: 'Database not configured' 
+      }, 500);
+    }
+
+    const { getInterview } = await import('./services/database');
+    const interview = await getInterview(env.DB, interviewId);
+
+    if (!interview) {
+      return c.json({ 
+        success: false, 
+        message: 'Interview not found' 
+      }, 404);
+    }
+
+    // Prepare transcript for analysis
+    const transcript: InterviewTranscript = {
+      userId: interview.user_id,
+      interviewId: interview.id,
+      responses: JSON.parse(interview.responses),
+      completedAt: interview.updated_at
+    };
+
+    const claudeApiKey = env.ANTHROPIC_API_KEY || '';
+    
+    console.log('Analyzing interview transcript...');
+    
+    // Analyze interview to extract business profile
+    const businessProfile = await analyzeInterviewTranscript(transcript, claudeApiKey);
+
+    return c.json({
+      success: true,
+      businessProfile,
+      message: 'Interview analysis complete. Please verify your website.'
+    });
+  } catch (error) {
+    console.error('Error starting analysis:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to analyze interview: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500);
+  }
+});
+
+// API: Verify website and initiate competitor research
+app.post('/api/analysis/research', async (c) => {
+  try {
+    const { env } = c;
+    const { website, userId, interviewId } = await c.req.json();
+
+    if (!website) {
+      return c.json({ 
+        success: false, 
+        message: 'Website is required' 
+      }, 400);
+    }
+
+    const claudeApiKey = env.ANTHROPIC_API_KEY || '';
+    const rapidApiKey = env.RAPIDAPI_KEY || '';
+
+    console.log('Verifying website and researching competitors:', website);
+
+    // Verify website and identify competitors
+    const research = await verifyWebsiteAndResearch(website, claudeApiKey, rapidApiKey);
+
+    if (!research.valid) {
+      return c.json({
+        success: false,
+        message: 'Could not verify website. Please check the URL and try again.'
+      }, 400);
+    }
+
+    return c.json({
+      success: true,
+      website: website,
+      competitors: research.competitors,
+      websiteContent: research.scraped_content,
+      message: 'Competitor research complete. Generating strategy...'
+    });
+  } catch (error) {
+    console.error('Error researching competitors:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to research competitors: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500);
+  }
+});
+
+// API: Generate GTM strategy (requires payment)
+app.post('/api/analysis/generate-strategy', async (c) => {
+  try {
+    const { env } = c;
+    const { userId, interviewId, businessProfile, competitors, websiteContent } = await c.req.json();
+
+    if (!userId || !interviewId || !businessProfile) {
+      return c.json({ 
+        success: false, 
+        message: 'Missing required parameters' 
+      }, 400);
+    }
+
+    // Check if user has paid for this report
+    if (env.DB) {
+      const hasPaid = await hasUserPaid(env.DB, userId, interviewId);
+      
+      if (!hasPaid) {
+        return c.json({
+          success: false,
+          requiresPayment: true,
+          message: 'Payment required to access full strategy report',
+          amount: 2000, // $20.00
+          currency: 'usd'
+        }, 402); // 402 Payment Required
+      }
+    }
+
+    const claudeApiKey = env.ANTHROPIC_API_KEY || '';
+    const rapidApiKey = env.RAPIDAPI_KEY || '';
+
+    console.log('Generating GTM strategy for:', businessProfile.brandName);
+
+    // Generate comprehensive GTM strategy
+    const strategy = await generateGTMStrategy(
+      businessProfile,
+      competitors || [],
+      websiteContent || '',
+      claudeApiKey,
+      rapidApiKey
+    );
+
+    // Generate HTML report
+    const htmlReport = generateStrategyReport(strategy);
+
+    // Save to database
+    if (env.DB) {
+      await env.DB.prepare(`
+        INSERT INTO strategy_reports (
+          id, user_id, interview_id, business_profile, gtm_strategy, html_report, paid, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        `report_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
+        userId,
+        interviewId,
+        JSON.stringify(businessProfile),
+        JSON.stringify(strategy),
+        htmlReport,
+        1,
+        new Date().toISOString()
+      ).run();
+    }
+
+    return c.json({
+      success: true,
+      strategy,
+      htmlReport,
+      message: 'GTM strategy generated successfully'
+    });
+  } catch (error) {
+    console.error('Error generating strategy:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to generate strategy: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500);
+  }
+});
+
+// API: Create payment intent for report purchase
+app.post('/api/payment/create-intent', async (c) => {
+  try {
+    const { env } = c;
+    const { userId, userEmail, interviewId } = await c.req.json();
+
+    if (!userId || !userEmail || !interviewId) {
+      return c.json({ 
+        success: false, 
+        message: 'Missing required parameters' 
+      }, 400);
+    }
+
+    // Check if already paid
+    if (env.DB) {
+      const hasPaid = await hasUserPaid(env.DB, userId, interviewId);
+      if (hasPaid) {
+        return c.json({
+          success: false,
+          message: 'Report already purchased for this interview'
+        }, 400);
+      }
+    }
+
+    const stripeSecretKey = env.STRIPE_SECRET_KEY || '';
+    
+    if (!stripeSecretKey) {
+      return c.json({
+        success: false,
+        message: 'Payment processing not configured'
+      }, 500);
+    }
+
+    console.log('Creating payment intent for user:', userId);
+
+    const paymentIntent = await createPaymentIntent(
+      userId,
+      userEmail,
+      interviewId,
+      stripeSecretKey
+    );
+
+    return c.json({
+      success: true,
+      clientSecret: paymentIntent.clientSecret,
+      paymentIntentId: paymentIntent.paymentIntentId,
+      amount: paymentIntent.amount
+    });
+  } catch (error) {
+    console.error('Error creating payment intent:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to create payment: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500);
+  }
+});
+
+// API: Verify payment and unlock report
+app.post('/api/payment/verify', async (c) => {
+  try {
+    const { env } = c;
+    const { paymentIntentId, userId, interviewId } = await c.req.json();
+
+    if (!paymentIntentId || !userId || !interviewId) {
+      return c.json({ 
+        success: false, 
+        message: 'Missing required parameters' 
+      }, 400);
+    }
+
+    const stripeSecretKey = env.STRIPE_SECRET_KEY || '';
+
+    console.log('Verifying payment:', paymentIntentId);
+
+    const verification = await verifyPayment(paymentIntentId, stripeSecretKey);
+
+    if (!verification.paid) {
+      return c.json({
+        success: false,
+        message: 'Payment not completed'
+      }, 402);
+    }
+
+    // Record payment in database
+    if (env.DB) {
+      await recordPayment(env.DB, userId, interviewId, paymentIntentId, verification.amount);
+    }
+
+    return c.json({
+      success: true,
+      paid: true,
+      message: 'Payment verified successfully'
+    });
+  } catch (error) {
+    console.error('Error verifying payment:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to verify payment: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500);
+  }
+});
+
+// API: Check payment status for interview
+app.get('/api/payment/status', async (c) => {
+  try {
+    const { env } = c;
+    const userId = c.req.query('userId');
+    const interviewId = c.req.query('interviewId');
+
+    if (!userId || !interviewId) {
+      return c.json({ 
+        success: false, 
+        message: 'User ID and Interview ID are required' 
+      }, 400);
+    }
+
+    if (!env.DB) {
+      return c.json({ paid: false });
+    }
+
+    const hasPaid = await hasUserPaid(env.DB, userId, interviewId);
+
+    return c.json({
+      success: true,
+      paid: hasPaid
+    });
+  } catch (error) {
+    console.error('Error checking payment status:', error);
+    return c.json({
+      success: false,
+      paid: false
+    }, 500);
+  }
 });
 
 // Main landing page with LCARS/Jarvis-inspired design

@@ -12,6 +12,8 @@ module.exports = {
         ANTHROPIC_API_KEY: 'REDACTED_ANTHROPIC_KEY',
         RAPIDAPI_KEY: 'REDACTED_RAPIDAPI_KEY',
         RAPIDAPI_HOST: 'rapidapi.com',
+        STRIPE_SECRET_KEY: 'sk_test_your_stripe_secret_key_here',
+        STRIPE_PUBLISHABLE_KEY: 'pk_test_your_stripe_publishable_key_here',
         GOOGLE_CLIENT_ID: 'your-google-client-id',
         GOOGLE_CLIENT_SECRET: 'your-google-client-secret',
         GOOGLE_REDIRECT_URI: 'https://your-domain.pages.dev/auth/google/callback',
