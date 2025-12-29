@@ -8,6 +8,11 @@ import {
   DEFAULT_INTERVIEW_QUESTIONS,
   type InterviewResponse
 } from './services/voice-interview'
+import {
+  generateCompetitiveReport,
+  fetchTrafficData,
+  type CompetitorData
+} from './services/growth-audit-agent'
 
 const app = new Hono()
 
@@ -75,6 +80,9 @@ app.get('/auth/google/callback', async (c) => {
 
 // Dashboard route - redirect to static file
 app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
+
+// Growth Audit Agent route
+app.get('/growth-audit', (c) => c.redirect('/static/growth-audit.html'))
 
 // Interview route - redirect to v3 with real-time transcription
 app.get('/interview', (c) => c.redirect('/static/interview-v3.html'))
@@ -308,6 +316,101 @@ app.get('/api/interview/questions', (c) => {
     questions: DEFAULT_INTERVIEW_QUESTIONS
   })
 })
+
+// ========================================
+// GROWTH AUDIT AGENT API ENDPOINTS
+// ========================================
+
+// API: Generate Competitive Intelligence Report
+app.post('/api/growth-audit/generate', async (c) => {
+  try {
+    const { env } = c;
+    const { competitors, industryContext } = await c.req.json();
+
+    if (!competitors || !Array.isArray(competitors) || competitors.length === 0) {
+      return c.json({ 
+        success: false, 
+        message: 'Please provide at least one competitor' 
+      }, 400);
+    }
+
+    // Get API keys from environment
+    const rapidApiKey = env.RAPIDAPI_KEY || 'REDACTED_RAPIDAPI_KEY';
+    const claudeApiKey = env.ANTHROPIC_API_KEY || 'REDACTED_ANTHROPIC_KEY';
+
+    console.log('Generating competitive report for', competitors.length, 'competitors');
+
+    // Generate the report
+    const { html, report } = await generateCompetitiveReport(
+      competitors,
+      industryContext || 'General market analysis',
+      rapidApiKey,
+      claudeApiKey
+    );
+
+    return c.json({
+      success: true,
+      html,
+      report,
+      competitors: competitors.map((c: any) => c.name)
+    });
+  } catch (error) {
+    console.error('Growth audit generation error:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to generate report: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500);
+  }
+});
+
+// API: Fetch Traffic Data for a Single Domain
+app.post('/api/growth-audit/traffic', async (c) => {
+  try {
+    const { env } = c;
+    const { domain } = await c.req.json();
+
+    if (!domain) {
+      return c.json({ 
+        success: false, 
+        message: 'Domain is required' 
+      }, 400);
+    }
+
+    const rapidApiKey = env.RAPIDAPI_KEY || 'REDACTED_RAPIDAPI_KEY';
+
+    console.log('Fetching traffic data for:', domain);
+
+    const trafficData = await fetchTrafficData(domain, rapidApiKey);
+
+    return c.json({
+      success: true,
+      data: trafficData
+    });
+  } catch (error) {
+    console.error('Traffic data fetch error:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to fetch traffic data: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500);
+  }
+});
+
+// API: Get Growth Audit Agent Status
+app.get('/api/growth-audit/status', (c) => {
+  const { env } = c;
+  
+  return c.json({
+    success: true,
+    status: 'online',
+    features: {
+      competitiveAnalysis: true,
+      trafficData: true,
+      claudeAI: !!env.ANTHROPIC_API_KEY,
+      rapidAPI: !!env.RAPIDAPI_KEY
+    },
+    version: '1.0.0'
+  });
+});
 
 // Main landing page with LCARS/Jarvis-inspired design
 app.get('/', (c) => {
