@@ -424,7 +424,7 @@
             }
             
             // Initialize Stripe with live publishable key
-            stripe = Stripe('REDACTED_STRIPE_LIVE_PUBLISHABLE');
+            stripe = Stripe('REDACTED_STRIPE_PUBLISHABLE');
             const elements = stripe.elements();
             cardElement = elements.create('card', {
                 style: {
