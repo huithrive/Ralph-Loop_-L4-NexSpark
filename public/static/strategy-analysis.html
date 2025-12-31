@@ -177,19 +177,32 @@
 
             <!-- Step 1: Interview Analysis -->
             <div id="analysisStep" class="bg-nexspark-panel border-l-4 border-nexspark-gold p-8 rounded-lg mb-8">
-                <h2 class="text-2xl font-header font-bold text-white uppercase mb-6">
-                    <i class="fas fa-brain text-nexspark-gold mr-2"></i>
-                    Step 1: Analyzing Your Interview
-                </h2>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-header font-bold text-white uppercase">
+                        <i class="fas fa-brain text-nexspark-gold mr-2"></i>
+                        Step 1: Analyzing Your Interview
+                    </h2>
+                    <span id="step1Timer" class="text-nexspark-pale font-mono text-sm">⏱️ Est. 10-15s</span>
+                </div>
                 
-                <div class="space-y-4">
+                <!-- Interview Summary -->
+                <div id="interviewSummary" class="mb-6 p-4 bg-nexspark-dark rounded-lg border border-nexspark-blue/30">
+                    <h3 class="text-lg font-bold text-nexspark-blue mb-3">📝 Your Interview Responses:</h3>
+                    <div id="interviewSummaryContent" class="space-y-2 font-mono text-sm text-white/80"></div>
+                </div>
+                
+                <div class="space-y-4" id="analysisProgress">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-check-circle text-nexspark-blue text-xl"></i>
-                        <span class="text-white font-mono">Extracting business profile...</span>
+                        <i class="fas fa-spinner fa-spin text-nexspark-gold text-xl"></i>
+                        <span class="text-white font-mono">Extracting business profile<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></span>
                     </div>
                     <div class="flex items-center gap-3">
                         <i class="fas fa-spinner fa-spin text-nexspark-blue text-xl"></i>
                         <span class="text-white font-mono">Identifying industry and target market<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-spinner fa-spin text-nexspark-purple text-xl"></i>
+                        <span class="text-white font-mono">Analyzing growth challenges and opportunities<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></span>
                     </div>
                 </div>
                 
@@ -201,10 +214,13 @@
 
             <!-- Step 2: Website Verification -->
             <div id="verificationStep" class="hidden bg-nexspark-panel border-l-4 border-nexspark-purple p-8 rounded-lg mb-8">
-                <h2 class="text-2xl font-header font-bold text-white uppercase mb-6">
-                    <i class="fas fa-globe text-nexspark-purple mr-2"></i>
-                    Step 2: Verify Your Website
-                </h2>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-header font-bold text-white uppercase">
+                        <i class="fas fa-globe text-nexspark-purple mr-2"></i>
+                        Step 2: Verify Your Website
+                    </h2>
+                    <span id="step2Timer" class="text-nexspark-pale font-mono text-sm">⏱️ Est. 15-20s</span>
+                </div>
                 
                 <div class="mb-6">
                     <label class="block text-white font-bold mb-2">Website URL</label>
@@ -224,9 +240,26 @@
                 </button>
                 
                 <div id="researchStatus" class="hidden mt-6 p-6 bg-nexspark-dark rounded-lg border border-nexspark-purple">
-                    <div class="flex items-center gap-3 mb-4">
-                        <i class="fas fa-spinner fa-spin text-nexspark-purple text-2xl"></i>
-                        <span class="text-white font-mono text-lg">Researching competitors and market data...</span>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-spinner fa-spin text-nexspark-purple text-2xl"></i>
+                            <span class="text-white font-mono text-lg">Researching competitors and market data...</span>
+                        </div>
+                        <span id="researchTimer" class="text-nexspark-pale font-mono text-sm"></span>
+                    </div>
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center gap-2 text-sm font-mono">
+                            <i class="fas fa-search text-nexspark-blue"></i>
+                            <span class="text-white/70">Analyzing website content...</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm font-mono">
+                            <i class="fas fa-chart-line text-nexspark-gold"></i>
+                            <span class="text-white/70">Fetching traffic data from RapidAPI...</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm font-mono">
+                            <i class="fas fa-users text-nexspark-purple"></i>
+                            <span class="text-white/70">Identifying top competitors...</span>
+                        </div>
                     </div>
                     <div id="competitorsList" class="space-y-2 font-mono text-sm"></div>
                 </div>
@@ -423,26 +456,101 @@
             updateProgress(1);
             setStepActive(1);
             
+            // Display interview summary first
+            displayInterviewSummary();
+            
+            // Show timer
+            let seconds = 0;
+            const timerInterval = setInterval(() => {
+                seconds++;
+                document.getElementById('step1Timer').textContent = `⏱️ ${seconds}s elapsed...`;
+            }, 1000);
+            
             try {
                 const response = await axios.post('/api/analysis/start', {
                     userId: user.id,
                     interviewId: interview.id
                 });
                 
+                clearInterval(timerInterval);
+                document.getElementById('step1Timer').textContent = `✅ Completed in ${seconds}s`;
+                
                 if (response.data.success) {
                     businessProfile = response.data.businessProfile;
+                    
+                    // Update progress indicators with checkmarks
+                    updateAnalysisProgress();
+                    
+                    await sleep(500);
                     displayBusinessProfile();
                     
                     // Move to verification step
-                    setTimeout(() => {
-                        setStepCompleted(1);
-                        showVerificationStep();
-                    }, 2000);
+                    await sleep(2000);
+                    setStepCompleted(1);
+                    showVerificationStep();
                 }
             } catch (error) {
+                clearInterval(timerInterval);
                 console.error('Analysis error:', error);
-                alert('Failed to analyze interview. Please try again.');
+                
+                // Show error with retry option
+                document.getElementById('step1Timer').textContent = `❌ Failed after ${seconds}s`;
+                document.getElementById('analysisProgress').innerHTML = `
+                    <div class="bg-red-900/20 border-2 border-red-500 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                            <div>
+                                <div class="text-white font-bold text-lg">Analysis Failed</div>
+                                <div class="text-red-300 text-sm mt-1">Error: ${error.response?.data?.error || error.message}</div>
+                            </div>
+                        </div>
+                        <button 
+                            onclick="location.reload()" 
+                            class="w-full py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-bold transition">
+                            <i class="fas fa-redo mr-2"></i> RETRY ANALYSIS
+                        </button>
+                    </div>
+                `;
             }
+        }
+        
+        function displayInterviewSummary() {
+            const responses = interview.responses || [];
+            const summaryDiv = document.getElementById('interviewSummaryContent');
+            
+            if (responses.length === 0) {
+                summaryDiv.innerHTML = '<div class="text-white/50">No interview responses found.</div>';
+                return;
+            }
+            
+            const summary = responses.map((r, i) => {
+                const shortAnswer = r.answer.length > 150 ? r.answer.substring(0, 150) + '...' : r.answer;
+                return `
+                    <div class="border-l-2 border-nexspark-blue pl-3">
+                        <div class="text-nexspark-gold text-xs mb-1">Q${i + 1}. ${r.question}</div>
+                        <div class="text-white/90">${shortAnswer}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            summaryDiv.innerHTML = summary;
+        }
+        
+        function updateAnalysisProgress() {
+            document.getElementById('analysisProgress').innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                    <span class="text-white font-mono">✓ Business profile extracted</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                    <span class="text-white font-mono">✓ Industry and target market identified</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                    <span class="text-white font-mono">✓ Growth challenges and opportunities analyzed</span>
+                </div>
+            `;
         }
         
         function displayBusinessProfile() {
@@ -483,6 +591,13 @@
             document.getElementById('verifyBtn').disabled = true;
             document.getElementById('researchStatus').classList.remove('hidden');
             
+            // Show timer
+            let seconds = 0;
+            const timerInterval = setInterval(() => {
+                seconds++;
+                document.getElementById('researchTimer').textContent = `${seconds}s elapsed...`;
+            }, 1000);
+            
             try {
                 const response = await axios.post('/api/analysis/research', {
                     website,
@@ -490,24 +605,48 @@
                     interviewId: interview.id
                 });
                 
+                clearInterval(timerInterval);
+                document.getElementById('step2Timer').textContent = `✅ Completed in ${seconds}s`;
+                
                 if (response.data.success) {
                     competitors = response.data.competitors;
                     websiteContent = response.data.websiteContent;
                     
                     const competitorsList = document.getElementById('competitorsList');
-                    competitorsList.innerHTML = competitors.map((c, i) => 
-                        `<div class="text-nexspark-blue">✓ Competitor ${i + 1}: ${c}</div>`
-                    ).join('');
+                    competitorsList.innerHTML = `
+                        <div class="mt-4 p-4 bg-nexspark-gold/10 border border-nexspark-gold rounded-lg">
+                            <div class="text-nexspark-gold font-bold mb-3">✓ Research Complete</div>
+                            ${competitors.map((c, i) => 
+                                `<div class="text-nexspark-blue animate-fadeIn" style="animation-delay: ${i * 0.2}s">• Competitor ${i + 1}: <strong>${c}</strong></div>`
+                            ).join('')}
+                        </div>
+                    `;
                     
-                    setTimeout(() => {
-                        setStepCompleted(2);
-                        showPaymentStep();
-                    }, 2000);
+                    await sleep(2000);
+                    setStepCompleted(2);
+                    showPaymentStep();
                 }
             } catch (error) {
+                clearInterval(timerInterval);
                 console.error('Research error:', error);
-                alert('Failed to verify website. Please check the URL and try again.');
-                document.getElementById('verifyBtn').disabled = false;
+                
+                document.getElementById('step2Timer').textContent = `❌ Failed after ${seconds}s`;
+                document.getElementById('researchStatus').innerHTML = `
+                    <div class="bg-red-900/20 border-2 border-red-500 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                            <div>
+                                <div class="text-white font-bold text-lg">Research Failed</div>
+                                <div class="text-red-300 text-sm mt-1">${error.response?.data?.error || error.message}</div>
+                            </div>
+                        </div>
+                        <button 
+                            onclick="document.getElementById('verifyBtn').disabled = false; document.getElementById('researchStatus').classList.add('hidden');" 
+                            class="w-full py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-bold transition">
+                            <i class="fas fa-redo mr-2"></i> TRY AGAIN
+                        </button>
+                    </div>
+                `;
             }
         }
         
@@ -939,6 +1078,14 @@
         
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // Utility: Format time
+        function formatTime(seconds) {
+            if (seconds < 60) return `${seconds}s`;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}m ${secs}s`;
         }
     </script>
 </body>
