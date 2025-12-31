@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Confirmation - NexSpark Growth OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .font-header {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .nexspark-gold { color: #FF9C00; }
+        .nexspark-blue { color: #99CCFF; }
+        .nexspark-purple { color: #CC99CC; }
+        .nexspark-panel { background: rgba(26, 31, 58, 0.8); }
+        .nexspark-dark { background: rgba(10, 14, 26, 0.9); }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+            <h1 class="text-4xl font-header font-bold text-nexspark-gold uppercase tracking-wider mb-2">
+                <i class="fas fa-globe mr-3"></i>Website Confirmation
+            </h1>
+            <p class="text-nexspark-blue font-mono text-lg">
+                We'll use this to analyze your competitors and market position
+            </p>
+        </div>
+        
+        <!-- Website Input Form -->
+        <div class="nexspark-panel border-2 border-nexspark-purple rounded-xl p-8 mb-6">
+            <div class="mb-8">
+                <label class="block text-nexspark-gold font-bold text-lg mb-3 uppercase">
+                    <i class="fas fa-link mr-2"></i>What's your website URL?
+                </label>
+                <input 
+                    type="text" 
+                    id="websiteInput" 
+                    placeholder="https://yourbrand.com"
+                    class="w-full px-6 py-4 bg-nexspark-dark border-2 border-nexspark-purple rounded-lg text-white text-lg font-mono focus:border-nexspark-gold focus:outline-none transition-all"
+                >
+                <p class="text-white/60 text-sm mt-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Enter your full website URL (including https://)
+                </p>
+            </div>
+            
+            <!-- What We'll Do -->
+            <div class="nexspark-dark rounded-lg p-6 mb-6">
+                <h3 class="text-nexspark-blue font-bold text-lg mb-4 uppercase">
+                    <i class="fas fa-search mr-2"></i>What we'll analyze:
+                </h3>
+                <div class="space-y-3 text-white/90">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-nexspark-gold mt-1"></i>
+                        <span>Identify your top 3 competitors in the market</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-nexspark-gold mt-1"></i>
+                        <span>Research real traffic data and market positioning</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-nexspark-gold mt-1"></i>
+                        <span>Generate your personalized 6-month growth roadmap</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-nexspark-gold mt-1"></i>
+                        <span>Create paid ads benchmarks specific to your industry</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Continue Button -->
+            <button 
+                id="continueBtn"
+                class="w-full px-8 py-5 bg-nexspark-gold text-black font-header font-bold text-xl uppercase rounded-lg hover:bg-yellow-500 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <i class="fas fa-arrow-right mr-2"></i>Continue to Preview
+            </button>
+        </div>
+        
+        <!-- Privacy Note -->
+        <div class="text-center text-white/50 text-sm">
+            <i class="fas fa-lock mr-2"></i>
+            Your information is secure and will only be used for your growth analysis
+        </div>
+    </div>
+    
+    <script>
+        const websiteInput = document.getElementById('websiteInput');
+        const continueBtn = document.getElementById('continueBtn');
+        
+        // Check authentication
+        function checkAuth() {
+            const user = localStorage.getItem('nexspark_user');
+            if (!user) {
+                console.log('No user found, redirecting to home');
+                window.location.href = '/';
+                return null;
+            }
+            return JSON.parse(user);
+        }
+        
+        // Get summary from localStorage
+        function getSummary() {
+            const summary = localStorage.getItem('nexspark_summary');
+            if (!summary) {
+                console.error('No summary found, redirecting to interview');
+                window.location.href = '/interview';
+                return null;
+            }
+            return JSON.parse(summary);
+        }
+        
+        // Validate URL format
+        function isValidURL(string) {
+            try {
+                // Add https:// if missing
+                if (!string.match(/^https?:\/\//)) {
+                    string = 'https://' + string;
+                }
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+        
+        // Normalize URL
+        function normalizeURL(url) {
+            // Add https:// if missing
+            if (!url.match(/^https?:\/\//)) {
+                url = 'https://' + url;
+            }
+            return url;
+        }
+        
+        // Enable/disable continue button based on input
+        websiteInput.addEventListener('input', () => {
+            const value = websiteInput.value.trim();
+            continueBtn.disabled = value.length === 0;
+        });
+        
+        // Handle continue button
+        continueBtn.addEventListener('click', async () => {
+            const website = websiteInput.value.trim();
+            
+            if (!website) {
+                alert('Please enter your website URL');
+                return;
+            }
+            
+            if (!isValidURL(website)) {
+                alert('Please enter a valid website URL (e.g., https://yourbrand.com)');
+                return;
+            }
+            
+            // Normalize and save website
+            const normalizedURL = normalizeURL(website);
+            
+            // Get summary and add website
+            const summary = getSummary();
+            if (!summary) return;
+            
+            summary.website = normalizedURL;
+            localStorage.setItem('nexspark_summary', JSON.stringify(summary));
+            
+            console.log('✅ Website saved:', normalizedURL);
+            
+            // Redirect to preview page
+            window.location.href = '/report-preview';
+        });
+        
+        // Try to extract website from interview responses on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = checkAuth();
+            if (!user) return;
+            
+            const summary = getSummary();
+            if (!summary) return;
+            
+            // Check if website already saved
+            if (summary.website) {
+                websiteInput.value = summary.website;
+                continueBtn.disabled = false;
+                return;
+            }
+            
+            // Try to extract from interview responses
+            const interview = localStorage.getItem('nexspark_interview');
+            if (interview) {
+                try {
+                    const data = JSON.parse(interview);
+                    if (data.responses && data.responses.length > 0) {
+                        // Look in first response (brand name question)
+                        const firstAnswer = data.responses[0].answer || '';
+                        const websiteMatch = firstAnswer.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?)/);
+                        
+                        if (websiteMatch) {
+                            const detectedWebsite = websiteMatch[0];
+                            websiteInput.value = detectedWebsite;
+                            continueBtn.disabled = false;
+                            console.log('✅ Auto-detected website:', detectedWebsite);
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing interview data:', e);
+                }
+            }
+        });
+        
+        // Allow Enter key to submit
+        websiteInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !continueBtn.disabled) {
+                continueBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
