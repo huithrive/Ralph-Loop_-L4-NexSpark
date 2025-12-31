@@ -91,6 +91,7 @@ app.get('/strategy-analysis', (c) => {
 
 // Interview route - redirect to v3 with real-time transcription
 app.get('/interview', (c) => c.redirect('/static/interview-v3.html'))
+app.get('/interview-summary', (c) => c.redirect('/static/interview-summary.html'))
 
 // API: Check for existing interview
 app.get('/api/interview/check', async (c) => {
