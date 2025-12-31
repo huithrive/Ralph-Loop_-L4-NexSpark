@@ -679,7 +679,7 @@ async function completeInterview() {
       Interview Complete!
     </div>
     <div class="text-white/70 font-mono text-sm">
-      Processing your responses...
+      Redirecting to summary confirmation...
     </div>
   `;
   
@@ -688,9 +688,9 @@ async function completeInterview() {
   document.getElementById('pauseBtn').classList.add('hidden');
   document.getElementById('endBtn').classList.add('hidden');
   
-  // Show completion confirmation popup
+  // Redirect to summary page after brief delay
   setTimeout(() => {
-    showCompletionPopup();
+    window.location.href = '/interview-summary';
   }, 1500);
 }
 
