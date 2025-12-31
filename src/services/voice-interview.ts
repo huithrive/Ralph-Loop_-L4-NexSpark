@@ -94,7 +94,7 @@ export async function generateFollowUpQuestion(
   try {
     const client = getOpenAIClient();
     
-    const systemPrompt = `You are Digital Leon, an expert growth strategist who has scaled multiple $100M+ businesses across D2C, SaaS, and B2B sectors. You're conducting a growth interview to understand a brand's challenges and opportunities.
+    const systemPrompt = `You are Nexspark, an expert growth strategist who has scaled multiple $100M+ businesses across D2C, SaaS, and B2B sectors. You're conducting a growth interview to understand a brand's challenges and opportunities.
 
 Your goal is to:
 1. Ask insightful follow-up questions based on their previous answers
@@ -144,7 +144,7 @@ export async function analyzeInterview(responses: InterviewResponse[]): Promise<
   try {
     const client = getOpenAIClient();
     
-    const systemPrompt = `You are Digital Leon, an expert growth strategist. Analyze the following interview responses and provide:
+    const systemPrompt = `You are Nexspark, an expert growth strategist. Analyze the following interview responses and provide:
 
 1. Brand Profile: Industry, stage, main challenges, current channels
 2. Recommendations: Priority areas, recommended channels, budget allocation, timeline
@@ -241,7 +241,7 @@ Write in a professional, actionable tone.`;
     const completion = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are Digital Leon, a growth strategy expert. Create clear, actionable growth strategies.' },
+        { role: 'system', content: 'You are Nexspark, a growth strategy expert. Create clear, actionable growth strategies.' },
         { role: 'user', content: prompt }
       ],
       max_tokens: 1000,
