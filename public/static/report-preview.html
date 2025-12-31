@@ -57,6 +57,19 @@
     </style>
 </head>
 <body class="p-8">
+    <!-- Sticky Floating CTA Button (shows after scrolling) -->
+    <div id="floatingCTA" class="hidden fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
+        <button onclick="document.getElementById('unlockCTA').scrollIntoView({ behavior: 'smooth', block: 'center' })" 
+                class="px-8 py-5 bg-gradient-to-r from-nexspark-gold to-yellow-500 text-black font-header font-bold text-2xl uppercase rounded-xl shadow-2xl hover:shadow-[0_0_40px_rgba(255,156,0,0.8)] border-4 border-yellow-600 flex items-center gap-4 animate-bounce hover:animate-none transition-all hover:scale-105">
+            <i class="fas fa-unlock-alt text-3xl"></i>
+            <div class="text-left">
+                <div>Unlock Full Report</div>
+                <div class="text-sm font-normal">Only $20</div>
+            </div>
+            <i class="fas fa-arrow-down text-2xl animate-bounce"></i>
+        </button>
+    </div>
+    
     <div class="max-w-6xl mx-auto">
         <!-- Header -->
         <div class="mb-8 text-center">
@@ -192,9 +205,12 @@
         </div>
         
         <!-- Unlock CTA -->
-        <div id="unlockCTA" class="hidden nexspark-panel border-4 border-nexspark-gold rounded-xl p-10 text-center mb-8">
-            <h2 class="text-4xl font-header font-bold text-nexspark-gold uppercase mb-4">
-                <i class="fas fa-unlock mr-3"></i>Unlock Your Complete Growth Strategy
+        <div id="unlockCTA" class="hidden nexspark-panel border-4 border-nexspark-gold rounded-2xl p-12 text-center mb-8 shadow-[0_0_50px_rgba(255,156,0,0.3)] animate-pulse-slow">
+            <div class="mb-6 inline-block">
+                <div class="text-6xl animate-bounce">🎯</div>
+            </div>
+            <h2 class="text-5xl md:text-6xl font-header font-bold text-white mb-6 uppercase tracking-wide">
+                <i class="fas fa-unlock-alt text-nexspark-gold mr-4"></i>Unlock Your Complete Growth Strategy
             </h2>
             
             <p class="text-white/90 text-lg mb-6">
@@ -228,13 +244,18 @@
                 </div>
             </div>
             
-            <div class="mb-6">
-                <div class="text-6xl md:text-7xl font-header font-bold text-white mb-3 animate-pulse">$20</div>
-                <div class="text-nexspark-blue text-xl font-semibold">One-time payment • Full access forever • Money-back guarantee</div>
+            <div class="mb-8">
+                <div class="text-7xl md:text-8xl font-header font-bold text-white mb-4 animate-pulse">$20</div>
+                <div class="text-nexspark-blue text-2xl font-semibold">One-time payment • Full access forever</div>
+                <div class="text-green-400 text-lg font-semibold mt-2">
+                    <i class="fas fa-check-circle mr-2"></i>30-Day Money-Back Guarantee
+                </div>
             </div>
             
-            <button id="unlockBtn" class="px-16 py-8 bg-gradient-to-r from-nexspark-gold to-yellow-500 text-black font-header font-bold text-3xl uppercase rounded-2xl hover:from-yellow-500 hover:to-nexspark-gold transition-all transform hover:scale-105 shadow-2xl hover:shadow-nexspark-gold/50 border-4 border-yellow-600">
-                <i class="fas fa-unlock-alt mr-4 text-4xl"></i>Unlock Full Report Now
+            <button id="unlockBtn" class="group relative px-16 py-8 bg-gradient-to-r from-nexspark-gold via-yellow-400 to-nexspark-gold text-black font-header font-bold text-4xl uppercase rounded-2xl hover:from-yellow-300 hover:via-nexspark-gold hover:to-yellow-300 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-[0_0_60px_rgba(255,156,0,0.8)] border-4 border-yellow-600 animate-pulse">
+                <i class="fas fa-unlock-alt mr-4 text-5xl"></i>
+                <span class="relative z-10">Unlock Full Report Now</span>
+                <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 rounded-2xl transition-opacity"></div>
             </button>
             
             <div class="mt-8 flex items-center justify-center gap-6 text-white/70">
@@ -701,10 +722,28 @@
             const summary = getSummary();
             if (!summary) return;
             
+            // Extract website from interview if not present
             if (!summary.website) {
-                console.error('No website found, redirecting back');
-                window.location.href = '/website-confirmation';
-                return;
+                const interview = localStorage.getItem('nexspark_interview');
+                if (interview) {
+                    const interviewData = JSON.parse(interview);
+                    // Try to extract website from first response (which asks for brand name/website)
+                    if (interviewData.responses && interviewData.responses.length > 0) {
+                        const firstResponse = interviewData.responses[0].answer || '';
+                        // Simple URL extraction
+                        const urlMatch = firstResponse.match(/https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/);
+                        if (urlMatch) {
+                            summary.website = urlMatch[0].replace(/^www\./, 'https://www.');
+                            localStorage.setItem('nexspark_summary', JSON.stringify(summary));
+                        }
+                    }
+                }
+                
+                // If still no website, use a placeholder
+                if (!summary.website) {
+                    summary.website = summary.brandName ? `https://www.${summary.brandName.toLowerCase().replace(/\s+/g, '')}.com` : 'https://example.com';
+                    localStorage.setItem('nexspark_summary', JSON.stringify(summary));
+                }
             }
             
             console.log('🚀 Starting preview generation...');
@@ -716,6 +755,28 @@
             loadBenchmarksPreview(summary);
             
             console.log('✅ Preview page initialized');
+        });
+        
+        // Show floating CTA after scrolling
+        let floatingCTAShown = false;
+        window.addEventListener('scroll', () => {
+            const unlockCTA = document.getElementById('unlockCTA');
+            const floatingCTA = document.getElementById('floatingCTA');
+            
+            if (!unlockCTA || unlockCTA.classList.contains('hidden')) {
+                return; // Don't show floating CTA until main CTA is visible
+            }
+            
+            const unlockCTARect = unlockCTA.getBoundingClientRect();
+            const isUnlockCTAVisible = unlockCTARect.top < window.innerHeight && unlockCTARect.bottom > 0;
+            
+            if (!isUnlockCTAVisible && !floatingCTAShown) {
+                floatingCTA.classList.remove('hidden');
+                floatingCTAShown = true;
+            } else if (isUnlockCTAVisible && floatingCTAShown) {
+                floatingCTA.classList.add('hidden');
+                floatingCTAShown = false;
+            }
         });
     </script>
 </body>
