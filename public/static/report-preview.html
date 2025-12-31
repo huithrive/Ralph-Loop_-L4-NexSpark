@@ -302,6 +302,156 @@
             window.location.href = '/strategy-analysis';
         });
         
+        // Load benchmarks preview
+        async function loadBenchmarksPreview(summary) {
+            try {
+                console.log('📈 Loading benchmarks preview...');
+                
+                const response = await axios.post('/api/preview/benchmarks', {
+                    summary: summary
+                });
+                
+                if (response.data.success) {
+                    const benchmarks = response.data.benchmarks;
+                    previewState.benchmarks = benchmarks;
+                    
+                    console.log('✅ Benchmarks loaded:', benchmarks);
+                    displayBenchmarks(benchmarks);
+                    checkAllLoaded();
+                } else {
+                    throw new Error(response.data.message || 'Failed to load benchmarks');
+                }
+            } catch (error) {
+                console.error('Error loading benchmarks:', error);
+                showBenchmarksError(error.message);
+            }
+        }
+        
+        // Display benchmarks
+        function displayBenchmarks(benchmarks) {
+            const benchmarksData = document.getElementById('benchmarksData');
+            
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+            
+            // Google Ads
+            if (benchmarks.googleAds) {
+                const ga = benchmarks.googleAds;
+                html += `
+                    <div class="nexspark-dark rounded-lg p-6 border-l-4 border-nexspark-gold fade-in">
+                        <h3 class="text-2xl font-header font-bold text-white mb-4">
+                            <i class="fab fa-google text-nexspark-gold mr-2"></i>
+                            Google Ads
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Target CPC</span>
+                                <span class="text-nexspark-gold font-bold text-lg">${ga.targetCPC || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Expected CTR</span>
+                                <span class="text-nexspark-blue font-bold text-lg">${ga.expectedCTR || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Projected CAC</span>
+                                <span class="text-nexspark-purple font-bold text-lg">${ga.projectedCAC || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Recommended Budget</span>
+                                <span class="text-white font-bold text-lg">${ga.recommendedBudget || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-green-900/20 border border-green-500/30 rounded">
+                                <span class="text-green-400 font-bold">Expected ROI</span>
+                                <span class="text-green-400 font-bold text-xl">${ga.expectedROI || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Facebook Ads
+            if (benchmarks.facebookAds) {
+                const fb = benchmarks.facebookAds;
+                html += `
+                    <div class="nexspark-dark rounded-lg p-6 border-l-4 border-nexspark-blue fade-in" style="animation-delay: 0.2s">
+                        <h3 class="text-2xl font-header font-bold text-white mb-4">
+                            <i class="fab fa-facebook text-nexspark-blue mr-2"></i>
+                            Facebook/Instagram Ads
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Target CPM</span>
+                                <span class="text-nexspark-gold font-bold text-lg">${fb.targetCPM || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Expected CTR</span>
+                                <span class="text-nexspark-blue font-bold text-lg">${fb.expectedCTR || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Projected CAC</span>
+                                <span class="text-nexspark-purple font-bold text-lg">${fb.projectedCAC || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Recommended Budget</span>
+                                <span class="text-white font-bold text-lg">${fb.recommendedBudget || 'N/A'}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-green-900/20 border border-green-500/30 rounded">
+                                <span class="text-green-400 font-bold">Expected ROI</span>
+                                <span class="text-green-400 font-bold text-xl">${fb.expectedROI || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            
+            // Add recommendation
+            if (benchmarks.recommendation) {
+                html += `
+                    <div class="mt-6 nexspark-panel rounded-lg p-6 border-2 border-nexspark-gold">
+                        <h4 class="text-lg font-header font-bold text-nexspark-gold mb-3">
+                            <i class="fas fa-chart-pie mr-2"></i>Recommended Channel Mix
+                        </h4>
+                        <p class="text-white/90 text-lg">
+                            ${benchmarks.recommendation}
+                        </p>
+                    </div>
+                `;
+            }
+            
+            benchmarksData.innerHTML = html;
+            
+            // Hide loading, show data
+            document.getElementById('benchmarksLoading').classList.add('hidden');
+            benchmarksData.classList.remove('hidden');
+        }
+        
+        // Show benchmarks error
+        function showBenchmarksError(message) {
+            const benchmarksData = document.getElementById('benchmarksData');
+            benchmarksData.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-3"></i>
+                    <p class="text-white/70">${message}</p>
+                    <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-nexspark-gold text-black font-bold rounded">
+                        Try Again
+                    </button>
+                </div>
+            `;
+            document.getElementById('benchmarksLoading').classList.add('hidden');
+            benchmarksData.classList.remove('hidden');
+        }
+        
         // Load roadmap preview
         async function loadRoadmapPreview(summary) {
             try {
@@ -545,9 +695,10 @@
             console.log('🚀 Starting preview generation...');
             console.log('Summary:', summary);
             
-            // Load previews
+            // Load all previews
             loadCompetitorPreview(summary);
             loadRoadmapPreview(summary);
+            loadBenchmarksPreview(summary);
             
             console.log('✅ Preview page initialized');
         });
