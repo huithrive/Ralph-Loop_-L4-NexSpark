@@ -411,16 +411,30 @@ export const REVISED_LANDING_HTML = `
             </div>
         </div>
     </footer>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 100%); z-index: 9999; opacity: 0; transition: opacity 0.3s ease;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+            <div style="width: 80px; height: 80px; margin: 0 auto 20px; border: 4px solid rgba(255, 107, 53, 0.3); border-top-color: #FF6B35; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p style="color: #FF6B35; font-size: 20px; font-weight: 600; font-family: Inter, sans-serif;">Connecting to Nexspark...</p>
+        </div>
+    </div>
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
     <script>
         function navigateToInterview() {
-            // Add smooth transition
-            document.body.style.opacity = '0.8';
-            document.body.style.transition = 'opacity 0.3s ease';
-            
-            // Navigate after brief delay for smooth transition
+            // Show loading overlay
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'block';
             setTimeout(() => {
-                window.location.href = '/interview';
-            }, 100);
+                overlay.style.opacity = '1';
+            }, 10);
+            
+            // Navigate immediately
+            window.location.href = '/interview';
         }
     </script>
 
