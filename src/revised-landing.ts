@@ -477,6 +477,36 @@ export const REVISED_LANDING_HTML = `
         canvas.height = window.innerHeight;
       });
     })();
+    
+    // Create demo user and redirect to interview
+    function startInterview() {
+      // Create demo user if not exists
+      if (!localStorage.getItem('nexspark_user')) {
+        const demoUser = {
+          id: 'demo_user_' + Date.now(),
+          email: 'demo@nexspark.ai',
+          name: 'Demo User',
+          picture: 'https://via.placeholder.com/150',
+          created_at: new Date().toISOString()
+        };
+        localStorage.setItem('nexspark_user', JSON.stringify(demoUser));
+        console.log('✅ Demo user created:', demoUser.id);
+      }
+      
+      // Redirect to interview
+      window.location.href = '/interview';
+    }
+    
+    // Update all GET STARTED buttons to use the function
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('button[onclick*="/interview"]');
+      buttons.forEach(button => {
+        button.onclick = (e) => {
+          e.preventDefault();
+          startInterview();
+        };
+      });
+    });
     </script>
 </body>
 </html>
