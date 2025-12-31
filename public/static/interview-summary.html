@@ -251,10 +251,10 @@
             }
         }
         
-        // Confirm button - proceed to website input
+        // Confirm button - proceed directly to preview
         document.getElementById('confirmBtn').addEventListener('click', () => {
-            // Redirect to website confirmation (will create this next)
-            window.location.href = '/website-confirmation';
+            // Redirect directly to preview (skip website confirmation)
+            window.location.href = '/report-preview';
         });
         
         // Edit button - go back to interview
