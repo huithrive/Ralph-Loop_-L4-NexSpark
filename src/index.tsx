@@ -94,6 +94,9 @@ app.get('/interview', (c) => c.redirect('/static/interview-v3.html'))
 app.get('/interview-summary', (c) => c.redirect('/static/interview-summary.html'))
 app.get('/website-confirmation', (c) => c.redirect('/static/website-confirmation.html'))
 app.get('/report-preview', (c) => c.redirect('/static/report-preview.html'))
+app.get('/payment', (c) => c.redirect('/static/payment.html'))
+app.get('/full-report', (c) => c.redirect('/static/full-report.html'))
+app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
 
 // Admin routes
 app.get('/admin/prompts', (c) => c.redirect('/static/admin-prompts.html'))
