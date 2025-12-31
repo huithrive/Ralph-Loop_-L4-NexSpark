@@ -643,16 +643,35 @@ async function completeInterview() {
     const result = await response.json();
     console.log('Interview completed:', result);
     
-    // Save interview ID to localStorage for analysis
+    // Save complete interview data to localStorage for analysis
     if (result.success && result.interviewId) {
-      const storedInterview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
-      storedInterview.id = result.interviewId;
-      storedInterview.interviewId = result.interviewId; // For compatibility
+      const storedInterview = {
+        id: result.interviewId,
+        interviewId: result.interviewId, // For compatibility
+        userId: interviewState.userId,
+        responses: interviewState.responses, // CRITICAL: Save responses array
+        completed: true,
+        completedAt: finalData.completedAt
+      };
       localStorage.setItem('nexspark_interview', JSON.stringify(storedInterview));
-      console.log('✅ Saved interview ID to localStorage:', result.interviewId);
+      console.log('✅ Saved complete interview data to localStorage:', {
+        id: result.interviewId,
+        responseCount: interviewState.responses.length
+      });
     }
   } catch (error) {
     console.error('Error completing interview:', error);
+    // Even if API fails, save interview data locally for analysis
+    const storedInterview = {
+      id: interviewState.interviewId || 'local_' + Date.now(),
+      interviewId: interviewState.interviewId || 'local_' + Date.now(),
+      userId: interviewState.userId,
+      responses: interviewState.responses, // Save responses locally
+      completed: true,
+      completedAt: finalData.completedAt
+    };
+    localStorage.setItem('nexspark_interview', JSON.stringify(storedInterview));
+    console.log('⚠️ API failed, saved interview data locally');
   }
   
   document.getElementById('statusText').innerHTML = `
