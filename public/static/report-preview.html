@@ -618,7 +618,7 @@
                     previewState.competitors = competitors;
                     
                     console.log('✅ Competitors loaded:', competitors);
-                    displayCompetitors(competitors);
+                    displayCompetitors(competitors, summary);
                     checkAllLoaded();
                 } else {
                     throw new Error(response.data.message || 'Failed to load competitors');
@@ -630,7 +630,7 @@
         }
         
         // Display competitors
-        function displayCompetitors(competitors) {
+        function displayCompetitors(competitors, summary) {
             const competitorData = document.getElementById('competitorData');
             
             let html = '<div class="space-y-6">';
@@ -677,19 +677,21 @@
             
             html += '</div>';
             
-            // Add differentiation insight
-            html += `
-                <div class="mt-6 nexspark-panel rounded-lg p-6 border-2 border-nexspark-gold">
-                    <h4 class="text-lg font-header font-bold text-nexspark-gold mb-3">
-                        <i class="fas fa-lightbulb mr-2"></i>Your Differentiation Opportunity
-                    </h4>
-                    <p class="text-white/90">
-                        Based on this analysis, you have opportunities to differentiate through 
-                        ${summary.biggestChallenge ? 'addressing ' + summary.biggestChallenge.toLowerCase() : 'your unique value proposition'} 
-                        while leveraging ${summary.bestChannel || 'your best-performing channels'}.
-                    </p>
-                </div>
-            `;
+            // Add differentiation insight if summary is available
+            if (summary) {
+                html += `
+                    <div class="mt-6 nexspark-panel rounded-lg p-6 border-2 border-nexspark-gold">
+                        <h4 class="text-lg font-header font-bold text-nexspark-gold mb-3">
+                            <i class="fas fa-lightbulb mr-2"></i>Your Differentiation Opportunity
+                        </h4>
+                        <p class="text-white/90">
+                            Based on this analysis, you have opportunities to differentiate through 
+                            ${summary.biggestChallenge ? 'addressing ' + summary.biggestChallenge.toLowerCase() : 'your unique value proposition'} 
+                            while leveraging ${summary.bestChannel || 'your best-performing channels'}.
+                        </p>
+                    </div>
+                `;
+            }
             
             competitorData.innerHTML = html;
             
