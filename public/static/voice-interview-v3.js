@@ -826,7 +826,7 @@ function startAnalysis() {
   localStorage.setItem('nexspark_interview', JSON.stringify(existingInterview));
   
   // Redirect to strategy analysis
-  window.location.href = '/strategy-analysis';
+  window.location.href = '/static/interview-summary.html';
 }
 
 // Demo Mode - Skip Interview with Sample Data

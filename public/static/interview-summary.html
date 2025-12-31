@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Summary - NexSpark Growth OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --nexspark-gold: #FF9C00;
+            --nexspark-blue: #99CCFF;
+            --nexspark-purple: #CC99CC;
+            --nexspark-dark: #0A0A0F;
+            --nexspark-panel: #1A1A2E;
+        }
+        
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--nexspark-dark);
+            color: white;
+        }
+        
+        .font-header {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(15, 15, 30, 0.95) 100%);
+            border: 2px solid rgba(255, 156, 0, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .summary-card:hover {
+            border-color: var(--nexspark-gold);
+            box-shadow: 0 0 20px rgba(255, 156, 0, 0.2);
+        }
+        
+        .summary-field {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .summary-field:last-child {
+            border-bottom: none;
+        }
+        
+        .loading-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--nexspark-gold) 0%, #FF7700 100%);
+            color: black;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 156, 0, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--nexspark-blue);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--nexspark-blue);
+            color: black;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="border-b-2 border-nexspark-gold/30 backdrop-blur-lg sticky top-0 z-50" style="background: rgba(10, 10, 15, 0.95);">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-bolt text-nexspark-gold text-3xl"></i>
+                <span class="font-header text-2xl font-bold uppercase tracking-wider">
+                    <span class="text-white">NexSpark</span>
+                    <span class="text-nexspark-gold ml-2">Growth OS</span>
+                </span>
+            </div>
+            <div class="text-sm font-mono text-nexspark-blue uppercase tracking-wider">
+                Interview Summary
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-8">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-20">
+            <i class="fas fa-spinner fa-spin text-6xl text-nexspark-gold mb-6 loading-pulse"></i>
+            <h2 class="text-3xl font-header font-bold text-white mb-4">
+                NexSpark AI Analyzing Your Responses...
+            </h2>
+            <p class="text-lg text-white/70 font-mono">
+                Generating your personalized summary
+            </p>
+        </div>
+
+        <!-- Summary Content (hidden initially) -->
+        <div id="summaryContent" class="hidden">
+            <!-- Title -->
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-header font-bold uppercase mb-4">
+                    <span class="text-nexspark-gold">Let Me Confirm</span>
+                    <br/>
+                    <span class="text-white">What I Understood</span>
+                </h1>
+                <p class="text-xl text-white/70 font-mono">
+                    Please verify this summary is accurate
+                </p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="space-y-6">
+                <!-- Brand Identity -->
+                <div class="summary-card">
+                    <h3 class="text-2xl font-header font-bold text-nexspark-gold uppercase mb-4 flex items-center gap-3">
+                        <i class="fas fa-tag"></i>
+                        Brand Identity
+                    </h3>
+                    <div class="summary-field">
+                        <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Brand Name</div>
+                        <div id="brandName" class="text-xl font-semibold text-white"></div>
+                    </div>
+                    <div class="summary-field">
+                        <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Product Description</div>
+                        <div id="productDescription" class="text-lg text-white/90"></div>
+                    </div>
+                    <div class="summary-field">
+                        <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Founded & Motivation</div>
+                        <div id="foundedMotivation" class="text-lg text-white/90"></div>
+                    </div>
+                </div>
+
+                <!-- Current State -->
+                <div class="summary-card">
+                    <h3 class="text-2xl font-header font-bold text-nexspark-blue uppercase mb-4 flex items-center gap-3">
+                        <i class="fas fa-chart-line"></i>
+                        Current State
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="summary-field">
+                            <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Monthly Revenue</div>
+                            <div id="currentRevenue" class="text-xl font-semibold text-white"></div>
+                        </div>
+                        <div class="summary-field">
+                            <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Best Channel</div>
+                            <div id="bestChannel" class="text-xl font-semibold text-white"></div>
+                        </div>
+                    </div>
+                    <div class="summary-field">
+                        <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Marketing Channels</div>
+                        <div id="marketingChannels" class="text-lg text-white/90"></div>
+                    </div>
+                    <div class="summary-field">
+                        <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Biggest Challenge</div>
+                        <div id="biggestChallenge" class="text-lg text-white/90"></div>
+                    </div>
+                </div>
+
+                <!-- Target Market -->
+                <div class="summary-card">
+                    <h3 class="text-2xl font-header font-bold text-nexspark-purple uppercase mb-4 flex items-center gap-3">
+                        <i class="fas fa-users"></i>
+                        Target Market
+                    </h3>
+                    <div class="summary-field">
+                        <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Ideal Customer</div>
+                        <div id="idealCustomer" class="text-lg text-white/90"></div>
+                    </div>
+                    <div class="summary-field">
+                        <div class="text-sm text-white/50 uppercase tracking-wider mb-1">Main Competitors</div>
+                        <div id="competitors" class="text-lg text-white/90"></div>
+                    </div>
+                </div>
+
+                <!-- Goals -->
+                <div class="summary-card">
+                    <h3 class="text-2xl font-header font-bold text-nexspark-gold uppercase mb-4 flex items-center gap-3">
+                        <i class="fas fa-bullseye"></i>
+                        6-Month Goal
+                    </h3>
+                    <div id="sixMonthGoal" class="text-xl text-white/90 leading-relaxed"></div>
+                </div>
+            </div>
+
+            <!-- Website Input -->
+            <div class="summary-card mt-8">
+                <h3 class="text-2xl font-header font-bold text-white uppercase mb-4 flex items-center gap-3">
+                    <i class="fas fa-globe"></i>
+                    Website Confirmation
+                </h3>
+                <p class="text-white/70 mb-4">
+                    We'll use your website to analyze competitors and research your market position.
+                </p>
+                <div class="flex gap-4 items-end">
+                    <div class="flex-1">
+                        <label class="text-sm text-white/50 uppercase tracking-wider mb-2 block">Website URL</label>
+                        <input 
+                            type="url" 
+                            id="websiteInput" 
+                            placeholder="https://yourbrand.com"
+                            class="w-full px-4 py-3 bg-black/30 border-2 border-white/20 rounded-lg text-white placeholder-white/30 focus:border-nexspark-gold focus:outline-none transition-all"
+                        />
+                    </div>
+                </div>
+                <p class="text-sm text-white/50 mt-3 font-mono">
+                    💡 We'll use this to identify competitors and analyze your market position
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4 mt-8 justify-center">
+                <button id="editBtn" class="btn-secondary">
+                    <i class="fas fa-edit mr-2"></i>
+                    Go Back & Edit
+                </button>
+                <button id="confirmBtn" class="btn-primary" disabled>
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Looks Good - Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="hidden text-center py-20">
+            <i class="fas fa-exclamation-triangle text-6xl text-red-500 mb-6"></i>
+            <h2 class="text-3xl font-header font-bold text-white mb-4">
+                Error Generating Summary
+            </h2>
+            <p class="text-lg text-white/70 mb-6" id="errorMessage"></p>
+            <button onclick="location.reload()" class="btn-primary">
+                <i class="fas fa-redo mr-2"></i>
+                Try Again
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // Check authentication
+        const user = JSON.parse(localStorage.getItem('nexspark_user') || 'null');
+        const interview = JSON.parse(localStorage.getItem('nexspark_interview') || 'null');
+
+        if (!user || !interview || !interview.responses) {
+            alert('No interview data found. Please complete the interview first.');
+            window.location.href = '/interview';
+        }
+
+        let summary = null;
+
+        // Generate summary on page load
+        async function generateSummary() {
+            try {
+                const response = await axios.post('/api/interview/summarize', {
+                    responses: interview.responses
+                });
+
+                if (response.data.success) {
+                    summary = response.data.summary;
+                    displaySummary(summary);
+                } else {
+                    showError('Failed to generate summary: ' + response.data.message);
+                }
+            } catch (error) {
+                console.error('Error generating summary:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function displaySummary(data) {
+            document.getElementById('brandName').textContent = data.brandName || 'N/A';
+            document.getElementById('productDescription').textContent = data.productDescription || 'N/A';
+            
+            const foundedText = `${data.founded || 'Recently'} - ${data.motivation || 'Building something great'}`;
+            document.getElementById('foundedMotivation').textContent = foundedText;
+            
+            document.getElementById('currentRevenue').textContent = data.currentRevenue || 'N/A';
+            document.getElementById('bestChannel').textContent = data.bestChannel || 'N/A';
+            
+            const channels = Array.isArray(data.marketingChannels) 
+                ? data.marketingChannels.join(', ') 
+                : data.marketingChannels || 'N/A';
+            document.getElementById('marketingChannels').textContent = channels;
+            
+            document.getElementById('biggestChallenge').textContent = data.biggestChallenge || 'N/A';
+            document.getElementById('idealCustomer').textContent = data.idealCustomer || 'N/A';
+            
+            const comps = Array.isArray(data.competitors) 
+                ? data.competitors.join(', ') 
+                : data.competitors || 'N/A';
+            document.getElementById('competitors').textContent = comps;
+            
+            document.getElementById('sixMonthGoal').textContent = data.sixMonthGoal || 'N/A';
+
+            // Hide loading, show content
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('summaryContent').classList.remove('hidden');
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+        }
+
+        // Enable confirm button when website is entered
+        document.getElementById('websiteInput').addEventListener('input', (e) => {
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = !e.target.value.trim();
+        });
+
+        // Edit button - go back to interview
+        document.getElementById('editBtn').addEventListener('click', () => {
+            if (confirm('Are you sure? You\'ll need to redo the interview.')) {
+                localStorage.removeItem('nexspark_interview');
+                window.location.href = '/interview';
+            }
+        });
+
+        // Confirm button - proceed to preview
+        document.getElementById('confirmBtn').addEventListener('click', async () => {
+            const website = document.getElementById('websiteInput').value.trim();
+            
+            if (!website) {
+                alert('Please enter your website URL');
+                return;
+            }
+
+            // Save website and summary to localStorage
+            interview.website = website;
+            interview.summary = summary;
+            localStorage.setItem('nexspark_interview', JSON.stringify(interview));
+
+            // Navigate to preview page
+            window.location.href = '/report-preview';
+        });
+
+        // Start generating summary
+        generateSummary();
+    </script>
+</body>
+</html>
