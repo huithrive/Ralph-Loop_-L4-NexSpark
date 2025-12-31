@@ -133,9 +133,9 @@ export const REVISED_LANDING_HTML = `
                     <span class="text-2xl font-bold tracking-tight">Nexspark</span>
                 </div>
                 
-                <button onclick="navigateToInterview()" class="px-6 py-2.5 bg-nexspark-orange hover:bg-nexspark-orange/90 rounded-lg font-semibold transition-all">
+                <a href="/interview" class="inline-block px-6 py-2.5 bg-nexspark-orange hover:bg-nexspark-orange/90 rounded-lg font-semibold transition-all text-black no-underline">
                     Answer the Call
-                </button>
+                </a>
             </div>
         </div>
     </header>
@@ -204,10 +204,10 @@ export const REVISED_LANDING_HTML = `
 
                     <!-- CTA Button -->
                     <div>
-                        <button onclick="navigateToInterview()" class="call-button w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl text-white inline-flex items-center justify-center gap-4">
+                        <a href="/interview" class="call-button w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl text-white inline-flex items-center justify-center gap-4 no-underline">
                             <i class="fas fa-phone text-2xl animate-ring"></i>
                             <span>ANSWER THE CALL</span>
-                        </button>
+                        </a>
                         
                         <p class="text-sm text-white/50 mt-4">
                             <i class="fas fa-clock mr-2"></i>Takes 10 minutes • No credit card required
@@ -266,10 +266,10 @@ export const REVISED_LANDING_HTML = `
                                     </button>
                                     
                                     <!-- Accept (Pulsing) -->
-                                    <button onclick="navigateToInterview()" class="relative w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center animate-ring">
+                                    <a href="/interview" class="relative w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center animate-ring no-underline">
                                         <i class="fas fa-phone text-white text-2xl"></i>
                                         <div class="absolute inset-0 w-20 h-20 rounded-full border-4 border-green-500 animate-ping opacity-30"></div>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -383,10 +383,10 @@ export const REVISED_LANDING_HTML = `
                 Join the founders who answered the call and discovered their path to $100M
             </p>
 
-            <button onclick="navigateToInterview()" class="call-button px-16 py-6 rounded-2xl font-bold text-2xl text-white inline-flex items-center gap-4 mb-6">
+            <a href="/interview" class="call-button px-16 py-6 rounded-2xl font-bold text-2xl text-white inline-flex items-center gap-4 mb-6 no-underline">
                 <i class="fas fa-phone text-3xl animate-ring"></i>
                 <span>ANSWER THE CALL NOW</span>
-            </button>
+            </a>
 
             <p class="text-sm text-white/50">
                 <i class="fas fa-shield-alt mr-2"></i>100% secure • No credit card to start • Cancel anytime
@@ -411,32 +411,6 @@ export const REVISED_LANDING_HTML = `
             </div>
         </div>
     </footer>
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 100%); z-index: 9999; opacity: 0; transition: opacity 0.3s ease;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-            <div style="width: 80px; height: 80px; margin: 0 auto 20px; border: 4px solid rgba(255, 107, 53, 0.3); border-top-color: #FF6B35; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-            <p style="color: #FF6B35; font-size: 20px; font-weight: 600; font-family: Inter, sans-serif;">Connecting to Nexspark...</p>
-        </div>
-    </div>
-    <style>
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
-
-    <script>
-        function navigateToInterview() {
-            // Show loading overlay
-            const overlay = document.getElementById('loadingOverlay');
-            overlay.style.display = 'block';
-            setTimeout(() => {
-                overlay.style.opacity = '1';
-            }, 10);
-            
-            // Navigate immediately
-            window.location.href = '/interview';
-        }
-    </script>
 
 </body>
 </html>
