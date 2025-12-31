@@ -425,7 +425,8 @@ app.get('/api/growth-audit/status', (c) => {
 app.post('/api/analysis/start', async (c) => {
   try {
     const { env } = c;
-    const { interviewId, userId } = await c.req.json();
+    const body = await c.req.json();
+    const { interviewId, userId, responses } = body;
 
     if (!interviewId || !userId) {
       return c.json({ 
@@ -434,35 +435,52 @@ app.post('/api/analysis/start', async (c) => {
       }, 400);
     }
 
-    // Get interview data from database
-    if (!env.DB) {
-      return c.json({ 
-        success: false, 
-        message: 'Database not configured' 
-      }, 500);
+    let transcript: InterviewTranscript;
+
+    // If database is configured, fetch from DB
+    if (env.DB) {
+      const { getInterview } = await import('./services/database');
+      const interview = await getInterview(env.DB, interviewId);
+
+      if (!interview) {
+        return c.json({ 
+          success: false, 
+          message: 'Interview not found' 
+        }, 404);
+      }
+
+      // Prepare transcript from database
+      transcript = {
+        userId: interview.user_id,
+        interviewId: interview.id,
+        responses: JSON.parse(interview.responses),
+        completedAt: interview.updated_at
+      };
+    } else {
+      // Fallback: Use responses from request body (localStorage mode)
+      console.log('Database not configured - using localStorage mode');
+      
+      if (!responses || !Array.isArray(responses) || responses.length === 0) {
+        return c.json({ 
+          success: false, 
+          message: 'Interview responses are required when database is not configured' 
+        }, 400);
+      }
+
+      transcript = {
+        userId,
+        interviewId,
+        responses,
+        completedAt: new Date().toISOString()
+      };
     }
-
-    const { getInterview } = await import('./services/database');
-    const interview = await getInterview(env.DB, interviewId);
-
-    if (!interview) {
-      return c.json({ 
-        success: false, 
-        message: 'Interview not found' 
-      }, 404);
-    }
-
-    // Prepare transcript for analysis
-    const transcript: InterviewTranscript = {
-      userId: interview.user_id,
-      interviewId: interview.id,
-      responses: JSON.parse(interview.responses),
-      completedAt: interview.updated_at
-    };
 
     const claudeApiKey = env.ANTHROPIC_API_KEY || '';
     
-    console.log('Analyzing interview transcript...');
+    console.log('Analyzing interview transcript...', {
+      mode: env.DB ? 'database' : 'localStorage',
+      responseCount: transcript.responses.length
+    });
     
     // Analyze interview to extract business profile
     const businessProfile = await analyzeInterviewTranscript(transcript, claudeApiKey);
@@ -476,6 +494,7 @@ app.post('/api/analysis/start', async (c) => {
     console.error('Error starting analysis:', error);
     return c.json({
       success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
       message: 'Failed to analyze interview: ' + (error instanceof Error ? error.message : 'Unknown error')
     }, 500);
   }
