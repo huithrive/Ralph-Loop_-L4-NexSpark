@@ -418,6 +418,402 @@ app.get('/api/growth-audit/status', (c) => {
 });
 
 // ==========================================
+// INTERVIEW SUMMARY & PREVIEW ENDPOINTS
+// ==========================================
+
+// API: Generate Claude summary of interview responses
+app.post('/api/interview/summarize', async (c) => {
+  try {
+    const { env } = c;
+    const { responses } = await c.req.json();
+
+    if (!responses || !Array.isArray(responses)) {
+      return c.json({ 
+        success: false, 
+        message: 'Interview responses required' 
+      }, 400);
+    }
+
+    const claudeApiKey = env.ANTHROPIC_API_KEY;
+    if (!claudeApiKey) {
+      return c.json({ 
+        success: false, 
+        message: 'Claude API not configured' 
+      }, 500);
+    }
+
+    // Build transcript for Claude
+    const transcript = responses.map((r: any, idx: number) => 
+      `Q${idx + 1}: ${r.question}\nA${idx + 1}: ${r.answer}`
+    ).join('\n\n');
+
+    const prompt = `Based on this interview, please provide a structured summary in JSON format:
+
+${transcript}
+
+Return ONLY a JSON object with this exact structure:
+{
+  "brandName": "...",
+  "productDescription": "...",
+  "founded": "...",
+  "motivation": "...",
+  "currentRevenue": "...",
+  "marketingChannels": ["..."],
+  "bestChannel": "...",
+  "biggestChallenge": "...",
+  "idealCustomer": "...",
+  "competitors": ["..."],
+  "sixMonthGoal": "..."
+}`;
+
+    console.log('📊 Generating interview summary with Claude...');
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': claudeApiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5-20250929',
+        max_tokens: 2048,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('Claude API error:', errorBody);
+      throw new Error(`Claude API failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const summaryText = data.content[0].text;
+    
+    // Parse JSON from Claude's response
+    const jsonMatch = summaryText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Failed to parse JSON from Claude response');
+    }
+    
+    const summary = JSON.parse(jsonMatch[0]);
+    console.log('✅ Interview summary generated successfully');
+
+    return c.json({
+      success: true,
+      summary
+    });
+
+  } catch (error) {
+    console.error('Error generating summary:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to generate summary: ' + (error instanceof Error ? error.message : 'Unknown error')
+    }, 500);
+  }
+});
+
+// API: Generate competitor preview (lightweight version)
+app.post('/api/preview/competitors', async (c) => {
+  try {
+    const { env } = c;
+    const { website, industry, competitors } = await c.req.json();
+
+    if (!website) {
+      return c.json({ 
+        success: false, 
+        message: 'Website required' 
+      }, 400);
+    }
+
+    const rapidApiKey = env.RAPIDAPI_KEY;
+    const rapidApiHost = env.RAPIDAPI_HOST || 'similarweb-data.p.rapidapi.com';
+
+    if (!rapidApiKey) {
+      console.warn('⚠️ RapidAPI not configured, using mock data');
+      // Return mock data if API not configured
+      return c.json({
+        success: true,
+        competitors: [
+          {
+            name: competitors?.[0] || 'Competitor 1',
+            website: 'competitor1.com',
+            monthlyTraffic: '125,000',
+            strength: 'Strong brand presence',
+            weakness: 'Limited product range'
+          },
+          {
+            name: competitors?.[1] || 'Competitor 2',
+            website: 'competitor2.com',
+            monthlyTraffic: '89,000',
+            strength: 'Competitive pricing',
+            weakness: 'Poor customer service'
+          },
+          {
+            name: competitors?.[2] || 'Competitor 3',
+            website: 'competitor3.com',
+            monthlyTraffic: '52,000',
+            strength: 'Fast shipping',
+            weakness: 'Limited marketing'
+          }
+        ]
+      });
+    }
+
+    // Fetch basic traffic data for competitors
+    const competitorData = await Promise.all(
+      (competitors || []).slice(0, 3).map(async (comp: string) => {
+        try {
+          const compDomain = comp.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+          const response = await fetch(
+            `https://${rapidApiHost}/v1/similar-rank/${encodeURIComponent(compDomain)}/all`,
+            {
+              headers: {
+                'X-RapidAPI-Key': rapidApiKey,
+                'X-RapidAPI-Host': rapidApiHost
+              }
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            return {
+              name: comp,
+              website: compDomain,
+              monthlyTraffic: data.similarRank?.globalRank ? `~${Math.round(data.similarRank.globalRank / 1000)}K` : 'N/A',
+              strength: 'Market leader',
+              weakness: 'Opportunity for differentiation'
+            };
+          }
+        } catch (err) {
+          console.error(`Error fetching data for ${comp}:`, err);
+        }
+
+        return {
+          name: comp,
+          website: comp,
+          monthlyTraffic: 'N/A',
+          strength: 'Established player',
+          weakness: 'Opportunity exists'
+        };
+      })
+    );
+
+    return c.json({
+      success: true,
+      competitors: competitorData
+    });
+
+  } catch (error) {
+    console.error('Error generating competitor preview:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to generate competitor preview'
+    }, 500);
+  }
+});
+
+// API: Generate 6-month roadmap preview (high-level)
+app.post('/api/preview/roadmap', async (c) => {
+  try {
+    const { env } = c;
+    const { summary } = await c.req.json();
+
+    if (!summary) {
+      return c.json({ 
+        success: false, 
+        message: 'Interview summary required' 
+      }, 400);
+    }
+
+    const claudeApiKey = env.ANTHROPIC_API_KEY;
+    if (!claudeApiKey) {
+      return c.json({ 
+        success: false, 
+        message: 'Claude API not configured' 
+      }, 500);
+    }
+
+    const prompt = `Based on this business summary, create a high-level 6-month growth roadmap preview with 3 phases:
+
+Brand: ${summary.brandName}
+Product: ${summary.productDescription}
+Current Revenue: ${summary.currentRevenue}
+Goal: ${summary.sixMonthGoal}
+Challenge: ${summary.biggestChallenge}
+
+Return ONLY a JSON object with this structure:
+{
+  "phases": [
+    {
+      "months": "1-2",
+      "name": "...",
+      "actions": ["...", "..."],
+      "goal": "..."
+    },
+    {
+      "months": "3-4",
+      "name": "...",
+      "actions": ["...", "..."],
+      "goal": "..."
+    },
+    {
+      "months": "5-6",
+      "name": "...",
+      "actions": ["...", "..."],
+      "goal": "..."
+    }
+  ],
+  "expectedOutcome": "..."
+}`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': claudeApiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5-20250929',
+        max_tokens: 2048,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Claude API failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const roadmapText = data.content[0].text;
+    const jsonMatch = roadmapText.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error('Failed to parse roadmap JSON');
+    }
+
+    const roadmap = JSON.parse(jsonMatch[0]);
+
+    return c.json({
+      success: true,
+      roadmap
+    });
+
+  } catch (error) {
+    console.error('Error generating roadmap preview:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to generate roadmap preview'
+    }, 500);
+  }
+});
+
+// API: Generate paid ads benchmarks preview
+app.post('/api/preview/benchmarks', async (c) => {
+  try {
+    const { env } = c;
+    const { summary } = await c.req.json();
+
+    if (!summary) {
+      return c.json({ 
+        success: false, 
+        message: 'Interview summary required' 
+      }, 400);
+    }
+
+    const claudeApiKey = env.ANTHROPIC_API_KEY;
+    if (!claudeApiKey) {
+      return c.json({ 
+        success: false, 
+        message: 'Claude API not configured' 
+      }, 500);
+    }
+
+    const prompt = `Based on this business, provide realistic paid advertising benchmarks:
+
+Product: ${summary.productDescription}
+Industry: ${summary.industry || 'General'}
+Current Revenue: ${summary.currentRevenue}
+
+Return ONLY a JSON object with this structure:
+{
+  "googleAds": {
+    "targetCPC": "$X.XX",
+    "expectedCTR": "X.X%",
+    "projectedCAC": "$XX",
+    "recommendedBudget": "$X,XXX/month",
+    "expectedROI": "Xx"
+  },
+  "facebookAds": {
+    "targetCPM": "$XX",
+    "expectedCTR": "X.X%",
+    "projectedCAC": "$XX",
+    "recommendedBudget": "$X,XXX/month",
+    "expectedROI": "Xx"
+  },
+  "recommendation": "..."
+}`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': claudeApiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5-20250929',
+        max_tokens: 1024,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Claude API failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const benchmarksText = data.content[0].text;
+    const jsonMatch = benchmarksText.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error('Failed to parse benchmarks JSON');
+    }
+
+    const benchmarks = JSON.parse(jsonMatch[0]);
+
+    return c.json({
+      success: true,
+      benchmarks
+    });
+
+  } catch (error) {
+    console.error('Error generating benchmarks preview:', error);
+    return c.json({
+      success: false,
+      message: 'Failed to generate benchmarks preview'
+    }, 500);
+  }
+});
+
+// ==========================================
 // POST-INTERVIEW ANALYSIS & PAYMENT ENDPOINTS
 // ==========================================
 
