@@ -90,7 +90,7 @@ const interviewQuestions = [
   "Who is your ideal customer? Describe them in detail.",
   "Who are your top 3 competitors and what makes you different?",
   "What's your main goal for the next 6 months?",
-  "What's your budget range for working with growth experts?"
+  "What's your monthly budget range for growth and marketing investments?"
 ];
 
 // Authentication Check
@@ -864,8 +864,8 @@ function skipToDemo() {
         timestamp: new Date().toISOString()
       },
       {
-        question: "What's your budget range for working with growth experts?",
-        answer: "We can allocate up to $10,000 per month for expert help and strategy development",
+        question: "What's your monthly budget range for growth and marketing investments?",
+        answer: "We can allocate up to $10,000 per month for growth initiatives and marketing",
         timestamp: new Date().toISOString()
       }
     ],
