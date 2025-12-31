@@ -120,6 +120,11 @@ export async function analyzeInterview(
   transcript: InterviewTranscript,
   claudeApiKey: string
 ): Promise<BusinessProfile> {
+  // Validate API key
+  if (!claudeApiKey || claudeApiKey.trim() === '') {
+    throw new Error('Claude API key is not configured. Please set ANTHROPIC_API_KEY in Cloudflare environment variables.');
+  }
+
   const transcriptText = transcript.responses
     .map((r, i) => `Q${i + 1}: ${r.question}\nA${i + 1}: ${r.answer}`)
     .join('\n\n');
@@ -152,6 +157,8 @@ Respond in JSON format:
 }`;
 
   try {
+    console.log('Calling Claude API with model: claude-3-5-sonnet-20241022');
+    
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -172,7 +179,13 @@ Respond in JSON format:
     });
 
     if (!response.ok) {
-      throw new Error(`Claude API failed: ${response.statusText}`);
+      const errorBody = await response.text();
+      console.error('Claude API error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorBody
+      });
+      throw new Error(`Claude API failed: ${response.statusText} (${response.status}). ${errorBody}`);
     }
 
     const data = await response.json();
@@ -185,6 +198,7 @@ Respond in JSON format:
     }
 
     const businessProfile: BusinessProfile = JSON.parse(jsonMatch[0]);
+    console.log('Business profile extracted successfully');
     return businessProfile;
   } catch (error) {
     console.error('Error analyzing interview:', error);

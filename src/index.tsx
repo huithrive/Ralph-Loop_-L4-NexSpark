@@ -479,8 +479,18 @@ app.post('/api/analysis/start', async (c) => {
     
     console.log('Analyzing interview transcript...', {
       mode: env.DB ? 'database' : 'localStorage',
-      responseCount: transcript.responses.length
+      responseCount: transcript.responses.length,
+      hasClaudeKey: !!claudeApiKey,
+      keyLength: claudeApiKey ? claudeApiKey.length : 0
     });
+    
+    if (!claudeApiKey) {
+      return c.json({
+        success: false,
+        error: 'Claude API key not configured',
+        message: 'ANTHROPIC_API_KEY environment variable is not set. Please configure it in Cloudflare Pages settings.'
+      }, 500);
+    }
     
     // Analyze interview to extract business profile
     const businessProfile = await analyzeInterviewTranscript(transcript, claudeApiKey);
