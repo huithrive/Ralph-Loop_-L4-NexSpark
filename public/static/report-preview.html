@@ -302,6 +302,120 @@
             window.location.href = '/strategy-analysis';
         });
         
+        // Load roadmap preview
+        async function loadRoadmapPreview(summary) {
+            try {
+                console.log('📅 Loading roadmap preview...');
+                
+                const response = await axios.post('/api/preview/roadmap', {
+                    summary: summary
+                });
+                
+                if (response.data.success) {
+                    const roadmap = response.data.roadmap;
+                    previewState.roadmap = roadmap;
+                    
+                    console.log('✅ Roadmap loaded:', roadmap);
+                    displayRoadmap(roadmap, summary);
+                    checkAllLoaded();
+                } else {
+                    throw new Error(response.data.message || 'Failed to load roadmap');
+                }
+            } catch (error) {
+                console.error('Error loading roadmap:', error);
+                showRoadmapError(error.message);
+            }
+        }
+        
+        // Display roadmap
+        function displayRoadmap(roadmap, summary) {
+            const roadmapData = document.getElementById('roadmapData');
+            
+            let html = '<div class="space-y-6">';
+            
+            if (roadmap.phases && Array.isArray(roadmap.phases)) {
+                roadmap.phases.forEach((phase, index) => {
+                    html += `
+                        <div class="nexspark-dark rounded-lg p-6 border-l-4 border-nexspark-purple fade-in" style="animation-delay: ${index * 0.2}s">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-16 h-16 bg-nexspark-purple rounded-lg flex items-center justify-center">
+                                    <span class="text-2xl font-header font-bold text-white">${phase.months || `${index + 1}`}</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-header font-bold text-white">
+                                        ${phase.name || `Phase ${index + 1}`}
+                                    </h3>
+                                    <p class="text-nexspark-purple text-sm">Months ${phase.months || ''}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h4 class="text-nexspark-blue font-bold text-sm uppercase mb-2">
+                                    <i class="fas fa-tasks mr-2"></i>Key Actions:
+                                </h4>
+                                <ul class="space-y-2">
+                                    ${phase.actions && Array.isArray(phase.actions) ? 
+                                        phase.actions.map(action => `
+                                            <li class="flex items-start gap-2 text-white/90">
+                                                <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                                                <span>${action}</span>
+                                            </li>
+                                        `).join('') : 
+                                        '<li class="text-white/70">No actions specified</li>'
+                                    }
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-nexspark-panel rounded p-3 border border-nexspark-gold/30">
+                                <div class="text-nexspark-gold font-bold text-sm mb-1">
+                                    <i class="fas fa-bullseye mr-2"></i>Goal
+                                </div>
+                                <div class="text-white/90">${phase.goal || 'N/A'}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            html += '</div>';
+            
+            // Add expected outcome
+            if (roadmap.expectedOutcome) {
+                html += `
+                    <div class="mt-6 nexspark-panel rounded-lg p-6 border-2 border-nexspark-gold">
+                        <h4 class="text-lg font-header font-bold text-nexspark-gold mb-3">
+                            <i class="fas fa-trophy mr-2"></i>Expected Outcome
+                        </h4>
+                        <p class="text-white/90 text-lg">
+                            ${roadmap.expectedOutcome}
+                        </p>
+                    </div>
+                `;
+            }
+            
+            roadmapData.innerHTML = html;
+            
+            // Hide loading, show data
+            document.getElementById('roadmapLoading').classList.add('hidden');
+            roadmapData.classList.remove('hidden');
+        }
+        
+        // Show roadmap error
+        function showRoadmapError(message) {
+            const roadmapData = document.getElementById('roadmapData');
+            roadmapData.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-3"></i>
+                    <p class="text-white/70">${message}</p>
+                    <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-nexspark-gold text-black font-bold rounded">
+                        Try Again
+                    </button>
+                </div>
+            `;
+            document.getElementById('roadmapLoading').classList.add('hidden');
+            roadmapData.classList.remove('hidden');
+        }
+        
         // Load competitor preview
         async function loadCompetitorPreview(summary) {
             try {
@@ -431,8 +545,9 @@
             console.log('🚀 Starting preview generation...');
             console.log('Summary:', summary);
             
-            // Load competitors preview
+            // Load previews
             loadCompetitorPreview(summary);
+            loadRoadmapPreview(summary);
             
             console.log('✅ Preview page initialized');
         });
