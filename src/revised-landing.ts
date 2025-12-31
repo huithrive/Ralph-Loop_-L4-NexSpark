@@ -1,5 +1,5 @@
-// Landing Page - "Nexspark is Calling You" Experience
-// Position: $2,000/hour top marketing CMO calling to diagnose your business
+// Revised Landing Page - AI Growth Co-Founder Focus
+// This replaces the old "Airbnb for Market Growth" positioning
 
 export const REVISED_LANDING_HTML = `
 <!DOCTYPE html>
@@ -7,42 +7,32 @@ export const REVISED_LANDING_HTML = `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexspark | Your Expert Marketing CMO is Calling</title>
-    <meta name="description" content="Nexspark: The $2,000/hour marketing CMO calling to diagnose your business. Get to $100M with unclaimed growth data.">
+    <title>NexSpark | Your AI Growth Co-Founder</title>
+    <meta name="description" content="Nexspark: Your AI Growth Co-Founder with $100M+ IPO Experience. 90% cost reduction. 18-24 month path to profitability.">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ['Rajdhani', 'sans-serif'],
+              header: ['Antonio', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
               nexspark: {
-                orange: '#FF6B35',
-                dark: '#0A0E27',
-                blue: '#00D9FF',
-                purple: '#7B61FF',
-                gray: '#1A1F3A'
-              }
-            },
-            animation: {
-              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'ring': 'ring 1.5s ease-in-out infinite',
-              'float': 'float 3s ease-in-out infinite',
-            },
-            keyframes: {
-              ring: {
-                '0%, 100%': { transform: 'scale(1)', opacity: '1' },
-                '50%': { transform: 'scale(1.1)', opacity: '0.8' },
-              },
-              float: {
-                '0%, 100%': { transform: 'translateY(0px)' },
-                '50%': { transform: 'translateY(-20px)' },
+                bg: '#000000',
+                gold: '#FF9C00',
+                pale: '#FFCC99',
+                red: '#CC3333',
+                blue: '#99CCFF',
+                purple: '#CC99CC',
+                dark: '#111111',
+                panel: 'rgba(20, 20, 25, 0.9)'
               }
             }
           }
@@ -52,366 +42,472 @@ export const REVISED_LANDING_HTML = `
     
     <style>
       body {
-        background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 100%);
-        min-height: 100vh;
+        background-color: #000000;
+        color: #99CCFF;
+        overflow-x: hidden;
       }
       
-      .phone-glow {
-        box-shadow: 0 0 80px rgba(255, 107, 53, 0.4), 
-                    0 0 120px rgba(255, 107, 53, 0.2),
-                    0 20px 60px rgba(0, 0, 0, 0.5);
+      ::-webkit-scrollbar {
+        width: 12px;
+        background: #000;
+      }
+      ::-webkit-scrollbar-track {
+        background: #000;
+        border-left: 1px solid #333;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #FF9C00;
+        border-radius: 6px;
+        border: 2px solid #000;
       }
       
-      .text-glow {
-        text-shadow: 0 0 20px rgba(255, 107, 53, 0.5),
-                     0 0 40px rgba(255, 107, 53, 0.3);
+      .lcars-bracket {
+        position: relative;
+        border-left: 12px solid #FF9C00;
+        border-top: 12px solid #FF9C00;
+        border-top-left-radius: 24px;
+        padding-left: 20px;
+        padding-top: 20px;
       }
       
-      .call-button {
-        background: linear-gradient(135deg, #FF6B35 0%, #FF8A5B 100%);
-        box-shadow: 0 10px 40px rgba(255, 107, 53, 0.4),
-                    0 0 60px rgba(255, 107, 53, 0.2);
-        transition: all 0.3s ease;
+      .lcars-btn {
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: 'Antonio', sans-serif;
+        font-weight: 700;
+        transition: all 0.2s;
       }
       
-      .call-button:hover {
-        transform: translateY(-5px) scale(1.05);
-        box-shadow: 0 20px 60px rgba(255, 107, 53, 0.6),
-                    0 0 80px rgba(255, 107, 53, 0.3);
+      .lcars-btn:hover {
+        filter: brightness(1.2);
+        transform: translateX(5px);
       }
       
-      .call-button:active {
-        transform: translateY(-2px) scale(1.02);
-      }
-      
-      .gradient-text {
-        background: linear-gradient(135deg, #FF6B35 0%, #00D9FF 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      
-      @keyframes ripple {
-        0% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        100% {
-          transform: scale(2);
-          opacity: 0;
-        }
-      }
-      
-      .ripple {
-        animation: ripple 2s infinite;
-      }
-      
-      .stat-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-      }
-      
-      .stat-card:hover {
-        background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(255, 107, 53, 0.3);
-        transform: translateY(-5px);
+      @keyframes warp {
+        0% { transform: translateZ(0) scale(1); }
+        100% { transform: translateZ(100px) scale(1.5); }
       }
     </style>
 </head>
-<body class="font-sans text-white">
+<body class="font-sans">
+    <!-- Animated Background Canvas -->
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-nexspark-dark/80 border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-nexspark-orange to-nexspark-blue rounded-lg flex items-center justify-center">
-                        <i class="fas fa-bolt text-white text-xl"></i>
-                    </div>
-                    <span class="text-2xl font-bold tracking-tight">Nexspark</span>
-                </div>
-                
-                <a href="/interview" class="inline-block px-6 py-2.5 bg-nexspark-orange hover:bg-nexspark-orange/90 rounded-lg font-semibold transition-all text-black no-underline">
-                    Answer the Call
-                </a>
+    <!-- Top Navigation Bar -->
+    <div class="fixed top-0 left-0 w-full flex items-center justify-between p-4 gap-2 opacity-90 z-50 backdrop-blur-sm">
+        <div class="flex items-center gap-2 flex-1">
+            <div class="h-12 bg-white rounded-full flex items-center justify-center px-6 min-w-[180px]">
+                <i class="fas fa-bolt text-3xl text-yellow-500 mr-2"></i>
+                <span class="text-2xl font-header font-bold text-black tracking-wider">NEXSPARK</span>
+            </div>
+            <div class="h-8 w-16 bg-nexspark-red rounded-full self-start mt-2 hidden md:block"></div>
+            <div class="h-8 w-64 bg-nexspark-blue rounded-full flex items-center justify-center px-6 self-start mt-2 hidden lg:flex">
+                <span class="text-black font-header font-bold tracking-widest text-sm">AI GROWTH OS - v3.0</span>
             </div>
         </div>
-    </header>
+        
+        <div class="flex gap-2 mt-2">
+            <button onclick="window.location.href='/interview'" class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-8 py-3 rounded-lg text-lg">
+                <i class="fas fa-rocket mr-2"></i> GET STARTED
+            </button>
+        </div>
+    </div>
 
-    <!-- Hero Section - Phone Call Experience -->
-    <section class="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
+    <!-- Hero Section -->
+    <section class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12 md:py-20">
+        <div class="max-w-7xl w-full mt-16 md:mt-20">
+            <div class="flex flex-col lg:flex-row gap-12">
                 
-                <!-- Left: Message -->
-                <div class="space-y-8">
-                    <!-- Calling Badge -->
-                    <div class="inline-flex items-center gap-3 px-6 py-3 bg-nexspark-orange/10 border border-nexspark-orange/30 rounded-full animate-pulse-slow">
-                        <div class="relative">
-                            <div class="w-3 h-3 bg-nexspark-orange rounded-full animate-ring"></div>
-                            <div class="absolute inset-0 w-3 h-3 bg-nexspark-orange rounded-full opacity-50 ripple"></div>
-                        </div>
-                        <span class="text-nexspark-orange font-semibold text-sm">Incoming Call</span>
+                <!-- LCARS Sidebar -->
+                <div class="hidden lg:flex flex-col w-32 shrink-0">
+                    <div class="h-40 w-full bg-nexspark-gold rounded-tl-3xl mb-2 flex items-end justify-end p-2">
+                        <span class="text-black font-header text-6xl font-bold">01</span>
                     </div>
-                    
+                    <div class="h-32 w-full bg-nexspark-pale rounded-l-lg mb-2"></div>
+                    <div class="flex-1 min-h-[200px] w-16 bg-nexspark-purple rounded-bl-3xl ml-auto border-r-8 border-black"></div>
+                </div>
+
+                <div class="flex-1">
                     <!-- Main Headline -->
-                    <div>
-                        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
-                            <span class="text-glow">Nexspark</span><br/>
-                            <span class="text-white/90">is calling</span><br/>
-                            <span class="gradient-text">you.</span>
-                        </h1>
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-header font-bold text-white tracking-tighter uppercase leading-[0.9] mb-8">
+                        Your <span class="text-nexspark-gold">AI Growth</span><br/>
+                        <span class="text-nexspark-blue">Co-Founder</span>
+                    </h1>
+
+                    <!-- Sub-Headline with Data Panel -->
+                    <div class="mb-8 max-w-4xl">
+                        <h2 class="text-2xl md:text-3xl text-nexspark-gold font-header uppercase mb-4 tracking-wide">
+                            Uncover Your Path to $100M
+                        </h2>
                         
-                        <p class="text-xl sm:text-2xl text-white/70 leading-relaxed mb-4">
-                            The <span class="text-nexspark-orange font-bold">$2,000/hour marketing CMO</span> you've always wanted.
-                        </p>
-                        
-                        <p class="text-lg text-white/60 leading-relaxed">
-                            Ready to understand your business, diagnose what's holding you back, 
-                            and chart your path to <span class="text-nexspark-blue font-semibold">$100M</span>.
-                        </p>
+                        <div class="bg-nexspark-blue/10 border-l-4 border-nexspark-blue p-4 md:p-6 mb-8 rounded-r-lg backdrop-blur-sm">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-chart-line text-nexspark-blue text-xl mt-1"></i>
+                                <div>
+                                    <div class="text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-1">
+                                        Unclaimed Growth Data:
+                                    </div>
+                                    <p class="text-white/90 font-mono text-sm md:text-base leading-relaxed">
+                                        Find the <span class="text-nexspark-gold">hidden opportunities</span> your competitors are missing. 
+                                        <span class="text-nexspark-blue">10-minute diagnosis</span>. 
+                                        <span class="text-nexspark-purple">Clear path to $100M revenue</span>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- What Happens -->
-                    <div class="space-y-4">
-                        <p class="text-sm uppercase tracking-widest text-white/40 font-semibold">What happens on the call:</p>
-                        
-                        <div class="space-y-3">
-                            <div class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-nexspark-orange/20 flex items-center justify-center shrink-0 mt-0.5">
-                                    <i class="fas fa-check text-nexspark-orange text-xs"></i>
-                                </div>
-                                <p class="text-white/80"><span class="font-semibold">10-minute diagnostic interview</span> — We learn your business inside and out</p>
-                            </div>
-                            
-                            <div class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-nexspark-blue/20 flex items-center justify-center shrink-0 mt-0.5">
-                                    <i class="fas fa-check text-nexspark-blue text-xs"></i>
-                                </div>
-                                <p class="text-white/80"><span class="font-semibold">Uncover hidden growth data</span> — Find opportunities your competitors are missing</p>
-                            </div>
-                            
-                            <div class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-nexspark-purple/20 flex items-center justify-center shrink-0 mt-0.5">
-                                    <i class="fas fa-check text-nexspark-purple text-xs"></i>
-                                </div>
-                                <p class="text-white/80"><span class="font-semibold">Get your complete growth strategy</span> — 6-month roadmap to scale revenue</p>
-                            </div>
+                    <!-- Trust Indicators Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl">
+                        <div class="bg-black/60 border-t-4 border-nexspark-gold p-4 backdrop-blur-sm">
+                            <div class="text-4xl font-header font-bold text-nexspark-gold mb-1">$100M</div>
+                            <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Revenue Target</div>
+                        </div>
+                        <div class="bg-black/60 border-t-4 border-nexspark-blue p-4 backdrop-blur-sm">
+                            <div class="text-4xl font-header font-bold text-nexspark-blue mb-1">10min</div>
+                            <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Expert Diagnosis</div>
+                        </div>
+                        <div class="bg-black/60 border-t-4 border-nexspark-purple p-4 backdrop-blur-sm">
+                            <div class="text-4xl font-header font-bold text-nexspark-purple mb-1">$20</div>
+                            <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Full Strategy</div>
+                        </div>
+                        <div class="bg-black/60 border-t-4 border-nexspark-red p-4 backdrop-blur-sm">
+                            <div class="text-4xl font-header font-bold text-nexspark-red mb-1">6mo</div>
+                            <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Growth Roadmap</div>
                         </div>
                     </div>
 
                     <!-- CTA Button -->
-                    <div>
-                        <a href="/interview" class="call-button w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl text-white inline-flex items-center justify-center gap-4 no-underline">
-                            <i class="fas fa-phone text-2xl animate-ring"></i>
-                            <span>ANSWER THE CALL</span>
-                        </a>
-                        
-                        <p class="text-sm text-white/50 mt-4">
-                            <i class="fas fa-clock mr-2"></i>Takes 10 minutes • No credit card required
-                        </p>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-16">
+                        <button onclick="window.location.href='/interview'" class="lcars-btn bg-nexspark-gold hover:bg-white text-black px-10 py-4 rounded-lg text-xl flex items-center justify-center gap-2">
+                            <i class="fas fa-microphone"></i> START WITH NEXSPARK
+                        </button>
                     </div>
-                </div>
 
-                <!-- Right: Phone Visual -->
-                <div class="relative lg:block hidden">
-                    <div class="relative animate-float">
-                        <!-- Phone Device -->
-                        <div class="phone-glow bg-gradient-to-b from-nexspark-gray to-nexspark-dark rounded-[60px] p-4 border-8 border-nexspark-dark/50">
-                            <div class="bg-black rounded-[50px] p-8 min-h-[600px] flex flex-col">
-                                <!-- Status Bar -->
-                                <div class="flex items-center justify-between text-white/60 text-sm mb-12">
-                                    <span>9:41 AM</span>
-                                    <div class="flex items-center gap-1">
-                                        <i class="fas fa-signal"></i>
-                                        <i class="fas fa-wifi"></i>
-                                        <i class="fas fa-battery-full"></i>
-                                    </div>
-                                </div>
+                    <!-- 2-Key Messages -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-3xl">
+                        <div class="bg-black/40 border-t border-white/10 p-4 flex gap-4 items-start">
+                            <div class="bg-nexspark-gold/20 text-nexspark-gold font-bold font-header text-xs px-2 py-1 rounded mt-1">AI-FIRST</div>
+                            <div>
+                                <h3 class="text-nexspark-gold font-header uppercase tracking-wider text-sm mb-1">Fortune 500 Quality</h3>
+                                <p class="text-slate-400 font-mono text-xs leading-relaxed">
+                                    Nexspark delivers billion-dollar strategy and execution. No agencies needed.
+                                </p>
+                            </div>
+                        </div>
 
-                                <!-- Caller Info -->
-                                <div class="flex-1 flex flex-col items-center justify-center space-y-8">
-                                    <!-- Profile -->
-                                    <div class="relative">
-                                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-nexspark-orange to-nexspark-blue flex items-center justify-center text-5xl">
-                                            <i class="fas fa-bolt text-white"></i>
-                                        </div>
-                                        <!-- Ripple Effect -->
-                                        <div class="absolute inset-0 w-32 h-32 rounded-full border-4 border-nexspark-orange animate-ping opacity-50"></div>
-                                    </div>
-
-                                    <div class="text-center space-y-2">
-                                        <h3 class="text-3xl font-bold text-white">Nexspark</h3>
-                                        <p class="text-nexspark-orange font-semibold">Your Marketing CMO</p>
-                                        <p class="text-white/50 text-sm">Calling...</p>
-                                    </div>
-
-                                    <!-- Incoming Call Animation -->
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-2 h-8 bg-nexspark-orange rounded-full animate-pulse"></div>
-                                        <div class="w-2 h-12 bg-nexspark-orange rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
-                                        <div class="w-2 h-16 bg-nexspark-orange rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
-                                        <div class="w-2 h-12 bg-nexspark-orange rounded-full animate-pulse" style="animation-delay: 0.6s"></div>
-                                        <div class="w-2 h-8 bg-nexspark-orange rounded-full animate-pulse" style="animation-delay: 0.8s"></div>
-                                    </div>
-                                </div>
-
-                                <!-- Call Action Buttons -->
-                                <div class="flex items-center justify-center gap-8 mt-8">
-                                    <!-- Decline -->
-                                    <button class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
-                                        <i class="fas fa-phone-slash text-red-500 text-xl"></i>
-                                    </button>
-                                    
-                                    <!-- Accept (Pulsing) -->
-                                    <a href="/interview" class="relative w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center animate-ring no-underline">
-                                        <i class="fas fa-phone text-white text-2xl"></i>
-                                        <div class="absolute inset-0 w-20 h-20 rounded-full border-4 border-green-500 animate-ping opacity-30"></div>
-                                    </a>
-                                </div>
+                        <div class="bg-black/40 border-t border-white/10 p-4 flex gap-4 items-start">
+                            <div class="bg-nexspark-blue/20 text-nexspark-blue font-bold font-header text-xs px-2 py-1 rounded mt-1">AGGRESSIVE</div>
+                            <div>
+                                <h3 class="text-nexspark-blue font-header uppercase tracking-wider text-sm mb-1">Move Fast or Die</h3>
+                                <p class="text-slate-400 font-mono text-xs leading-relaxed">
+                                    AI is eating the $372B agency economy. Be early or be left behind.
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-black/20">
+    <!-- How It Works Section -->
+    <section class="relative z-10 py-20 px-4">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl sm:text-4xl font-bold mb-4">
-                    Why top founders are <span class="gradient-text">taking this call</span>
-                </h2>
-                <p class="text-xl text-white/60 max-w-3xl mx-auto">
-                    Nexspark uncovers the unclaimed growth data your competitors don't see
-                </p>
+            <div class="flex items-center gap-4 mb-12">
+                <div class="h-20 w-20 bg-nexspark-blue rounded-tl-3xl flex items-center justify-center">
+                    <span class="text-black font-header text-4xl font-bold">02</span>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
+                        How It Works
+                    </h2>
+                    <p class="text-nexspark-blue font-mono text-sm uppercase tracking-widest mt-2">AI-Powered Growth Protocol</p>
+                </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Stat 1 -->
-                <div class="stat-card rounded-2xl p-8 text-center">
-                    <div class="text-5xl font-black text-nexspark-orange mb-3">$100M</div>
-                    <h3 class="text-xl font-semibold mb-2">Revenue Target</h3>
-                    <p class="text-white/60">Clear path from where you are to $100M in revenue</p>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-6 backdrop-blur-sm">
+                    <div class="w-16 h-16 bg-nexspark-gold rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
+                        01
+                    </div>
+                    <h4 class="text-lg font-header font-bold text-nexspark-gold uppercase mb-3 tracking-wider">Nexspark Interview</h4>
+                    <p class="text-white/70 font-mono text-xs leading-relaxed">
+                        10-minute voice interview. AI understands your business, goals, and challenges.
+                    </p>
                 </div>
 
-                <!-- Stat 2 -->
-                <div class="stat-card rounded-2xl p-8 text-center">
-                    <div class="text-5xl font-black text-nexspark-blue mb-3">10 min</div>
-                    <h3 class="text-xl font-semibold mb-2">Expert Diagnosis</h3>
-                    <p class="text-white/60">Full business analysis in less time than a coffee break</p>
+                <div class="bg-nexspark-panel border-t-4 border-nexspark-blue p-6 backdrop-blur-sm">
+                    <div class="w-16 h-16 bg-nexspark-blue rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
+                        02
+                    </div>
+                    <h4 class="text-lg font-header font-bold text-nexspark-blue uppercase mb-3 tracking-wider">AI Strategy Generation</h4>
+                    <p class="text-white/70 font-mono text-xs leading-relaxed">
+                        Instant 6-month GTM playbook. Channel mix, budget allocation, CAC projections.
+                    </p>
                 </div>
 
-                <!-- Stat 3 -->
-                <div class="stat-card rounded-2xl p-8 text-center">
-                    <div class="text-5xl font-black text-nexspark-purple mb-3">$20</div>
-                    <h3 class="text-xl font-semibold mb-2">Complete Strategy</h3>
-                    <p class="text-white/60">Get your full 6-month growth roadmap for $20</p>
+                <div class="bg-nexspark-panel border-t-4 border-nexspark-purple p-6 backdrop-blur-sm">
+                    <div class="w-16 h-16 bg-nexspark-purple rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
+                        03
+                    </div>
+                    <h4 class="text-lg font-header font-bold text-nexspark-purple uppercase mb-3 tracking-wider">Automated Execution</h4>
+                    <p class="text-white/70 font-mono text-xs leading-relaxed">
+                        AI handles 90% of work. You focus on creative and strategic decisions only.
+                    </p>
+                </div>
+
+                <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-6 backdrop-blur-sm">
+                    <div class="w-16 h-16 bg-nexspark-gold rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
+                        04
+                    </div>
+                    <h4 class="text-lg font-header font-bold text-nexspark-gold uppercase mb-3 tracking-wider">Continuous Optimization</h4>
+                    <p class="text-white/70 font-mono text-xs leading-relaxed">
+                        Real-time performance tracking. AI adapts strategy based on results.
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <button onclick="window.location.href='/interview'" class="lcars-btn bg-nexspark-blue hover:bg-white text-black px-12 py-5 rounded-lg text-xl">
+                    <i class="fas fa-rocket mr-2"></i> START NOW
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="relative z-10 py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="h-20 w-20 bg-nexspark-gold rounded-tl-3xl flex items-center justify-center">
+                    <span class="text-black font-header text-4xl font-bold">03</span>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
+                        Pricing
+                    </h2>
+                    <p class="text-nexspark-gold font-mono text-sm uppercase tracking-widest mt-2">AI-Powered Value Tiers</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 max-w-7xl mx-auto">
+                <!-- Launch -->
+                <div class="bg-nexspark-panel border-t-4 border-nexspark-blue p-6 backdrop-blur-sm">
+                    <div class="bg-nexspark-blue/20 px-3 py-1 rounded inline-block mb-4">
+                        <span class="text-nexspark-blue font-header text-xs uppercase tracking-widest">Launch</span>
+                    </div>
+                    <div class="text-4xl font-header font-bold text-white mb-2">$5.4K<span class="text-xl text-white/50">/yr</span></div>
+                    <p class="text-white/60 font-mono text-xs mb-6">Month 1 • Single Channel</p>
+                    <ul class="space-y-3 mb-6 text-xs font-mono">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-blue"></i>
+                            <span class="text-white/80">Nexspark interview</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-blue"></i>
+                            <span class="text-white/80">1 channel GTM strategy</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-blue"></i>
+                            <span class="text-white/80">AI execution support</span>
+                        </li>
+                    </ul>
+                    <button onclick="window.location.href='/interview'" class="lcars-btn w-full bg-nexspark-blue hover:bg-white text-black py-3 rounded-lg text-sm">
+                        GET STARTED
+                    </button>
+                </div>
+
+                <!-- Scale -->
+                <div class="bg-nexspark-panel border-t-4 border-nexspark-purple p-6 backdrop-blur-sm">
+                    <div class="bg-nexspark-purple/20 px-3 py-1 rounded inline-block mb-4">
+                        <span class="text-nexspark-purple font-header text-xs uppercase tracking-widest">Scale</span>
+                    </div>
+                    <div class="text-4xl font-header font-bold text-white mb-2">$18.6K<span class="text-xl text-white/50">/yr</span></div>
+                    <p class="text-white/60 font-mono text-xs mb-6">Month 3 • Multi-Channel</p>
+                    <ul class="space-y-3 mb-6 text-xs font-mono">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-purple"></i>
+                            <span class="text-white/80">3-channel portfolio</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-purple"></i>
+                            <span class="text-white/80">Advanced automation</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-purple"></i>
+                            <span class="text-white/80">Weekly optimization</span>
+                        </li>
+                    </ul>
+                    <button onclick="window.location.href='/interview'" class="lcars-btn w-full bg-nexspark-purple hover:bg-nexspark-pale text-black py-3 rounded-lg text-sm">
+                        START SCALING
+                    </button>
+                </div>
+
+                <!-- Growth (Most Popular) -->
+                <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-6 backdrop-blur-sm relative">
+                    <div class="absolute -top-4 right-4 bg-nexspark-gold text-black px-4 py-1 rounded-full font-header text-xs font-bold uppercase tracking-wider">
+                        Popular
+                    </div>
+                    <div class="bg-nexspark-gold/20 px-3 py-1 rounded inline-block mb-4">
+                        <span class="text-nexspark-gold font-header text-xs uppercase tracking-widest">Growth</span>
+                    </div>
+                    <div class="text-4xl font-header font-bold text-nexspark-gold mb-2">$30.6K<span class="text-xl text-nexspark-pale">/yr</span></div>
+                    <p class="text-white/60 font-mono text-xs mb-6">Month 3 • Full Portfolio</p>
+                    <ul class="space-y-3 mb-6 text-xs font-mono">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-gold"></i>
+                            <span class="text-white/80">Full channel mix</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-gold"></i>
+                            <span class="text-white/80">Real-time optimization</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-gold"></i>
+                            <span class="text-white/80">Dedicated AI support</span>
+                        </li>
+                    </ul>
+                    <button onclick="window.location.href='/interview'" class="lcars-btn w-full bg-nexspark-gold hover:bg-nexspark-pale text-black py-3 rounded-lg text-sm font-bold">
+                        ACCELERATE GROWTH
+                    </button>
+                </div>
+
+                <!-- Enterprise -->
+                <div class="bg-nexspark-panel border-t-4 border-nexspark-red p-6 backdrop-blur-sm">
+                    <div class="bg-nexspark-red/20 px-3 py-1 rounded inline-block mb-4">
+                        <span class="text-nexspark-red font-header text-xs uppercase tracking-widest">Enterprise</span>
+                    </div>
+                    <div class="text-4xl font-header font-bold text-white mb-2">$42K+<span class="text-xl text-white/50">/yr</span></div>
+                    <p class="text-white/60 font-mono text-xs mb-6">Month 4+ • Custom</p>
+                    <ul class="space-y-3 mb-6 text-xs font-mono">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-red"></i>
+                            <span class="text-white/80">Custom AI models</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-red"></i>
+                            <span class="text-white/80">White-label platform</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-nexspark-red"></i>
+                            <span class="text-white/80">API access</span>
+                        </li>
+                    </ul>
+                    <button onclick="window.location.href='/interview'" class="lcars-btn w-full bg-nexspark-red hover:bg-red-600 text-white py-3 rounded-lg text-sm">
+                        CONTACT US
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-5xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl sm:text-5xl font-bold mb-4">
-                    Simple. Fast. <span class="gradient-text">Powerful.</span>
-                </h2>
-            </div>
-
-            <div class="space-y-8">
-                <!-- Step 1 -->
-                <div class="flex gap-6 items-start">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-nexspark-orange to-nexspark-orange/50 flex items-center justify-center shrink-0">
-                        <span class="text-3xl font-black text-white">1</span>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-2xl font-bold mb-2">Answer the Call</h3>
-                        <p class="text-lg text-white/70">10 simple questions about your business. Takes 10 minutes.</p>
-                    </div>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="flex gap-6 items-start">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-nexspark-blue to-nexspark-blue/50 flex items-center justify-center shrink-0">
-                        <span class="text-3xl font-black text-white">2</span>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-2xl font-bold mb-2">Get Your Diagnosis</h3>
-                        <p class="text-lg text-white/70">We analyze your competitors, find unclaimed opportunities, and chart your growth path.</p>
-                    </div>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="flex gap-6 items-start">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-nexspark-purple to-nexspark-purple/50 flex items-center justify-center shrink-0">
-                        <span class="text-3xl font-black text-white">3</span>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-2xl font-bold mb-2">Execute Your Strategy</h3>
-                        <p class="text-lg text-white/70">Follow your custom 6-month roadmap. Track progress. Hit milestones. Scale to $100M.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-nexspark-orange/10 to-nexspark-blue/10">
+    <!-- CTA Section -->
+    <section class="relative z-10 py-20 px-4">
         <div class="max-w-4xl mx-auto text-center">
-            <div class="inline-flex items-center gap-3 px-6 py-3 bg-nexspark-orange/10 border border-nexspark-orange/30 rounded-full mb-8 animate-pulse-slow">
-                <div class="relative">
-                    <div class="w-3 h-3 bg-nexspark-orange rounded-full animate-ring"></div>
-                    <div class="absolute inset-0 w-3 h-3 bg-nexspark-orange rounded-full opacity-50 ripple"></div>
-                </div>
-                <span class="text-nexspark-orange font-semibold">The call is waiting</span>
-            </div>
-
-            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-6">
-                Ready to uncover your<br/>
-                <span class="gradient-text">hidden growth opportunities?</span>
+            <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase mb-6">
+                The Future is <span class="text-nexspark-gold">AI-First</span>
             </h2>
-            
-            <p class="text-xl text-white/70 mb-10 max-w-2xl mx-auto">
-                Join the founders who answered the call and discovered their path to $100M
+            <p class="text-xl text-white/70 font-mono mb-12">
+                Traditional agencies cost 10x more. Nexspark delivers Fortune 500 quality at 90% lower cost.
             </p>
-
-            <a href="/interview" class="call-button px-16 py-6 rounded-2xl font-bold text-2xl text-white inline-flex items-center gap-4 mb-6 no-underline">
-                <i class="fas fa-phone text-3xl animate-ring"></i>
-                <span>ANSWER THE CALL NOW</span>
-            </a>
-
-            <p class="text-sm text-white/50">
-                <i class="fas fa-shield-alt mr-2"></i>100% secure • No credit card to start • Cancel anytime
-            </p>
+            <button onclick="window.location.href='/interview'" class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-16 py-6 rounded-lg text-2xl">
+                <i class="fas fa-bolt mr-3"></i> START WITH NEXSPARK
+            </button>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-12 px-4 sm:px-6 lg:px-8 border-t border-white/10">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-nexspark-orange to-nexspark-blue rounded-lg flex items-center justify-center">
-                        <i class="fas fa-bolt text-white text-xl"></i>
-                    </div>
-                    <span class="text-xl font-bold">Nexspark</span>
-                </div>
-                
-                <p class="text-white/50 text-sm">
-                    © 2025 Nexspark. Unclaim your growth data.
-                </p>
-            </div>
-        </div>
-    </footer>
+    <!-- Background Animation Script -->
+    <script>
+    (() => {
+      const canvas = document.getElementById('bgCanvas');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
+      const stars = Array.from({ length: 800 }, () => ({
+        x: Math.random() * canvas.width - canvas.width / 2,
+        y: Math.random() * canvas.height - canvas.height / 2,
+        z: Math.random() * 1000,
+        color: ['#FF9C00', '#99CCFF', '#CC99CC', '#FFFFFF'][Math.floor(Math.random() * 4)]
+      }));
+
+      function animate() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        stars.forEach(star => {
+          star.z -= 2;
+          if (star.z <= 0) {
+            star.z = 1000;
+            star.x = Math.random() * canvas.width - centerX;
+            star.y = Math.random() * canvas.height - centerY;
+          }
+
+          const scale = 1000 / star.z;
+          const x = centerX + star.x * scale;
+          const y = centerY + star.y * scale;
+          const size = Math.max(0, (1 - star.z / 1000) * 3);
+
+          ctx.fillStyle = star.color;
+          ctx.beginPath();
+          ctx.arc(x, y, size, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.strokeStyle = star.color;
+          ctx.lineWidth = size;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(centerX + star.x * (1000 / (star.z + 2)), centerY + star.y * (1000 / (star.z + 2)));
+          ctx.stroke();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    })();
+    
+    // Create demo user and redirect to interview
+    function startInterview() {
+      // Create demo user if not exists
+      if (!localStorage.getItem('nexspark_user')) {
+        const demoUser = {
+          id: 'demo_user_' + Date.now(),
+          email: 'demo@nexspark.ai',
+          name: 'Demo User',
+          picture: 'https://via.placeholder.com/150',
+          created_at: new Date().toISOString()
+        };
+        localStorage.setItem('nexspark_user', JSON.stringify(demoUser));
+        console.log('✅ Demo user created:', demoUser.id);
+      }
+      
+      // Redirect to interview
+      window.location.href = '/interview';
+    }
+    
+    // Update all GET STARTED buttons to use the function
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('button[onclick*="/interview"]');
+      buttons.forEach(button => {
+        button.onclick = (e) => {
+          e.preventDefault();
+          startInterview();
+        };
+      });
+    });
+    </script>
 </body>
 </html>
-`
+`;
