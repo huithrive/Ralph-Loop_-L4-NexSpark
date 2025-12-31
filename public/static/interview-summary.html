@@ -228,9 +228,19 @@
                 
                 console.log('📊 Generating summary with', interview.responses.length, 'responses');
                 
+                // Get custom prompts if available
+                const customPrompts = localStorage.getItem('nexspark_admin_prompts');
+                const headers = {};
+                if (customPrompts) {
+                    headers['X-Custom-Prompts'] = customPrompts;
+                    console.log('Using custom prompts from admin panel');
+                }
+                
                 // Call API to generate summary
                 const response = await axios.post('/api/interview/summarize', {
                     responses: interview.responses
+                }, {
+                    headers
                 });
                 
                 if (response.data.success) {

@@ -95,6 +95,9 @@ app.get('/interview-summary', (c) => c.redirect('/static/interview-summary.html'
 app.get('/website-confirmation', (c) => c.redirect('/static/website-confirmation.html'))
 app.get('/report-preview', (c) => c.redirect('/static/report-preview.html'))
 
+// Admin routes
+app.get('/admin/prompts', (c) => c.redirect('/static/admin-prompts.html'))
+
 // API: Check for existing interview
 app.get('/api/interview/check', async (c) => {
   try {
@@ -424,6 +427,20 @@ app.get('/api/growth-audit/status', (c) => {
 // INTERVIEW SUMMARY & PREVIEW ENDPOINTS
 // ==========================================
 
+// Helper: Get custom prompt or default
+function getCustomPrompt(c: any, promptType: string, defaultPrompt: string): string {
+  try {
+    const customPromptsHeader = c.req.header('X-Custom-Prompts');
+    if (customPromptsHeader) {
+      const prompts = JSON.parse(customPromptsHeader);
+      return prompts[promptType] || defaultPrompt;
+    }
+  } catch (error) {
+    console.log('No custom prompts provided, using default');
+  }
+  return defaultPrompt;
+}
+
 // API: Generate Claude summary of interview responses
 app.post('/api/interview/summarize', async (c) => {
   try {
@@ -450,7 +467,7 @@ app.post('/api/interview/summarize', async (c) => {
       `Q${idx + 1}: ${r.question}\nA${idx + 1}: ${r.answer}`
     ).join('\n\n');
 
-    const prompt = `Based on this interview, please provide a structured summary in JSON format:
+    const defaultPrompt = `Based on this interview, please provide a structured summary in JSON format:
 
 ${transcript}
 
@@ -468,6 +485,10 @@ Return ONLY a JSON object with this exact structure:
   "competitors": ["..."],
   "sixMonthGoal": "..."
 }`;
+
+    const prompt = getCustomPrompt(c, 'summary', defaultPrompt)
+      .replace('{transcript}', transcript)
+      .replace('{responseCount}', responses.length.toString());
 
     console.log('📊 Generating interview summary with Claude...');
 
