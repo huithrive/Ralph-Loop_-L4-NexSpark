@@ -133,7 +133,7 @@ export const REVISED_LANDING_HTML = `
                     <span class="text-2xl font-bold tracking-tight">Nexspark</span>
                 </div>
                 
-                <button onclick="window.location.href='/interview'" class="px-6 py-2.5 bg-nexspark-orange hover:bg-nexspark-orange/90 rounded-lg font-semibold transition-all">
+                <button onclick="navigateToInterview()" class="px-6 py-2.5 bg-nexspark-orange hover:bg-nexspark-orange/90 rounded-lg font-semibold transition-all">
                     Answer the Call
                 </button>
             </div>
@@ -204,7 +204,7 @@ export const REVISED_LANDING_HTML = `
 
                     <!-- CTA Button -->
                     <div>
-                        <button onclick="window.location.href='/interview'" class="call-button w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl text-white inline-flex items-center justify-center gap-4">
+                        <button onclick="navigateToInterview()" class="call-button w-full sm:w-auto px-12 py-5 rounded-2xl font-bold text-xl text-white inline-flex items-center justify-center gap-4">
                             <i class="fas fa-phone text-2xl animate-ring"></i>
                             <span>ANSWER THE CALL</span>
                         </button>
@@ -266,7 +266,7 @@ export const REVISED_LANDING_HTML = `
                                     </button>
                                     
                                     <!-- Accept (Pulsing) -->
-                                    <button onclick="window.location.href='/interview'" class="relative w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center animate-ring">
+                                    <button onclick="navigateToInterview()" class="relative w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center animate-ring">
                                         <i class="fas fa-phone text-white text-2xl"></i>
                                         <div class="absolute inset-0 w-20 h-20 rounded-full border-4 border-green-500 animate-ping opacity-30"></div>
                                     </button>
@@ -383,7 +383,7 @@ export const REVISED_LANDING_HTML = `
                 Join the founders who answered the call and discovered their path to $100M
             </p>
 
-            <button onclick="window.location.href='/interview'" class="call-button px-16 py-6 rounded-2xl font-bold text-2xl text-white inline-flex items-center gap-4 mb-6">
+            <button onclick="navigateToInterview()" class="call-button px-16 py-6 rounded-2xl font-bold text-2xl text-white inline-flex items-center gap-4 mb-6">
                 <i class="fas fa-phone text-3xl animate-ring"></i>
                 <span>ANSWER THE CALL NOW</span>
             </button>
@@ -411,6 +411,18 @@ export const REVISED_LANDING_HTML = `
             </div>
         </div>
     </footer>
+    <script>
+        function navigateToInterview() {
+            // Add smooth transition
+            document.body.style.opacity = '0.8';
+            document.body.style.transition = 'opacity 0.3s ease';
+            
+            // Navigate after brief delay for smooth transition
+            setTimeout(() => {
+                window.location.href = '/interview';
+            }, 100);
+        }
+    </script>
 
 </body>
 </html>
