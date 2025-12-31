@@ -390,8 +390,8 @@
                 return;
             }
             
-            // Initialize Stripe (you'll need to get publishable key from env)
-            stripe = Stripe('pk_test_your_stripe_publishable_key_here'); // TODO: Replace with actual key
+            // Initialize Stripe with live publishable key
+            stripe = Stripe('REDACTED_STRIPE_LIVE_PUBLISHABLE');
             const elements = stripe.elements();
             cardElement = elements.create('card', {
                 style: {
