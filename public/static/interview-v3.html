@@ -229,14 +229,21 @@
                 </div>
             </div>
             
-            <!-- Progress Bar -->
+            <!-- Progress Bar (IMPROVED) -->
             <div class="bg-nexspark-panel border border-nexspark-gold/30 rounded-xl p-6 mb-8">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-white/50 font-mono text-xs uppercase tracking-wider"><i class="fas fa-clipboard-list mr-2"></i>Interview Progress</span>
-                    <span id="progressText" class="text-nexspark-gold font-mono text-sm font-bold">0/10 Questions</span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-white/50 font-mono text-xs uppercase tracking-wider"><i class="fas fa-clipboard-list mr-2"></i>Interview Progress</span>
+                        <span id="timeEstimate" class="text-nexspark-blue font-mono text-xs">⏱ ~3 min remaining</span>
+                    </div>
+                    <span id="progressText" class="text-nexspark-gold font-mono text-sm font-bold">Question 0 of 10</span>
                 </div>
                 <div class="w-full h-3 bg-black/50 rounded-full overflow-hidden">
                     <div id="progressBar" class="h-full bg-gradient-to-r from-nexspark-gold to-nexspark-pale transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <!-- Auto-save indicator -->
+                <div id="autoSaveIndicator" class="mt-2 text-center">
+                    <span class="text-white/40 font-mono text-xs"><i class="fas fa-check-circle text-green-400 mr-1"></i>Progress auto-saved</span>
                 </div>
             </div>
             

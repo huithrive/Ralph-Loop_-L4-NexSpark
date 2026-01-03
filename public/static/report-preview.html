@@ -54,6 +54,50 @@
             filter: blur(4px);
             pointer-events: none;
         }
+        
+        /* Tooltip for jargon simplification */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 2px dotted #FF9C00;
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: rgba(26, 31, 58, 0.95);
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 2px solid #FF9C00;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #FF9C00 transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="p-8">
@@ -381,17 +425,23 @@
                         
                         <div class="space-y-3">
                             <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">Target CPC</span>
+                                <span class="text-white/70">
+                                    Target <span class="tooltip">CPC<span class="tooltiptext"><strong>Cost Per Click</strong> - The average amount you pay each time someone clicks your ad. Lower CPC means more clicks for your budget.</span></span>
+                                </span>
                                 <span class="text-nexspark-gold font-bold text-lg">${ga.targetCPC || 'N/A'}</span>
                             </div>
                             
                             <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">Expected CTR</span>
+                                <span class="text-white/70">
+                                    Expected <span class="tooltip">CTR<span class="tooltiptext"><strong>Click-Through Rate</strong> - The percentage of people who see your ad and click on it. Higher CTR means your ads are more relevant and engaging.</span></span>
+                                </span>
                                 <span class="text-nexspark-blue font-bold text-lg">${ga.expectedCTR || 'N/A'}</span>
                             </div>
                             
                             <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">Projected CAC</span>
+                                <span class="text-white/70">
+                                    Projected <span class="tooltip">CAC<span class="tooltiptext"><strong>Customer Acquisition Cost</strong> - The total amount you spend to gain one new customer. Includes ad spend, clicks, and conversions. Lower is better!</span></span>
+                                </span>
                                 <span class="text-nexspark-purple font-bold text-lg">${ga.projectedCAC || 'N/A'}</span>
                             </div>
                             
@@ -401,7 +451,9 @@
                             </div>
                             
                             <div class="flex justify-between items-center p-3 bg-green-900/20 border border-green-500/30 rounded">
-                                <span class="text-green-400 font-bold">Expected ROI</span>
+                                <span class="text-green-400 font-bold">
+                                    Expected <span class="tooltip">ROI<span class="tooltiptext"><strong>Return on Investment</strong> - For every dollar you spend, how much profit you get back. 2x ROI means you earn $2 for every $1 spent.</span></span>
+                                </span>
                                 <span class="text-green-400 font-bold text-xl">${ga.expectedROI || 'N/A'}</span>
                             </div>
                         </div>
@@ -421,17 +473,23 @@
                         
                         <div class="space-y-3">
                             <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">Target CPM</span>
+                                <span class="text-white/70">
+                                    Target <span class="tooltip">CPM<span class="tooltiptext"><strong>Cost Per Thousand Impressions</strong> - The cost to show your ad 1,000 times. Lower CPM means more people see your ad for less money.</span></span>
+                                </span>
                                 <span class="text-nexspark-gold font-bold text-lg">${fb.targetCPM || 'N/A'}</span>
                             </div>
                             
                             <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">Expected CTR</span>
+                                <span class="text-white/70">
+                                    Expected <span class="tooltip">CTR<span class="tooltiptext"><strong>Click-Through Rate</strong> - The percentage of people who see your ad and click on it. Higher CTR means your ads are more relevant and engaging.</span></span>
+                                </span>
                                 <span class="text-nexspark-blue font-bold text-lg">${fb.expectedCTR || 'N/A'}</span>
                             </div>
                             
                             <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">Projected CAC</span>
+                                <span class="text-white/70">
+                                    Projected <span class="tooltip">CAC<span class="tooltiptext"><strong>Customer Acquisition Cost</strong> - The total amount you spend to gain one new customer. Includes ad spend, clicks, and conversions. Lower is better!</span></span>
+                                </span>
                                 <span class="text-nexspark-purple font-bold text-lg">${fb.projectedCAC || 'N/A'}</span>
                             </div>
                             
@@ -441,7 +499,9 @@
                             </div>
                             
                             <div class="flex justify-between items-center p-3 bg-green-900/20 border border-green-500/30 rounded">
-                                <span class="text-green-400 font-bold">Expected ROI</span>
+                                <span class="text-green-400 font-bold">
+                                    Expected <span class="tooltip">ROI<span class="tooltiptext"><strong>Return on Investment</strong> - For every dollar you spend, how much profit you get back. 2x ROI means you earn $2 for every $1 spent.</span></span>
+                                </span>
                                 <span class="text-green-400 font-bold text-xl">${fb.expectedROI || 'N/A'}</span>
                             </div>
                         </div>

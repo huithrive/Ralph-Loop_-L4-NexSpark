@@ -76,8 +76,106 @@ const interviewState = {
   interimTranscript: '',
   finalTranscript: '',
   userId: null,
-  interviewId: null
+  interviewId: null,
+  lastAutoSave: null
 };
+
+// AUTO-SAVE: Save progress to localStorage
+function autoSaveProgress() {
+  const saveData = {
+    currentQuestion: interviewState.currentQuestion,
+    responses: interviewState.responses,
+    lastSaved: new Date().toISOString(),
+    userId: interviewState.userId
+  };
+  localStorage.setItem('nexspark_interview_progress', JSON.stringify(saveData));
+  
+  // Show auto-save indicator
+  const indicator = document.getElementById('autoSaveIndicator');
+  if (indicator) {
+    indicator.innerHTML = '<span class="text-green-400 font-mono text-xs"><i class="fas fa-check-circle mr-1"></i>Progress auto-saved at ' + new Date().toLocaleTimeString() + '</span>';
+  }
+  
+  interviewState.lastAutoSave = Date.now();
+  console.log('✅ Auto-saved progress:', saveData);
+}
+
+// AUTO-SAVE: Load saved progress
+function loadSavedProgress() {
+  const saved = localStorage.getItem('nexspark_interview_progress');
+  if (!saved) return false;
+  
+  try {
+    const saveData = JSON.parse(saved);
+    
+    // Check if save is recent (within 24 hours)
+    const saveAge = Date.now() - new Date(saveData.lastSaved).getTime();
+    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+    
+    if (saveAge > maxAge) {
+      console.log('Saved progress too old, ignoring');
+      localStorage.removeItem('nexspark_interview_progress');
+      return false;
+    }
+    
+    // Check if user matches
+    if (saveData.userId !== interviewState.userId) {
+      console.log('Saved progress for different user, ignoring');
+      return false;
+    }
+    
+    // Ask user if they want to continue
+    const lastSavedTime = new Date(saveData.lastSaved).toLocaleString();
+    const shouldContinue = confirm(
+      `We found your saved progress from ${lastSavedTime}.\n\n` +
+      `You were on Question ${saveData.currentQuestion + 1} of ${interviewState.totalQuestions}.\n\n` +
+      `Click OK to CONTINUE where you left off.\n` +
+      `Click Cancel to START OVER with a new interview.`
+    );
+    
+    if (shouldContinue) {
+      // Restore progress
+      interviewState.currentQuestion = saveData.currentQuestion;
+      interviewState.responses = saveData.responses || [];
+      
+      // Update progress bar
+      updateProgressDisplay();
+      
+      console.log('✅ Restored saved progress:', saveData);
+      return true;
+    } else {
+      // Clear saved progress
+      localStorage.removeItem('nexspark_interview_progress');
+      return false;
+    }
+  } catch (e) {
+    console.error('Error loading saved progress:', e);
+    localStorage.removeItem('nexspark_interview_progress');
+    return false;
+  }
+}
+
+// Update progress display
+function updateProgressDisplay() {
+  const progress = ((interviewState.currentQuestion + 1) / interviewState.totalQuestions) * 100;
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const timeEstimate = document.getElementById('timeEstimate');
+  
+  if (progressBar) {
+    progressBar.style.width = `${progress}%`;
+  }
+  
+  if (progressText) {
+    progressText.textContent = `Question ${interviewState.currentQuestion + 1} of ${interviewState.totalQuestions}`;
+  }
+  
+  if (timeEstimate) {
+    const remainingQuestions = interviewState.totalQuestions - interviewState.currentQuestion;
+    const estimatedMinutes = Math.ceil(remainingQuestions * 0.5); // 30 seconds per question
+    timeEstimate.innerHTML = `<i class="fas fa-clock mr-1"></i>⏱ ~${estimatedMinutes} min remaining`;
+  }
+}
 
 // Interview Questions - Updated for better brand & motivation focus
 const interviewQuestions = [
@@ -237,8 +335,13 @@ async function startInterview() {
   const user = checkAuth();
   if (!user) return;
   
-  // Check for existing interview
-  await checkExistingInterview();
+  // AUTO-SAVE: Try to load saved progress first
+  const hasLoadedProgress = loadSavedProgress();
+  
+  // Check for existing interview (skip if we loaded local progress)
+  if (!hasLoadedProgress) {
+    await checkExistingInterview();
+  }
   
   console.log('User authenticated:', user);
   console.log('Setting interview state to active...');
@@ -306,10 +409,9 @@ function showQuestion(index) {
   const questionEl = document.getElementById('currentQuestion');
   questionEl.textContent = interviewQuestions[index];
   
-  // Update progress
-  const progress = ((index + 1) / interviewState.totalQuestions) * 100;
-  document.getElementById('progressBar').style.width = `${progress}%`;
-  document.getElementById('progressText').textContent = `${index + 1}/${interviewState.totalQuestions} Questions`;
+  // Update progress with new function
+  interviewState.currentQuestion = index;
+  updateProgressDisplay();
   
   // Add to transcript
   addToTranscript('leon', interviewQuestions[index]);
@@ -518,6 +620,9 @@ async function finishedSpeaking() {
   
   // Save to database
   await saveInterviewProgress();
+  
+  // AUTO-SAVE: Save progress locally
+  autoSaveProgress();
   
   // Move to next question
   interviewState.currentQuestion++;

@@ -49,6 +49,42 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Editable field styles */
+        .editable-field {
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin: -4px -8px;
+        }
+        
+        .editable-field:hover {
+            background: rgba(255, 156, 0, 0.1);
+            border: 1px dashed #FF9C00;
+        }
+        
+        .edit-input {
+            width: 100%;
+            background: rgba(255, 156, 0, 0.05);
+            border: 2px solid #FF9C00;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: inherit;
+        }
+        
+        .edit-input:focus {
+            outline: none;
+            background: rgba(255, 156, 0, 0.1);
+        }
+        
+        .edit-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body class="p-8">
@@ -136,68 +172,76 @@
             const summaryContent = document.getElementById('summaryContent');
             
             summaryContent.innerHTML = `
+                <div class="mb-4 bg-nexspark-gold/10 border border-nexspark-gold/30 rounded-lg p-4">
+                    <div class="flex items-center gap-2 text-nexspark-gold mb-2">
+                        <i class="fas fa-edit"></i>
+                        <span class="font-bold text-sm">Click any field to edit it</span>
+                    </div>
+                    <p class="text-white/70 text-xs">You can update any information before proceeding</p>
+                </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-gold">
                         <label class="text-nexspark-gold font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-tag mr-2"></i>Brand Name
                         </label>
-                        <p class="text-white text-lg">${summary.brandName || 'N/A'}</p>
+                        <p class="text-white text-lg editable-field" data-field="brandName" onclick="editField('brandName', this)">${summary.brandName || 'N/A'}</p>
                     </div>
                     
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-blue">
                         <label class="text-nexspark-blue font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-dollar-sign mr-2"></i>Current Revenue
                         </label>
-                        <p class="text-white text-lg">${summary.currentRevenue || 'N/A'}</p>
+                        <p class="text-white text-lg editable-field" data-field="currentRevenue" onclick="editField('currentRevenue', this)">${summary.currentRevenue || 'N/A'}</p>
                     </div>
                     
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-purple col-span-1 md:col-span-2">
                         <label class="text-nexspark-purple font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-box mr-2"></i>Product Description
                         </label>
-                        <p class="text-white">${summary.productDescription || 'N/A'}</p>
+                        <p class="text-white editable-field" data-field="productDescription" onclick="editField('productDescription', this)">${summary.productDescription || 'N/A'}</p>
                     </div>
                     
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-gold col-span-1 md:col-span-2">
                         <label class="text-nexspark-gold font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-lightbulb mr-2"></i>Motivation & Story
                         </label>
-                        <p class="text-white">${summary.motivation || 'N/A'}</p>
+                        <p class="text-white editable-field" data-field="motivation" onclick="editField('motivation', this)">${summary.motivation || 'N/A'}</p>
                     </div>
                     
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-blue">
                         <label class="text-nexspark-blue font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-chart-line mr-2"></i>Best Channel
                         </label>
-                        <p class="text-white">${summary.bestChannel || 'N/A'}</p>
+                        <p class="text-white editable-field" data-field="bestChannel" onclick="editField('bestChannel', this)">${summary.bestChannel || 'N/A'}</p>
                     </div>
                     
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-purple">
                         <label class="text-nexspark-purple font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-exclamation-circle mr-2"></i>Biggest Challenge
                         </label>
-                        <p class="text-white">${summary.biggestChallenge || 'N/A'}</p>
+                        <p class="text-white editable-field" data-field="biggestChallenge" onclick="editField('biggestChallenge', this)">${summary.biggestChallenge || 'N/A'}</p>
                     </div>
                     
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-gold col-span-1 md:col-span-2">
                         <label class="text-nexspark-gold font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-users mr-2"></i>Ideal Customer
                         </label>
-                        <p class="text-white">${summary.idealCustomer || 'N/A'}</p>
+                        <p class="text-white editable-field" data-field="idealCustomer" onclick="editField('idealCustomer', this)">${summary.idealCustomer || 'N/A'}</p>
                     </div>
                     
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-blue">
                         <label class="text-nexspark-blue font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-bullseye mr-2"></i>6-Month Goal
                         </label>
-                        <p class="text-white">${summary.sixMonthGoal || 'N/A'}</p>
+                        <p class="text-white editable-field" data-field="sixMonthGoal" onclick="editField('sixMonthGoal', this)">${summary.sixMonthGoal || 'N/A'}</p>
                     </div>
                     
                     <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-purple">
                         <label class="text-nexspark-purple font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-trophy mr-2"></i>Competitors
                         </label>
-                        <p class="text-white">${summary.competitors ? summary.competitors.join(', ') : 'N/A'}</p>
+                        <p class="text-white editable-field" data-field="competitors" onclick="editField('competitors', this)">${summary.competitors ? summary.competitors.join(', ') : 'N/A'}</p>
                     </div>
                 </div>
             `;
@@ -205,6 +249,95 @@
             // Show summary, hide loading
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('summaryDisplay').classList.remove('hidden');
+        }
+        
+        // Edit field functionality
+        let currentEditingField = null;
+        
+        function editField(fieldName, element) {
+            if (currentEditingField) {
+                // Cancel previous edit
+                cancelEdit();
+            }
+            
+            currentEditingField = fieldName;
+            const currentValue = element.textContent;
+            const isTextarea = ['productDescription', 'motivation', 'idealCustomer'].includes(fieldName);
+            
+            // Replace with input
+            if (isTextarea) {
+                element.innerHTML = `
+                    <textarea class="edit-input" rows="3">${currentValue}</textarea>
+                    <div class="edit-controls">
+                        <button onclick="saveEdit('${fieldName}', this.parentElement.previousElementSibling)" class="px-3 py-1 bg-green-500 text-white rounded text-sm font-bold hover:bg-green-600">
+                            <i class="fas fa-check mr-1"></i>Save
+                        </button>
+                        <button onclick="cancelEdit()" class="px-3 py-1 bg-gray-500 text-white rounded text-sm font-bold hover:bg-gray-600">
+                            <i class="fas fa-times mr-1"></i>Cancel
+                        </button>
+                    </div>
+                `;
+            } else {
+                element.innerHTML = `
+                    <input type="text" class="edit-input" value="${currentValue}" />
+                    <div class="edit-controls">
+                        <button onclick="saveEdit('${fieldName}', this.parentElement.previousElementSibling)" class="px-3 py-1 bg-green-500 text-white rounded text-sm font-bold hover:bg-green-600">
+                            <i class="fas fa-check mr-1"></i>Save
+                        </button>
+                        <button onclick="cancelEdit()" class="px-3 py-1 bg-gray-500 text-white rounded text-sm font-bold hover:bg-gray-600">
+                            <i class="fas fa-times mr-1"></i>Cancel
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // Focus on input
+            element.querySelector('.edit-input').focus();
+            element.querySelector('.edit-input').select();
+        }
+        
+        function saveEdit(fieldName, inputElement) {
+            const newValue = inputElement.value.trim();
+            
+            if (!newValue) {
+                alert('Value cannot be empty');
+                return;
+            }
+            
+            // Update summary in localStorage
+            const summaryData = localStorage.getItem('nexspark_summary');
+            const summary = JSON.parse(summaryData);
+            
+            // Handle competitors specially (convert to array)
+            if (fieldName === 'competitors') {
+                summary[fieldName] = newValue.split(',').map(c => c.trim()).filter(c => c);
+            } else {
+                summary[fieldName] = newValue;
+            }
+            
+            localStorage.setItem('nexspark_summary', JSON.stringify(summary));
+            
+            // Restore display
+            const parentElement = inputElement.parentElement;
+            if (fieldName === 'competitors') {
+                parentElement.innerHTML = summary[fieldName].join(', ');
+            } else {
+                parentElement.innerHTML = newValue;
+            }
+            parentElement.className = 'text-white text-lg editable-field';
+            parentElement.onclick = function() { editField(fieldName, this); };
+            
+            currentEditingField = null;
+            
+            console.log('✅ Updated', fieldName, 'to:', newValue);
+        }
+        
+        function cancelEdit() {
+            // Reload the summary to restore original display
+            const summaryData = localStorage.getItem('nexspark_summary');
+            const summary = JSON.parse(summaryData);
+            displaySummary(summary);
+            currentEditingField = null;
         }
         
         // Show error
