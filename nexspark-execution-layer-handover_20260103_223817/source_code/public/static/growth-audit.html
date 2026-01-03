@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Audit Agent | NexSpark</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Rajdhani', 'sans-serif'],
+              header: ['Antonio', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      
+      .glass {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      
+      .gradient-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .loading-spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .competitor-card {
+        transition: all 0.3s ease;
+      }
+      
+      .competitor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+      }
+    </style>
+</head>
+<body class="font-sans">
+    <div class="min-h-screen px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            
+            <!-- Header -->
+            <div class="glass rounded-2xl p-8 mb-8 shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-chart-line text-white text-3xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-4xl font-header font-bold gradient-text">
+                                Growth Audit Agent
+                            </h1>
+                            <p class="text-gray-600 font-mono text-sm">
+                                AI-Powered Competitive Intelligence & Market Analysis
+                            </p>
+                        </div>
+                    </div>
+                    <a href="/dashboard" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-500 text-white rounded-lg font-bold hover:shadow-lg transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Dashboard
+                    </a>
+                </div>
+                
+                <div class="flex items-center gap-4 text-sm">
+                    <div class="flex items-center gap-2 text-green-600">
+                        <div class="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
+                        <span class="font-mono">Claude AI Connected</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-blue-600">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+                        <span class="font-mono">RapidAPI Connected</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Form -->
+            <div class="glass rounded-2xl p-8 mb-8 shadow-2xl">
+                <h2 class="text-2xl font-header font-bold text-gray-800 mb-6">
+                    <i class="fas fa-users text-purple-600 mr-2"></i>
+                    Configure Analysis
+                </h2>
+                
+                <form id="analysisForm" class="space-y-6">
+                    <!-- Industry Context -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            Industry Context
+                        </label>
+                        <textarea 
+                            id="industryContext" 
+                            rows="3" 
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none font-mono text-sm"
+                            placeholder="e.g., Pool chemical supplies, targeting residential pool owners in the US sunbelt region..."></textarea>
+                    </div>
+
+                    <!-- Competitors -->
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="block text-sm font-bold text-gray-700">
+                                Competitors to Analyze
+                            </label>
+                            <button 
+                                type="button" 
+                                onclick="addCompetitor()" 
+                                class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition">
+                                <i class="fas fa-plus mr-1"></i> Add Competitor
+                            </button>
+                        </div>
+                        
+                        <div id="competitorsList" class="space-y-4">
+                            <!-- Competitor cards will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        id="generateBtn"
+                        class="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white rounded-lg font-bold text-lg hover:shadow-2xl transition">
+                        <i class="fas fa-magic mr-2"></i> Generate Competitive Intelligence Report
+                    </button>
+                </form>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden glass rounded-2xl p-8 mb-8 shadow-2xl text-center">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                    Analyzing Competitors...
+                </h3>
+                <p class="text-gray-600 font-mono text-sm" id="loadingStatus">
+                    Fetching traffic data from RapidAPI...
+                </p>
+            </div>
+
+            <!-- Report Output -->
+            <div id="reportOutput" class="hidden">
+                <div class="glass rounded-2xl p-8 shadow-2xl">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-header font-bold text-gray-800">
+                            <i class="fas fa-file-alt text-purple-600 mr-2"></i>
+                            Generated Report
+                        </h2>
+                        <div class="flex gap-2">
+                            <button 
+                                onclick="downloadReport()" 
+                                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                                <i class="fas fa-download mr-1"></i> Download HTML
+                            </button>
+                            <button 
+                                onclick="startNewAnalysis()" 
+                                class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
+                                <i class="fas fa-redo mr-1"></i> New Analysis
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="reportContent" class="bg-white rounded-lg p-6">
+                        <!-- Report HTML will be injected here -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script>
+        let competitorCount = 0;
+        let generatedReportHTML = '';
+
+        // Add initial competitor
+        window.addEventListener('DOMContentLoaded', () => {
+            addCompetitor();
+            addCompetitor();
+            addCompetitor();
+        });
+
+        function addCompetitor() {
+            competitorCount++;
+            const competitorsList = document.getElementById('competitorsList');
+            
+            const card = document.createElement('div');
+            card.className = 'competitor-card bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg p-6';
+            card.id = `competitor-${competitorCount}`;
+            
+            card.innerHTML = `
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">
+                        <i class="fas fa-building text-purple-600 mr-2"></i>
+                        Competitor #${competitorCount}
+                    </h3>
+                    <button 
+                        type="button" 
+                        onclick="removeCompetitor(${competitorCount})" 
+                        class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Company Name</label>
+                        <input 
+                            type="text" 
+                            name="name_${competitorCount}" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded focus:border-purple-500 focus:outline-none text-sm"
+                            placeholder="e.g., HTH Pool Care"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Website</label>
+                        <input 
+                            type="text" 
+                            name="website_${competitorCount}" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded focus:border-purple-500 focus:outline-none text-sm"
+                            placeholder="e.g., hthpools.com"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Industry</label>
+                        <input 
+                            type="text" 
+                            name="industry_${competitorCount}" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded focus:border-purple-500 focus:outline-none text-sm"
+                            placeholder="e.g., Pool Supplies"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Primary Markets (comma-separated)</label>
+                        <input 
+                            type="text" 
+                            name="markets_${competitorCount}" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded focus:border-purple-500 focus:outline-none text-sm"
+                            placeholder="e.g., Florida, California, Texas"
+                            required>
+                    </div>
+                </div>
+            `;
+            
+            competitorsList.appendChild(card);
+        }
+
+        function removeCompetitor(id) {
+            const card = document.getElementById(`competitor-${id}`);
+            if (card) {
+                card.remove();
+            }
+        }
+
+        document.getElementById('analysisForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const industryContext = document.getElementById('industryContext').value;
+            
+            // Collect competitors
+            const competitors = [];
+            for (let i = 1; i <= competitorCount; i++) {
+                const name = formData.get(`name_${i}`);
+                if (name) {
+                    competitors.push({
+                        name: name,
+                        website: formData.get(`website_${i}`),
+                        industry: formData.get(`industry_${i}`),
+                        markets: (formData.get(`markets_${i}`) || '').split(',').map(m => m.trim())
+                    });
+                }
+            }
+            
+            if (competitors.length === 0) {
+                alert('Please add at least one competitor');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('reportOutput').classList.add('hidden');
+            document.getElementById('generateBtn').disabled = true;
+            
+            try {
+                // Update loading status
+                updateLoadingStatus('Fetching traffic data from RapidAPI...');
+                
+                // Generate report
+                const response = await axios.post('/api/growth-audit/generate', {
+                    competitors,
+                    industryContext
+                });
+                
+                if (response.data.success) {
+                    updateLoadingStatus('Analyzing with Claude AI...');
+                    
+                    // Wait a bit for effect
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    updateLoadingStatus('Generating report...');
+                    
+                    // Display report
+                    generatedReportHTML = response.data.html;
+                    document.getElementById('reportContent').innerHTML = response.data.html;
+                    document.getElementById('loadingState').classList.add('hidden');
+                    document.getElementById('reportOutput').classList.remove('hidden');
+                    
+                    // Scroll to report
+                    document.getElementById('reportOutput').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Failed to generate report: ' + response.data.message);
+                    document.getElementById('loadingState').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error generating report:', error);
+                alert('Error generating report. Please try again.');
+                document.getElementById('loadingState').classList.add('hidden');
+            } finally {
+                document.getElementById('generateBtn').disabled = false;
+            }
+        });
+
+        function updateLoadingStatus(message) {
+            document.getElementById('loadingStatus').textContent = message;
+        }
+
+        function downloadReport() {
+            const blob = new Blob([generatedReportHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `competitive-intelligence-report-${Date.now()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function startNewAnalysis() {
+            document.getElementById('reportOutput').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

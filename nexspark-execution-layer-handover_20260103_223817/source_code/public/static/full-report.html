@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generating Your Growth Strategy | NexSpark</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Rajdhani', 'sans-serif'],
+              header: ['Antonio', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              nexspark: {
+                bg: '#000000',
+                gold: '#FF9C00',
+                blue: '#99CCFF',
+                purple: '#CC99CC',
+                dark: '#111111',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      body {
+        background: #000000;
+        color: #99CCFF;
+      }
+      
+      .progress-bar {
+        transition: width 0.5s ease;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      .animate-spin-slow {
+        animation: spin 3s linear infinite;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .fade-in-item {
+        animation: fadeIn 0.5s ease forwards;
+        opacity: 0;
+      }
+    </style>
+</head>
+<body class="min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-block mb-4">
+                <i class="fas fa-rocket text-nexspark-gold text-6xl animate-spin-slow"></i>
+            </div>
+            <h1 class="text-5xl font-header font-bold text-white mb-3">
+                Generating Your Growth Strategy
+            </h1>
+            <p class="text-nexspark-blue text-xl font-mono">
+                NexSpark AI is analyzing your business...
+            </p>
+        </div>
+        
+        <!-- Timer -->
+        <div class="bg-nexspark-dark rounded-2xl p-8 mb-8 border-2 border-nexspark-gold/30 text-center">
+            <div class="text-white/60 text-sm uppercase mb-2">Estimated Time Remaining</div>
+            <div id="timer" class="text-7xl font-header font-bold text-nexspark-gold mb-2">2:30</div>
+            <div class="text-white/50 text-sm">
+                <i class="fas fa-info-circle mr-2"></i>
+                You can close this page - we'll email you when ready!
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="bg-nexspark-dark rounded-xl p-6 mb-8 border border-nexspark-blue/30">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-white font-semibold">Overall Progress</span>
+                <span id="progressPercent" class="text-nexspark-gold font-bold">0%</span>
+            </div>
+            <div class="w-full bg-nexspark-dark rounded-full h-4 border border-white/10">
+                <div id="progressBar" class="progress-bar bg-gradient-to-r from-nexspark-gold to-nexspark-blue h-full rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <!-- Progress Steps -->
+        <div class="space-y-4" id="progressSteps">
+            <!-- Steps will be added here -->
+        </div>
+        
+        <!-- Report Ready (Hidden initially) -->
+        <div id="reportReady" class="hidden bg-green-900/20 border-2 border-green-500 rounded-2xl p-8 text-center">
+            <i class="fas fa-check-circle text-green-400 text-6xl mb-4"></i>
+            <h2 class="text-3xl font-header font-bold text-white mb-4">Your Report is Ready!</h2>
+            <p class="text-white/80 mb-6">Your comprehensive growth strategy has been generated.</p>
+            <div class="flex gap-4 justify-center">
+                <button onclick="viewReport()" class="px-8 py-4 bg-nexspark-gold text-black font-header font-bold text-xl rounded-xl hover:bg-yellow-500 transition">
+                    <i class="fas fa-eye mr-2"></i>View Report
+                </button>
+                <button onclick="downloadReport()" class="px-8 py-4 bg-nexspark-blue text-black font-header font-bold text-xl rounded-xl hover:bg-blue-400 transition">
+                    <i class="fas fa-download mr-2"></i>Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const steps = [
+            { id: 1, name: 'Analyzing Interview Data', duration: 15 },
+            { id: 2, name: 'Researching Competitors', duration: 30 },
+            { id: 3, name: 'Gathering Traffic Data', duration: 20 },
+            { id: 4, name: 'Building 6-Month Roadmap', duration: 40 },
+            { id: 5, name: 'Calculating Budget Projections', duration: 25 },
+            { id: 6, name: 'Generating Final Report', duration: 20 }
+        ];
+        
+        let currentStep = 0;
+        let totalDuration = steps.reduce((sum, step) => sum + step.duration, 0);
+        let elapsedTime = 0;
+        let timerInterval;
+        
+        // Initialize
+        function init() {
+            renderSteps();
+            startTimer();
+            startProgress();
+        }
+        
+        // Render steps
+        function renderSteps() {
+            const container = document.getElementById('progressSteps');
+            steps.forEach((step, index) => {
+                const stepEl = document.createElement('div');
+                stepEl.id = `step-${step.id}`;
+                stepEl.className = 'bg-nexspark-dark rounded-lg p-6 border border-white/10 opacity-30';
+                stepEl.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-nexspark-dark border-2 border-white/20 flex items-center justify-center">
+                            <span class="step-icon text-white/40 font-bold">${step.id}</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-white font-semibold">${step.name}</div>
+                            <div class="step-status text-white/50 text-sm mt-1">Waiting...</div>
+                        </div>
+                        <i class="step-check fas fa-circle text-white/20 text-xl"></i>
+                    </div>
+                `;
+                container.appendChild(stepEl);
+            });
+        }
+        
+        // Start timer
+        function startTimer() {
+            let remaining = totalDuration;
+            updateTimerDisplay(remaining);
+            
+            timerInterval = setInterval(() => {
+                remaining--;
+                elapsedTime++;
+                
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    remaining = 0;
+                }
+                
+                updateTimerDisplay(remaining);
+            }, 1000);
+        }
+        
+        // Update timer display
+        function updateTimerDisplay(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            document.getElementById('timer').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Start progress
+        async function startProgress() {
+            for (let i = 0; i < steps.length; i++) {
+                await processStep(steps[i]);
+            }
+            
+            completeGeneration();
+        }
+        
+        // Process individual step
+        function processStep(step) {
+            return new Promise((resolve) => {
+                // Mark as active
+                const stepEl = document.getElementById(`step-${step.id}`);
+                stepEl.className = 'bg-nexspark-dark rounded-lg p-6 border-2 border-nexspark-gold fade-in-item';
+                stepEl.querySelector('.step-icon').textContent = '⏳';
+                stepEl.querySelector('.step-status').textContent = 'Processing...';
+                stepEl.querySelector('.step-check').className = 'step-check fas fa-spinner fa-spin text-nexspark-gold text-xl';
+                
+                // Update progress bar
+                const progress = ((currentStep) / steps.length) * 100;
+                document.getElementById('progressBar').style.width = `${progress}%`;
+                document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+                
+                // Wait for step duration
+                setTimeout(() => {
+                    // Mark as complete
+                    stepEl.className = 'bg-green-900/10 rounded-lg p-6 border-2 border-green-500 fade-in-item';
+                    stepEl.querySelector('.step-icon').textContent = '✓';
+                    stepEl.querySelector('.step-status').textContent = 'Complete';
+                    stepEl.querySelector('.step-check').className = 'step-check fas fa-check-circle text-green-400 text-xl';
+                    
+                    currentStep++;
+                    resolve();
+                }, step.duration * 1000);
+            });
+        }
+        
+        // Complete generation
+        function completeGeneration() {
+            clearInterval(timerInterval);
+            
+            // Update progress to 100%
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressPercent').textContent = '100%';
+            document.getElementById('timer').textContent = '0:00';
+            
+            // Show report ready
+            document.getElementById('reportReady').classList.remove('hidden');
+            document.getElementById('reportReady').classList.add('fade-in-item');
+            
+            // Save completion to localStorage
+            localStorage.setItem('nexspark_report_ready', 'true');
+            localStorage.setItem('nexspark_report_timestamp', new Date().toISOString());
+        }
+        
+        // View report
+        function viewReport() {
+            window.location.href = '/dashboard';
+        }
+        
+        // Download report
+        function downloadReport() {
+            alert('PDF download coming soon! For now, view report in dashboard.');
+            window.location.href = '/dashboard';
+        }
+        
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

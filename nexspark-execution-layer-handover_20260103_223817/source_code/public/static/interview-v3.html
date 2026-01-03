@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Diagnosis | NexSpark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* LCARS Design System */
+        :root {
+            --nexspark-gold: #FF9C00;
+            --nexspark-pale: #FFCC00;
+            --nexspark-blue: #99CCFF;
+            --nexspark-purple: #CC99CC;
+            --nexspark-red: #CC3333;
+            --nexspark-panel: rgba(0, 0, 0, 0.8);
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .font-header {
+            font-family: 'Antonio', sans-serif;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .bg-nexspark-panel {
+            background: var(--nexspark-panel);
+        }
+        
+        .bg-nexspark-gold {
+            background: var(--nexspark-gold);
+        }
+        
+        .bg-nexspark-blue {
+            background: var(--nexspark-blue);
+        }
+        
+        .bg-nexspark-red {
+            background: var(--nexspark-red);
+        }
+        
+        .text-nexspark-gold {
+            color: var(--nexspark-gold);
+        }
+        
+        .text-nexspark-blue {
+            color: var(--nexspark-blue);
+        }
+        
+        .text-nexspark-red {
+            color: var(--nexspark-red);
+        }
+        
+        .border-nexspark-gold {
+            border-color: var(--nexspark-gold);
+        }
+        
+        .border-nexspark-blue {
+            border-color: var(--nexspark-blue);
+        }
+        
+        .border-nexspark-red {
+            border-color: var(--nexspark-red);
+        }
+        
+        /* Waveform Visualizer */
+        .waveform {
+            display: flex;
+            gap: 4px;
+            height: 40px;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        
+        .waveform-bar {
+            width: 4px;
+            background: var(--nexspark-gold);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+        
+        /* Pulse Animation */
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .pulse-ring {
+            animation: pulse-ring 2s infinite;
+        }
+        
+        /* Scroll Styles */
+        .transcript-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: var(--nexspark-gold) transparent;
+        }
+        
+        .transcript-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .transcript-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .transcript-scroll::-webkit-scrollbar-thumb {
+            background: var(--nexspark-gold);
+            border-radius: 3px;
+        }
+        
+        /* Editable Input */
+        .manual-input {
+            background: rgba(255, 156, 0, 0.05);
+            border: 1px solid rgba(255, 156, 0, 0.3);
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            width: 100%;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .manual-input:focus {
+            outline: none;
+            border-color: var(--nexspark-gold);
+            background: rgba(255, 156, 0, 0.1);
+        }
+        
+        /* Popup Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Rajdhani', 'sans-serif'],
+                        header: ['Antonio', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    },
+                    colors: {
+                        'nexspark-gold': '#FF9C00',
+                        'nexspark-pale': '#FFCC00',
+                        'nexspark-blue': '#99CCFF',
+                        'nexspark-purple': '#CC99CC',
+                        'nexspark-red': '#CC3333'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="relative">
+    <!-- Animated Background -->
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+    
+    <!-- Main Container -->
+    <div class="relative z-10 min-h-screen p-4 md:p-8">
+        
+        <!-- Header -->
+        <div class="mb-8 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-nexspark-panel border border-nexspark-gold rounded-full px-4 py-2">
+                    <i class="fas fa-bolt text-nexspark-gold"></i>
+                    <span class="font-header font-bold text-white">NEXSPARK</span>
+                </div>
+                <div class="bg-nexspark-red rounded-full px-4 py-2">
+                    <span class="font-mono text-xs uppercase font-bold">Voice Interview</span>
+                </div>
+            </div>
+            <a href="/dashboard" class="flex items-center gap-2 bg-nexspark-blue/20 border border-nexspark-blue text-nexspark-blue rounded px-4 py-2 hover:bg-nexspark-blue/30 transition-all">
+                <i class="fas fa-arrow-left"></i>
+                <span class="font-mono text-sm">Back to Dashboard</span>
+            </a>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="max-w-6xl mx-auto">
+            
+            <!-- Title -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-4 bg-nexspark-gold/20 border-2 border-nexspark-gold rounded-2xl px-6 py-4">
+                    <div class="w-12 h-12 rounded-full bg-nexspark-gold flex items-center justify-center">
+                        <i class="fas fa-microphone text-2xl text-black"></i>
+                    </div>
+                    <div class="text-left">
+                        <h1 class="font-header text-3xl font-bold text-white uppercase tracking-wider">Growth Diagnosis</h1>
+                        <p class="font-mono text-sm text-white/70">Interview with Nexspark</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="bg-nexspark-panel border border-nexspark-gold/30 rounded-xl p-6 mb-8">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-white/50 font-mono text-xs uppercase tracking-wider"><i class="fas fa-clipboard-list mr-2"></i>Interview Progress</span>
+                    <span id="progressText" class="text-nexspark-gold font-mono text-sm font-bold">0/10 Questions</span>
+                </div>
+                <div class="w-full h-3 bg-black/50 rounded-full overflow-hidden">
+                    <div id="progressBar" class="h-full bg-gradient-to-r from-nexspark-gold to-nexspark-pale transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Interview Interface -->
+            <div class="bg-nexspark-panel border-2 border-nexspark-gold rounded-2xl p-8 backdrop-blur-xl mb-8">
+                
+                <!-- Microphone Button -->
+                <div class="flex flex-col items-center justify-center mb-8">
+                    <div class="relative mb-6">
+                        <div class="absolute inset-0 rounded-full bg-nexspark-gold opacity-20 pulse-ring"></div>
+                        <div id="micButton" onclick="toggleRecording()" class="w-32 h-32 rounded-full bg-nexspark-gold flex items-center justify-center cursor-pointer hover:bg-nexspark-pale transition-all shadow-lg shadow-nexspark-gold/50">
+                            <i id="micIcon" class="fas fa-microphone text-5xl text-black"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="statusText" class="text-center mb-4">
+                        <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+                            Ready to Begin
+                        </div>
+                        <div class="text-white/70 font-mono text-sm">
+                            Natural conversation - just speak when ready
+                        </div>
+                    </div>
+                    
+                    <!-- Simplified: No auto-stop toggle, no manual button -->
+                </div>
+
+                <!-- Current Question Display -->
+                <div id="questionBox" class="bg-nexspark-blue/10 border-l-4 border-nexspark-blue p-6 rounded-r-lg mb-6 hidden">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-robot text-nexspark-blue text-2xl mt-1"></i>
+                        <div class="flex-1">
+                            <div class="text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">
+                                Nexspark:
+                            </div>
+                            <p id="currentQuestion" class="text-white font-mono text-base leading-relaxed">
+                                <!-- Question will be inserted here -->
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Input Section -->
+                <div id="currentInputSection" class="bg-nexspark-gold/5 border-2 border-nexspark-gold/30 rounded-xl p-6 mb-6 hidden">
+                    <!-- Website Reminder (First Question Only) -->
+                    <div id="websiteReminder" class="bg-nexspark-blue/10 border border-nexspark-blue/30 rounded-lg p-4 mb-4 hidden">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-globe text-nexspark-blue text-lg mt-1"></i>
+                            <div>
+                                <div class="text-nexspark-blue font-mono text-sm font-bold mb-1">📌 Important Reminder</div>
+                                <div class="text-white/80 font-mono text-xs">
+                                    Please include your website URL in your answer so we can research your company and provide better recommendations.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="text-white/70 font-mono text-sm uppercase tracking-wider">
+                                <i class="fas fa-comment-dots mr-2"></i>Your Response (Real-Time):
+                            </label>
+                            <span class="text-nexspark-gold font-mono text-xs">
+                                <i class="fas fa-edit mr-1"></i>Edit below if needed
+                            </span>
+                        </div>
+                        
+                        <!-- Real-time Transcript Display -->
+                        <div class="bg-black/30 border border-nexspark-gold/20 rounded-lg p-4 mb-4 min-h-[60px]">
+                            <p id="currentTranscript" class="text-white/90 font-mono text-sm leading-relaxed">
+                                <!-- Transcript will appear here -->
+                            </p>
+                        </div>
+                        
+                        <!-- Manual Edit Field -->
+                        <div class="mb-4">
+                            <label class="text-white/50 font-mono text-xs uppercase tracking-wider mb-2 block">
+                                <i class="fas fa-edit mr-1"></i>Edit or Add Details:
+                            </label>
+                            <textarea id="manualInput" class="manual-input" placeholder="You can edit the transcription or add more details here..."></textarea>
+                        </div>
+                        
+                        <!-- Finished Button (Simplified) -->
+                        <button id="finishedBtn" onclick="finishedSpeaking()" class="w-full bg-nexspark-gold hover:bg-nexspark-pale text-black font-header text-xl py-4 rounded-lg transition-all shadow-lg shadow-nexspark-gold/50 hidden">
+                            <i class="fas fa-check-circle mr-2"></i>FINISHED
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="flex gap-4 justify-center">
+                    <button id="startBtn" onclick="startInterview()" class="flex items-center gap-3 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header text-xl px-8 py-4 rounded-lg transition-all shadow-lg shadow-nexspark-gold/50">
+                        <i class="fas fa-play"></i>
+                        <span>START INTERVIEW</span>
+                    </button>
+                    
+                    <button onclick="skipToDemo()" class="flex items-center gap-3 bg-nexspark-purple/20 border-2 border-nexspark-purple hover:bg-nexspark-purple/40 text-nexspark-purple font-header text-xl px-8 py-4 rounded-lg transition-all">
+                        <i class="fas fa-forward"></i>
+                        <span>SKIP TO DEMO</span>
+                    </button>
+                    
+                    <button id="pauseBtn" onclick="pauseInterview()" class="hidden flex items-center gap-2 bg-nexspark-blue/20 border border-nexspark-blue text-nexspark-blue font-mono px-6 py-3 rounded-lg hover:bg-nexspark-blue/30 transition-all" disabled>
+                        <i class="fas fa-pause"></i>
+                        <span>PAUSE</span>
+                    </button>
+                    
+                    <button id="endBtn" onclick="endInterview()" class="hidden flex items-center gap-2 bg-nexspark-red/20 border border-nexspark-red text-nexspark-red font-mono px-6 py-3 rounded-lg hover:bg-nexspark-red/30 transition-all" disabled>
+                        <i class="fas fa-stop"></i>
+                        <span>END INTERVIEW</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Transcript Container -->
+            <div id="transcriptContainer" class="bg-nexspark-panel border border-nexspark-gold/30 rounded-2xl p-8 backdrop-blur-xl hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <i class="fas fa-file-alt text-nexspark-gold text-2xl"></i>
+                    <h2 class="font-header text-2xl font-bold text-white uppercase tracking-wider">Interview Transcript</h2>
+                </div>
+                
+                <div id="transcriptMessages" class="space-y-4 max-h-96 overflow-y-auto transcript-scroll">
+                    <!-- Transcript messages will be added here -->
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <!-- Load the v3 interview script with real-time transcription -->
+    <script src="/static/voice-interview-v3.js"></script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment | NexSpark</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Rajdhani', 'sans-serif'],
+              header: ['Antonio', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              nexspark: {
+                bg: '#000000',
+                gold: '#FF9C00',
+                pale: '#FFCC99',
+                red: '#CC3333',
+                blue: '#99CCFF',
+                purple: '#CC99CC',
+                dark: '#111111',
+                panel: 'rgba(20, 20, 25, 0.9)',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      body {
+        background: #000000;
+        color: #99CCFF;
+      }
+      
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <div class="bg-nexspark-dark border-b border-nexspark-gold/20 py-4 px-6">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-rocket text-nexspark-gold text-2xl"></i>
+                <span class="text-white font-header font-bold text-xl">NexSpark Growth OS</span>
+            </div>
+            <div class="flex items-center gap-2 text-nexspark-blue text-sm">
+                <i class="fas fa-lock"></i>
+                <span>Secure Checkout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        
+        <!-- Order Summary -->
+        <div class="bg-nexspark-panel rounded-2xl p-8 mb-8 border border-nexspark-gold/30">
+            <h2 class="text-3xl font-header font-bold text-white mb-6">
+                <i class="fas fa-file-invoice-dollar text-nexspark-gold mr-3"></i>
+                Order Summary
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="flex justify-between items-center py-3 border-b border-white/10">
+                    <div>
+                        <div class="text-white font-semibold text-lg">NexSpark Growth Strategy Report</div>
+                        <div class="text-white/60 text-sm mt-1">Complete 6-Month GTM Plan</div>
+                    </div>
+                    <div class="text-white font-bold text-2xl">$20</div>
+                </div>
+                
+                <div class="bg-nexspark-dark rounded-lg p-4 mt-4">
+                    <div class="text-nexspark-blue font-semibold mb-3">
+                        <i class="fas fa-check-circle mr-2"></i>What's Included:
+                    </div>
+                    <ul class="space-y-2 text-white/80 text-sm">
+                        <li><i class="fas fa-chart-line text-green-400 mr-2"></i> Complete competitive analysis with traffic data</li>
+                        <li><i class="fas fa-map-marked-alt text-blue-400 mr-2"></i> Detailed 6-month execution roadmap</li>
+                        <li><i class="fas fa-bullseye text-purple-400 mr-2"></i> Channel strategies & budget allocation</li>
+                        <li><i class="fas fa-calculator text-yellow-400 mr-2"></i> CAC/LTV analysis & ROI projections</li>
+                        <li><i class="fas fa-download text-nexspark-gold mr-2"></i> Downloadable PDF report</li>
+                        <li><i class="fas fa-envelope text-nexspark-blue mr-2"></i> Email delivery to your inbox</li>
+                    </ul>
+                </div>
+                
+                <!-- Time Expectation -->
+                <div class="bg-nexspark-gold/10 border border-nexspark-gold/30 rounded-lg p-4 mt-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-clock text-nexspark-gold text-2xl mt-1"></i>
+                        <div>
+                            <div class="text-white font-semibold mb-1">Report Generation Time</div>
+                            <div class="text-white/80 text-sm">
+                                Your complete growth strategy will be generated in <span class="text-nexspark-gold font-bold">2-3 minutes</span> after payment.
+                            </div>
+                            <div class="text-white/60 text-xs mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                You can leave the page open and we'll show live progress, or close it and we'll email you when ready!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="bg-nexspark-panel rounded-2xl p-8 border border-nexspark-purple/30">
+            <h2 class="text-3xl font-header font-bold text-white mb-6">
+                <i class="fas fa-credit-card text-nexspark-purple mr-3"></i>
+                Payment Details
+            </h2>
+            
+            <form id="payment-form">
+                <!-- TEST MODE BANNER -->
+                <div class="bg-yellow-500/20 border-2 border-yellow-500 rounded-xl p-6 mb-6">
+                    <div class="flex items-start gap-4">
+                        <i class="fas fa-exclamation-triangle text-yellow-500 text-3xl"></i>
+                        <div class="flex-1">
+                            <h3 class="text-yellow-500 font-bold text-xl mb-3">🧪 TEST MODE - Use These Card Details</h3>
+                            <div class="bg-black/40 rounded-lg p-4 font-mono text-sm space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-white/70">Card Number:</span>
+                                    <span class="text-white font-bold text-lg tracking-wider">4242 4242 4242 4242</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-white/70">Expiry Date:</span>
+                                    <span class="text-white font-bold">Any future date (e.g., 12/25)</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-white/70">CVC:</span>
+                                    <span class="text-white font-bold">Any 3 digits (e.g., 123)</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-white/70">ZIP Code:</span>
+                                    <span class="text-white font-bold">Any 5 digits (e.g., 12345)</span>
+                                </div>
+                            </div>
+                            <p class="text-white/70 text-xs mt-3">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                This is Stripe TEST mode. No real charges will be made. Use the exact card number above.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card Element -->
+                <div class="mb-6">
+                    <label class="block text-nexspark-blue font-semibold mb-3">
+                        <i class="fas fa-credit-card mr-2"></i>Card Information
+                    </label>
+                    <div id="card-element" class="bg-white p-4 rounded-lg"></div>
+                    <div id="card-errors" class="text-red-400 text-sm mt-2"></div>
+                </div>
+                
+                <!-- Time Estimate Notice -->
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6 mb-6">
+                    <div class="flex items-start gap-4">
+                        <i class="fas fa-clock text-blue-400 text-3xl mt-1"></i>
+                        <div class="flex-1">
+                            <h3 class="text-white font-bold text-lg mb-2">Report Generation Time</h3>
+                            <p class="text-white/80 mb-3">
+                                Your personalized growth strategy report will be generated in approximately <strong class="text-nexspark-gold">2-3 minutes</strong> after payment.
+                            </p>
+                            <div class="space-y-2 text-sm text-white/70">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-check text-green-400"></i>
+                                    <span>You can leave this page open and do other things</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-bell text-yellow-400"></i>
+                                    <span>We'll send you a notification when it's ready</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-envelope text-nexspark-blue"></i>
+                                    <span>You'll also receive an email with download link</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    id="submit-button"
+                    class="w-full py-6 bg-gradient-to-r from-nexspark-gold to-yellow-500 text-black font-header font-bold text-2xl uppercase rounded-xl hover:from-yellow-500 hover:to-nexspark-gold transition-all transform hover:scale-[1.02] shadow-2xl"
+                >
+                    <i class="fas fa-lock mr-3"></i>
+                    <span id="button-text">Pay $20 & Generate Report</span>
+                    <i class="fas fa-spinner fa-spin ml-3 hidden" id="spinner"></i>
+                </button>
+                
+                <p class="text-center text-white/50 text-xs mt-4">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Your payment is secured with 256-bit SSL encryption via Stripe
+                </p>
+            </form>
+        </div>
+        
+        <!-- Trust Badges -->
+        <div class="mt-8 flex items-center justify-center gap-8 text-white/40 text-sm">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-shield-check text-green-400"></i>
+                <span>100% Secure</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-undo text-blue-400"></i>
+                <span>Money-back Guarantee</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-headset text-purple-400"></i>
+                <span>24/7 Support</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check auth
+        function checkAuth() {
+            const user = localStorage.getItem('nexspark_user');
+            if (!user) {
+                console.log('No user found, redirecting to home');
+                window.location.href = '/';
+                return null;
+            }
+            return JSON.parse(user);
+        }
+        
+        // Get user data
+        const user = checkAuth();
+        if (!user) throw new Error('Not authenticated');
+        
+        // Get summary
+        const summaryData = localStorage.getItem('nexspark_summary');
+        if (!summaryData) {
+            console.error('No summary found');
+            window.location.href = '/interview';
+        }
+        const summary = JSON.parse(summaryData);
+        
+        // Initialize Stripe
+        const stripe = Stripe('REDACTED_STRIPE_PUBLISHABLE');
+        const elements = stripe.elements();
+        const cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#000',
+                    '::placeholder': {
+                        color: '#aab7c4',
+                    },
+                },
+            },
+        });
+        cardElement.mount('#card-element');
+        
+        // Handle form submission
+        const form = document.getElementById('payment-form');
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+        const spinner = document.getElementById('spinner');
+        
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            submitButton.disabled = true;
+            buttonText.textContent = 'Processing Payment...';
+            spinner.classList.remove('hidden');
+            
+            try {
+                // Create payment intent
+                console.log('Creating payment intent...');
+                const response = await axios.post('/api/payment/create-intent', {
+                    userId: user.id,
+                    userEmail: user.email,
+                    amount: 2000 // $20
+                });
+                
+                if (!response.data.success) {
+                    throw new Error(response.data.message || 'Failed to create payment intent');
+                }
+                
+                const { clientSecret } = response.data;
+                
+                // Confirm payment
+                console.log('Confirming payment...');
+                const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            email: user.email
+                        }
+                    }
+                });
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+                
+                if (paymentIntent.status === 'succeeded') {
+                    console.log('✅ Payment successful!');
+                    
+                    // Save payment info to localStorage
+                    localStorage.setItem('nexspark_payment', JSON.stringify({
+                        paymentIntentId: paymentIntent.id,
+                        amount: 2000,
+                        paid: true,
+                        timestamp: new Date().toISOString()
+                    }));
+                    
+                    // Redirect to report generation
+                    window.location.href = '/full-report';
+                } else {
+                    throw new Error('Payment was not successful');
+                }
+                
+            } catch (error) {
+                console.error('Payment error:', error);
+                document.getElementById('card-errors').textContent = error.message;
+                submitButton.disabled = false;
+                buttonText.textContent = 'Pay $20 & Generate Report';
+                spinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

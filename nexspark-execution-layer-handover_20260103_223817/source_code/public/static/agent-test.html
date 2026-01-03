@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Test - Nexspark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #0A0E27;
+            color: #fff;
+        }
+        .console-output {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            border: 1px solid #333;
+            padding: 1rem;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .console-line {
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold mb-2">
+                <i class="fas fa-robot text-yellow-500 mr-3"></i>
+                Minimum Viable Agent - Test
+            </h1>
+            <p class="text-gray-400">Day 1 Implementation - Simple but Functional</p>
+        </div>
+
+        <!-- Input Form -->
+        <div class="bg-gray-900 rounded-xl p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">
+                <i class="fas fa-user mr-2 text-blue-400"></i>User Request
+            </h2>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-400 mb-2">User ID</label>
+                <input 
+                    type="text" 
+                    id="userId" 
+                    value="test-user-123"
+                    class="w-full px-4 py-2 bg-black border border-gray-700 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
+                    placeholder="Enter user ID">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Request</label>
+                <textarea 
+                    id="request" 
+                    rows="4"
+                    class="w-full px-4 py-2 bg-black border border-gray-700 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
+                    placeholder="What would you like the agent to help with?">What are the top 3 growth strategies for a SaaS company targeting $100M revenue?</textarea>
+            </div>
+            
+            <button 
+                onclick="executeAgent()"
+                id="executeBtn"
+                class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded-lg transition">
+                <i class="fas fa-rocket mr-2"></i>
+                Execute Agent
+            </button>
+        </div>
+
+        <!-- Status Panel -->
+        <div id="statusPanel" class="bg-gray-900 rounded-xl p-6 mb-6 hidden">
+            <h2 class="text-xl font-bold mb-4">
+                <i class="fas fa-chart-line mr-2 text-green-400"></i>Execution Status
+            </h2>
+            
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-gray-400">Progress</span>
+                    <span id="progressText" class="text-sm font-bold text-yellow-500">0%</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
+                    <div id="progressBar" class="progress-bar bg-gradient-to-r from-yellow-500 to-green-500 h-full" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <div class="text-xs text-gray-400">Execution ID</div>
+                    <div id="executionId" class="text-sm font-mono text-yellow-500">-</div>
+                </div>
+                <div>
+                    <div class="text-xs text-gray-400">Status</div>
+                    <div id="status" class="text-sm font-bold">-</div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="text-xs text-gray-400 mb-2">Started At</div>
+                <div id="startedAt" class="text-sm">-</div>
+            </div>
+        </div>
+
+        <!-- Console Output -->
+        <div class="bg-gray-900 rounded-xl p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold">
+                    <i class="fas fa-terminal mr-2 text-purple-400"></i>Console Output
+                </h2>
+                <button onclick="clearConsole()" class="text-xs text-gray-400 hover:text-white">
+                    <i class="fas fa-trash mr-1"></i>Clear
+                </button>
+            </div>
+            <div id="console" class="console-output"></div>
+        </div>
+
+        <!-- Result Display -->
+        <div id="resultPanel" class="bg-gray-900 rounded-xl p-6 hidden">
+            <h2 class="text-xl font-bold mb-4">
+                <i class="fas fa-check-circle mr-2 text-green-400"></i>Agent Response
+            </h2>
+            <div id="result" class="bg-black rounded-lg p-4 text-gray-300 whitespace-pre-wrap"></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-6 flex gap-4">
+            <button 
+                onclick="testSimple()"
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg">
+                <i class="fas fa-flask mr-2"></i>Quick Test
+            </button>
+            <button 
+                onclick="viewDocs()"
+                class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg">
+                <i class="fas fa-book mr-2"></i>View Docs
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script>
+        let pollInterval = null;
+
+        function log(message, type = 'info') {
+            const console = document.getElementById('console');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: 'text-gray-400',
+                success: 'text-green-400',
+                error: 'text-red-400',
+                warning: 'text-yellow-400'
+            };
+            
+            const line = document.createElement('div');
+            line.className = `console-line ${colors[type]}`;
+            line.innerHTML = `<span class="text-gray-600">[${timestamp}]</span> ${message}`;
+            console.appendChild(line);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('console').innerHTML = '';
+        }
+
+        async function executeAgent() {
+            const userId = document.getElementById('userId').value;
+            const request = document.getElementById('request').value;
+            
+            if (!userId || !request) {
+                log('❌ Please provide both User ID and Request', 'error');
+                return;
+            }
+
+            // Clear previous results
+            document.getElementById('resultPanel').classList.add('hidden');
+            document.getElementById('statusPanel').classList.remove('hidden');
+            
+            // Disable button
+            const btn = document.getElementById('executeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Executing...';
+            
+            try {
+                log('🚀 Starting agent execution...', 'info');
+                
+                // Execute agent
+                const response = await axios.post('/api/agent/execute', {
+                    userId,
+                    request
+                });
+                
+                if (response.data.success) {
+                    const executionId = response.data.executionId;
+                    log(`✅ Execution started: ${executionId}`, 'success');
+                    
+                    // Start polling for status
+                    pollStatus(executionId);
+                } else {
+                    log(`❌ Execution failed: ${response.data.message}`, 'error');
+                    resetButton();
+                }
+                
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                resetButton();
+            }
+        }
+
+        async function pollStatus(executionId) {
+            document.getElementById('executionId').textContent = executionId;
+            
+            // Poll every 1 second
+            pollInterval = setInterval(async () => {
+                try {
+                    const response = await axios.get(`/api/agent/status/${executionId}`);
+                    
+                    if (response.data.success) {
+                        const execution = response.data.execution;
+                        updateStatus(execution);
+                        
+                        // Stop polling if completed or failed
+                        if (execution.status === 'completed' || execution.status === 'failed') {
+                            clearInterval(pollInterval);
+                            resetButton();
+                            
+                            if (execution.status === 'completed') {
+                                log('✅ Execution completed!', 'success');
+                                showResult(execution.result);
+                            } else {
+                                log(`❌ Execution failed: ${execution.error}`, 'error');
+                            }
+                        }
+                    }
+                } catch (error) {
+                    log(`⚠️ Status poll error: ${error.message}`, 'warning');
+                }
+            }, 1000);
+        }
+
+        function updateStatus(execution) {
+            // Update progress
+            document.getElementById('progressBar').style.width = execution.progress + '%';
+            document.getElementById('progressText').textContent = execution.progress + '%';
+            
+            // Update status
+            const statusColors = {
+                'initializing': 'text-blue-400',
+                'running': 'text-yellow-400',
+                'completed': 'text-green-400',
+                'failed': 'text-red-400'
+            };
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = execution.status.toUpperCase();
+            statusEl.className = `text-sm font-bold ${statusColors[execution.status]}`;
+            
+            // Update timestamp
+            document.getElementById('startedAt').textContent = new Date(execution.startedAt).toLocaleString();
+            
+            // Log progress changes
+            log(`📊 Progress: ${execution.progress}% - ${execution.status}`, 'info');
+        }
+
+        function showResult(result) {
+            const resultPanel = document.getElementById('resultPanel');
+            const resultEl = document.getElementById('result');
+            
+            resultPanel.classList.remove('hidden');
+            resultEl.textContent = result.response;
+            
+            // Scroll to result
+            resultPanel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetButton() {
+            const btn = document.getElementById('executeBtn');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-rocket mr-2"></i>Execute Agent';
+        }
+
+        async function testSimple() {
+            log('🧪 Running quick test...', 'info');
+            
+            try {
+                const response = await axios.get('/api/agent/test');
+                log(`✅ Test initiated: ${response.data.executionId}`, 'success');
+                
+                if (response.data.success) {
+                    pollStatus(response.data.executionId);
+                    document.getElementById('statusPanel').classList.remove('hidden');
+                }
+            } catch (error) {
+                log(`❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function viewDocs() {
+            window.open('/static/AGENT_ARCHITECTURE.md', '_blank');
+        }
+
+        // Log startup
+        log('✨ Agent test page loaded', 'success');
+        log('📚 Minimum Viable Agent (Day 1 Implementation)', 'info');
+    </script>
+</body>
+</html>
