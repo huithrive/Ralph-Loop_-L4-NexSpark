@@ -1260,4 +1260,77 @@ app.get('/', (c) => {
 
 })
 
+// ==========================================
+// MINIMUM VIABLE AGENT API ENDPOINTS (Day 1)
+// ==========================================
+
+import { MinimumViableAgent } from './services/agent/minimum-viable-agent'
+
+// Execute agent request
+app.post('/api/agent/execute', async (c) => {
+  try {
+    const { userId, request, context } = await c.req.json()
+    
+    if (!userId || !request) {
+      return c.json({
+        success: false,
+        message: 'userId and request are required'
+      }, 400)
+    }
+    
+    const agent = new MinimumViableAgent(c.env)
+    const result = await agent.execute({ userId, request, context })
+    
+    return c.json(result)
+  } catch (error: any) {
+    console.error('[API] Agent execution error:', error)
+    return c.json({
+      success: false,
+      message: error.message
+    }, 500)
+  }
+})
+
+// Get agent execution status
+app.get('/api/agent/status/:executionId', async (c) => {
+  try {
+    const executionId = c.req.param('executionId')
+    
+    const agent = new MinimumViableAgent(c.env)
+    const status = await agent.getStatus(executionId)
+    
+    if (!status) {
+      return c.json({
+        success: false,
+        message: 'Execution not found'
+      }, 404)
+    }
+    
+    return c.json({
+      success: true,
+      execution: status
+    })
+  } catch (error: any) {
+    console.error('[API] Agent status error:', error)
+    return c.json({
+      success: false,
+      message: error.message
+    }, 500)
+  }
+})
+
+// Test endpoint - simple agent test
+app.get('/api/agent/test', async (c) => {
+  const agent = new MinimumViableAgent(c.env)
+  const result = await agent.execute({
+    userId: 'test-user',
+    request: 'What are the top 3 growth strategies for a SaaS company targeting $100M revenue?'
+  })
+  
+  return c.json(result)
+})
+
+// Agent test page
+app.get('/agent-test', (c) => c.redirect('/static/agent-test.html'))
+
 export default app

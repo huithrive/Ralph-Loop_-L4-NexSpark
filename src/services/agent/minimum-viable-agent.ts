@@ -1,5 +1,5 @@
 // Minimum Viable Agent - Day 1 Implementation
-// Simple, working agent with basic error handling and state tracking
+// Simple but functional agent with basic execution tracking
 
 export interface AgentRequest {
   userId: string;
@@ -11,52 +11,55 @@ export interface AgentExecution {
   executionId: string;
   userId: string;
   status: 'initializing' | 'running' | 'completed' | 'failed';
-  progress: number;
-  result?: any;
-  error?: string;
+  progress: number; // 0-100
   startedAt: string;
   completedAt?: string;
+  result?: any;
+  error?: string;
 }
 
 export class MinimumViableAgent {
-  constructor(private env: any) {}
+  constructor(
+    private env: any // Cloudflare env with KV and API keys
+  ) {}
 
   /**
-   * Execute a user request with basic state tracking
+   * Main execution method - handles a user request
    */
-  async execute(request: AgentRequest): Promise<{ success: boolean; executionId: string; message?: string }> {
+  async execute(request: AgentRequest): Promise<{ success: boolean; executionId: string; message: string }> {
     const executionId = this.generateId();
     
-    console.log(`[MVAgent] Starting execution ${executionId} for user ${request.userId}`);
+    console.log(`[Agent] Starting execution ${executionId} for user ${request.userId}`);
+    
+    // Initialize execution state
+    const execution: AgentExecution = {
+      executionId,
+      userId: request.userId,
+      status: 'initializing',
+      progress: 0,
+      startedAt: new Date().toISOString()
+    };
+    
+    await this.saveExecution(execution);
     
     try {
-      // 1. Initialize execution state
-      await this.saveState(executionId, {
-        executionId,
-        userId: request.userId,
-        status: 'initializing',
-        progress: 0,
-        startedAt: new Date().toISOString()
-      });
+      // Update to running
+      execution.status = 'running';
+      execution.progress = 10;
+      await this.saveExecution(execution);
       
-      // 2. Update to running
-      await this.updateProgress(executionId, 10, 'running');
+      // Execute the actual work
+      console.log(`[Agent] Processing request: ${request.request.substring(0, 100)}...`);
+      const result = await this.processRequest(request, execution);
       
-      // 3. Execute the actual work
-      const result = await this.executeWork(request, executionId);
+      // Mark as completed
+      execution.status = 'completed';
+      execution.progress = 100;
+      execution.completedAt = new Date().toISOString();
+      execution.result = result;
+      await this.saveExecution(execution);
       
-      // 4. Mark as completed
-      await this.saveState(executionId, {
-        executionId,
-        userId: request.userId,
-        status: 'completed',
-        progress: 100,
-        result,
-        startedAt: new Date().toISOString(),
-        completedAt: new Date().toISOString()
-      });
-      
-      console.log(`[MVAgent] ✅ Execution ${executionId} completed successfully`);
+      console.log(`[Agent] Execution ${executionId} completed successfully`);
       
       return {
         success: true,
@@ -65,23 +68,18 @@ export class MinimumViableAgent {
       };
       
     } catch (error: any) {
-      console.error(`[MVAgent] ❌ Execution ${executionId} failed:`, error);
+      console.error(`[Agent] Execution ${executionId} failed:`, error);
       
-      // Save failed state
-      await this.saveState(executionId, {
-        executionId,
-        userId: request.userId,
-        status: 'failed',
-        progress: 0,
-        error: error.message,
-        startedAt: new Date().toISOString(),
-        completedAt: new Date().toISOString()
-      });
+      // Mark as failed
+      execution.status = 'failed';
+      execution.error = error.message;
+      execution.completedAt = new Date().toISOString();
+      await this.saveExecution(execution);
       
       return {
         success: false,
         executionId,
-        message: error.message || 'Execution failed'
+        message: `Execution failed: ${error.message}`
       };
     }
   }
@@ -91,7 +89,7 @@ export class MinimumViableAgent {
    */
   async getStatus(executionId: string): Promise<AgentExecution | null> {
     try {
-      const key = `agent_execution:${executionId}`;
+      const key = `agent:execution:${executionId}`;
       const data = await this.env.KV.get(key);
       
       if (!data) {
@@ -100,73 +98,126 @@ export class MinimumViableAgent {
       
       return JSON.parse(data);
     } catch (error) {
-      console.error(`[MVAgent] Error getting status:`, error);
+      console.error(`[Agent] Error getting status:`, error);
       return null;
     }
   }
 
   /**
-   * Execute the actual work with retry logic
+   * Process the actual request
    */
-  private async executeWork(request: AgentRequest, executionId: string): Promise<any> {
-    const maxRetries = 3;
-    let lastError: Error | null = null;
+  private async processRequest(
+    request: AgentRequest,
+    execution: AgentExecution
+  ): Promise<any> {
+    // Step 1: Analyze the request (30%)
+    execution.progress = 30;
+    await this.saveExecution(execution);
     
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        console.log(`[MVAgent] Attempt ${attempt}/${maxRetries} for execution ${executionId}`);
-        
-        // Update progress
-        const progress = 10 + (attempt - 1) * 20;
-        await this.updateProgress(executionId, progress, 'running');
-        
-        // Call Claude API
-        const result = await this.callClaude(request.request, request.context);
-        
-        console.log(`[MVAgent] ✅ Claude API call successful on attempt ${attempt}`);
-        return result;
-        
-      } catch (error: any) {
-        lastError = error;
-        console.error(`[MVAgent] ⚠️ Attempt ${attempt} failed:`, error.message);
-        
-        if (attempt < maxRetries) {
-          // Wait before retry (exponential backoff)
-          const delay = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s
-          console.log(`[MVAgent] Waiting ${delay}ms before retry...`);
-          await this.sleep(delay);
-        }
-      }
+    const analysis = await this.analyzeRequest(request);
+    
+    // Step 2: Generate response (60%)
+    execution.progress = 60;
+    await this.saveExecution(execution);
+    
+    const response = await this.generateResponse(request, analysis);
+    
+    // Step 3: Format result (90%)
+    execution.progress = 90;
+    await this.saveExecution(execution);
+    
+    const result = this.formatResult(response);
+    
+    return result;
+  }
+
+  /**
+   * Analyze the user request using Claude
+   */
+  private async analyzeRequest(request: AgentRequest): Promise<any> {
+    console.log('[Agent] Analyzing request with Claude...');
+    
+    const prompt = `You are Nexspark, an expert growth strategist.
+
+User Request: ${request.request}
+
+${request.context ? `Context: ${JSON.stringify(request.context, null, 2)}` : ''}
+
+Analyze this request and respond with:
+1. What the user is asking for
+2. Key information needed
+3. Recommended approach
+
+Keep your response focused and actionable.`;
+
+    try {
+      const response = await this.callClaude(prompt, 1000); // 1000 max tokens
+      return {
+        type: 'analysis',
+        content: response
+      };
+    } catch (error: any) {
+      console.error('[Agent] Claude analysis failed:', error);
+      throw new Error(`Analysis failed: ${error.message}`);
     }
+  }
+
+  /**
+   * Generate the actual response
+   */
+  private async generateResponse(request: AgentRequest, analysis: any): Promise<any> {
+    console.log('[Agent] Generating response with Claude...');
     
-    // All retries failed
-    throw new Error(`Failed after ${maxRetries} attempts: ${lastError?.message}`);
+    const prompt = `You are Nexspark, an expert growth strategist.
+
+User Request: ${request.request}
+
+Analysis: ${analysis.content}
+
+Now provide a detailed, actionable response to help the user.
+Be specific, practical, and focused on growth strategies that lead to $100M revenue.
+
+Format your response clearly with:
+- Key insights
+- Specific recommendations
+- Next steps`;
+
+    try {
+      const response = await this.callClaude(prompt, 2048); // 2048 max tokens
+      return {
+        type: 'response',
+        content: response
+      };
+    } catch (error: any) {
+      console.error('[Agent] Claude response generation failed:', error);
+      throw new Error(`Response generation failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Format the final result
+   */
+  private formatResult(response: any): any {
+    return {
+      timestamp: new Date().toISOString(),
+      response: response.content,
+      metadata: {
+        generatedBy: 'Nexspark AI Agent',
+        version: '1.0-mvp'
+      }
+    };
   }
 
   /**
    * Call Claude API
    */
-  private async callClaude(prompt: string, context?: Record<string, any>): Promise<any> {
+  private async callClaude(prompt: string, maxTokens: number = 1024): Promise<string> {
     const apiKey = this.env.ANTHROPIC_API_KEY;
     
     if (!apiKey) {
-      throw new Error('ANTHROPIC_API_KEY not configured');
+      throw new Error('Claude API key not configured');
     }
-    
-    const messages = [
-      {
-        role: 'user',
-        content: prompt
-      }
-    ];
-    
-    // Add context if provided
-    if (context) {
-      messages[0].content = `Context: ${JSON.stringify(context)}\n\n${prompt}`;
-    }
-    
-    console.log(`[MVAgent] Calling Claude API...`);
-    
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -176,58 +227,39 @@ export class MinimumViableAgent {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 4096,
-        messages
+        max_tokens: maxTokens,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
       })
     });
-    
+
     if (!response.ok) {
       const error = await response.text();
-      throw new Error(`Claude API error: ${response.status} - ${error}`);
+      throw new Error(`Claude API error: ${response.status} ${error}`);
     }
-    
+
     const data = await response.json();
-    
-    return {
-      content: data.content[0].text,
-      usage: data.usage,
-      model: data.model
-    };
+    return data.content[0].text;
   }
 
   /**
    * Save execution state to KV
    */
-  private async saveState(executionId: string, state: AgentExecution): Promise<void> {
-    const key = `agent_execution:${executionId}`;
-    await this.env.KV.put(key, JSON.stringify(state), {
-      expirationTtl: 3600 // 1 hour
+  private async saveExecution(execution: AgentExecution): Promise<void> {
+    const key = `agent:execution:${execution.executionId}`;
+    await this.env.KV.put(key, JSON.stringify(execution), {
+      expirationTtl: 3600 // 1 hour TTL
     });
-  }
-
-  /**
-   * Update progress
-   */
-  private async updateProgress(executionId: string, progress: number, status: AgentExecution['status']): Promise<void> {
-    const current = await this.getStatus(executionId);
-    if (current) {
-      current.progress = progress;
-      current.status = status;
-      await this.saveState(executionId, current);
-    }
   }
 
   /**
    * Generate unique ID
    */
   private generateId(): string {
-    return `exec_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-  }
-
-  /**
-   * Sleep utility
-   */
-  private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return `exec_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
   }
 }
