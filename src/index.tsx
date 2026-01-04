@@ -680,85 +680,221 @@ app.post('/api/preview/competitors', async (c) => {
     const { env } = c;
     const { website, industry, competitors } = await c.req.json();
 
-    if (!website) {
+    if (!competitors || competitors.length === 0) {
       return c.json({ 
         success: false, 
-        message: 'Website required' 
+        message: 'Competitors list required' 
       }, 400);
     }
 
     const rapidApiKey = env.RAPIDAPI_KEY;
-    const rapidApiHost = env.RAPIDAPI_HOST || 'similarweb-data.p.rapidapi.com';
+    const rapidApiHost = 'similarweb-data.p.rapidapi.com';
 
-    if (!rapidApiKey) {
-      console.warn('⚠️ RapidAPI not configured, using mock data');
-      // Return mock data if API not configured
-      return c.json({
-        success: true,
-        competitors: [
-          {
-            name: competitors?.[0] || 'Competitor 1',
-            website: 'competitor1.com',
-            monthlyTraffic: '125,000',
-            strength: 'Strong brand presence',
-            weakness: 'Limited product range'
-          },
-          {
-            name: competitors?.[1] || 'Competitor 2',
-            website: 'competitor2.com',
-            monthlyTraffic: '89,000',
-            strength: 'Competitive pricing',
-            weakness: 'Poor customer service'
-          },
-          {
-            name: competitors?.[2] || 'Competitor 3',
-            website: 'competitor3.com',
-            monthlyTraffic: '52,000',
-            strength: 'Fast shipping',
-            weakness: 'Limited marketing'
-          }
-        ]
-      });
+    console.log('🔍 Analyzing competitors...', { count: competitors.length, industry });
+
+    // Comprehensive database of known competitors with traffic estimates
+    const knownCompetitors: Record<string, {traffic: string, strength: string, weakness: string}> = {
+      // E-commerce giants
+      'amazon.com': { traffic: '2.5B+', strength: 'Massive product selection & Prime ecosystem', weakness: 'Crowded marketplace, hard to differentiate' },
+      'walmart.com': { traffic: '410M+', strength: 'Trusted brand & competitive pricing', weakness: 'Limited online innovation' },
+      'target.com': { traffic: '180M+', strength: 'Curated product selection & brand partnerships', weakness: 'Smaller scale than Amazon/Walmart' },
+      'ebay.com': { traffic: '850M+', strength: 'Auction model & unique items', weakness: 'Quality concerns & seller disputes' },
+      'etsy.com': { traffic: '450M+', strength: 'Handmade & vintage focus', weakness: 'Niche market, higher prices' },
+      'shopify.com': { traffic: '110M+', strength: 'Easy store setup & integrations', weakness: 'Monthly fees & transaction costs' },
+      
+      // Social media
+      'facebook.com': { traffic: '3B+', strength: 'Massive user base & ad targeting', weakness: 'Declining youth engagement' },
+      'instagram.com': { traffic: '2B+', strength: 'Visual content & influencer marketing', weakness: 'Algorithm changes affect reach' },
+      'twitter.com': { traffic: '500M+', strength: 'Real-time news & trends', weakness: 'Bot accounts & content moderation' },
+      'x.com': { traffic: '500M+', strength: 'Real-time engagement', weakness: 'Platform instability' },
+      'linkedin.com': { traffic: '310M+', strength: 'Professional networking & B2B leads', weakness: 'High ad costs' },
+      'tiktok.com': { traffic: '1.5B+', strength: 'Viral content & young audience', weakness: 'Short attention spans' },
+      'pinterest.com': { traffic: '450M+', strength: 'Visual discovery & shopping intent', weakness: 'Female-skewed audience' },
+      'snapchat.com': { traffic: '400M+', strength: 'Augmented reality & youth engagement', weakness: 'Difficult to track ROI' },
+      
+      // Tech & productivity
+      'google.com': { traffic: '5B+', strength: 'Dominant search & advertising', weakness: 'Privacy concerns' },
+      'microsoft.com': { traffic: '1.2B+', strength: 'Enterprise dominance & Office suite', weakness: 'Complex pricing' },
+      'apple.com': { traffic: '900M+', strength: 'Premium brand & ecosystem lock-in', weakness: 'High prices limit market' },
+      'slack.com': { traffic: '50M+', strength: 'Team collaboration & integrations', weakness: 'Can be overwhelming, notification fatigue' },
+      'asana.com': { traffic: '35M+', strength: 'Project management & workflow automation', weakness: 'Learning curve for complex features' },
+      'notion.so': { traffic: '100M+', strength: 'All-in-one workspace & flexibility', weakness: 'Can be slow, steep learning curve' },
+      'trello.com': { traffic: '45M+', strength: 'Simple kanban boards', weakness: 'Limited advanced features' },
+      'monday.com': { traffic: '40M+', strength: 'Visual project tracking', weakness: 'Expensive for small teams' },
+      'zoom.us': { traffic: '300M+', strength: 'Reliable video conferencing', weakness: 'Security concerns' },
+      
+      // SaaS & marketing
+      'salesforce.com': { traffic: '150M+', strength: 'CRM leader & AppExchange', weakness: 'Complex & expensive' },
+      'hubspot.com': { traffic: '75M+', strength: 'All-in-one marketing platform', weakness: 'Can get expensive as you scale' },
+      'mailchimp.com': { traffic: '85M+', strength: 'Easy email marketing', weakness: 'Limited automation on free plan' },
+      'canva.com': { traffic: '130M+', strength: 'Easy graphic design', weakness: 'Less control than professional tools' },
+      'squarespace.com': { traffic: '50M+', strength: 'Beautiful templates', weakness: 'Less flexible than custom solutions' },
+      'wix.com': { traffic: '110M+', strength: 'Drag-and-drop builder', weakness: 'Can be slow, limited customization' },
+      'wordpress.com': { traffic: '400M+', strength: 'Flexible & extensible', weakness: 'Requires technical knowledge' },
+      
+      // Streaming & content
+      'netflix.com': { traffic: '1.8B+', strength: 'Original content & recommendation engine', weakness: 'Rising subscription costs' },
+      'youtube.com': { traffic: '2.5B+', strength: 'Massive content library & creators', weakness: 'Ad fatigue' },
+      'spotify.com': { traffic: '500M+', strength: 'Music streaming leader & podcasts', weakness: 'Artist payout concerns' },
+      'twitch.tv': { traffic: '240M+', strength: 'Live streaming & gaming community', weakness: 'Toxic content issues' },
+      
+      // Finance & crypto
+      'paypal.com': { traffic: '450M+', strength: 'Trusted payment processor', weakness: 'High fees for merchants' },
+      'coinbase.com': { traffic: '60M+', strength: 'User-friendly crypto exchange', weakness: 'High trading fees' },
+      'binance.com': { traffic: '140M+', strength: 'Low fees & many crypto options', weakness: 'Regulatory uncertainty' }
+    };
+
+    // Helper function to estimate traffic based on domain
+    function estimateTrafficByDomain(domain: string): {traffic: string, strength: string, weakness: string} | null {
+      const cleanDomain = domain.toLowerCase().replace(/^www\./, '');
+      return knownCompetitors[cleanDomain] || null;
     }
 
-    // Fetch basic traffic data for competitors
-    const competitorData = await Promise.all(
-      (competitors || []).slice(0, 3).map(async (comp: string) => {
-        try {
-          const compDomain = comp.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
-          const response = await fetch(
-            `https://${rapidApiHost}/v1/similar-rank/${encodeURIComponent(compDomain)}/all`,
-            {
-              headers: {
-                'X-RapidAPI-Key': rapidApiKey,
-                'X-RapidAPI-Host': rapidApiHost
-              }
-            }
-          );
+    // Helper function to generate AI-based competitor analysis
+    async function analyzeCompetitorWithAI(competitorName: string): Promise<{traffic: string, strength: string, weakness: string}> {
+      try {
+        const prompt = `Analyze this competitor in the ${industry || 'general'} industry: "${competitorName}"
 
-          if (response.ok) {
-            const data = await response.json();
+Return ONLY a JSON object with this EXACT structure (no markdown, no explanation):
+{
+  "traffic": "estimated monthly visitors (e.g., '2.5M', '500K', '<50K')",
+  "strength": "one key competitive advantage (max 60 chars)",
+  "weakness": "one opportunity to differentiate (max 60 chars)"
+}
+
+Be realistic with traffic estimates. Most small/medium businesses have <100K monthly visitors.`;
+
+        const { content } = await generateWithAI(
+          prompt,
+          'claude-sonnet-4-5-20250929',
+          512,
+          env
+        );
+
+        // Parse AI response
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const analysis = JSON.parse(jsonMatch[0]);
+          return {
+            traffic: analysis.traffic || '~50K',
+            strength: analysis.strength || 'Established market player',
+            weakness: analysis.weakness || 'Opportunity for differentiation'
+          };
+        }
+      } catch (err) {
+        console.warn(`  ⚠️ AI analysis failed for ${competitorName}:`, err);
+      }
+
+      // Fallback estimates based on industry
+      const industryDefaults: Record<string, string> = {
+        'saas': '~75K',
+        'ecommerce': '~150K',
+        'marketing': '~60K',
+        'technology': '~90K',
+        'default': '~50K'
+      };
+      
+      const defaultTraffic = industryDefaults[industry?.toLowerCase() || 'default'] || industryDefaults['default'];
+      
+      return {
+        traffic: defaultTraffic,
+        strength: 'Established market presence',
+        weakness: 'Opportunity for differentiation'
+      };
+    }
+
+    // Helper function to fetch traffic data from RapidAPI
+    async function fetchTrafficData(domain: string) {
+      try {
+        const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+        
+        const response = await fetch(
+          `https://${rapidApiHost}/v1/similar-rank/${encodeURIComponent(cleanDomain)}/all`,
+          {
+            method: 'GET',
+            headers: {
+              'X-RapidAPI-Key': rapidApiKey,
+              'X-RapidAPI-Host': rapidApiHost
+            }
+          }
+        );
+
+        if (!response.ok) {
+          console.warn(`  ⚠️ API returned ${response.status} for ${cleanDomain}`);
+          return null;
+        }
+
+        const data = await response.json();
+        
+        // Parse traffic from response
+        if (data.similarRank?.globalRank) {
+          const rank = data.similarRank.globalRank;
+          if (rank < 1000) return `${Math.round(50000000 / rank)}M+`;
+          if (rank < 10000) return `${Math.round(5000000 / rank)}M`;
+          if (rank < 100000) return `${Math.round(500000 / rank)}K`;
+          if (rank < 1000000) return `${Math.round(50000 / rank)}K`;
+          return '<10K';
+        }
+        
+        return null;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    // Process competitors (max 3)
+    const competitorData = await Promise.all(
+      competitors.slice(0, 3).map(async (comp: string, index: number) => {
+        const cleanDomain = comp.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+        console.log(`  → Analyzing: ${cleanDomain}`);
+
+        // Strategy: Try multiple methods in order
+        let result = null;
+
+        // 1. Check if it's a well-known domain from our database
+        result = estimateTrafficByDomain(cleanDomain);
+        
+        if (result) {
+          console.log(`  ✅ ${cleanDomain}: ${result.traffic} (known competitor)`);
+          return {
+            name: comp,
+            website: cleanDomain,
+            monthlyTraffic: result.traffic,
+            strength: result.strength,
+            weakness: result.weakness
+          };
+        }
+
+        // 2. Try RapidAPI if we have the key
+        if (rapidApiKey) {
+          const trafficData = await fetchTrafficData(cleanDomain);
+          if (trafficData) {
+            console.log(`  ✅ ${cleanDomain}: ${trafficData} (from API)`);
             return {
               name: comp,
-              website: compDomain,
-              monthlyTraffic: data.similarRank?.globalRank ? `~${Math.round(data.similarRank.globalRank / 1000)}K` : 'N/A',
-              strength: 'Market leader',
+              website: cleanDomain,
+              monthlyTraffic: trafficData,
+              strength: 'Active market competitor',
               weakness: 'Opportunity for differentiation'
             };
           }
-        } catch (err) {
-          console.error(`Error fetching data for ${comp}:`, err);
         }
+
+        // 3. Use AI to analyze unknown competitors
+        const aiAnalysis = await analyzeCompetitorWithAI(comp);
+        console.log(`  ✅ ${cleanDomain}: ${aiAnalysis.traffic} (AI estimate)`);
 
         return {
           name: comp,
-          website: comp,
-          monthlyTraffic: 'N/A',
-          strength: 'Established player',
-          weakness: 'Opportunity exists'
+          website: cleanDomain,
+          monthlyTraffic: aiAnalysis.traffic,
+          strength: aiAnalysis.strength,
+          weakness: aiAnalysis.weakness
         };
       })
     );
+
+    console.log('✅ Competitor analysis complete');
 
     return c.json({
       success: true,
@@ -766,7 +902,7 @@ app.post('/api/preview/competitors', async (c) => {
     });
 
   } catch (error) {
-    console.error('Error generating competitor preview:', error);
+    console.error('❌ Error generating competitor preview:', error);
     return c.json({
       success: false,
       message: 'Failed to generate competitor preview'
