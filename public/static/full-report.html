@@ -247,13 +247,25 @@
         
         // View report
         function viewReport() {
+            // Save report data to localStorage if not already there
+            const summaryData = localStorage.getItem('nexspark_summary');
+            if (summaryData) {
+                localStorage.setItem('nexspark_report_data', summaryData);
+            }
             window.location.href = '/dashboard';
         }
         
         // Download report
         function downloadReport() {
-            alert('PDF download coming soon! For now, view report in dashboard.');
-            window.location.href = '/dashboard';
+            // Trigger download from dashboard
+            const summaryData = localStorage.getItem('nexspark_summary');
+            if (summaryData) {
+                localStorage.setItem('nexspark_report_data', summaryData);
+                window.location.href = '/dashboard';
+            } else {
+                alert('Report data not found. Redirecting to dashboard...');
+                window.location.href = '/dashboard';
+            }
         }
         
         // Initialize on load

@@ -131,6 +131,9 @@ function loadUserData() {
   
   // Load interview history
   loadInterviewHistory();
+  
+  // Load reports
+  loadReports();
 }
 
 // Load interview history from database
@@ -596,3 +599,484 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%c⚡ NEXSPARK DASHBOARD', 'color: #FF9C00; font-size: 20px; font-weight: bold; font-family: Antonio;');
   console.log('%cMISSION CONTROL ONLINE', 'color: #99CCFF; font-family: JetBrains Mono;');
 });
+
+// Load reports from localStorage
+function loadReports() {
+  const reportReady = localStorage.getItem('nexspark_report_ready');
+  const reportData = localStorage.getItem('nexspark_report_data');
+  const summaryData = localStorage.getItem('nexspark_summary');
+  
+  if (reportReady === 'true' && (reportData || summaryData)) {
+    const reportsSection = document.getElementById('reportsSection');
+    const reportsList = document.getElementById('reportsList');
+    
+    if (reportsSection && reportsList) {
+      reportsSection.classList.remove('hidden');
+      
+      const timestamp = localStorage.getItem('nexspark_report_timestamp');
+      const date = timestamp ? new Date(timestamp) : new Date();
+      const formattedDate = date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      
+      // Get summary to extract brand name
+      let brandName = 'Your Company';
+      try {
+        const summary = JSON.parse(summaryData);
+        brandName = summary.brandName || summary.companyName || 'Your Company';
+      } catch (e) {}
+      
+      reportsList.innerHTML = `
+        <div class="bg-nexspark-panel border-l-4 border-nexspark-gold p-6 backdrop-blur-sm">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="status-indicator status-completed"></span>
+                <h3 class="text-xl font-header font-bold text-white uppercase">
+                  ${brandName} - Growth Strategy Report
+                </h3>
+              </div>
+              <p class="text-nexspark-blue font-mono text-xs">
+                <i class="fas fa-clock mr-1"></i> Generated ${formattedDate}
+              </p>
+            </div>
+            <div class="text-right">
+              <div class="text-nexspark-gold font-mono text-xs uppercase tracking-wider mb-1">READY</div>
+              <div class="text-white/50 font-mono text-xs">
+                Complete Report
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex gap-2">
+            <button onclick="viewReportInline()" 
+                    class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
+              <i class="fas fa-eye mr-1"></i> VIEW REPORT
+            </button>
+            <button onclick="downloadReportPDF()" 
+                    class="lcars-btn bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs flex-1">
+              <i class="fas fa-download mr-1"></i> DOWNLOAD PDF
+            </button>
+          </div>
+        </div>
+      `;
+    }
+  }
+}
+
+// View report inline (Slack-like)
+function viewReportInline() {
+  const summaryData = localStorage.getItem('nexspark_summary');
+  if (!summaryData) {
+    alert('No report data found');
+    return;
+  }
+  
+  try {
+    const summary = JSON.parse(summaryData);
+    showReportModal(summary);
+  } catch (e) {
+    console.error('Failed to load report:', e);
+    alert('Failed to load report');
+  }
+}
+
+// Show report in Slack-like modal
+function showReportModal(summary) {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.remove();
+  };
+  
+  const brandName = summary.brandName || summary.companyName || 'Your Company';
+  const timestamp = localStorage.getItem('nexspark_report_timestamp');
+  const date = timestamp ? new Date(timestamp) : new Date();
+  const formattedDate = date.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric'
+  });
+  
+  modal.innerHTML = `
+    <div class="bg-nexspark-dark border-2 border-nexspark-gold max-w-5xl w-full max-h-[90vh] flex flex-col rounded-lg overflow-hidden">
+      <!-- Header (sticky) -->
+      <div class="bg-nexspark-panel border-b border-nexspark-gold p-6 flex-shrink-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <i class="fas fa-file-alt text-nexspark-gold text-3xl"></i>
+            <div>
+              <h2 class="text-2xl font-header font-bold text-white uppercase">
+                Growth Strategy Report
+              </h2>
+              <p class="text-nexspark-blue font-mono text-sm mt-1">${brandName} • ${formattedDate}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="downloadReportPDF()" class="lcars-btn bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">
+              <i class="fas fa-download mr-1"></i> DOWNLOAD
+            </button>
+            <button onclick="this.closest('.fixed').remove()" class="lcars-btn bg-nexspark-red hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Report Content (scrollable) -->
+      <div class="flex-1 overflow-y-auto p-8 space-y-8">
+        
+        <!-- Executive Summary -->
+        <div class="bg-nexspark-panel border-l-4 border-nexspark-gold p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-nexspark-gold uppercase mb-4 flex items-center gap-2">
+            <i class="fas fa-lightbulb"></i>
+            Executive Summary
+          </h3>
+          <div class="space-y-4 text-white/90 font-mono text-sm">
+            <div>
+              <span class="text-nexspark-blue font-bold">Brand:</span> ${brandName}
+            </div>
+            <div>
+              <span class="text-nexspark-blue font-bold">Product:</span> ${summary.productDescription || 'N/A'}
+            </div>
+            <div>
+              <span class="text-nexspark-blue font-bold">Current Revenue:</span> ${summary.currentRevenue || 'N/A'}
+            </div>
+            <div>
+              <span class="text-nexspark-blue font-bold">6-Month Goal:</span> ${summary.sixMonthGoal || 'N/A'}
+            </div>
+            <div>
+              <span class="text-nexspark-blue font-bold">Biggest Challenge:</span> ${summary.biggestChallenge || 'N/A'}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Marketing Channels -->
+        <div class="bg-nexspark-panel border-l-4 border-nexspark-blue p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-nexspark-blue uppercase mb-4 flex items-center gap-2">
+            <i class="fas fa-chart-line"></i>
+            Current Marketing Channels
+          </h3>
+          <div class="text-white/90 font-mono text-sm">
+            ${summary.marketingChannels || 'Not specified'}
+          </div>
+          ${summary.bestChannel ? `
+            <div class="mt-4 pt-4 border-t border-white/10">
+              <span class="text-nexspark-gold font-bold">Best Performing:</span> ${summary.bestChannel}
+            </div>
+          ` : ''}
+        </div>
+        
+        <!-- Target Customer -->
+        <div class="bg-nexspark-panel border-l-4 border-nexspark-purple p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-nexspark-purple uppercase mb-4 flex items-center gap-2">
+            <i class="fas fa-users"></i>
+            Target Customer Profile
+          </h3>
+          <div class="text-white/90 font-mono text-sm whitespace-pre-wrap">
+            ${summary.idealCustomer || 'Not specified'}
+          </div>
+        </div>
+        
+        <!-- Competitors -->
+        ${summary.competitors ? `
+          <div class="bg-nexspark-panel border-l-4 border-nexspark-red p-6 rounded-r-lg">
+            <h3 class="text-2xl font-header font-bold text-nexspark-red uppercase mb-4 flex items-center gap-2">
+              <i class="fas fa-trophy"></i>
+              Key Competitors
+            </h3>
+            <div class="text-white/90 font-mono text-sm whitespace-pre-wrap">
+              ${summary.competitors}
+            </div>
+          </div>
+        ` : ''}
+        
+        <!-- Strategic Recommendations -->
+        <div class="bg-green-900/20 border-l-4 border-green-500 p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-green-400 uppercase mb-4 flex items-center gap-2">
+            <i class="fas fa-rocket"></i>
+            Strategic Recommendations
+          </h3>
+          <div class="space-y-4 text-white/90 font-mono text-sm">
+            <div class="bg-nexspark-dark/50 p-4 rounded">
+              <div class="text-green-400 font-bold mb-2">Priority Action:</div>
+              <div>Focus on addressing "${summary.biggestChallenge}" through targeted channel optimization and strategic budget allocation.</div>
+            </div>
+            <div class="bg-nexspark-dark/50 p-4 rounded">
+              <div class="text-nexspark-blue font-bold mb-2">Growth Path:</div>
+              <div>Scale from ${summary.currentRevenue} to ${summary.sixMonthGoal} within 6 months through systematic execution.</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Next Steps -->
+        <div class="bg-nexspark-gold/10 border-l-4 border-nexspark-gold p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-nexspark-gold uppercase mb-4 flex items-center gap-2">
+            <i class="fas fa-tasks"></i>
+            Next Steps
+          </h3>
+          <ol class="space-y-3 text-white/90 font-mono text-sm">
+            <li class="flex items-start gap-3">
+              <span class="text-nexspark-gold font-bold flex-shrink-0">1.</span>
+              <span>Review detailed competitive analysis and traffic benchmarks</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-nexspark-gold font-bold flex-shrink-0">2.</span>
+              <span>Implement recommended channel strategy based on data</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-nexspark-gold font-bold flex-shrink-0">3.</span>
+              <span>Allocate budget according to 6-month roadmap priorities</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-nexspark-gold font-bold flex-shrink-0">4.</span>
+              <span>Track KPIs and adjust strategy based on performance data</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-nexspark-gold font-bold flex-shrink-0">5.</span>
+              <span>Schedule monthly reviews to assess progress toward ${summary.sixMonthGoal} goal</span>
+            </li>
+          </ol>
+        </div>
+        
+        <!-- Call to Action -->
+        <div class="bg-nexspark-panel border-2 border-nexspark-gold p-6 rounded-lg text-center">
+          <h3 class="text-xl font-header font-bold text-white uppercase mb-3">
+            Ready to Accelerate Your Growth?
+          </h3>
+          <p class="text-white/70 font-mono text-sm mb-4">
+            This report contains the strategic foundation. Let's discuss implementation details.
+          </p>
+          <button onclick="window.open('mailto:founders@nexspark.io?subject=Growth Strategy Discussion - ${encodeURIComponent(brandName)}')" 
+                  class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-8 py-3 rounded-lg text-lg">
+            <i class="fas fa-envelope mr-2"></i> SCHEDULE STRATEGY CALL
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+}
+
+// Download report as PDF
+function downloadReportPDF() {
+  const summaryData = localStorage.getItem('nexspark_summary');
+  if (!summaryData) {
+    alert('No report data found');
+    return;
+  }
+  
+  try {
+    const summary = JSON.parse(summaryData);
+    const brandName = summary.brandName || summary.companyName || 'Company';
+    
+    // Generate report content
+    const reportContent = generateReportHTML(summary);
+    
+    // Create a blob and trigger download
+    const blob = new Blob([reportContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `NexSpark-Growth-Report-${brandName.replace(/\s+/g, '-')}-${Date.now()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    // Show success message
+    showToast('Report downloaded successfully!', 'success');
+  } catch (e) {
+    console.error('Failed to download report:', e);
+    alert('Failed to download report. Please try again.');
+  }
+}
+
+// Generate report HTML for download
+function generateReportHTML(summary) {
+  const brandName = summary.brandName || summary.companyName || 'Your Company';
+  const timestamp = new Date().toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric'
+  });
+  
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${brandName} - NexSpark Growth Strategy Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #FF9C00 0%, #FFD700 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: 700;
+        }
+        .header .subtitle {
+            margin-top: 10px;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9C00;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #FF9C00;
+            margin-top: 0;
+            font-size: 24px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .field {
+            margin: 15px 0;
+        }
+        .field-label {
+            font-weight: 600;
+            color: #555;
+            display: inline-block;
+            min-width: 180px;
+        }
+        .field-value {
+            color: #333;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+        ol {
+            padding-left: 25px;
+        }
+        li {
+            margin: 10px 0;
+        }
+        @media print {
+            body { background: white; }
+            .section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 NexSpark Growth Strategy Report</h1>
+        <div class="subtitle">${brandName} • Generated ${timestamp}</div>
+    </div>
+    
+    <div class="section">
+        <h2>📊 Executive Summary</h2>
+        <div class="field">
+            <span class="field-label">Brand Name:</span>
+            <span class="field-value">${brandName}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Product Description:</span>
+            <span class="field-value">${summary.productDescription || 'N/A'}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Current Revenue:</span>
+            <span class="field-value">${summary.currentRevenue || 'N/A'}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">6-Month Goal:</span>
+            <span class="field-value">${summary.sixMonthGoal || 'N/A'}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Biggest Challenge:</span>
+            <span class="field-value">${summary.biggestChallenge || 'N/A'}</span>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>📈 Current Marketing Channels</h2>
+        <p>${summary.marketingChannels || 'Not specified'}</p>
+        ${summary.bestChannel ? `<p><strong>Best Performing:</strong> ${summary.bestChannel}</p>` : ''}
+    </div>
+    
+    <div class="section">
+        <h2>👥 Target Customer Profile</h2>
+        <p>${summary.idealCustomer || 'Not specified'}</p>
+    </div>
+    
+    ${summary.competitors ? `
+    <div class="section">
+        <h2>🏆 Key Competitors</h2>
+        <p>${summary.competitors}</p>
+    </div>
+    ` : ''}
+    
+    <div class="section">
+        <h2>🎯 Strategic Recommendations</h2>
+        <p><strong>Priority Action:</strong> Focus on addressing "${summary.biggestChallenge}" through targeted channel optimization and strategic budget allocation.</p>
+        <p><strong>Growth Path:</strong> Scale from ${summary.currentRevenue} to ${summary.sixMonthGoal} within 6 months through systematic execution.</p>
+    </div>
+    
+    <div class="section">
+        <h2>✅ Next Steps</h2>
+        <ol>
+            <li>Review detailed competitive analysis and traffic benchmarks</li>
+            <li>Implement recommended channel strategy based on data</li>
+            <li>Allocate budget according to 6-month roadmap priorities</li>
+            <li>Track KPIs and adjust strategy based on performance data</li>
+            <li>Schedule monthly reviews to assess progress toward ${summary.sixMonthGoal} goal</li>
+        </ol>
+    </div>
+    
+    <div class="footer">
+        <p><strong>NexSpark Growth OS</strong></p>
+        <p>Your AI Growth Co-Founder • founders@nexspark.io</p>
+        <p>© ${new Date().getFullYear()} NexSpark. All rights reserved.</p>
+    </div>
+</body>
+</html>`;
+}
+
+// Show toast notification
+function showToast(message, type = 'info') {
+  const toast = document.createElement('div');
+  toast.className = `fixed bottom-8 right-8 z-50 px-6 py-4 rounded-lg font-mono text-sm animate-fade-in`;
+  
+  if (type === 'success') {
+    toast.classList.add('bg-green-500', 'text-white');
+    toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
+  } else {
+    toast.classList.add('bg-nexspark-blue', 'text-black');
+    toast.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
+  }
+  
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(20px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
