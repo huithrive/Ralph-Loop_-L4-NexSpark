@@ -1265,17 +1265,17 @@ app.post('/api/analysis/generate-strategy', async (c) => {
 app.post('/api/payment/create-intent', async (c) => {
   try {
     const { env } = c;
-    const { userId, userEmail, interviewId } = await c.req.json();
+    const { userId, userEmail, interviewId, amount } = await c.req.json();
 
-    if (!userId || !userEmail || !interviewId) {
+    if (!userId || !userEmail) {
       return c.json({ 
         success: false, 
-        message: 'Missing required parameters' 
+        message: 'Missing required parameters (userId and userEmail)' 
       }, 400);
     }
 
-    // Check if already paid
-    if (env.DB) {
+    // Check if already paid (only if interviewId provided and DB available)
+    if (interviewId && env.DB) {
       const hasPaid = await hasUserPaid(env.DB, userId, interviewId);
       if (hasPaid) {
         return c.json({
@@ -1294,14 +1294,19 @@ app.post('/api/payment/create-intent', async (c) => {
       }, 500);
     }
 
-    console.log('Creating payment intent for user:', userId);
+    console.log('💳 Creating payment intent for user:', userId, 'email:', userEmail, 'amount:', amount || 2000);
+
+    // Use provided interviewId or generate a temporary one
+    const effectiveInterviewId = interviewId || `temp_${userId}_${Date.now()}`;
 
     const paymentIntent = await createPaymentIntent(
       userId,
       userEmail,
-      interviewId,
+      effectiveInterviewId,
       stripeSecretKey
     );
+
+    console.log('✅ Payment intent created:', paymentIntent.paymentIntentId);
 
     return c.json({
       success: true,
@@ -1310,7 +1315,7 @@ app.post('/api/payment/create-intent', async (c) => {
       amount: paymentIntent.amount
     });
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error('❌ Error creating payment intent:', error);
     return c.json({
       success: false,
       message: 'Failed to create payment: ' + (error instanceof Error ? error.message : 'Unknown error')
