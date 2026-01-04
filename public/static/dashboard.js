@@ -864,8 +864,11 @@ function showReportModal(summary) {
 }
 
 // Download report as PDF
-function downloadReportPDF() {
+async function downloadReportPDF() {
   const summaryData = localStorage.getItem('nexspark_summary');
+  const user = JSON.parse(localStorage.getItem('nexspark_user') || '{}');
+  const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+  
   if (!summaryData) {
     alert('No report data found');
     return;
@@ -875,29 +878,338 @@ function downloadReportPDF() {
     const summary = JSON.parse(summaryData);
     const brandName = summary.brandName || summary.companyName || 'Company';
     
-    // Generate report content
-    const reportContent = generateReportHTML(summary);
+    // Show loading toast
+    showToast('Generating comprehensive report with Claude Sonnet 4...', 'info');
     
-    // Create a blob and trigger download
-    const blob = new Blob([reportContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `NexSpark-Growth-Report-${brandName.replace(/\s+/g, '-')}-${Date.now()}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // Call API to generate comprehensive report
+    const response = await axios.post('/api/report/generate', {
+      summary,
+      competitors: summary.competitors || [],
+      userId: user.id || 'guest',
+      interviewId: interview.id || 'demo'
+    }, {
+      timeout: 60000 // 60 second timeout for report generation
+    });
     
-    // Show success message
-    showToast('Report downloaded successfully!', 'success');
+    if (response.data.success) {
+      const report = response.data.report;
+      
+      // Generate comprehensive HTML report from slides
+      const reportContent = generateComprehensiveReportHTML(report, brandName);
+      
+      // Create a blob and trigger download
+      const blob = new Blob([reportContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `NexSpark-Growth-Report-${brandName.replace(/\s+/g, '-')}-${Date.now()}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      // Show success message
+      showToast(`Report downloaded! ${report.slides.length} slides generated`, 'success');
+    } else {
+      throw new Error(response.data.message || 'Failed to generate report');
+    }
   } catch (e) {
     console.error('Failed to download report:', e);
-    alert('Failed to download report. Please try again.');
+    
+    // Fallback to simple report if API fails
+    if (e.message.includes('timeout') || e.message.includes('network')) {
+      alert('Report generation is taking longer than expected. Using simplified version...');
+      const summary = JSON.parse(summaryData);
+      const brandName = summary.brandName || summary.companyName || 'Company';
+      const reportContent = generateReportHTML(summary);
+      
+      const blob = new Blob([reportContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `NexSpark-Growth-Report-${brandName.replace(/\s+/g, '-')}-${Date.now()}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } else {
+      alert('Failed to download report. Please try again.');
+    }
   }
 }
 
-// Generate report HTML for download
+// Generate comprehensive report HTML from Claude-generated slides
+function generateComprehensiveReportHTML(report, brandName) {
+  const timestamp = new Date().toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric'
+  });
+  
+  // Generate slides HTML
+  const slidesHTML = report.slides.map((slide, index) => `
+    <div class="slide">
+      <div class="slide-number">Slide ${slide.slideNumber} of ${report.slides.length}</div>
+      <h2>${slide.title}</h2>
+      <div class="slide-content">
+        ${slide.content}
+      </div>
+      ${slide.keyPoints && slide.keyPoints.length > 0 ? `
+        <div class="key-points">
+          <h3>Key Points:</h3>
+          <ul>
+            ${slide.keyPoints.map(point => `<li>${point}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+  
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${brandName} - NexSpark Growth Strategy Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.8;
+            color: #1a1a1a;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 50px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+        }
+        .report-header h1 {
+            margin: 0 0 15px 0;
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        .report-header .subtitle {
+            font-size: 22px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+        .report-header .meta {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .executive-summary {
+            background: white;
+            padding: 50px;
+            margin-bottom: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border-left: 6px solid #667eea;
+        }
+        .executive-summary h2 {
+            color: #667eea;
+            margin: 0 0 25px 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .executive-summary p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+        .slide {
+            background: white;
+            padding: 50px;
+            margin-bottom: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            page-break-inside: avoid;
+            position: relative;
+        }
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .slide h2 {
+            color: #2d3748;
+            margin: 0 0 30px 0;
+            font-size: 32px;
+            font-weight: 700;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+        .slide-content {
+            font-size: 17px;
+            line-height: 1.8;
+            color: #4a5568;
+        }
+        .slide-content h3 {
+            color: #667eea;
+            font-size: 24px;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+        .slide-content h4 {
+            color: #4a5568;
+            font-size: 20px;
+            margin: 25px 0 12px 0;
+            font-weight: 600;
+        }
+        .slide-content ul, .slide-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+        .slide-content li {
+            margin: 12px 0;
+            line-height: 1.8;
+        }
+        .slide-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 16px;
+        }
+        .slide-content th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .slide-content td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .slide-content tr:hover {
+            background: #f7fafc;
+        }
+        .key-points {
+            margin-top: 35px;
+            padding: 25px;
+            background: #f0f4f8;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        .key-points h3 {
+            color: #667eea;
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            font-weight: 600;
+        }
+        .key-points ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+        .key-points li {
+            margin: 10px 0;
+            color: #2d3748;
+            font-weight: 500;
+        }
+        .next-steps {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            margin-top: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+        .next-steps h2 {
+            color: white;
+            margin: 0 0 25px 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .next-steps ol {
+            margin: 0;
+            padding-left: 25px;
+            font-size: 18px;
+        }
+        .next-steps li {
+            margin: 15px 0;
+            line-height: 1.7;
+        }
+        .footer {
+            text-align: center;
+            padding: 50px 30px;
+            color: #718096;
+            font-size: 15px;
+            margin-top: 40px;
+        }
+        .footer strong {
+            color: #667eea;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        @media print {
+            body { background: white; padding: 20px; }
+            .slide { page-break-inside: avoid; }
+            .slide-number { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+        }
+        @media (max-width: 768px) {
+            body { padding: 30px 20px; }
+            .report-header { padding: 40px 30px; }
+            .report-header h1 { font-size: 36px; }
+            .slide, .executive-summary, .next-steps { padding: 30px; }
+            .slide h2 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-header">
+        <h1>🚀 NexSpark Growth Strategy Report</h1>
+        <div class="subtitle">${brandName}</div>
+        <div class="meta">
+            Generated ${timestamp} • ${report.slides.length} Comprehensive Slides • ${report.metadata.provider}
+        </div>
+    </div>
+    
+    <div class="executive-summary">
+        <h2>📊 Executive Summary</h2>
+        ${report.executiveSummary}
+    </div>
+    
+    ${slidesHTML}
+    
+    ${report.nextSteps && report.nextSteps.length > 0 ? `
+    <div class="next-steps">
+        <h2>✅ Next Steps</h2>
+        <ol>
+            ${report.nextSteps.map(step => `<li>${step}</li>`).join('')}
+        </ol>
+    </div>
+    ` : ''}
+    
+    <div class="footer">
+        <strong>NexSpark Growth OS</strong>
+        <p>Your AI Growth Co-Founder • founders@nexspark.io</p>
+        <p>© ${new Date().getFullYear()} NexSpark. All rights reserved.</p>
+        <p style="margin-top: 20px; font-size: 13px;">This report was generated using Claude Sonnet 4 AI technology.</p>
+    </div>
+</body>
+</html>`;
+}
+
+// Generate report HTML for download (fallback - simple version)
 function generateReportHTML(summary) {
   const brandName = summary.brandName || summary.companyName || 'Your Company';
   const timestamp = new Date().toLocaleDateString('en-US', { 
