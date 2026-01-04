@@ -444,6 +444,72 @@ function getCustomPrompt(c: any, promptType: string, defaultPrompt: string): str
   return defaultPrompt;
 }
 
+// Helper: AI generation with Claude → OpenAI fallback
+async function generateWithAI(
+  prompt: string,
+  env: any,
+  systemMessage: string = 'You are a helpful business analyst. Return ONLY valid JSON, no markdown, no code blocks.'
+): Promise<{ content: string; provider: string }> {
+  const claudeApiKey = env.ANTHROPIC_API_KEY;
+  const openaiApiKey = env.OPENAI_API_KEY;
+  const openaiBaseUrl = env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
+
+  // Try Claude first if available
+  if (claudeApiKey && claudeApiKey.startsWith('sk-ant-')) {
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': claudeApiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-5-20250929',
+          max_tokens: 2048,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return { content: data.content[0].text, provider: 'Claude' };
+      }
+    } catch (error) {
+      console.warn('Claude failed, using OpenAI fallback');
+    }
+  }
+
+  // Fallback to OpenAI
+  if (openaiApiKey) {
+    const response = await fetch(`${openaiBaseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${openaiApiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        temperature: 0.7,
+        max_tokens: 2048,
+        messages: [
+          { role: 'system', content: systemMessage },
+          { role: 'user', content: prompt }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI API failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return { content: data.choices[0].message.content.trim(), provider: 'OpenAI' };
+  }
+
+  throw new Error('No AI provider available');
+}
+
 // API: Generate Claude summary of interview responses
 app.post('/api/interview/summarize', async (c) => {
   try {
@@ -721,14 +787,6 @@ app.post('/api/preview/roadmap', async (c) => {
       }, 400);
     }
 
-    const claudeApiKey = env.ANTHROPIC_API_KEY;
-    if (!claudeApiKey) {
-      return c.json({ 
-        success: false, 
-        message: 'Claude API not configured' 
-      }, 500);
-    }
-
     const prompt = `Based on this business summary, create a high-level 6-month growth roadmap preview with 3 phases:
 
 Brand: ${summary.brandName}
@@ -737,7 +795,7 @@ Current Revenue: ${summary.currentRevenue}
 Goal: ${summary.sixMonthGoal}
 Challenge: ${summary.biggestChallenge}
 
-Return ONLY a JSON object with this structure:
+Return ONLY a JSON object with this structure (no markdown, no explanations):
 {
   "phases": [
     {
@@ -762,42 +820,21 @@ Return ONLY a JSON object with this structure:
   "expectedOutcome": "..."
 }`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': claudeApiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
-        max_tokens: 2048,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Claude API failed: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const roadmapText = data.content[0].text;
-    const jsonMatch = roadmapText.match(/\{[\s\S]*\}/);
+    console.log('📅 Generating roadmap preview...');
+    const { content, provider } = await generateWithAI(prompt, env);
     
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Failed to parse roadmap JSON');
     }
 
     const roadmap = JSON.parse(jsonMatch[0]);
+    console.log(`✅ Roadmap generated with ${provider}`);
 
     return c.json({
       success: true,
-      roadmap
+      roadmap,
+      provider
     });
 
   } catch (error) {
@@ -822,21 +859,13 @@ app.post('/api/preview/benchmarks', async (c) => {
       }, 400);
     }
 
-    const claudeApiKey = env.ANTHROPIC_API_KEY;
-    if (!claudeApiKey) {
-      return c.json({ 
-        success: false, 
-        message: 'Claude API not configured' 
-      }, 500);
-    }
-
     const prompt = `Based on this business, provide realistic paid advertising benchmarks:
 
 Product: ${summary.productDescription}
 Industry: ${summary.industry || 'General'}
 Current Revenue: ${summary.currentRevenue}
 
-Return ONLY a JSON object with this structure:
+Return ONLY a JSON object with this structure (no markdown, no explanations):
 {
   "googleAds": {
     "targetCPC": "$X.XX",
@@ -855,42 +884,21 @@ Return ONLY a JSON object with this structure:
   "recommendation": "..."
 }`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': claudeApiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
-        max_tokens: 1024,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Claude API failed: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const benchmarksText = data.content[0].text;
-    const jsonMatch = benchmarksText.match(/\{[\s\S]*\}/);
+    console.log('📈 Generating benchmarks preview...');
+    const { content, provider } = await generateWithAI(prompt, env);
     
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Failed to parse benchmarks JSON');
     }
 
     const benchmarks = JSON.parse(jsonMatch[0]);
+    console.log(`✅ Benchmarks generated with ${provider}`);
 
     return c.json({
       success: true,
-      benchmarks
+      benchmarks,
+      provider
     });
 
   } catch (error) {
