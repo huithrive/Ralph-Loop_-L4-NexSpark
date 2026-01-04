@@ -605,49 +605,60 @@ async function finishedSpeaking() {
     </div>
   `;
   
-  // Save response
-  const response = {
-    questionId: `q${interviewState.currentQuestion + 1}`,
-    question: interviewQuestions[interviewState.currentQuestion],
-    answer: finalAnswer,
-    timestamp: new Date().toISOString()
-  };
-  
-  interviewState.responses.push(response);
-  
-  // Add to transcript
-  addToTranscript('user', finalAnswer);
-  
-  // Save to database
-  await saveInterviewProgress();
-  
-  // AUTO-SAVE: Save progress locally
-  autoSaveProgress();
-  
-  // Move to next question
-  interviewState.currentQuestion++;
-  interviewState.isProcessing = false;
-  
-  if (interviewState.currentQuestion < interviewQuestions.length) {
-    setTimeout(() => {
-      showQuestion(interviewState.currentQuestion);
-      speakQuestion(interviewQuestions[interviewState.currentQuestion]);
-      
-      // Auto-start recording after question is spoken
+  try {
+    // Save response
+    const response = {
+      questionId: `q${interviewState.currentQuestion + 1}`,
+      question: interviewQuestions[interviewState.currentQuestion],
+      answer: finalAnswer,
+      timestamp: new Date().toISOString()
+    };
+    
+    interviewState.responses.push(response);
+    
+    // Add to transcript
+    addToTranscript('user', finalAnswer);
+    
+    // Save to database (non-blocking)
+    await saveInterviewProgress();
+    
+    // AUTO-SAVE: Save progress locally
+    autoSaveProgress();
+    
+    // Move to next question
+    interviewState.currentQuestion++;
+    interviewState.isProcessing = false;
+    
+    if (interviewState.currentQuestion < interviewQuestions.length) {
       setTimeout(() => {
-        startRecording();
-        document.getElementById('statusText').innerHTML = `
-          <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
-            Listening...
-          </div>
-          <div class="text-white/70 font-mono text-sm">
-            Speak naturally - click "Finished" when done
-          </div>
-        `;
-      }, 2000); // Wait 2 seconds for question to be spoken
-    }, 500);
-  } else {
-    completeInterview();
+        showQuestion(interviewState.currentQuestion);
+        speakQuestion(interviewQuestions[interviewState.currentQuestion]);
+        
+        // Auto-start recording after question is spoken
+        setTimeout(() => {
+          startRecording();
+          document.getElementById('statusText').innerHTML = `
+            <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
+              Listening...
+            </div>
+            <div class="text-white/70 font-mono text-sm">
+              Speak naturally - click "Finished" when done
+            </div>
+          `;
+        }, 2000); // Wait 2 seconds for question to be spoken
+      }, 500);
+    } else {
+      completeInterview();
+    }
+  } catch (error) {
+    console.error('Error in finishedSpeaking:', error);
+    interviewState.isProcessing = false;
+    
+    // Show error recovery modal
+    showErrorWithRecovery(
+      'We had trouble saving your answer. Don\'t worry - your progress is safe locally!',
+      'save_error'
+    );
   }
 }
 
@@ -674,10 +685,178 @@ async function saveInterviewProgress() {
     if (result.success && result.interviewId) {
       interviewState.interviewId = result.interviewId;
       console.log('Progress saved, interview ID:', result.interviewId);
+    } else {
+      console.warn('Server save failed, relying on local auto-save only');
     }
   } catch (error) {
     console.error('Error saving progress:', error);
+    // Don't throw - we have local auto-save as backup
   }
+}
+
+// ERROR RECOVERY: Handle errors gracefully with recovery options
+function showErrorWithRecovery(errorMessage, errorType = 'general') {
+  console.error('Interview error:', errorType, errorMessage);
+  
+  // Stop any active recording
+  if (interviewState.isRecording) {
+    stopRecording();
+  }
+  
+  // Create error modal
+  const errorModal = document.createElement('div');
+  errorModal.id = 'errorModal';
+  errorModal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm';
+  errorModal.style.animation = 'fadeIn 0.3s ease-out';
+  
+  const currentQuestion = interviewState.currentQuestion;
+  const totalAnswered = interviewState.responses.length;
+  
+  errorModal.innerHTML = `
+    <div class="bg-nexspark-panel border-4 border-nexspark-red rounded-2xl p-8 max-w-2xl mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
+      <div class="text-center mb-6">
+        <div class="w-20 h-20 bg-nexspark-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-exclamation-triangle text-nexspark-red text-4xl"></i>
+        </div>
+        <h2 class="text-3xl font-header font-bold text-white uppercase mb-2">
+          Oops! Something Went Wrong
+        </h2>
+        <p class="text-white/70 font-mono text-sm">
+          ${errorMessage}
+        </p>
+      </div>
+      
+      <div class="bg-nexspark-dark border border-nexspark-gold/30 rounded-lg p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <i class="fas fa-shield-check text-nexspark-gold text-2xl"></i>
+          <div>
+            <h3 class="text-nexspark-gold font-bold text-lg">Your Progress is Safe!</h3>
+            <p class="text-white/70 text-sm">You've answered ${totalAnswered} question${totalAnswered !== 1 ? 's' : ''} - all saved locally</p>
+          </div>
+        </div>
+        
+        <div class="text-white/80 text-sm space-y-2">
+          <p><i class="fas fa-check-circle text-green-400 mr-2"></i>Your answers are auto-saved</p>
+          <p><i class="fas fa-check-circle text-green-400 mr-2"></i>No data has been lost</p>
+          <p><i class="fas fa-check-circle text-green-400 mr-2"></i>You can continue or restart</p>
+        </div>
+      </div>
+      
+      <div class="space-y-3">
+        <button onclick="retryCurrentQuestion()" class="w-full py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-xl uppercase rounded-xl transition-all transform hover:scale-105 shadow-lg">
+          <i class="fas fa-redo mr-2"></i>Retry This Question
+        </button>
+        
+        <button onclick="continueFromLastSaved()" class="w-full py-4 bg-nexspark-blue/20 border-2 border-nexspark-blue hover:bg-nexspark-blue/40 text-nexspark-blue font-header font-bold text-xl uppercase rounded-xl transition-all">
+          <i class="fas fa-play mr-2"></i>Continue from Question ${totalAnswered + 1}
+        </button>
+        
+        <button onclick="restartInterview()" class="w-full py-4 bg-nexspark-purple/20 border-2 border-nexspark-purple hover:bg-nexspark-purple/40 text-nexspark-purple font-header font-bold text-xl uppercase rounded-xl transition-all">
+          <i class="fas fa-refresh mr-2"></i>Start Fresh Interview
+        </button>
+        
+        <button onclick="skipToDemo()" class="w-full py-3 bg-gray-700 hover:bg-gray-600 text-white font-mono text-sm rounded-lg transition-all">
+          <i class="fas fa-forward mr-2"></i>Skip to Demo Mode
+        </button>
+      </div>
+      
+      <div class="mt-6 text-center">
+        <p class="text-white/50 text-xs">
+          <i class="fas fa-life-ring mr-1"></i>
+          Need help? Contact support or try refreshing the page
+        </p>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(errorModal);
+}
+
+// RECOVERY: Retry current question
+function retryCurrentQuestion() {
+  const modal = document.getElementById('errorModal');
+  if (modal) modal.remove();
+  
+  // Reset processing state
+  interviewState.isProcessing = false;
+  
+  // Clear current input
+  document.getElementById('currentTranscript').innerHTML = '';
+  document.getElementById('manualInput').value = '';
+  interviewState.finalTranscript = '';
+  interviewState.interimTranscript = '';
+  interviewState.currentTranscript = '';
+  
+  // Show ready to record status
+  document.getElementById('statusText').innerHTML = `
+    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+      Ready to Try Again
+    </div>
+    <div class="text-white/70 font-mono text-sm">
+      Click microphone to start speaking
+    </div>
+  `;
+  
+  // Re-speak the question
+  speakQuestion(interviewQuestions[interviewState.currentQuestion]);
+  
+  // Auto-start recording after 2 seconds
+  setTimeout(() => {
+    startRecording();
+  }, 2000);
+}
+
+// RECOVERY: Continue from last saved question
+function continueFromLastSaved() {
+  const modal = document.getElementById('errorModal');
+  if (modal) modal.remove();
+  
+  // Move to next question if we have responses
+  if (interviewState.responses.length > 0) {
+    interviewState.currentQuestion = interviewState.responses.length;
+  }
+  
+  interviewState.isProcessing = false;
+  
+  // Show the next question
+  if (interviewState.currentQuestion < interviewQuestions.length) {
+    showQuestion(interviewState.currentQuestion);
+    speakQuestion(interviewQuestions[interviewState.currentQuestion]);
+    
+    setTimeout(() => {
+      startRecording();
+    }, 2000);
+  } else {
+    completeInterview();
+  }
+}
+
+// RECOVERY: Restart entire interview
+function restartInterview() {
+  const confirmed = confirm(
+    'Are you sure you want to start a completely new interview?\n\n' +
+    'This will clear all your current answers and start from Question 1.'
+  );
+  
+  if (!confirmed) return;
+  
+  const modal = document.getElementById('errorModal');
+  if (modal) modal.remove();
+  
+  // Clear all state
+  interviewState.currentQuestion = 0;
+  interviewState.responses = [];
+  interviewState.isProcessing = false;
+  
+  // Clear localStorage
+  localStorage.removeItem('nexspark_interview_progress');
+  localStorage.removeItem('nexspark_interview');
+  
+  // Clear transcript
+  document.getElementById('transcriptMessages').innerHTML = '';
+  
+  // Reload the page to start fresh
+  window.location.reload();
 }
 
 // Add message to transcript

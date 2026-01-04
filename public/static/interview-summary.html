@@ -373,7 +373,8 @@
                 const response = await axios.post('/api/interview/summarize', {
                     responses: interview.responses
                 }, {
-                    headers
+                    headers,
+                    timeout: 30000 // 30 second timeout
                 });
                 
                 if (response.data.success) {
@@ -390,8 +391,90 @@
                 }
             } catch (error) {
                 console.error('Error generating summary:', error);
-                showError(error.message || 'Failed to generate summary. Please try again.');
+                
+                // Check if we have interview data for recovery
+                const interview = getInterviewData();
+                const hasData = interview && interview.responses && interview.responses.length > 0;
+                
+                if (hasData) {
+                    showRecoverableError(error.message || 'Failed to generate summary', interview.responses.length);
+                } else {
+                    showError(error.message || 'Failed to generate summary. Please try again.');
+                }
             }
+        }
+        
+        // Show recoverable error with retry option
+        function showRecoverableError(message, questionCount) {
+            document.getElementById('loadingState').classList.add('hidden');
+            
+            const errorHTML = `
+                <div class="nexspark-panel border-2 border-nexspark-red rounded-xl p-8 text-center">
+                    <div class="w-20 h-20 bg-nexspark-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exclamation-triangle text-5xl text-nexspark-red"></i>
+                    </div>
+                    <h3 class="text-3xl font-header font-bold text-white mb-3">Something Went Wrong</h3>
+                    <p class="text-white/70 mb-6 text-lg">${message}</p>
+                    
+                    <div class="bg-nexspark-gold/10 border border-nexspark-gold/30 rounded-lg p-6 mb-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fas fa-shield-check text-nexspark-gold text-2xl"></i>
+                            <h4 class="text-nexspark-gold font-bold text-lg">Your Answers Are Safe!</h4>
+                        </div>
+                        <p class="text-white/80 text-sm mb-2">
+                            You completed ${questionCount} question${questionCount !== 1 ? 's' : ''} - all saved locally
+                        </p>
+                        <ul class="text-left text-white/70 text-sm space-y-2">
+                            <li><i class="fas fa-check-circle text-green-400 mr-2"></i>Your interview data is safe</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-2"></i>No need to answer questions again</li>
+                            <li><i class="fas fa-check-circle text-green-400 mr-2"></i>You can retry the summary generation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <button onclick="location.reload()" class="px-8 py-4 bg-nexspark-gold text-black font-header font-bold text-xl uppercase rounded-lg hover:bg-yellow-500 transition-all transform hover:scale-105">
+                            <i class="fas fa-redo mr-2"></i>Try Again
+                        </button>
+                        
+                        <button onclick="window.location.href='/interview'" class="px-8 py-4 bg-nexspark-blue/20 border-2 border-nexspark-blue text-nexspark-blue font-header font-bold text-xl uppercase rounded-lg hover:bg-nexspark-blue/40 transition-all">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Interview
+                        </button>
+                        
+                        <button onclick="skipToDemo()" class="px-8 py-4 bg-nexspark-purple/20 border-2 border-nexspark-purple text-nexspark-purple font-header font-bold text-xl uppercase rounded-lg hover:bg-nexspark-purple/40 transition-all">
+                            <i class="fas fa-forward mr-2"></i>Skip to Demo
+                        </button>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-white/50 text-xs">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            This is usually a temporary issue. Please try again in a moment.
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('errorState').innerHTML = errorHTML;
+            document.getElementById('errorState').classList.remove('hidden');
+        }
+        
+        // Skip to demo function
+        function skipToDemo() {
+            // Create mock summary for demo
+            const demoSummary = {
+                brandName: "Demo Company",
+                currentRevenue: "$50K MRR",
+                productDescription: "A SaaS product that helps businesses grow",
+                motivation: "Solving a problem we faced ourselves",
+                bestChannel: "Content Marketing & SEO",
+                biggestChallenge: "Finding product-market fit",
+                idealCustomer: "B2B SaaS founders with $1M-$10M ARR",
+                sixMonthGoal: "Reach $100K MRR",
+                competitors: ["Competitor A", "Competitor B", "Competitor C"]
+            };
+            
+            localStorage.setItem('nexspark_summary', JSON.stringify(demoSummary));
+            window.location.href = '/report-preview';
         }
         
         // Confirm button - proceed directly to preview
