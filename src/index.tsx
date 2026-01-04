@@ -457,15 +457,7 @@ app.post('/api/interview/summarize', async (c) => {
       }, 400);
     }
 
-    const claudeApiKey = env.ANTHROPIC_API_KEY;
-    if (!claudeApiKey) {
-      return c.json({ 
-        success: false, 
-        message: 'Claude API not configured' 
-      }, 500);
-    }
-
-    // Build transcript for Claude
+    // Build transcript for AI
     const transcript = responses.map((r: any, idx: number) => 
       `Q${idx + 1}: ${r.question}\nA${idx + 1}: ${r.answer}`
     ).join('\n\n');
@@ -474,7 +466,7 @@ app.post('/api/interview/summarize', async (c) => {
 
 ${transcript}
 
-Return ONLY a JSON object with this exact structure:
+Return ONLY a JSON object with this exact structure (no markdown, no explanation):
 {
   "brandName": "...",
   "productDescription": "...",
@@ -493,48 +485,118 @@ Return ONLY a JSON object with this exact structure:
       .replace('{transcript}', transcript)
       .replace('{responseCount}', responses.length.toString());
 
-    console.log('📊 Generating interview summary with Claude...');
+    // Try Claude first, fallback to OpenAI if Claude fails
+    const claudeApiKey = env.ANTHROPIC_API_KEY;
+    const openaiApiKey = env.OPENAI_API_KEY;
+    const openaiBaseUrl = env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': claudeApiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
-        max_tokens: 2048,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
+    let summary;
+    let usedProvider = 'none';
+
+    // Try Claude first if available
+    if (claudeApiKey && claudeApiKey.startsWith('sk-ant-')) {
+      try {
+        console.log('📊 Generating interview summary with Claude...');
+        
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': claudeApiKey,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-5-20250929',
+            max_tokens: 2048,
+            messages: [
+              {
+                role: 'user',
+                content: prompt
+              }
+            ]
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const summaryText = data.content[0].text;
+          
+          // Parse JSON from Claude's response
+          const jsonMatch = summaryText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            summary = JSON.parse(jsonMatch[0]);
+            usedProvider = 'Claude';
           }
-        ]
-      })
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error('Claude API error:', errorBody);
-      throw new Error(`Claude API failed: ${response.statusText}`);
+        } else {
+          const errorBody = await response.text();
+          console.warn('Claude API failed, falling back to OpenAI:', errorBody);
+        }
+      } catch (claudeError) {
+        console.warn('Claude error, falling back to OpenAI:', claudeError);
+      }
     }
 
-    const data = await response.json();
-    const summaryText = data.content[0].text;
-    
-    // Parse JSON from Claude's response
-    const jsonMatch = summaryText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('Failed to parse JSON from Claude response');
+    // Fallback to OpenAI if Claude failed or not configured
+    if (!summary && openaiApiKey) {
+      try {
+        console.log('📊 Generating interview summary with OpenAI...');
+        
+        const response = await fetch(`${openaiBaseUrl}/chat/completions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openaiApiKey}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            temperature: 0.7,
+            max_tokens: 2048,
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a business analyst helping startup founders. Return ONLY valid JSON, no markdown formatting, no code blocks, no explanations.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ]
+          })
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.text();
+          console.error('OpenAI API error:', errorBody);
+          throw new Error(`OpenAI API failed: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const summaryText = data.choices[0].message.content.trim();
+        
+        // Parse JSON from OpenAI's response (handle potential markdown)
+        const jsonMatch = summaryText.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          throw new Error('Failed to parse JSON from OpenAI response');
+        }
+        
+        summary = JSON.parse(jsonMatch[0]);
+        usedProvider = 'OpenAI';
+      } catch (openaiError) {
+        console.error('OpenAI error:', openaiError);
+        throw openaiError;
+      }
     }
-    
-    const summary = JSON.parse(jsonMatch[0]);
-    console.log('✅ Interview summary generated successfully');
+
+    if (!summary) {
+      throw new Error('No AI provider available or all failed');
+    }
+
+    console.log(`✅ Interview summary generated successfully using ${usedProvider}`);
 
     return c.json({
       success: true,
-      summary
+      summary,
+      provider: usedProvider
     });
 
   } catch (error) {
