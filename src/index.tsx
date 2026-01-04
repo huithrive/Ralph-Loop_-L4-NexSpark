@@ -547,8 +547,11 @@ app.post('/api/interview/summarize', async (c) => {
   } catch (error) {
     console.error('Error generating summary:', error);
     
-    // Fallback to basic summary if Claude fails
+    // Fallback to OpenAI if Claude fails
     try {
+      const { env } = c;
+      const { responses } = await c.req.json();
+      
       console.log('⚠️ Claude failed, attempting OpenAI fallback...');
       
       const openaiApiKey = env.OPENAI_API_KEY;
