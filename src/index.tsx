@@ -518,7 +518,7 @@ async function generateWithAI(
   throw new Error('No AI provider available');
 }
 
-// API: Generate enhanced summary with Claude 3.5 Sonnet
+// API: Generate enhanced summary with Claude 4.5 Sonnet
 app.post('/api/interview/summarize', async (c) => {
   try {
     const { env } = c;
@@ -531,9 +531,9 @@ app.post('/api/interview/summarize', async (c) => {
       }, 400);
     }
 
-    console.log('📊 Generating enhanced summary with Claude 3.5 Sonnet...');
+    console.log('📊 Generating enhanced summary with Claude 4.5 Sonnet...');
 
-    // Use the enhanced summary generation with Claude
+    // Use the enhanced summary generation with Claude 4.5 Sonnet
     const summary = await generateEnhancedSummary(responses, env);
 
     console.log(`✅ Enhanced summary generated successfully for ${summary.brandName}`);
@@ -541,7 +541,7 @@ app.post('/api/interview/summarize', async (c) => {
     return c.json({
       success: true,
       summary,
-      provider: 'Claude 3.5 Sonnet'
+      provider: 'Claude 4.5 Sonnet'
     });
 
   } catch (error) {
@@ -627,7 +627,7 @@ Return ONLY a JSON object with this exact structure:
   }
 });
 
-// API: Generate competitor preview with Claude 3.5 Sonnet
+// API: Generate competitor preview with Claude 4.5 Sonnet
 app.post('/api/preview/competitors', async (c) => {
   try {
     const { env } = c;
@@ -640,9 +640,9 @@ app.post('/api/preview/competitors', async (c) => {
       }, 400);
     }
 
-    console.log('🔍 Generating competitor analysis with Claude 3.5 Sonnet...', { count: competitors.length, industry });
+    console.log('🔍 Generating competitor analysis with Claude 4.5 Sonnet...', { count: competitors.length, industry });
 
-    // Use Claude for enhanced competitor analysis
+    // Use Claude 4.5 Sonnet for enhanced competitor analysis
     const competitorInsights = await generateCompetitorPreview(
       website || 'your-company.com',
       industry || 'Technology',

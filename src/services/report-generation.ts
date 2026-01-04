@@ -1,6 +1,6 @@
 /**
  * Advanced Report Generation Service
- * Uses Claude 3.5 Sonnet to generate comprehensive, slide-formatted growth reports
+ * Uses Claude 4.5 Sonnet to generate comprehensive, slide-formatted growth reports
  */
 
 export interface InterviewData {
@@ -48,7 +48,7 @@ export interface FullReport {
 }
 
 /**
- * Generate a comprehensive growth report using Claude 3.5 Sonnet
+ * Generate a comprehensive growth report using Claude 4.5 Sonnet
  */
 export async function generateComprehensiveReport(
   interviewData: InterviewData,
@@ -63,7 +63,7 @@ export async function generateComprehensiveReport(
 
   const prompt = buildReportPrompt(interviewData, competitors);
 
-  console.log(`📊 Generating comprehensive report for ${interviewData.brandName} with Claude 3.5 Sonnet...`);
+  console.log(`📊 Generating comprehensive report for ${interviewData.brandName} with Claude 4.5 Sonnet...`);
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -73,7 +73,7 @@ export async function generateComprehensiveReport(
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5-20250514',
       max_tokens: 8000,
       temperature: 0.7,
       messages: [
@@ -265,7 +265,7 @@ function parseReportResponse(responseText: string, brandName: string): FullRepor
 }
 
 /**
- * Generate enhanced summary with Claude 3.5 Sonnet
+ * Generate enhanced summary with Claude 4.5 Sonnet
  */
 export async function generateEnhancedSummary(
   responses: Array<{ question: string; answer: string }>,
@@ -308,7 +308,7 @@ Be thorough and specific. Extract all relevant details from the interview.
 
 Return ONLY the JSON object, no markdown, no explanation.`;
 
-  console.log('📊 Generating enhanced summary with Claude 3.5 Sonnet...');
+  console.log('📊 Generating enhanced summary with Claude 4.5 Sonnet...');
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -318,7 +318,7 @@ Return ONLY the JSON object, no markdown, no explanation.`;
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5-20250514',
       max_tokens: 3000,
       temperature: 0.5,
       messages: [
@@ -352,7 +352,7 @@ Return ONLY the JSON object, no markdown, no explanation.`;
 }
 
 /**
- * Generate enhanced competitor preview with Claude
+ * Generate enhanced competitor preview with Claude 4.5 Sonnet
  */
 export async function generateCompetitorPreview(
   website: string,
@@ -396,7 +396,7 @@ Be specific and insightful. Include traffic estimates if you know them, or use i
 
 Return ONLY the JSON object.`;
 
-  console.log(`📊 Generating competitor analysis with Claude for ${website}...`);
+  console.log(`📊 Generating competitor analysis with Claude 4.5 Sonnet for ${website}...`);
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -406,7 +406,7 @@ Return ONLY the JSON object.`;
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5-20250514',
       max_tokens: 2000,
       temperature: 0.7,
       messages: [
