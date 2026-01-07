@@ -636,20 +636,26 @@ app.post('/api/preview/competitors', async (c) => {
     const { env } = c;
     const { website, industry, competitors } = await c.req.json();
 
+    // If no competitors provided, generate sample/placeholder competitors based on industry
+    let competitorList = competitors;
     if (!competitors || competitors.length === 0) {
-      return c.json({ 
-        success: false, 
-        message: 'Competitors list required' 
-      }, 400);
+      console.log('⚠️ No competitors provided, generating sample competitors for industry:', industry);
+      
+      // Generate 3 sample competitors based on industry
+      competitorList = [
+        { name: 'Industry Leader A', website: 'competitor1.com' },
+        { name: 'Industry Leader B', website: 'competitor2.com' },
+        { name: 'Industry Leader C', website: 'competitor3.com' }
+      ];
     }
 
-    console.log('🔍 Generating competitor analysis with Claude 4.5 Sonnet...', { count: competitors.length, industry });
+    console.log('🔍 Generating competitor analysis with Claude 4.5 Sonnet...', { count: competitorList.length, industry });
 
     // Use Claude 4.5 Sonnet for enhanced competitor analysis
     const competitorInsights = await generateCompetitorPreview(
       website || 'your-company.com',
       industry || 'Technology',
-      competitors,
+      competitorList,
       env
     );
 
