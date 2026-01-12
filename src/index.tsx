@@ -1197,12 +1197,33 @@ app.post('/api/report/generate', async (c) => {
 
     console.log(`📊 Generating comprehensive report for ${summary.brandName}...`);
 
+    // Map summary to InterviewData format
+    const interviewData: InterviewData = {
+      brandName: summary.brandName || 'Unknown',
+      productDescription: summary.productDescription || summary.description || `${summary.industry} business`,
+      founded: summary.founded || '',
+      motivation: summary.motivation || '',
+      currentRevenue: summary.currentRevenue || summary.revenue || 'Not disclosed',
+      marketingChannels: summary.marketingChannels || summary.channels || [],
+      bestChannel: summary.bestChannel || '',
+      biggestChallenge: Array.isArray(summary.mainChallenges) 
+        ? summary.mainChallenges.join(', ') 
+        : summary.biggestChallenge || 'Growth and scaling',
+      idealCustomer: summary.idealCustomer || summary.targetMarket || 'Not specified',
+      competitors: summary.competitors || [],
+      sixMonthGoal: Array.isArray(summary.goals) 
+        ? summary.goals.join(', ') 
+        : summary.sixMonthGoal || 'Increase revenue and market presence',
+      industry: summary.industry || '',
+      website: summary.website || ''
+    };
+
     // Prepare competitor insights
     const competitorInsights: CompetitorInsight[] = competitors || [];
 
-    // Generate comprehensive report with Claude 3.5 Sonnet
+    // Generate comprehensive report with Claude Opus 4
     const report: FullReport = await generateComprehensiveReport(
-      summary as InterviewData,
+      interviewData,
       competitorInsights,
       env
     );
