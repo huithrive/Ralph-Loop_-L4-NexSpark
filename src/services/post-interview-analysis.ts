@@ -157,7 +157,7 @@ Respond in JSON format:
 }`;
 
   try {
-    console.log('Calling Claude API with model: claude-sonnet-4-5-20250929');
+    console.log('Calling Claude API with model: claude-opus-4-20250514');
     
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -167,7 +167,7 @@ Respond in JSON format:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
+        model: 'claude-opus-4-20250514',
         max_tokens: 4096,
         messages: [
           {
@@ -264,7 +264,7 @@ Respond with ONLY a JSON array of competitor websites (just the domain names):
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
+        model: 'claude-opus-4-20250514',
         max_tokens: 1024,
         messages: [
           {
@@ -463,7 +463,7 @@ Respond in valid JSON format following this structure:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5-20250929',
+        model: 'claude-opus-4-20250514',
         max_tokens: 16384,
         temperature: 0.7,
         messages: [

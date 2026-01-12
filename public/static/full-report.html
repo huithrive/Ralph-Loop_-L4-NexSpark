@@ -39,10 +39,6 @@
         color: #99CCFF;
       }
       
-      .progress-bar {
-        transition: width 0.5s ease;
-      }
-      
       @keyframes spin {
         to { transform: rotate(360deg); }
       }
@@ -51,225 +47,135 @@
         animation: spin 3s linear infinite;
       }
       
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
       }
       
-      .fade-in-item {
-        animation: fadeIn 0.5s ease forwards;
-        opacity: 0;
+      .animate-pulse-slow {
+        animation: pulse 2s ease-in-out infinite;
       }
     </style>
 </head>
-<body class="min-h-screen p-8">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <div class="inline-block mb-4">
-                <i class="fas fa-rocket text-nexspark-gold text-6xl animate-spin-slow"></i>
-            </div>
-            <h1 class="text-5xl font-header font-bold text-white mb-3">
-                Generating Your Growth Strategy
-            </h1>
-            <p class="text-nexspark-blue text-xl font-mono">
-                NexSpark AI is analyzing your business...
-            </p>
+<body class="min-h-screen flex items-center justify-center p-8">
+    <div class="max-w-4xl mx-auto text-center">
+        <!-- Loading Spinner -->
+        <div class="inline-block mb-8">
+            <i class="fas fa-rocket text-nexspark-gold text-8xl animate-spin-slow"></i>
         </div>
         
-        <!-- Timer -->
-        <div class="bg-nexspark-dark rounded-2xl p-8 mb-8 border-2 border-nexspark-gold/30 text-center">
-            <div class="text-white/60 text-sm uppercase mb-2">Estimated Time Remaining</div>
-            <div id="timer" class="text-7xl font-header font-bold text-nexspark-gold mb-2">2:30</div>
-            <div class="text-white/50 text-sm">
+        <!-- Main Message -->
+        <h1 class="text-6xl font-header font-bold text-white mb-6">
+            Generating Your Growth Strategy
+        </h1>
+        
+        <p class="text-nexspark-blue text-2xl font-mono mb-8">
+            Claude Opus AI is analyzing your business...
+        </p>
+        
+        <!-- Status Message -->
+        <div class="bg-nexspark-dark rounded-2xl p-8 border-2 border-nexspark-gold/30 inline-block">
+            <div id="statusMessage" class="text-white text-xl animate-pulse-slow">
+                <i class="fas fa-brain mr-3 text-nexspark-purple"></i>
+                <span>Generating comprehensive growth strategy with Claude Opus...</span>
+            </div>
+            <div class="text-white/50 text-sm mt-4">
                 <i class="fas fa-info-circle mr-2"></i>
-                You can close this page - we'll email you when ready!
+                This may take 30-60 seconds for the most advanced AI analysis
             </div>
         </div>
         
-        <!-- Progress Bar -->
-        <div class="bg-nexspark-dark rounded-xl p-6 mb-8 border border-nexspark-blue/30">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-white font-semibold">Overall Progress</span>
-                <span id="progressPercent" class="text-nexspark-gold font-bold">0%</span>
-            </div>
-            <div class="w-full bg-nexspark-dark rounded-full h-4 border border-white/10">
-                <div id="progressBar" class="progress-bar bg-gradient-to-r from-nexspark-gold to-nexspark-blue h-full rounded-full" style="width: 0%"></div>
-            </div>
-        </div>
-        
-        <!-- Progress Steps -->
-        <div class="space-y-4" id="progressSteps">
-            <!-- Steps will be added here -->
-        </div>
-        
-        <!-- Report Ready (Hidden initially) -->
-        <div id="reportReady" class="hidden bg-green-900/20 border-2 border-green-500 rounded-2xl p-8 text-center">
-            <i class="fas fa-check-circle text-green-400 text-6xl mb-4"></i>
-            <h2 class="text-3xl font-header font-bold text-white mb-4">Your Report is Ready!</h2>
-            <p class="text-white/80 mb-6">Your comprehensive growth strategy has been generated.</p>
-            <div class="flex gap-4 justify-center">
-                <button onclick="viewReport()" class="px-8 py-4 bg-nexspark-gold text-black font-header font-bold text-xl rounded-xl hover:bg-yellow-500 transition">
-                    <i class="fas fa-eye mr-2"></i>View Report
-                </button>
-                <button onclick="downloadReport()" class="px-8 py-4 bg-nexspark-blue text-black font-header font-bold text-xl rounded-xl hover:bg-blue-400 transition">
-                    <i class="fas fa-download mr-2"></i>Download PDF
-                </button>
-            </div>
+        <!-- Error Display (hidden by default) -->
+        <div id="errorContainer" class="hidden mt-8 bg-red-900/20 border-2 border-red-500 rounded-xl p-6">
+            <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-3"></i>
+            <div id="errorMessage" class="text-red-400 text-lg"></div>
+            <button onclick="window.location.href='/dashboard'" class="mt-4 px-6 py-3 bg-nexspark-gold text-black font-bold rounded-lg hover:bg-yellow-500 transition">
+                Return to Dashboard
+            </button>
         </div>
     </div>
-    
+
     <script>
-        const steps = [
-            { id: 1, name: 'Analyzing Interview Data', duration: 15 },
-            { id: 2, name: 'Researching Competitors', duration: 30 },
-            { id: 3, name: 'Gathering Traffic Data', duration: 20 },
-            { id: 4, name: 'Building 6-Month Roadmap', duration: 40 },
-            { id: 5, name: 'Calculating Budget Projections', duration: 25 },
-            { id: 6, name: 'Generating Final Report', duration: 20 }
-        ];
+        console.log('🚀 Full Report Generation Page Loaded');
         
-        let currentStep = 0;
-        let totalDuration = steps.reduce((sum, step) => sum + step.duration, 0);
-        let elapsedTime = 0;
-        let timerInterval;
+        // Get data from localStorage
+        const user = JSON.parse(localStorage.getItem('nexspark_user') || '{}');
+        const summary = JSON.parse(localStorage.getItem('nexspark_summary') || '{}');
+        const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+        const payment = JSON.parse(localStorage.getItem('nexspark_payment') || '{}');
         
-        // Initialize
-        function init() {
-            renderSteps();
-            startTimer();
-            startProgress();
+        console.log('User:', user);
+        console.log('Summary:', summary);
+        console.log('Payment:', payment);
+        
+        // Verify payment
+        if (!payment.paid) {
+            console.error('❌ No payment found!');
+            showError('Payment verification failed. Please complete payment first.');
+            setTimeout(() => {
+                window.location.href = '/payment';
+            }, 3000);
+            return;
         }
         
-        // Render steps
-        function renderSteps() {
-            const container = document.getElementById('progressSteps');
-            steps.forEach((step, index) => {
-                const stepEl = document.createElement('div');
-                stepEl.id = `step-${step.id}`;
-                stepEl.className = 'bg-nexspark-dark rounded-lg p-6 border border-white/10 opacity-30';
-                stepEl.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-nexspark-dark border-2 border-white/20 flex items-center justify-center">
-                            <span class="step-icon text-white/40 font-bold">${step.id}</span>
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-white font-semibold">${step.name}</div>
-                            <div class="step-status text-white/50 text-sm mt-1">Waiting...</div>
-                        </div>
-                        <i class="step-check fas fa-circle text-white/20 text-xl"></i>
-                    </div>
-                `;
-                container.appendChild(stepEl);
-            });
-        }
+        // Generate report immediately
+        generateReport();
         
-        // Start timer
-        function startTimer() {
-            let remaining = totalDuration;
-            updateTimerDisplay(remaining);
-            
-            timerInterval = setInterval(() => {
-                remaining--;
-                elapsedTime++;
+        async function generateReport() {
+            try {
+                console.log('📊 Starting report generation with Claude Opus...');
                 
-                if (remaining <= 0) {
-                    clearInterval(timerInterval);
-                    remaining = 0;
+                // Update status
+                updateStatus('Analyzing your business with Claude Opus...', 'fa-brain');
+                
+                // Call API to generate report
+                const response = await axios.post('/api/report/generate', {
+                    summary: summary,
+                    competitors: summary.competitors || [],
+                    userId: user.email || user.id,
+                    interviewId: interview.id || 'interview_' + Date.now()
+                });
+                
+                if (response.data.success) {
+                    console.log('✅ Report generated successfully!');
+                    
+                    // Save report to localStorage
+                    localStorage.setItem('nexspark_report', JSON.stringify(response.data.report));
+                    localStorage.setItem('nexspark_report_ready', 'true');
+                    localStorage.setItem('nexspark_report_timestamp', new Date().toISOString());
+                    
+                    // Update status
+                    updateStatus('Report generated! Redirecting...', 'fa-check-circle');
+                    
+                    // Redirect to dashboard to view report
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 1500);
+                } else {
+                    throw new Error(response.data.message || 'Report generation failed');
                 }
                 
-                updateTimerDisplay(remaining);
-            }, 1000);
-        }
-        
-        // Update timer display
-        function updateTimerDisplay(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            document.getElementById('timer').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        // Start progress
-        async function startProgress() {
-            for (let i = 0; i < steps.length; i++) {
-                await processStep(steps[i]);
-            }
-            
-            completeGeneration();
-        }
-        
-        // Process individual step
-        function processStep(step) {
-            return new Promise((resolve) => {
-                // Mark as active
-                const stepEl = document.getElementById(`step-${step.id}`);
-                stepEl.className = 'bg-nexspark-dark rounded-lg p-6 border-2 border-nexspark-gold fade-in-item';
-                stepEl.querySelector('.step-icon').textContent = '⏳';
-                stepEl.querySelector('.step-status').textContent = 'Processing...';
-                stepEl.querySelector('.step-check').className = 'step-check fas fa-spinner fa-spin text-nexspark-gold text-xl';
-                
-                // Update progress bar
-                const progress = ((currentStep) / steps.length) * 100;
-                document.getElementById('progressBar').style.width = `${progress}%`;
-                document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
-                
-                // Wait for step duration
-                setTimeout(() => {
-                    // Mark as complete
-                    stepEl.className = 'bg-green-900/10 rounded-lg p-6 border-2 border-green-500 fade-in-item';
-                    stepEl.querySelector('.step-icon').textContent = '✓';
-                    stepEl.querySelector('.step-status').textContent = 'Complete';
-                    stepEl.querySelector('.step-check').className = 'step-check fas fa-check-circle text-green-400 text-xl';
-                    
-                    currentStep++;
-                    resolve();
-                }, step.duration * 1000);
-            });
-        }
-        
-        // Complete generation
-        function completeGeneration() {
-            clearInterval(timerInterval);
-            
-            // Update progress to 100%
-            document.getElementById('progressBar').style.width = '100%';
-            document.getElementById('progressPercent').textContent = '100%';
-            document.getElementById('timer').textContent = '0:00';
-            
-            // Show report ready
-            document.getElementById('reportReady').classList.remove('hidden');
-            document.getElementById('reportReady').classList.add('fade-in-item');
-            
-            // Save completion to localStorage
-            localStorage.setItem('nexspark_report_ready', 'true');
-            localStorage.setItem('nexspark_report_timestamp', new Date().toISOString());
-        }
-        
-        // View report
-        function viewReport() {
-            // Save report data to localStorage if not already there
-            const summaryData = localStorage.getItem('nexspark_summary');
-            if (summaryData) {
-                localStorage.setItem('nexspark_report_data', summaryData);
-            }
-            window.location.href = '/dashboard';
-        }
-        
-        // Download report
-        function downloadReport() {
-            // Trigger download from dashboard
-            const summaryData = localStorage.getItem('nexspark_summary');
-            if (summaryData) {
-                localStorage.setItem('nexspark_report_data', summaryData);
-                window.location.href = '/dashboard';
-            } else {
-                alert('Report data not found. Redirecting to dashboard...');
-                window.location.href = '/dashboard';
+            } catch (error) {
+                console.error('❌ Error generating report:', error);
+                showError(
+                    error.response?.data?.message || 
+                    error.message || 
+                    'Failed to generate report. Please try again.'
+                );
             }
         }
         
-        // Initialize on load
-        window.addEventListener('DOMContentLoaded', init);
+        function updateStatus(message, icon) {
+            document.getElementById('statusMessage').innerHTML = `
+                <i class="fas ${icon} mr-3 text-nexspark-purple"></i>
+                <span>${message}</span>
+            `;
+        }
+        
+        function showError(message) {
+            document.getElementById('errorContainer').classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = message;
+        }
     </script>
 </body>
 </html>

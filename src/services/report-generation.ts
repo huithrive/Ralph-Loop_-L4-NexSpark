@@ -73,7 +73,7 @@ export async function generateComprehensiveReport(
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-opus-4-20250514',
       max_tokens: 8000,
       temperature: 0.7,
       messages: [
@@ -318,7 +318,7 @@ Return ONLY the JSON object, no markdown, no explanation.`;
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-opus-4-20250514',
       max_tokens: 3000,
       temperature: 0.5,
       messages: [
@@ -406,7 +406,7 @@ Return ONLY the JSON object.`;
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-opus-4-20250514',
       max_tokens: 2000,
       temperature: 0.7,
       messages: [
