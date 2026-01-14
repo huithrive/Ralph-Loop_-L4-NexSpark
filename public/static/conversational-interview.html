@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexSpark - AI Growth Interview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* Language Selection Screen */
+    #languageSelection {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .language-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .language-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Split Screen Layout */
+    .split-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100vh;
+      gap: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .split-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60vh 40vh;
+      }
+    }
+
+    /* Left Side - Voice Interaction */
+    .voice-panel {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Breathing Circle Animation */
+    .breathing-circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff6b6b, #ee5a6f);
+      position: relative;
+      animation: breathe 4s ease-in-out infinite;
+      box-shadow: 0 0 60px rgba(255, 107, 107, 0.6);
+    }
+
+    .breathing-circle.listening {
+      animation: pulse 1s ease-in-out infinite;
+      background: radial-gradient(circle, #4ecdc4, #44a08d);
+      box-shadow: 0 0 80px rgba(78, 205, 196, 0.8);
+    }
+
+    .breathing-circle.speaking {
+      animation: speak 0.5s ease-in-out infinite;
+      background: radial-gradient(circle, #f7b731, #f39c12);
+      box-shadow: 0 0 80px rgba(247, 183, 49, 0.8);
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.8; }
+    }
+
+    @keyframes speak {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.05); }
+      75% { transform: scale(0.95); }
+    }
+
+    /* Sound waves around circle */
+    .sound-wave {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      opacity: 0;
+    }
+
+    .listening .sound-wave {
+      animation: ripple 2s ease-out infinite;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    /* Right Side - Real-time Summary */
+    .summary-panel {
+      background: #ffffff;
+      color: #1a1a2e;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    /* Question Display */
+    .question-bubble {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+      font-size: 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* Transcript Display */
+    .transcript-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      min-height: 100px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* Summary Cards */
+    .summary-card {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .summary-card h3 {
+      color: #2d3748;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .summary-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .summary-card li {
+      background: white;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+      font-size: 0.95rem;
+    }
+
+    /* Control Buttons */
+    .control-button {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      transition: all 0.3s ease;
+      margin: 0 0.5rem;
+    }
+
+    .control-button:hover {
+      transform: scale(1.1);
+    }
+
+    .control-button.record {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .control-button.stop {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    /* Edit Modal */
+    .edit-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-modal.active {
+      display: flex;
+    }
+
+    .edit-content {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 600px;
+      width: 90%;
+      color: #1a1a2e;
+    }
+
+    /* Status Indicator */
+    .status-badge {
+      position: absolute;
+      top: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .status-badge.idle {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .status-badge.listening {
+      background: rgba(78, 205, 196, 0.2);
+      color: #4ecdc4;
+      border: 2px solid #4ecdc4;
+    }
+
+    .status-badge.speaking {
+      background: rgba(247, 183, 49, 0.2);
+      color: #f7b731;
+      border: 2px solid #f7b731;
+    }
+  </style>
+</head>
+<body>
+  <!-- Language Selection -->
+  <div id="languageSelection">
+    <div class="max-w-4xl mx-auto text-center px-4">
+      <h1 class="text-5xl font-bold mb-4">Welcome to NexSpark</h1>
+      <p class="text-xl mb-12 text-white/80">Choose your preferred language / 选择您的语言</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="language-card" onclick="selectLanguage('en')">
+          <div class="text-6xl mb-4">🇬🇧</div>
+          <h2 class="text-3xl font-bold mb-2">English</h2>
+          <p class="text-white/70">Continue in English</p>
+        </div>
+        
+        <div class="language-card" onclick="selectLanguage('zh')">
+          <div class="text-6xl mb-4">🇨🇳</div>
+          <h2 class="text-3xl font-bold mb-2">中文</h2>
+          <p class="text-white/70">使用中文继续</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interview Interface -->
+  <div id="interviewInterface" style="display: none;">
+    <div class="split-container">
+      <!-- Left Panel: Voice Interaction -->
+      <div class="voice-panel">
+        <!-- Status Badge -->
+        <div id="statusBadge" class="status-badge idle">
+          <i class="fas fa-circle-dot mr-2"></i>
+          <span id="statusText">Ready to start</span>
+        </div>
+
+        <!-- Breathing Circle -->
+        <div class="breathing-circle-container" style="position: relative;">
+          <div id="breathingCircle" class="breathing-circle">
+            <div class="sound-wave" style="animation-delay: 0s;"></div>
+            <div class="sound-wave" style="animation-delay: 0.5s;"></div>
+            <div class="sound-wave" style="animation-delay: 1s;"></div>
+          </div>
+          
+          <!-- AI Avatar Icon -->
+          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem;">
+            🤖
+          </div>
+        </div>
+
+        <!-- Question Display -->
+        <div class="question-bubble" id="questionDisplay">
+          Click "Start" to begin the interview
+        </div>
+
+        <!-- Transcript Display -->
+        <div class="transcript-box" id="transcriptDisplay">
+          <div class="text-gray-400 italic">Your answer will appear here...</div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="flex items-center justify-center mt-8">
+          <button id="recordButton" class="control-button record" title="Start Speaking">
+            <i class="fas fa-microphone"></i>
+          </button>
+          <button id="stopButton" class="control-button stop" style="display: none;" title="Stop Recording">
+            <i class="fas fa-stop"></i>
+          </button>
+          <button id="editButton" class="control-button" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;" title="Edit Answer">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button id="nextButton" class="control-button" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; display: none;" title="Next Question">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full max-w-md mt-8">
+          <div class="flex justify-between text-sm mb-2">
+            <span id="progressText">Question 1 of 10</span>
+            <span id="timeEstimate">~5 min remaining</span>
+          </div>
+          <div class="w-full bg-gray-700 rounded-full h-2">
+            <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style="width: 10%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Real-time Summary -->
+      <div class="summary-panel">
+        <div class="sticky top-0 bg-white pb-4 border-b-2 border-gray-200 mb-4">
+          <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+            <i class="fas fa-chart-line mr-3 text-purple-600"></i>
+            <span id="summaryTitle">Real-time Insights</span>
+          </h2>
+          <p class="text-gray-600 mt-2" id="summarySubtitle">Your answers are being analyzed in real-time</p>
+        </div>
+
+        <!-- Key Points -->
+        <div class="summary-card">
+          <h3>
+            <i class="fas fa-lightbulb text-yellow-500"></i>
+            <span id="keyPointsTitle">Key Points</span>
+          </h3>
+          <ul id="keyPointsList">
+            <li class="text-gray-500 italic">Start answering questions to see insights...</li>
+          </ul>
+        </div>
+
+        <!-- Industry & Stage -->
+        <div class="summary-card">
+          <h3>
+            <i class="fas fa-building text-blue-500"></i>
+            <span id="industryTitle">Business Profile</span>
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-3 rounded-lg">
+              <div class="text-sm text-gray-600" id="industryLabel">Industry</div>
+              <div class="font-bold text-lg" id="industryValue">-</div>
+            </div>
+            <div class="bg-white p-3 rounded-lg">
+              <div class="text-sm text-gray-600" id="stageLabel">Stage</div>
+              <div class="font-bold text-lg" id="stageValue">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenges -->
+        <div class="summary-card">
+          <h3>
+            <i class="fas fa-exclamation-triangle text-red-500"></i>
+            <span id="challengesTitle">Challenges Identified</span>
+          </h3>
+          <ul id="challengesList">
+            <li class="text-gray-500 italic">No challenges identified yet...</li>
+          </ul>
+        </div>
+
+        <!-- Opportunities -->
+        <div class="summary-card">
+          <h3>
+            <i class="fas fa-rocket text-green-500"></i>
+            <span id="opportunitiesTitle">Growth Opportunities</span>
+          </h3>
+          <ul id="opportunitiesList">
+            <li class="text-gray-500 italic">Continue the conversation to discover opportunities...</li>
+          </ul>
+        </div>
+
+        <!-- Next Focus -->
+        <div class="summary-card">
+          <h3>
+            <i class="fas fa-compass text-purple-500"></i>
+            <span id="nextFocusTitle">Next Focus Area</span>
+          </h3>
+          <p id="nextFocusText" class="text-gray-700 bg-white p-3 rounded-lg">
+            Keep answering questions...
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Answer Modal -->
+  <div id="editModal" class="edit-modal">
+    <div class="edit-content">
+      <h3 class="text-2xl font-bold mb-4" id="editModalTitle">Edit Your Answer</h3>
+      <p class="text-gray-600 mb-4" id="editModalQuestion">Question will appear here</p>
+      <textarea 
+        id="editTextarea" 
+        class="w-full h-40 p-4 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"
+        placeholder="Type your answer here..."
+      ></textarea>
+      <div class="flex gap-4 mt-4">
+        <button onclick="saveEdit()" class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:opacity-90">
+          <i class="fas fa-save mr-2"></i>
+          <span id="saveButtonText">Save Answer</span>
+        </button>
+        <button onclick="closeEditModal()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300">
+          <i class="fas fa-times mr-2"></i>
+          <span id="cancelButtonText">Cancel</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/conversational-interview.js"></script>
+</body>
+</html>

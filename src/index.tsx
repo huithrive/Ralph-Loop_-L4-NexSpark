@@ -1393,4 +1393,194 @@ app.get('/api/agent/test', async (c) => {
 // Agent test page
 app.get('/agent-test', (c) => c.redirect('/static/agent-test.html'))
 
+// ============================================================================
+// CONVERSATIONAL INTERVIEW API ROUTES (Multilingual, Empathetic)
+// ============================================================================
+
+// Import conversational interview services
+import {
+  transcribeWithLanguage,
+  generateAcknowledgment,
+  generateNextQuestion,
+  generateRealtimeSummary,
+  synthesizeSpeech,
+  getInitialQuestions,
+  type ConversationContext,
+  type ConversationMessage
+} from './services/conversational-interview'
+
+// Conversational Interview - New entry point
+app.get('/conversational-interview', (c) => c.redirect('/static/conversational-interview.html'))
+
+// API: Transcribe audio with language detection
+app.post('/api/conversational-interview/transcribe', async (c) => {
+  try {
+    const { env } = c;
+    const formData = await c.req.formData();
+    const audioFile = formData.get('audio') as File;
+    const preferredLanguage = formData.get('language') as 'en' | 'zh' || 'en';
+
+    if (!audioFile) {
+      return c.json({ success: false, message: 'No audio file provided' }, 400);
+    }
+
+    const audioBuffer = await audioFile.arrayBuffer();
+    const result = await transcribeWithLanguage(audioBuffer, preferredLanguage, env);
+
+    return c.json({
+      success: true,
+      text: result.text,
+      language: result.language
+    });
+
+  } catch (error: any) {
+    console.error('Transcription error:', error);
+    return c.json({
+      success: false,
+      message: error.message || 'Transcription failed'
+    }, 500);
+  }
+});
+
+// API: Generate empathetic acknowledgment
+app.post('/api/conversational-interview/acknowledgment', async (c) => {
+  try {
+    const { env } = c;
+    const { userAnswer, context } = await c.req.json() as {
+      userAnswer: string;
+      context: ConversationContext;
+    };
+
+    if (!userAnswer || !context) {
+      return c.json({ success: false, message: 'Missing required parameters' }, 400);
+    }
+
+    const acknowledgment = await generateAcknowledgment(userAnswer, context, env);
+
+    return c.json({
+      success: true,
+      acknowledgment
+    });
+
+  } catch (error: any) {
+    console.error('Acknowledgment generation error:', error);
+    return c.json({
+      success: false,
+      message: error.message || 'Failed to generate acknowledgment'
+    }, 500);
+  }
+});
+
+// API: Generate next question
+app.post('/api/conversational-interview/next-question', async (c) => {
+  try {
+    const { env } = c;
+    const { context } = await c.req.json() as {
+      context: ConversationContext;
+    };
+
+    if (!context) {
+      return c.json({ success: false, message: 'Missing context' }, 400);
+    }
+
+    const question = await generateNextQuestion(context, env);
+
+    return c.json({
+      success: true,
+      question
+    });
+
+  } catch (error: any) {
+    console.error('Question generation error:', error);
+    return c.json({
+      success: false,
+      message: error.message || 'Failed to generate question'
+    }, 500);
+  }
+});
+
+// API: Generate real-time summary
+app.post('/api/conversational-interview/summary', async (c) => {
+  try {
+    const { env } = c;
+    const { context } = await c.req.json() as {
+      context: ConversationContext;
+    };
+
+    if (!context) {
+      return c.json({ success: false, message: 'Missing context' }, 400);
+    }
+
+    const summary = await generateRealtimeSummary(context, env);
+
+    return c.json({
+      success: true,
+      ...summary
+    });
+
+  } catch (error: any) {
+    console.error('Summary generation error:', error);
+    return c.json({
+      success: false,
+      message: error.message || 'Failed to generate summary'
+    }, 500);
+  }
+});
+
+// API: Text-to-Speech synthesis
+app.post('/api/conversational-interview/synthesize', async (c) => {
+  try {
+    const { env } = c;
+    const { text, language } = await c.req.json() as {
+      text: string;
+      language: 'en' | 'zh';
+    };
+
+    if (!text || !language) {
+      return c.json({ success: false, message: 'Missing text or language' }, 400);
+    }
+
+    const audioBuffer = await synthesizeSpeech(text, language, env);
+
+    return new Response(audioBuffer, {
+      headers: {
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'public, max-age=3600'
+      }
+    });
+
+  } catch (error: any) {
+    console.error('TTS synthesis error:', error);
+    return c.json({
+      success: false,
+      message: error.message || 'Speech synthesis failed'
+    }, 500);
+  }
+});
+
+// API: Get initial questions
+app.get('/api/conversational-interview/initial-questions/:language', async (c) => {
+  try {
+    const language = c.req.param('language') as 'en' | 'zh';
+
+    if (!['en', 'zh'].includes(language)) {
+      return c.json({ success: false, message: 'Invalid language' }, 400);
+    }
+
+    const questions = getInitialQuestions(language);
+
+    return c.json({
+      success: true,
+      questions
+    });
+
+  } catch (error: any) {
+    console.error('Error fetching initial questions:', error);
+    return c.json({
+      success: false,
+      message: error.message || 'Failed to fetch questions'
+    }, 500);
+  }
+});
+
 export default app
