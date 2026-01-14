@@ -311,6 +311,41 @@
     </div>
   </div>
 
+  <!-- Interview Introduction -->
+  <div id="interviewIntro" style="display: none;">
+    <div class="min-h-screen flex items-center justify-center p-8" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+      <div class="max-w-3xl bg-white rounded-3xl shadow-2xl p-12">
+        <h1 id="introTitle" class="text-4xl font-bold text-gray-800 mb-6"></h1>
+        
+        <div class="mb-8">
+          <h2 class="text-2xl font-semibold text-gray-700 mb-4" id="introPurposeTitle">Why We're Interviewing You</h2>
+          <div class="bg-purple-50 rounded-xl p-6 mb-4">
+            <ul id="introPurposeList" class="space-y-3 text-gray-700 text-lg"></ul>
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <h2 class="text-2xl font-semibold text-gray-700 mb-4" id="introGuidelinesTitle">Guidelines</h2>
+          <div class="bg-blue-50 rounded-xl p-6">
+            <ul id="introGuidelinesList" class="space-y-3 text-gray-700 text-lg"></ul>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-6 mb-8">
+          <p class="text-gray-800 text-lg font-medium" id="introQuestionCount"></p>
+        </div>
+
+        <button 
+          onclick="startInterview()" 
+          class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-2xl font-bold py-5 rounded-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+        >
+          <i class="fas fa-play-circle mr-3"></i>
+          <span id="introStartButton">Start Interview</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Interview Interface -->
   <div id="interviewInterface" style="display: none;">
     <div class="split-container">
@@ -330,15 +365,16 @@
             <div class="sound-wave" style="animation-delay: 1s;"></div>
           </div>
           
-          <!-- AI Avatar Icon -->
-          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem;">
-            🤖
+          <!-- NexSpark Logo -->
+          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 5rem; font-weight: 900; color: white; font-family: 'Arial Black', sans-serif; text-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+            N
           </div>
         </div>
 
         <!-- Question Display -->
         <div class="question-bubble" id="questionDisplay">
-          Click "Start" to begin the interview
+          <div id="questionText" class="mb-4">Click "Start" to begin the interview</div>
+          <div id="sampleAnswer" class="text-sm text-white/60 italic mt-4" style="display: none;"></div>
         </div>
 
         <!-- Transcript Display -->
@@ -348,17 +384,12 @@
 
         <!-- Control Buttons -->
         <div class="flex items-center justify-center mt-8">
-          <button id="recordButton" class="control-button record" title="Start Speaking">
-            <i class="fas fa-microphone"></i>
+          <button id="finishAnswerButton" class="control-button" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; width: auto; padding: 0 3rem; display: none;" title="Finish This Answer">
+            <i class="fas fa-check mr-2"></i>
+            <span id="finishButtonText">Finish</span>
           </button>
-          <button id="stopButton" class="control-button stop" style="display: none;" title="Stop Recording">
-            <i class="fas fa-stop"></i>
-          </button>
-          <button id="editButton" class="control-button" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;" title="Edit Answer">
+          <button id="editButton" class="control-button" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; display: none;" title="Edit Answer">
             <i class="fas fa-edit"></i>
-          </button>
-          <button id="nextButton" class="control-button" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; display: none;" title="Next Question">
-            <i class="fas fa-arrow-right"></i>
           </button>
         </div>
 

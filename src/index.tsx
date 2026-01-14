@@ -1558,6 +1558,67 @@ app.post('/api/conversational-interview/synthesize', async (c) => {
   }
 });
 
+// API: Get interview introduction
+app.get('/api/conversational-interview/introduction/:language', async (c) => {
+  try {
+    const language = c.req.param('language') as 'en' | 'zh';
+
+    if (!['en', 'zh'].includes(language)) {
+      return c.json({ success: false, message: 'Invalid language' }, 400);
+    }
+
+    const { getInterviewIntroduction } = await import('./services/conversational-interview');
+    const introduction = getInterviewIntroduction(language);
+
+    return c.json({
+      success: true,
+      ...introduction
+    });
+
+  } catch (error: any) {
+    console.error('Error fetching introduction:', error);
+    return c.json({
+      success: false,
+      message: error.message || 'Failed to fetch introduction'
+    }, 500);
+  }
+});
+
+// API: Get specific question with sample answer
+app.get('/api/conversational-interview/question/:language/:index', async (c) => {
+  try {
+    const language = c.req.param('language') as 'en' | 'zh';
+    const index = parseInt(c.req.param('index'));
+
+    if (!['en', 'zh'].includes(language)) {
+      return c.json({ success: false, message: 'Invalid language' }, 400);
+    }
+
+    const { getInitialQuestions, getSampleAnswers } = await import('./services/conversational-interview');
+    const questions = getInitialQuestions(language);
+    const sample = getSampleAnswers(language, index);
+
+    if (index < 0 || index >= questions.length) {
+      return c.json({ success: false, message: 'Invalid question index' }, 400);
+    }
+
+    return c.json({
+      success: true,
+      question: questions[index],
+      sample: sample,
+      index: index,
+      total: questions.length
+    });
+
+  } catch (error: any) {
+    console.error('Error fetching question:', error);
+    return c.json({
+      success: false,
+      message: error.message || 'Failed to fetch question'
+    }, 500);
+  }
+});
+
 // API: Get initial questions
 app.get('/api/conversational-interview/initial-questions/:language', async (c) => {
   try {

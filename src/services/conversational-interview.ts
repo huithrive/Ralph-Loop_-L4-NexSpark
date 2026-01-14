@@ -387,34 +387,87 @@ export async function synthesizeSpeech(
 }
 
 /**
- * Initial interview questions by language
+ * Initial interview questions by language (5 short, essential questions)
  */
 export function getInitialQuestions(language: 'en' | 'zh'): string[] {
   if (language === 'zh') {
     return [
-      '你好！我是你的AI增长战略顾问。首先，能告诉我你的品牌或产品的名字吗？',
-      '很好！用你自己的话描述一下，这个产品是做什么的？是为谁服务的？',
-      '你是什么时候开始做这个品牌的？当初是什么动力驱使你创建它的？',
-      '目前的月收入大概是多少？',
-      '你目前在用哪些营销渠道？每个渠道大概的月预算和效果如何？',
-      '哪个渠道表现最好？能分享一些具体的数据吗？比如转化率、ROI等。',
-      '目前增长遇到的最大挑战是什么？',
-      '你的理想客户是谁？详细描述一下他们的特征、痛点、行为习惯等。',
-      '你的前3个竞争对手是谁？你的品牌与他们相比有什么独特之处？',
-      '未来6个月的主要目标是什么？在收入、客户增长或市场扩张方面有具体指标吗？'
+      '告诉我你的品牌名称和主要产品？',
+      '你目前的月收入是多少？如果不确定，大概范围也可以。',
+      '你现在最大的增长挑战是什么？',
+      '你理想的客户是谁？',
+      '未来6个月，你最想实现什么目标？'
     ];
   } else {
     return [
-      'Hi! I\'m your AI growth strategist. Let\'s start with the basics - what\'s your brand or product name?',
-      'Perfect! How would you describe your product in your own words? What does it do and who is it for?',
-      'When did you start this brand and what motivated you to create it?',
-      'What\'s your current monthly revenue?',
-      'Which marketing channels are you currently using? For each channel, what\'s your monthly spend and results?',
-      'What\'s your best performing channel? Can you share specific metrics like conversion rate or ROI?',
-      'What\'s the biggest growth challenge you\'re facing right now?',
-      'Who is your ideal customer? Describe them in detail - demographics, pain points, behaviors.',
-      'Who are your top 3 competitors and what makes your brand different from them?',
-      'What\'s your main goal for the next 6 months? Be specific about revenue, customer growth, or market targets.'
+      'Tell me your brand name and what you sell?',
+      'What\'s your current monthly revenue? A rough estimate is fine if you\'re not sure.',
+      'What\'s your biggest growth challenge right now?',
+      'Who is your ideal customer?',
+      'What\'s your main goal for the next 6 months?'
     ];
+  }
+}
+
+/**
+ * Get sample answers for each question
+ */
+export function getSampleAnswers(language: 'en' | 'zh', questionIndex: number): string {
+  const samples = {
+    en: [
+      'Example: "My brand is called GreenGlow, we sell organic skincare products"',
+      'Example: "$5,000 per month" or "We haven\'t launched yet" or "I don\'t know exactly"',
+      'Example: "Finding new customers" or "Our ads aren\'t converting well" or "I\'m not sure where to start"',
+      'Example: "Women aged 25-40 who care about natural products" or "Small business owners"',
+      'Example: "Reach $20K monthly revenue" or "Get 100 new customers" or "Just get started with marketing"'
+    ],
+    zh: [
+      '例如："我的品牌叫绿光，我们销售有机护肤品"',
+      '例如："每月5000美元" 或 "我们还没推出" 或 "我不太确定"',
+      '例如："找到新客户" 或 "我们的广告转化不好" 或 "我不知道从哪开始"',
+      '例如："25-40岁关注天然产品的女性" 或 "小企业主"',
+      '例如："月收入达到2万美元" 或 "获得100个新客户" 或 "开始做营销"'
+    ]
+  };
+  
+  return samples[language][questionIndex] || '';
+}
+
+/**
+ * Get interview introduction by language
+ */
+export function getInterviewIntroduction(language: 'en' | 'zh'): {
+  title: string;
+  purpose: string[];
+  guidelines: string[];
+} {
+  if (language === 'zh') {
+    return {
+      title: '让我们开始吧',
+      purpose: [
+        '了解您的现状和品牌背后的历史或驱动力',
+        '了解您的目标，以便我们使用第三方数据制定符合您品牌和目标的策略和执行计划'
+      ],
+      guidelines: [
+        '不需要精确答案 - 分享您的想法即可',
+        '看到样例答案 - 帮助您理解问题',
+        '说"我不知道"也完全可以',
+        '即使是假设性的想法也很有帮助'
+      ]
+    };
+  } else {
+    return {
+      title: 'Let\'s Get Started',
+      purpose: [
+        'Understand your status quo and the history or drives behind your brand',
+        'Understand your goals so we can use third-party data to create a strategy that fits your specific needs, branding, and objectives'
+      ],
+      guidelines: [
+        'No need for precise answers - just share what\'s on your mind',
+        'See sample answers - they help you understand the questions',
+        'It\'s OK to say "I don\'t know"',
+        'Even hypothetical thoughts are helpful'
+      ]
+    };
   }
 }

@@ -1,69 +1,68 @@
-// Conversational Interview - Multilingual, Empathetic AI Interviewer
-// Implements real-time voice transcription, TTS, and dynamic summary generation
+// Conversational Interview - V2: Natural, Continuous Listening
+// Auto-starts listening, shows "Finish" button, faster responses
 
 // Global State
 const state = {
-  language: null, // 'en' or 'zh'
-  isRecording: false,
+  language: null,
+  isListening: false,
   isSpeaking: false,
   currentQuestionIndex: 0,
-  totalQuestions: 10,
+  totalQuestions: 5, // Reduced to 5 questions
   conversationHistory: [],
   currentTranscript: '',
   recognition: null,
   synthesis: window.speechSynthesis,
-  mediaRecorder: null,
-  audioChunks: [],
   realtimeSummary: null,
   userId: null,
-  interviewId: null
+  interviewId: null,
+  hasAnsweredTwoQuestions: false
 };
 
 // Translation Dictionary
 const translations = {
   en: {
-    ready: 'Ready to start',
-    listening: 'Listening...',
+    ready: 'Listening...',
+    listening: 'Listening to your answer...',
     speaking: 'Speaking...',
     processing: 'Processing...',
+    finish: 'Finish',
+    edit: 'Edit',
     keyPoints: 'Key Points',
-    industry: 'Industry',
-    stage: 'Stage',
-    challenges: 'Challenges Identified',
-    opportunities: 'Growth Opportunities',
-    nextFocus: 'Next Focus Area',
-    editTitle: 'Edit Your Answer',
-    save: 'Save Answer',
-    cancel: 'Cancel',
-    timeRemaining: 'min remaining',
+    businessProfile: 'Business Profile',
+    challenges: 'Challenges',
+    opportunities: 'Opportunities',
+    nextFocus: 'Next Focus',
     questionOf: 'Question',
     of: 'of',
-    industryLabel: 'Industry',
-    stageLabel: 'Stage',
+    timeRemaining: 'min remaining',
     summaryTitle: 'Real-time Insights',
-    summarySubtitle: 'Your answers are being analyzed in real-time'
+    summarySubtitle: 'Building your growth strategy...',
+    introPurposeTitle: 'Why We\'re Interviewing You',
+    introGuidelinesTitle: 'Guidelines',
+    introQuestionCount: 'This will take about 3-5 minutes with 5 short questions.',
+    introStartButton: 'Start Interview'
   },
   zh: {
-    ready: '准备开始',
-    listening: '正在聆听...',
+    ready: '正在聆听...',
+    listening: '正在聆听您的回答...',
     speaking: '正在讲话...',
     processing: '处理中...',
+    finish: '完成',
+    edit: '编辑',
     keyPoints: '关键要点',
-    industry: '行业',
-    stage: '阶段',
-    challenges: '识别的挑战',
-    opportunities: '增长机会',
-    nextFocus: '下一个关注领域',
-    editTitle: '编辑您的回答',
-    save: '保存回答',
-    cancel: '取消',
-    timeRemaining: '分钟剩余',
+    businessProfile: '业务概况',
+    challenges: '挑战',
+    opportunities: '机会',
+    nextFocus: '下一步',
     questionOf: '问题',
     of: '共',
-    industryLabel: '行业',
-    stageLabel: '阶段',
+    timeRemaining: '分钟剩余',
     summaryTitle: '实时洞察',
-    summarySubtitle: '您的回答正在实时分析中'
+    summarySubtitle: '正在构建您的增长策略...',
+    introPurposeTitle: '为什么要访谈您',
+    introGuidelinesTitle: '指南',
+    introQuestionCount: '大约需要3-5分钟，共5个简短问题。',
+    introStartButton: '开始访谈'
   }
 };
 
@@ -76,9 +75,49 @@ function t(key) {
 function selectLanguage(lang) {
   state.language = lang;
   document.getElementById('languageSelection').style.display = 'none';
+  
+  // Show interview introduction
+  loadIntroduction();
+  document.getElementById('interviewIntro').style.display = 'block';
+}
+
+// Load Introduction
+async function loadIntroduction() {
+  try {
+    const response = await fetch(`/api/conversational-interview/introduction/${state.language}`);
+    const intro = await response.json();
+    
+    document.getElementById('introTitle').textContent = intro.title;
+    document.getElementById('introPurposeTitle').textContent = t('introPurposeTitle');
+    document.getElementById('introGuidelinesTitle').textContent = t('introGuidelinesTitle');
+    document.getElementById('introQuestionCount').textContent = t('introQuestionCount');
+    document.getElementById('introStartButton').textContent = t('introStartButton');
+    
+    // Populate purpose list
+    const purposeList = document.getElementById('introPurposeList');
+    purposeList.innerHTML = intro.purpose.map(p => 
+      `<li class="flex items-start"><i class="fas fa-check-circle text-purple-600 mr-3 mt-1"></i><span>${p}</span></li>`
+    ).join('');
+    
+    // Populate guidelines list
+    const guidelinesList = document.getElementById('introGuidelinesList');
+    guidelinesList.innerHTML = intro.guidelines.map(g => 
+      `<li class="flex items-start"><i class="fas fa-lightbulb text-blue-600 mr-3 mt-1"></i><span>${g}</span></li>`
+    ).join('');
+    
+  } catch (error) {
+    console.error('Error loading introduction:', error);
+    // Use fallback
+    document.getElementById('introTitle').textContent = state.language === 'zh' ? '让我们开始吧' : 'Let\'s Get Started';
+  }
+}
+
+// Start Interview
+function startInterview() {
+  document.getElementById('interviewIntro').style.display = 'none';
   document.getElementById('interviewInterface').style.display = 'block';
   
-  // Update UI text based on language
+  // Update UI language
   updateUILanguage();
   
   // Initialize interview
@@ -91,20 +130,16 @@ function updateUILanguage() {
   document.getElementById('summaryTitle').textContent = t('summaryTitle');
   document.getElementById('summarySubtitle').textContent = t('summarySubtitle');
   document.getElementById('keyPointsTitle').textContent = t('keyPoints');
-  document.getElementById('industryTitle').textContent = t('industry');
+  document.getElementById('industryTitle').textContent = t('businessProfile');
   document.getElementById('challengesTitle').textContent = t('challenges');
-  document.getElementById('opportunitiesTitle').textContent = t('opportunitiesTitle');
+  document.getElementById('opportunitiesTitle').textContent = t('opportunities');
   document.getElementById('nextFocusTitle').textContent = t('nextFocus');
-  document.getElementById('editModalTitle').textContent = t('editTitle');
-  document.getElementById('saveButtonText').textContent = t('save');
-  document.getElementById('cancelButtonText').textContent = t('cancel');
-  document.getElementById('industryLabel').textContent = t('industryLabel');
-  document.getElementById('stageLabel').textContent = t('stageLabel');
+  document.getElementById('finishButtonText').textContent = t('finish');
 }
 
 // Initialize Interview
 async function initializeInterview() {
-  // Generate user ID if not exists
+  // Generate user ID
   state.userId = localStorage.getItem('nexspark_user_id') || generateUserId();
   localStorage.setItem('nexspark_user_id', state.userId);
   
@@ -119,27 +154,36 @@ async function initializeInterview() {
   
   // Setup event listeners
   setupEventListeners();
+  
+  // Auto-start listening after AI speaks
+  setTimeout(() => {
+    if (!state.isSpeaking) {
+      startListening();
+    }
+  }, 1000);
 }
 
 // Initialize Speech Recognition
 function initializeSpeechRecognition() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    console.error('Speech recognition not supported');
+    alert(state.language === 'zh' ? 
+      '您的浏览器不支持语音识别。请使用Chrome浏览器。' : 
+      'Your browser doesn\'t support speech recognition. Please use Chrome.');
     return;
   }
   
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   state.recognition = new SpeechRecognition();
   
-  // Configure recognition
   state.recognition.continuous = true;
   state.recognition.interimResults = true;
   state.recognition.lang = state.language === 'zh' ? 'zh-CN' : 'en-US';
   
-  // Event handlers
   state.recognition.onstart = () => {
     console.log('Speech recognition started');
+    state.isListening = true;
     updateStatus('listening');
+    document.getElementById('breathingCircle').classList.add('listening');
   };
   
   state.recognition.onresult = (event) => {
@@ -155,36 +199,37 @@ function initializeSpeechRecognition() {
       }
     }
     
-    // Update transcript display
     if (finalTranscript) {
       state.currentTranscript += finalTranscript;
     }
     
-    const displayText = state.currentTranscript + (interimTranscript ? `<span class="text-gray-400">${interimTranscript}</span>` : '');
-    document.getElementById('transcriptDisplay').innerHTML = displayText || '<div class="text-gray-400 italic">Speak your answer...</div>';
+    const displayText = state.currentTranscript + 
+      (interimTranscript ? `<span class="text-gray-400">${interimTranscript}</span>` : '');
+    document.getElementById('transcriptDisplay').innerHTML = displayText || 
+      '<div class="text-gray-400 italic">' + (state.language === 'zh' ? '开始说话...' : 'Start speaking...') + '</div>';
   };
   
   state.recognition.onerror = (event) => {
     console.error('Speech recognition error:', event.error);
     if (event.error === 'no-speech') {
-      // Restart recognition
+      // Silently restart
       setTimeout(() => {
-        if (state.isRecording) {
+        if (state.isListening && !state.isSpeaking) {
           state.recognition.start();
         }
-      }, 1000);
+      }, 500);
     }
   };
   
   state.recognition.onend = () => {
     console.log('Speech recognition ended');
-    if (state.isRecording) {
-      // Auto-restart if still recording
+    if (state.isListening && !state.isSpeaking) {
+      // Auto-restart
       setTimeout(() => {
-        if (state.isRecording) {
+        if (state.isListening && !state.isSpeaking) {
           state.recognition.start();
         }
-      }, 500);
+      }, 300);
     }
   };
 }
@@ -200,44 +245,20 @@ async function askQuestion(index) {
   updateProgress();
   
   try {
-    let questionText;
+    // Fetch question and sample answer
+    const response = await fetch(`/api/conversational-interview/question/${state.language}/${index}`);
+    const data = await response.json();
     
-    if (index === 0) {
-      // Use initial question from predefined list
-      const initialQuestions = {
-        en: [
-          "Hi! I'm your AI growth strategist. Let's start with the basics - what's your brand or product name?",
-          "Perfect! How would you describe your product in your own words? What does it do and who is it for?",
-          "When did you start this brand and what motivated you to create it?",
-          "What's your current monthly revenue?",
-          "Which marketing channels are you currently using? For each channel, what's your monthly spend and results?",
-          "What's your best performing channel? Can you share specific metrics like conversion rate or ROI?",
-          "What's the biggest growth challenge you're facing right now?",
-          "Who is your ideal customer? Describe them in detail - demographics, pain points, behaviors.",
-          "Who are your top 3 competitors and what makes your brand different from them?",
-          "What's your main goal for the next 6 months? Be specific about revenue, customer growth, or market targets."
-        ],
-        zh: [
-          "你好！我是你的AI增长战略顾问。首先，能告诉我你的品牌或产品的名字吗？",
-          "很好！用你自己的话描述一下，这个产品是做什么的？是为谁服务的？",
-          "你是什么时候开始做这个品牌的？当初是什么动力驱使你创建它的？",
-          "目前的月收入大概是多少？",
-          "你目前在用哪些营销渠道？每个渠道大概的月预算和效果如何？",
-          "哪个渠道表现最好？能分享一些具体的数据吗？比如转化率、ROI等。",
-          "目前增长遇到的最大挑战是什么？",
-          "你的理想客户是谁？详细描述一下他们的特征、痛点、行为习惯等。",
-          "你的前3个竞争对手是谁？你的品牌与他们相比有什么独特之处？",
-          "未来6个月的主要目标是什么？在收入、客户增长或市场扩张方面有具体指标吗？"
-        ]
-      };
-      questionText = initialQuestions[state.language][index];
-    } else {
-      // Generate dynamic question based on context
-      questionText = await generateNextQuestion();
-    }
+    const questionText = data.question;
+    const sampleAnswer = data.sample;
     
     // Display question
-    document.getElementById('questionDisplay').textContent = questionText;
+    document.getElementById('questionText').textContent = questionText;
+    
+    // Show sample answer
+    const sampleEl = document.getElementById('sampleAnswer');
+    sampleEl.textContent = sampleAnswer;
+    sampleEl.style.display = 'block';
     
     // Save question to history
     state.conversationHistory.push({
@@ -248,192 +269,95 @@ async function askQuestion(index) {
       type: 'question'
     });
     
-    // Speak question
-    await speakText(questionText);
+    // Speak question (faster, no wait)
+    speakTextAsync(questionText);
     
   } catch (error) {
     console.error('Error asking question:', error);
   }
 }
 
-// Generate Next Question (AI-powered)
-async function generateNextQuestion() {
-  try {
-    const response = await fetch('/api/conversational-interview/next-question', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        context: {
-          language: state.language,
-          previousMessages: state.conversationHistory.slice(-6), // Last 6 messages
-          currentTopic: getTopicForQuestion(state.currentQuestionIndex),
-          userProfile: extractUserProfile()
-        }
-      })
-    });
-    
-    const data = await response.json();
-    return data.question;
-  } catch (error) {
-    console.error('Error generating next question:', error);
-    // Fallback to predefined questions
-    const fallbacks = {
-      en: "Can you tell me more about your target customers?",
-      zh: "能详细说说您的目标客户是谁吗？"
-    };
-    return fallbacks[state.language];
-  }
-}
-
-// Get Topic for Question Index
-function getTopicForQuestion(index) {
-  const topics = {
-    0: 'brand_basics',
-    1: 'product_description',
-    2: 'brand_origin',
-    3: 'revenue_metrics',
-    4: 'marketing_channels',
-    5: 'channel_performance',
-    6: 'growth_challenges',
-    7: 'customer_profile',
-    8: 'competitive_landscape',
-    9: 'goals_objectives'
-  };
-  return topics[index] || 'general';
-}
-
-// Extract User Profile from Conversation
-function extractUserProfile() {
-  const profile = {};
-  
-  // Extract brand name from first answer
-  const firstAnswer = state.conversationHistory.find(m => m.role === 'user');
-  if (firstAnswer) {
-    profile.brandName = firstAnswer.content.split(' ')[0]; // Simplistic extraction
-  }
-  
-  return profile;
-}
-
-// Speak Text (TTS)
-async function speakText(text) {
+// Speak Text Async (non-blocking, faster)
+function speakTextAsync(text) {
   updateStatus('speaking');
+  state.isSpeaking = true;
+  document.getElementById('breathingCircle').classList.add('speaking');
   
-  try {
-    // Use OpenAI TTS for better quality
-    const response = await fetch('/api/conversational-interview/synthesize', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: text,
-        language: state.language
-      })
-    });
+  // Use browser TTS for speed
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = state.language === 'zh' ? 'zh-CN' : 'en-US';
+  utterance.rate = 1.1; // Slightly faster
+  
+  utterance.onend = () => {
+    state.isSpeaking = false;
+    document.getElementById('breathingCircle').classList.remove('speaking');
+    updateStatus('listening');
     
-    if (!response.ok) {
-      throw new Error('TTS API failed');
+    // Auto-start listening
+    if (!state.isListening) {
+      startListening();
     }
-    
-    const audioBlob = await response.blob();
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
-    
-    state.isSpeaking = true;
-    
-    audio.onplay = () => {
-      document.getElementById('breathingCircle').classList.add('speaking');
-    };
-    
-    audio.onended = () => {
-      state.isSpeaking = false;
-      document.getElementById('breathingCircle').classList.remove('speaking');
-      updateStatus('ready');
-      URL.revokeObjectURL(audioUrl);
-    };
-    
-    await audio.play();
-    
-  } catch (error) {
-    console.error('TTS error:', error);
-    // Fallback to browser TTS
-    await fallbackSpeak(text);
-  }
+  };
+  
+  state.synthesis.speak(utterance);
 }
 
-// Fallback to Browser TTS
-function fallbackSpeak(text) {
-  return new Promise((resolve) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = state.language === 'zh' ? 'zh-CN' : 'en-US';
-    utterance.rate = 0.9;
-    
-    utterance.onstart = () => {
-      state.isSpeaking = true;
-      document.getElementById('breathingCircle').classList.add('speaking');
-    };
-    
-    utterance.onend = () => {
-      state.isSpeaking = false;
-      document.getElementById('breathingCircle').classList.remove('speaking');
-      updateStatus('ready');
-      resolve();
-    };
-    
-    state.synthesis.speak(utterance);
-  });
-}
-
-// Start Recording
-function startRecording() {
+// Start Listening
+function startListening() {
   if (state.isSpeaking) {
-    alert(state.language === 'zh' ? '请等待我说完' : 'Please wait for me to finish speaking');
     return;
   }
   
-  state.isRecording = true;
+  state.isListening = true;
   state.currentTranscript = '';
-  document.getElementById('transcriptDisplay').innerHTML = '<div class="text-gray-400 italic">Speak your answer...</div>';
   
-  // Show stop button, hide record button
-  document.getElementById('recordButton').style.display = 'none';
-  document.getElementById('stopButton').style.display = 'flex';
+  document.getElementById('transcriptDisplay').innerHTML = 
+    '<div class="text-gray-400 italic">' + 
+    (state.language === 'zh' ? '开始说话...' : 'Start speaking...') + 
+    '</div>';
   
-  // Start speech recognition
+  // Show finish button
+  document.getElementById('finishAnswerButton').style.display = 'flex';
+  
   try {
     state.recognition.start();
-    document.getElementById('breathingCircle').classList.add('listening');
   } catch (error) {
     console.error('Error starting recognition:', error);
   }
 }
 
-// Stop Recording
-async function stopRecording() {
-  state.isRecording = false;
+// Finish Answer (user clicks "Finish" button)
+async function finishAnswer() {
+  state.isListening = false;
   
-  // Stop speech recognition
   if (state.recognition) {
     state.recognition.stop();
   }
   
   document.getElementById('breathingCircle').classList.remove('listening');
+  document.getElementById('finishAnswerButton').style.display = 'none';
   
-  // Show record button, hide stop button
-  document.getElementById('recordButton').style.display = 'flex';
-  document.getElementById('stopButton').style.display = 'none';
-  
-  // Process answer
   if (state.currentTranscript.trim()) {
     await processAnswer(state.currentTranscript.trim());
+  } else {
+    // No answer, ask again or skip
+    const shouldSkip = confirm(state.language === 'zh' ? 
+      '您还没有回答。要跳过这个问题吗？' : 
+      'You haven\'t answered yet. Skip this question?');
+    if (shouldSkip) {
+      await nextQuestion();
+    } else {
+      startListening();
+    }
   }
 }
 
-// Process Answer
+// Process Answer (fast, minimal acknowledgment)
 async function processAnswer(answerText) {
   updateStatus('processing');
   
   try {
-    // Save answer to conversation history
+    // Save answer
     state.conversationHistory.push({
       role: 'user',
       content: answerText,
@@ -442,62 +366,52 @@ async function processAnswer(answerText) {
       type: 'answer'
     });
     
-    // Generate acknowledgment
-    const acknowledgment = await generateAcknowledgment(answerText);
+    // Quick acknowledgment (no API call, instant)
+    const quickAcks = {
+      en: ['Got it', 'Great', 'Thank you', 'I see', 'Perfect'],
+      zh: ['好的', '很好', '谢谢', '明白了', '完美']
+    };
+    const ack = quickAcks[state.language][Math.floor(Math.random() * quickAcks[state.language].length)];
     
-    // Speak acknowledgment
-    await speakText(acknowledgment);
+    // Speak acknowledgment (fast)
+    await speakQuick(ack);
     
-    // Save acknowledgment to history
-    state.conversationHistory.push({
-      role: 'interviewer',
-      content: acknowledgment,
-      language: state.language,
-      timestamp: new Date().toISOString(),
-      type: 'acknowledgment'
-    });
+    // Update summary if 2+ questions answered
+    if (state.currentQuestionIndex >= 1 && !state.hasAnsweredTwoQuestions) {
+      state.hasAnsweredTwoQuestions = true;
+      await updateRealtimeSummary();
+    } else if (state.hasAnsweredTwoQuestions) {
+      // Update summary for subsequent questions
+      await updateRealtimeSummary();
+    }
     
-    // Update real-time summary
-    await updateRealtimeSummary();
+    // Show edit button briefly
+    document.getElementById('editButton').style.display = 'flex';
+    setTimeout(() => {
+      document.getElementById('editButton').style.display = 'none';
+    }, 3000);
     
-    // Show next button
-    document.getElementById('nextButton').style.display = 'flex';
+    // Move to next question
+    setTimeout(() => nextQuestion(), 500);
     
   } catch (error) {
     console.error('Error processing answer:', error);
-    updateStatus('ready');
+    updateStatus('listening');
   }
 }
 
-// Generate Acknowledgment
-async function generateAcknowledgment(answerText) {
-  try {
-    const response = await fetch('/api/conversational-interview/acknowledgment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userAnswer: answerText,
-        context: {
-          language: state.language,
-          previousMessages: state.conversationHistory.slice(-4),
-          currentTopic: getTopicForQuestion(state.currentQuestionIndex),
-          userProfile: extractUserProfile()
-        }
-      })
-    });
+// Speak Quick (very short acknowledgment)
+function speakQuick(text) {
+  return new Promise((resolve) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = state.language === 'zh' ? 'zh-CN' : 'en-US';
+    utterance.rate = 1.2; // Fast
+    utterance.volume = 0.8;
     
-    const data = await response.json();
-    return data.acknowledgment;
-  } catch (error) {
-    console.error('Error generating acknowledgment:', error);
-    // Fallback acknowledgments
-    const fallbacks = {
-      en: ['Got it', 'I see', 'Great', 'Understood', 'Makes sense'],
-      zh: ['好的', '明白了', '我理解', '很好', '继续']
-    };
-    const options = fallbacks[state.language];
-    return options[Math.floor(Math.random() * options.length)];
-  }
+    utterance.onend = () => resolve();
+    
+    state.synthesis.speak(utterance);
+  });
 }
 
 // Update Real-time Summary
@@ -511,7 +425,7 @@ async function updateRealtimeSummary() {
           language: state.language,
           previousMessages: state.conversationHistory,
           currentTopic: getTopicForQuestion(state.currentQuestionIndex),
-          userProfile: extractUserProfile()
+          userProfile: {}
         }
       })
     });
@@ -519,7 +433,6 @@ async function updateRealtimeSummary() {
     const summary = await response.json();
     state.realtimeSummary = summary;
     
-    // Update UI
     updateSummaryUI(summary);
     
   } catch (error) {
@@ -529,35 +442,31 @@ async function updateRealtimeSummary() {
 
 // Update Summary UI
 function updateSummaryUI(summary) {
-  // Update key points
   const keyPointsList = document.getElementById('keyPointsList');
   if (summary.keyPoints && summary.keyPoints.length > 0) {
     keyPointsList.innerHTML = summary.keyPoints.map(point => `<li>${point}</li>`).join('');
   }
   
-  // Update industry
   if (summary.industry) {
     document.getElementById('industryValue').textContent = summary.industry;
   }
   
-  // Update stage (extract from key points or set default)
   if (summary.stage) {
     document.getElementById('stageValue').textContent = summary.stage;
+  } else {
+    document.getElementById('stageValue').textContent = state.language === 'zh' ? '增长期' : 'Growth';
   }
   
-  // Update challenges
   const challengesList = document.getElementById('challengesList');
   if (summary.challenges && summary.challenges.length > 0) {
-    challengesList.innerHTML = summary.challenges.map(challenge => `<li>${challenge}</li>`).join('');
+    challengesList.innerHTML = summary.challenges.map(c => `<li>${c}</li>`).join('');
   }
   
-  // Update opportunities
   const opportunitiesList = document.getElementById('opportunitiesList');
   if (summary.opportunities && summary.opportunities.length > 0) {
-    opportunitiesList.innerHTML = summary.opportunities.map(opp => `<li>${opp}</li>`).join('');
+    opportunitiesList.innerHTML = summary.opportunities.map(o => `<li>${o}</li>`).join('');
   }
   
-  // Update next focus
   if (summary.nextFocus) {
     document.getElementById('nextFocusText').textContent = summary.nextFocus;
   }
@@ -565,15 +474,19 @@ function updateSummaryUI(summary) {
 
 // Next Question
 async function nextQuestion() {
-  // Hide next button
-  document.getElementById('nextButton').style.display = 'none';
-  
-  // Clear transcript
   state.currentTranscript = '';
-  document.getElementById('transcriptDisplay').innerHTML = '<div class="text-gray-400 italic">Your answer will appear here...</div>';
+  document.getElementById('transcriptDisplay').innerHTML = 
+    '<div class="text-gray-400 italic">' + 
+    (state.language === 'zh' ? '准备下一个问题...' : 'Preparing next question...') + 
+    '</div>';
   
-  // Ask next question
   await askQuestion(state.currentQuestionIndex + 1);
+}
+
+// Get Topic for Question
+function getTopicForQuestion(index) {
+  const topics = ['brand', 'revenue', 'challenges', 'customer', 'goals'];
+  return topics[index] || 'general';
 }
 
 // Update Status
@@ -589,10 +502,11 @@ function updateStatus(status) {
 function updateProgress() {
   const progress = ((state.currentQuestionIndex + 1) / state.totalQuestions) * 100;
   document.getElementById('progressBar').style.width = `${progress}%`;
-  document.getElementById('progressText').textContent = `${t('questionOf')} ${state.currentQuestionIndex + 1} ${t('of')} ${state.totalQuestions}`;
+  document.getElementById('progressText').textContent = 
+    `${t('questionOf')} ${state.currentQuestionIndex + 1} ${t('of')} ${state.totalQuestions}`;
   
   const remainingQuestions = state.totalQuestions - state.currentQuestionIndex;
-  const estimatedMinutes = Math.ceil(remainingQuestions * 0.5);
+  const estimatedMinutes = Math.ceil(remainingQuestions * 0.6);
   document.getElementById('timeEstimate').textContent = `~${estimatedMinutes} ${t('timeRemaining')}`;
 }
 
@@ -628,7 +542,6 @@ function saveEdit() {
 // Complete Interview
 async function completeInterview() {
   try {
-    // Save interview data
     const response = await fetch('/api/interview/complete', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -651,10 +564,8 @@ async function completeInterview() {
 
 // Setup Event Listeners
 function setupEventListeners() {
-  document.getElementById('recordButton').addEventListener('click', startRecording);
-  document.getElementById('stopButton').addEventListener('click', stopRecording);
+  document.getElementById('finishAnswerButton').addEventListener('click', finishAnswer);
   document.getElementById('editButton').addEventListener('click', openEditModal);
-  document.getElementById('nextButton').addEventListener('click', nextQuestion);
 }
 
 // Generate User ID
@@ -662,18 +573,4 @@ function generateUserId() {
   return `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-// Auto-save progress
-setInterval(() => {
-  if (state.conversationHistory.length > 0) {
-    localStorage.setItem('conversational_interview_progress', JSON.stringify({
-      userId: state.userId,
-      interviewId: state.interviewId,
-      language: state.language,
-      currentQuestionIndex: state.currentQuestionIndex,
-      conversationHistory: state.conversationHistory,
-      timestamp: new Date().toISOString()
-    }));
-  }
-}, 30000); // Save every 30 seconds
-
-console.log('Conversational Interview initialized');
+console.log('Conversational Interview V2 initialized');
