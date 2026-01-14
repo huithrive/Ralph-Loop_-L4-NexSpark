@@ -25,6 +25,7 @@ export interface ConversationContext {
 export interface RealtimeSummary {
   keyPoints: string[];
   industry: string;
+  stage?: string;
   challenges: string[];
   opportunities: string[];
   nextFocus: string;
@@ -276,25 +277,67 @@ export async function generateRealtimeSummary(
   try {
     const { apiKey, baseURL } = getOpenAIClient(env);
     
+    // Extract user answers from conversation
+    const conversationHistory = context.previousMessages
+      .filter(m => m.role === 'user')
+      .map(m => m.content)
+      .join('\n\n');
+    
+    // Perform website research if URL is provided
+    let websiteContext = '';
+    if (context.userProfile?.websiteUrl) {
+      try {
+        console.log(`🔍 Researching website: ${context.userProfile.websiteUrl}`);
+        const siteResponse = await fetch(context.userProfile.websiteUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; NexSpark/1.0; +https://nexspark.io)'
+          }
+        });
+        
+        if (siteResponse.ok) {
+          let htmlContent = await siteResponse.text();
+          // Extract meaningful content
+          htmlContent = htmlContent
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .substring(0, 3000); // Limit to 3000 chars
+          
+          websiteContext = `\n\nWebsite Content:\n${htmlContent}`;
+          console.log('✅ Website content extracted successfully');
+        }
+      } catch (error) {
+        console.warn('Website research failed, continuing with interview data only:', error);
+      }
+    }
+    
     const systemPrompt = context.language === 'zh'
-      ? `分析对话内容，提取关键信息并生成实时摘要。
+      ? `分析对话内容和网站信息，提取关键信息并生成实时摘要。
+
+**重要**: 必须基于用户在访谈中提供的实际答案，而不是缓存的或无关的数据。
 
 输出JSON格式：
 {
   "keyPoints": ["关键点1", "关键点2", "关键点3"],
   "industry": "行业",
+  "stage": "阶段（初创/增长/规模化）",
   "challenges": ["挑战1", "挑战2"],
   "opportunities": ["机会1", "机会2"],
   "nextFocus": "下一个重点关注领域"
 }
 
 保持简洁，每个要点不超过15个字。`
-      : `Analyze the conversation and extract key information for a real-time summary.
+      : `Analyze the conversation and website information to extract key information for a real-time summary.
+
+**IMPORTANT**: Must be based on actual answers provided by the user in this interview, not cached or unrelated data.
 
 Output JSON format:
 {
   "keyPoints": ["key point 1", "key point 2", "key point 3"],
   "industry": "industry name",
+  "stage": "stage (early/growth/scale)",
   "challenges": ["challenge 1", "challenge 2"],
   "opportunities": ["opportunity 1", "opportunity 2"],
   "nextFocus": "next area to explore"
@@ -302,10 +345,7 @@ Output JSON format:
 
 Keep it concise, max 10 words per point.`;
 
-    const conversationHistory = context.previousMessages
-      .filter(m => m.role === 'user')
-      .map(m => m.content)
-      .join('\n\n');
+    const userPrompt = `User's interview answers:\n${conversationHistory}${websiteContext}\n\nBrand Name: ${context.userProfile?.brandName || 'Not specified'}\nWebsite: ${context.userProfile?.websiteUrl || 'Not provided'}\n\nProvide real-time summary in JSON format based ONLY on this interview data.`;
 
     const response = await fetch(`${baseURL}/chat/completions`, {
       method: 'POST',
@@ -317,13 +357,17 @@ Keep it concise, max 10 words per point.`;
         model: 'gpt-4',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Conversation content:\n${conversationHistory}\n\nProvide real-time summary in JSON format.` }
+          { role: 'user', content: userPrompt }
         ],
-        max_tokens: 500,
+        max_tokens: 800,
         temperature: 0.3,
         response_format: { type: 'json_object' }
       })
     });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI API failed: ${response.statusText}`);
+    }
 
     const data = await response.json();
     const summary = JSON.parse(data.choices[0].message.content);
@@ -331,6 +375,7 @@ Keep it concise, max 10 words per point.`;
     return {
       keyPoints: summary.keyPoints || [],
       industry: summary.industry || (context.language === 'zh' ? '待确定' : 'TBD'),
+      stage: summary.stage || (context.language === 'zh' ? '增长期' : 'Growth'),
       challenges: summary.challenges || [],
       opportunities: summary.opportunities || [],
       nextFocus: summary.nextFocus || (context.language === 'zh' ? '继续探索' : 'Continue exploring')
@@ -340,6 +385,7 @@ Keep it concise, max 10 words per point.`;
     return {
       keyPoints: [],
       industry: context.language === 'zh' ? '待确定' : 'TBD',
+      stage: context.language === 'zh' ? '增长期' : 'Growth',
       challenges: [],
       opportunities: [],
       nextFocus: context.language === 'zh' ? '继续对话' : 'Continue conversation'
@@ -387,13 +433,16 @@ export async function synthesizeSpeech(
 }
 
 /**
- * Initial interview questions by language (5 short, essential questions)
+ * Initial interview questions by language (8 essential questions)
  */
 export function getInitialQuestions(language: 'en' | 'zh'): string[] {
   if (language === 'zh') {
     return [
       '告诉我你的品牌名称和主要产品？',
+      '你的网站或产品链接是什么？如果还没有，可以简单描述一下你的产品。',
       '你目前的月收入是多少？如果不确定，大概范围也可以。',
+      '你现在使用哪些渠道进行增长？比如社交媒体、广告、SEO等。',
+      '哪个渠道效果最好？或者你还没有开始营销？',
       '你现在最大的增长挑战是什么？',
       '你理想的客户是谁？',
       '未来6个月，你最想实现什么目标？'
@@ -401,7 +450,10 @@ export function getInitialQuestions(language: 'en' | 'zh'): string[] {
   } else {
     return [
       'Tell me your brand name and what you sell?',
+      'What\'s your website or product URL? If you don\'t have one yet, just describe your product.',
       'What\'s your current monthly revenue? A rough estimate is fine if you\'re not sure.',
+      'Which channels are you currently using for growth? Like social media, ads, SEO, etc.',
+      'What\'s your best performing channel? Or haven\'t you started marketing yet?',
       'What\'s your biggest growth challenge right now?',
       'Who is your ideal customer?',
       'What\'s your main goal for the next 6 months?'
@@ -416,14 +468,20 @@ export function getSampleAnswers(language: 'en' | 'zh', questionIndex: number): 
   const samples = {
     en: [
       'Example: "My brand is called GreenGlow, we sell organic skincare products"',
+      'Example: "greenglow.com" or "We don\'t have a website yet, but we sell on Instagram"',
       'Example: "$5,000 per month" or "We haven\'t launched yet" or "I don\'t know exactly"',
+      'Example: "Instagram and Facebook ads" or "Just word of mouth" or "Haven\'t started yet"',
+      'Example: "Instagram gets us the most customers" or "We haven\'t tried marketing yet"',
       'Example: "Finding new customers" or "Our ads aren\'t converting well" or "I\'m not sure where to start"',
       'Example: "Women aged 25-40 who care about natural products" or "Small business owners"',
       'Example: "Reach $20K monthly revenue" or "Get 100 new customers" or "Just get started with marketing"'
     ],
     zh: [
       '例如："我的品牌叫绿光，我们销售有机护肤品"',
+      '例如："greenglow.com" 或 "我们还没有网站，但在Instagram上销售"',
       '例如："每月5000美元" 或 "我们还没推出" 或 "我不太确定"',
+      '例如："Instagram和Facebook广告" 或 "只靠口碑" 或 "还没开始"',
+      '例如："Instagram给我们带来最多客户" 或 "我们还没试过营销"',
       '例如："找到新客户" 或 "我们的广告转化不好" 或 "我不知道从哪开始"',
       '例如："25-40岁关注天然产品的女性" 或 "小企业主"',
       '例如："月收入达到2万美元" 或 "获得100个新客户" 或 "开始做营销"'

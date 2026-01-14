@@ -7,7 +7,7 @@ const state = {
   isListening: false,
   isSpeaking: false,
   currentQuestionIndex: 0,
-  totalQuestions: 5, // Reduced to 5 questions
+  totalQuestions: 8, // Expanded to 8 questions
   conversationHistory: [],
   currentTranscript: '',
   recognition: null,
@@ -15,7 +15,9 @@ const state = {
   realtimeSummary: null,
   userId: null,
   interviewId: null,
-  hasAnsweredTwoQuestions: false
+  hasAnsweredTwoQuestions: false,
+  websiteUrl: null, // Store website URL for research
+  brandName: null // Store brand name
 };
 
 // Translation Dictionary
@@ -39,7 +41,7 @@ const translations = {
     summarySubtitle: 'Building your growth strategy...',
     introPurposeTitle: 'Why We\'re Interviewing You',
     introGuidelinesTitle: 'Guidelines',
-    introQuestionCount: 'This will take about 3-5 minutes with 5 short questions.',
+    introQuestionCount: 'This will take about 5-7 minutes with 8 short questions.',
     introStartButton: 'Start Interview'
   },
   zh: {
@@ -61,7 +63,7 @@ const translations = {
     summarySubtitle: '正在构建您的增长策略...',
     introPurposeTitle: '为什么要访谈您',
     introGuidelinesTitle: '指南',
-    introQuestionCount: '大约需要3-5分钟，共5个简短问题。',
+    introQuestionCount: '大约需要5-7分钟，共8个简短问题。',
     introStartButton: '开始访谈'
   }
 };
@@ -363,8 +365,21 @@ async function processAnswer(answerText) {
       content: answerText,
       language: state.language,
       timestamp: new Date().toISOString(),
-      type: 'answer'
+      type: 'answer',
+      questionIndex: state.currentQuestionIndex
     });
+    
+    // Extract key information from answers
+    if (state.currentQuestionIndex === 0) {
+      // First question - extract brand name
+      state.brandName = answerText;
+    } else if (state.currentQuestionIndex === 1) {
+      // Second question - extract website URL
+      const urlMatch = answerText.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/);
+      if (urlMatch) {
+        state.websiteUrl = urlMatch[0].startsWith('http') ? urlMatch[0] : `https://${urlMatch[0]}`;
+      }
+    }
     
     // Quick acknowledgment (no API call, instant)
     const quickAcks = {
@@ -377,7 +392,7 @@ async function processAnswer(answerText) {
     await speakQuick(ack);
     
     // Update summary if 2+ questions answered
-    if (state.currentQuestionIndex >= 1 && !state.hasAnsweredTwoQuestions) {
+    if (state.currentQuestionIndex >= 2 && !state.hasAnsweredTwoQuestions) {
       state.hasAnsweredTwoQuestions = true;
       await updateRealtimeSummary();
     } else if (state.hasAnsweredTwoQuestions) {
@@ -425,7 +440,10 @@ async function updateRealtimeSummary() {
           language: state.language,
           previousMessages: state.conversationHistory,
           currentTopic: getTopicForQuestion(state.currentQuestionIndex),
-          userProfile: {}
+          userProfile: {
+            brandName: state.brandName,
+            websiteUrl: state.websiteUrl
+          }
         }
       })
     });
@@ -485,7 +503,7 @@ async function nextQuestion() {
 
 // Get Topic for Question
 function getTopicForQuestion(index) {
-  const topics = ['brand', 'revenue', 'challenges', 'customer', 'goals'];
+  const topics = ['brand', 'website', 'revenue', 'channels', 'best_channel', 'challenges', 'customer', 'goals'];
   return topics[index] || 'general';
 }
 
