@@ -1,9 +1,9 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/cloudflare-workers'
-import { 
-  transcribeAudio, 
-  analyzeInterview, 
+import {
+  transcribeAudio,
+  analyzeInterview,
   generateGrowthStrategy,
   DEFAULT_INTERVIEW_QUESTIONS,
   type InterviewResponse
@@ -35,6 +35,12 @@ import {
   type CompetitorInsight,
   type FullReport
 } from './services/report-generation'
+import {
+  getGoogleAuthUrl,
+  exchangeCodeForToken,
+  getGoogleUser,
+  generateSessionToken
+} from './services/google-oauth'
 import { REVISED_LANDING_HTML } from './revised-landing'
 
 const app = new Hono()
@@ -61,28 +67,119 @@ app.post('/api/register/brand', async (c) => {
   }
 })
 
-// Google OAuth callback simulation (placeholder - requires actual OAuth setup)
+// Google OAuth: Start authentication
+app.get('/auth/google', (c) => {
+  const clientId = c.env.GOOGLE_CLIENT_ID;
+  const redirectUri = c.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/callback';
+
+  if (!clientId) {
+    return c.text('Google OAuth not configured', 500);
+  }
+
+  const authUrl = getGoogleAuthUrl(clientId, redirectUri);
+  return c.redirect(authUrl);
+});
+
+// Google OAuth callback - Handle authentication
 app.get('/auth/google/callback', async (c) => {
-  // TODO: Implement actual Google OAuth flow
-  // For now, simulate successful authentication
-  const mockUser = {
-    id: 'user_' + Date.now(),
-    email: 'demo@example.com',
-    name: 'Demo User',
-    picture: 'https://via.placeholder.com/150',
-    created_at: new Date().toISOString()
-  };
-  
-  // In production, store user in database and create session
-  console.log('User authenticated:', mockUser);
-  
-  // Redirect to dashboard with user data (in production, use secure session)
-  return c.html(`
-    <script>
-      localStorage.setItem('nexspark_user', JSON.stringify(${JSON.stringify(mockUser)}));
-      window.location.href = '/dashboard';
-    </script>
-  `);
+  try {
+    const code = c.req.query('code');
+    const error = c.req.query('error');
+
+    if (error) {
+      console.error('OAuth error:', error);
+      return c.html(`
+        <script>
+          alert('Google sign-in failed: ${error}');
+          window.location.href = '/';
+        </script>
+      `);
+    }
+
+    if (!code) {
+      return c.html(`
+        <script>
+          alert('No authorization code received');
+          window.location.href = '/';
+        </script>
+      `);
+    }
+
+    const clientId = c.env.GOOGLE_CLIENT_ID;
+    const clientSecret = c.env.GOOGLE_CLIENT_SECRET;
+    const redirectUri = c.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/callback';
+
+    // Exchange code for tokens
+    const tokens = await exchangeCodeForToken(code, clientId, clientSecret, redirectUri);
+
+    // Get user info from Google
+    const googleUser = await getGoogleUser(tokens.access_token);
+
+    // Create user object
+    const user = {
+      id: 'user_' + googleUser.id,
+      email: googleUser.email,
+      name: googleUser.name,
+      picture: googleUser.picture,
+      email_verified: googleUser.email_verified,
+      created_at: new Date().toISOString()
+    };
+
+    // Generate session token
+    const sessionToken = await generateSessionToken(
+      user.id,
+      c.env.GOOGLE_CLIENT_SECRET || 'dev-secret'
+    );
+
+    console.log('✅ User authenticated:', user.email);
+
+    // Store user in database if available
+    if (c.env.DB) {
+      try {
+        const { generateId } = await import('./services/database');
+
+        // Check if user exists
+        const existingUser = await c.env.DB.prepare(`
+          SELECT id FROM users WHERE email = ?
+        `).bind(user.email).first();
+
+        if (!existingUser) {
+          // Create new user
+          await c.env.DB.prepare(`
+            INSERT INTO users (id, email, name, type, created_at)
+            VALUES (?, ?, ?, 'brand', CURRENT_TIMESTAMP)
+          `).bind(user.id, user.email, user.name).run();
+
+          console.log('✅ New user created in database:', user.email);
+        } else {
+          console.log('✅ Existing user logged in:', user.email);
+        }
+      } catch (dbError) {
+        console.error('Database error (non-fatal):', dbError);
+      }
+    }
+
+    // Redirect to dashboard with session
+    return c.html(`
+      <script>
+        // Store user and session token
+        localStorage.setItem('nexspark_user', JSON.stringify(${JSON.stringify(user)}));
+        localStorage.setItem('nexspark_session', '${sessionToken}');
+
+        console.log('✅ Google authentication successful');
+        window.location.href = '/dashboard';
+      </script>
+    `);
+
+  } catch (error: any) {
+    console.error('OAuth callback error:', error);
+    return c.html(`
+      <script>
+        alert('Authentication failed: ${error.message}');
+        window.location.href = '/';
+      </script>
+    `);
+  }
 })
 
 // Dashboard route - redirect to static file

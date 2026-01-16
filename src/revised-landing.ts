@@ -478,23 +478,18 @@ export const REVISED_LANDING_HTML = `
       });
     })();
     
-    // Create demo user and redirect to interview
+    // Start interview (requires Google sign-in)
     function startInterview() {
-      // Create demo user if not exists
-      if (!localStorage.getItem('nexspark_user')) {
-        const demoUser = {
-          id: 'demo_user_' + Date.now(),
-          email: 'demo@nexspark.ai',
-          name: 'Demo User',
-          picture: 'https://via.placeholder.com/150',
-          created_at: new Date().toISOString()
-        };
-        localStorage.setItem('nexspark_user', JSON.stringify(demoUser));
-        console.log('✅ Demo user created:', demoUser.id);
+      // Check if user is already logged in
+      const existingUser = localStorage.getItem('nexspark_user');
+
+      if (existingUser) {
+        // User already authenticated, go to interview
+        window.location.href = '/interview';
+      } else {
+        // Redirect to Google OAuth
+        window.location.href = '/auth/google';
       }
-      
-      // Redirect to interview
-      window.location.href = '/interview';
     }
     
     // Update all GET STARTED buttons to use the function

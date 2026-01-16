@@ -14,9 +14,9 @@ module.exports = {
         RAPIDAPI_HOST: 'rapidapi.com',
         STRIPE_SECRET_KEY: 'sk_test_your_stripe_secret_key_here',
         STRIPE_PUBLISHABLE_KEY: 'pk_test_your_stripe_publishable_key_here',
-        GOOGLE_CLIENT_ID: 'your-google-client-id',
-        GOOGLE_CLIENT_SECRET: 'your-google-client-secret',
-        GOOGLE_REDIRECT_URI: 'https://your-domain.pages.dev/auth/google/callback',
+        GOOGLE_CLIENT_ID: 'REDACTED_GOOGLE_CLIENT_ID',
+        GOOGLE_CLIENT_SECRET: 'REDACTED_GOOGLE_CLIENT_SECRET',
+        GOOGLE_REDIRECT_URI: 'http://localhost:3000/auth/google/callback',
         ENVIRONMENT: 'development'
       },
       watch: false,

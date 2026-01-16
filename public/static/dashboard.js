@@ -587,7 +587,10 @@ function proceedToAnalysis() {
 function logout() {
   if (confirm('Are you sure you want to logout?')) {
     localStorage.removeItem('nexspark_user');
+    localStorage.removeItem('nexspark_session');
     localStorage.removeItem('nexspark_interview');
+    localStorage.removeItem('nexspark_interview_progress');
+    console.log('✅ User logged out');
     window.location.href = '/';
   }
 }
