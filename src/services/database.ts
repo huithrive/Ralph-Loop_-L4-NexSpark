@@ -217,9 +217,9 @@ export async function getInterview(db: D1Database, interviewId: string) {
 export async function saveAnalysis(db: D1Database, interviewId: string, analysis: any) {
   try {
     const analysisId = generateId('ana_');
-    
+
     await db.prepare(`
-      INSERT INTO interview_analysis 
+      INSERT INTO interview_analysis
       (id, interview_id, brand_profile, recommendations, next_steps, full_analysis)
       VALUES (?, ?, ?, ?, ?, ?)
     `).bind(
@@ -230,10 +230,76 @@ export async function saveAnalysis(db: D1Database, interviewId: string, analysis
       JSON.stringify(analysis.nextSteps || []),
       analysis.fullAnalysis || ''
     ).run();
-    
+
     return { success: true, analysisId };
   } catch (error) {
     console.error('Error saving analysis:', error);
     throw error;
+  }
+}
+
+// ==============================================
+// AUTHENTICATION HELPER FUNCTIONS
+// ==============================================
+
+/**
+ * Get user by email (for account linking)
+ */
+export async function getUserByEmail(db: D1Database, email: string) {
+  try {
+    return await db.prepare(`
+      SELECT * FROM users WHERE email = ?
+    `).bind(email).first();
+  } catch (error) {
+    console.error('Error getting user by email:', error);
+    return null;
+  }
+}
+
+/**
+ * Get all authentication methods for a user
+ */
+export async function getUserAuthProviders(db: D1Database, userId: string) {
+  try {
+    const results = await db.prepare(`
+      SELECT
+        id,
+        provider,
+        email,
+        provider_user_id,
+        is_primary,
+        verified,
+        last_used_at,
+        created_at
+      FROM auth_providers
+      WHERE user_id = ?
+      ORDER BY is_primary DESC, created_at ASC
+    `).bind(userId).all();
+
+    return results.results || [];
+  } catch (error) {
+    console.error('Error getting user auth providers:', error);
+    return [];
+  }
+}
+
+/**
+ * Check if user can unlink an auth method
+ * Users must have at least one auth method
+ */
+export async function canUnlinkAuthMethod(
+  db: D1Database,
+  userId: string,
+  authProviderId: string
+): Promise<boolean> {
+  try {
+    const count = await db.prepare(`
+      SELECT COUNT(*) as count FROM auth_providers WHERE user_id = ?
+    `).bind(userId).first();
+
+    return (count?.count || 0) > 1; // Must keep at least one auth method
+  } catch (error) {
+    console.error('Error checking if can unlink:', error);
+    return false;
   }
 }

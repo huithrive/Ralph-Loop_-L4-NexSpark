@@ -478,17 +478,17 @@ export const REVISED_LANDING_HTML = `
       });
     })();
     
-    // Start interview (requires Google sign-in)
+    // Start interview (requires login)
     function startInterview() {
       // Check if user is already logged in
       const existingUser = localStorage.getItem('nexspark_user');
 
       if (existingUser) {
-        // User already authenticated, go to interview
-        window.location.href = '/interview';
+        // User already authenticated, go to dashboard
+        window.location.href = '/dashboard';
       } else {
-        // Redirect to Google OAuth
-        window.location.href = '/auth/google';
+        // Redirect to login page
+        window.location.href = '/static/login.html';
       }
     }
     

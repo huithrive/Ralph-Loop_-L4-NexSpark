@@ -1,14 +1,43 @@
 -- Initial schema for NexSpark interview system
--- Creates tables for interviews and responses with version tracking
+-- Creates tables for users, authentication, interviews and responses
 
--- Users table (basic info)
+-- Users table (identity)
 CREATE TABLE IF NOT EXISTS users (
-  id TEXT PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
+  id TEXT PRIMARY KEY,                    -- Format: usr_<random>
+  email TEXT UNIQUE NOT NULL,             -- Primary email for account linking
   name TEXT NOT NULL,
-  type TEXT NOT NULL, -- 'brand' or 'agency'
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  picture TEXT,                           -- Profile picture URL
+  type TEXT NOT NULL DEFAULT 'brand',     -- 'brand' or 'agency'
+  email_verified BOOLEAN DEFAULT 0,       -- Email verification status
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Authentication providers table (supports multiple auth methods per user)
+CREATE TABLE IF NOT EXISTS auth_providers (
+  id TEXT PRIMARY KEY,                    -- Format: auth_<random>
+  user_id TEXT NOT NULL,                  -- Links to users.id
+  provider TEXT NOT NULL,                 -- 'google' | 'email' | 'apple' | 'microsoft'
+  provider_user_id TEXT,                  -- Google ID, Apple ID, etc. (NULL for email)
+  password_hash TEXT,                     -- Only for email/password auth (PBKDF2)
+  email TEXT NOT NULL,                    -- Email for this auth method
+  is_primary BOOLEAN DEFAULT 0,           -- Primary auth method flag
+  verified BOOLEAN DEFAULT 0,             -- Auth method verified
+  last_used_at DATETIME,                  -- Track last login with this method
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+
+  -- Prevent duplicate auth methods
+  UNIQUE(provider, provider_user_id),
+  UNIQUE(provider, email)
+);
+
+CREATE INDEX IF NOT EXISTS idx_auth_providers_user ON auth_providers(user_id);
+CREATE INDEX IF NOT EXISTS idx_auth_providers_provider ON auth_providers(provider);
+CREATE INDEX IF NOT EXISTS idx_auth_providers_email ON auth_providers(email);
+CREATE INDEX IF NOT EXISTS idx_auth_providers_provider_user ON auth_providers(provider, provider_user_id);
 
 -- Interviews table (one record per interview session)
 CREATE TABLE IF NOT EXISTS interviews (
@@ -54,9 +83,9 @@ CREATE INDEX IF NOT EXISTS idx_interviews_user_completed ON interviews(user_id, 
 CREATE INDEX IF NOT EXISTS idx_responses_interview ON interview_responses(interview_id, question_number);
 CREATE INDEX IF NOT EXISTS idx_analysis_interview ON interview_analysis(interview_id);
 
--- View for interview history (with response count)
+-- View for interview history (with response count and analysis status)
 CREATE VIEW IF NOT EXISTS interview_history AS
-SELECT 
+SELECT
   i.id,
   i.user_id,
   i.version,
@@ -67,12 +96,12 @@ SELECT
   i.updated_at,
   i.completed_at,
   COUNT(DISTINCT r.id) as response_count,
-  CASE 
-    WHEN ia.id IS NOT NULL THEN 1 
-    ELSE 0 
+  CASE
+    WHEN ia.id IS NOT NULL THEN 1
+    ELSE 0
   END as has_analysis
 FROM interviews i
 LEFT JOIN interview_responses r ON i.id = r.interview_id
 LEFT JOIN interview_analysis ia ON i.id = ia.interview_id
-GROUP BY i.id, i.user_id, i.version, i.current_question, i.total_questions, 
+GROUP BY i.id, i.user_id, i.version, i.current_question, i.total_questions,
          i.completed, i.created_at, i.updated_at, i.completed_at, ia.id;

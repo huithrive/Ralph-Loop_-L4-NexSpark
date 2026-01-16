@@ -39,8 +39,13 @@ import {
   getGoogleAuthUrl,
   exchangeCodeForToken,
   getGoogleUser,
-  generateSessionToken
+  generateSessionToken,
+  verifySessionToken
 } from './services/google-oauth'
+import {
+  registerEmailPassword,
+  authenticateEmailPassword
+} from './services/auth'
 import { REVISED_LANDING_HTML } from './revised-landing'
 
 const app = new Hono()
@@ -115,49 +120,68 @@ app.get('/auth/google/callback', async (c) => {
     // Get user info from Google
     const googleUser = await getGoogleUser(tokens.access_token);
 
-    // Create user object
+    console.log('✅ Google user authenticated:', googleUser.email);
+
+    // Handle user creation/linking
+    if (c.env.DB) {
+      const { findOrCreateUser, linkGoogleAuth } = await import('./services/auth');
+
+      // Find or create user by email (enables account linking)
+      const userId = await findOrCreateUser(c.env.DB, googleUser.email, googleUser.name);
+
+      // Check auth provider count to determine if primary
+      const authCount = await c.env.DB.prepare(`
+        SELECT COUNT(*) as count FROM auth_providers WHERE user_id = ?
+      `).bind(userId).first();
+
+      const isPrimary = (authCount?.count || 0) === 0;
+
+      // Link Google OAuth to user account
+      await linkGoogleAuth(c.env.DB, userId, googleUser.id, googleUser.email, isPrimary);
+
+      // Update user profile with Google data
+      await c.env.DB.prepare(`
+        UPDATE users
+        SET picture = ?, email_verified = ?, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `).bind(googleUser.picture, googleUser.email_verified ? 1 : 0, userId).run();
+
+      // Generate JWT session token
+      const sessionToken = await generateSessionToken(
+        userId,
+        c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret'
+      );
+
+      // Redirect to dashboard with session
+      return c.html(`
+        <script>
+          localStorage.setItem('nexspark_user', JSON.stringify({
+            id: '${userId}',
+            email: '${googleUser.email}',
+            name: '${googleUser.name}',
+            picture: '${googleUser.picture}',
+            email_verified: ${googleUser.email_verified}
+          }));
+          localStorage.setItem('nexspark_session', '${sessionToken}');
+          console.log('✅ Google authentication successful');
+          window.location.href = '/dashboard';
+        </script>
+      `);
+    }
+
+    // Fallback: localStorage mode (no database)
     const user = {
       id: 'user_' + googleUser.id,
       email: googleUser.email,
       name: googleUser.name,
       picture: googleUser.picture,
-      email_verified: googleUser.email_verified,
-      created_at: new Date().toISOString()
+      email_verified: googleUser.email_verified
     };
 
-    // Generate session token
     const sessionToken = await generateSessionToken(
       user.id,
-      c.env.GOOGLE_CLIENT_SECRET || 'dev-secret'
+      c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret'
     );
-
-    console.log('✅ User authenticated:', user.email);
-
-    // Store user in database if available
-    if (c.env.DB) {
-      try {
-        const { generateId } = await import('./services/database');
-
-        // Check if user exists
-        const existingUser = await c.env.DB.prepare(`
-          SELECT id FROM users WHERE email = ?
-        `).bind(user.email).first();
-
-        if (!existingUser) {
-          // Create new user
-          await c.env.DB.prepare(`
-            INSERT INTO users (id, email, name, type, created_at)
-            VALUES (?, ?, ?, 'brand', CURRENT_TIMESTAMP)
-          `).bind(user.id, user.email, user.name).run();
-
-          console.log('✅ New user created in database:', user.email);
-        } else {
-          console.log('✅ Existing user logged in:', user.email);
-        }
-      } catch (dbError) {
-        console.error('Database error (non-fatal):', dbError);
-      }
-    }
 
     // Redirect to dashboard with session
     return c.html(`
@@ -181,6 +205,132 @@ app.get('/auth/google/callback', async (c) => {
     `);
   }
 })
+
+// ==============================================
+// EMAIL/PASSWORD AUTHENTICATION ENDPOINTS
+// ==============================================
+
+// Rate limiting for login attempts (in-memory, 5 attempts per 15 min)
+const loginAttempts = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(email: string): boolean {
+  const key = `login:${email}`;
+  const now = Date.now();
+  const attempt = loginAttempts.get(key);
+
+  if (attempt) {
+    if (now > attempt.resetAt) {
+      loginAttempts.delete(key);
+      return true;
+    }
+
+    if (attempt.count >= 5) {
+      return false; // Rate limited
+    }
+
+    attempt.count++;
+    return true;
+  }
+
+  loginAttempts.set(key, { count: 1, resetAt: now + 900000 }); // 15 minutes
+  return true;
+}
+
+// Email/Password Registration
+app.post('/api/auth/register', async (c) => {
+  try {
+    const { email, password, name, type } = await c.req.json();
+
+    if (!email || !password || !name) {
+      return c.json({ success: false, message: 'Email, password, and name are required' }, 400);
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return c.json({ success: false, message: 'Invalid email format' }, 400);
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      return c.json({ success: false, message: 'Password must be at least 8 characters' }, 400);
+    }
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    const jwtSecret = c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret';
+    const result = await registerEmailPassword(c.env.DB, email, password, name, jwtSecret, type || 'brand');
+
+    if (!result.success) {
+      return c.json({ success: false, message: result.error }, 400);
+    }
+
+    console.log('✅ User registered:', email, result.isAccountLink ? '(linked to existing account)' : '(new account)');
+
+    return c.json({
+      success: true,
+      user: result.user,
+      sessionToken: result.sessionToken,
+      message: result.isAccountLink ? 'Account linked successfully!' : 'Registration successful!'
+    });
+
+  } catch (error: any) {
+    console.error('Registration error:', error);
+    return c.json({ success: false, message: 'Registration failed: ' + error.message }, 500);
+  }
+});
+
+// Email/Password Login
+app.post('/api/auth/login', async (c) => {
+  try {
+    const { email, password } = await c.req.json();
+
+    if (!email || !password) {
+      return c.json({ success: false, message: 'Email and password are required' }, 400);
+    }
+
+    // Rate limiting
+    if (!checkRateLimit(email)) {
+      return c.json({
+        success: false,
+        message: 'Too many login attempts. Please try again in 15 minutes.'
+      }, 429);
+    }
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    const jwtSecret = c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret';
+    const result = await authenticateEmailPassword(c.env.DB, email, password, jwtSecret);
+
+    if (!result.success) {
+      return c.json({ success: false, message: result.error }, 401);
+    }
+
+    console.log('✅ User logged in:', email);
+
+    return c.json({
+      success: true,
+      user: result.user,
+      sessionToken: result.sessionToken
+    });
+
+  } catch (error: any) {
+    console.error('Login error:', error);
+    return c.json({ success: false, message: 'Login failed' }, 500);
+  }
+});
+
+// Logout (client-side only with JWT)
+app.post('/api/auth/logout', async (c) => {
+  // With JWT, we can't revoke tokens server-side
+  // Frontend will clear localStorage
+  // Token expires naturally after 7 days
+  return c.json({ success: true, message: 'Logged out successfully' });
+});
 
 // Dashboard route - redirect to static file
 app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
