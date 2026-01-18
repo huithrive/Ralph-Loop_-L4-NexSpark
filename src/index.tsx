@@ -170,8 +170,11 @@ app.get('/auth/google/callback', async (c) => {
     }
 
     // Fallback: localStorage mode (no database)
+    console.error('⚠️ Database not configured - using localStorage fallback mode for OAuth');
+    console.error('⚠️ User data will only persist in browser localStorage');
+
     const user = {
-      id: 'user_' + googleUser.id,
+      id: 'usr_' + googleUser.id,  // Fixed: Use usr_ format
       email: googleUser.email,
       name: googleUser.name,
       picture: googleUser.picture,
@@ -367,7 +370,8 @@ app.get('/api/interview/check', async (c) => {
     
     // Check if DB binding exists
     if (!c.env.DB) {
-      console.log('D1 database not configured, using localStorage fallback');
+      console.warn('⚠️ D1 database not configured - using localStorage fallback mode');
+      console.warn('⚠️ Interview data will only be available in browser localStorage');
       return c.json({ exists: false });
     }
     
@@ -384,27 +388,42 @@ app.get('/api/interview/check', async (c) => {
   }
 })
 
-// API: Get interview history
+// API: Get interview history with pagination
 app.get('/api/interview/history', async (c) => {
   try {
     const userId = c.req.query('userId');
-    
+    const limit = parseInt(c.req.query('limit') || '10');
+    const offset = parseInt(c.req.query('offset') || '0');
+
     if (!userId) {
       return c.json({ success: false, message: 'User ID required' }, 400);
     }
-    
+
+    // Validate and sanitize pagination params
+    const safeLimit = Math.min(Math.max(limit, 1), 50); // Between 1 and 50
+    const safeOffset = Math.max(offset, 0); // Non-negative
+
     // Check if DB binding exists
     if (!c.env.DB) {
-      console.log('D1 database not configured');
-      return c.json({ success: true, interviews: [] });
+      console.warn('⚠️ D1 database not configured for interview history');
+      console.warn('⚠️ Returning empty history - interviews only in localStorage');
+      return c.json({
+        success: true,
+        interviews: [],
+        total: 0,
+        page: 0,
+        pageSize: safeLimit,
+        hasMore: false,
+        hasPrevious: false
+      });
     }
-    
+
     const { getInterviewHistory } = await import('./services/database');
-    const interviews = await getInterviewHistory(c.env.DB, userId);
-    
+    const result = await getInterviewHistory(c.env.DB, userId, safeLimit, safeOffset);
+
     return c.json({
       success: true,
-      interviews: interviews
+      ...result
     });
   } catch (error) {
     console.error('Error getting history:', error);
@@ -438,6 +457,31 @@ app.get('/api/interview/:id', async (c) => {
   }
 })
 
+// API: Delete interview
+app.delete('/api/interview/:id', async (c) => {
+  try {
+    const interviewId = c.req.param('id');
+
+    if (!c.env.DB) {
+      console.error('⚠️ Database not configured - cannot delete interview');
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    const { deleteInterview } = await import('./services/database');
+    await deleteInterview(c.env.DB, interviewId);
+
+    console.log('✅ Interview deleted:', interviewId);
+
+    return c.json({
+      success: true,
+      message: 'Interview deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting interview:', error);
+    return c.json({ success: false, message: 'Failed to delete interview' }, 500);
+  }
+})
+
 // API: Complete interview
 app.post('/api/interview/complete', async (c) => {
   try {
@@ -449,7 +493,7 @@ app.post('/api/interview/complete', async (c) => {
     // If DB exists, use it
     if (c.env.DB && interviewId) {
       const { completeInterview, saveInterview } = await import('./services/database');
-      
+
       // Save final responses
       await saveInterview(c.env.DB, {
         userId,
@@ -458,18 +502,20 @@ app.post('/api/interview/complete', async (c) => {
         responses,
         completed: true
       });
-      
+
       // Mark as completed
       await completeInterview(c.env.DB, interviewId);
-      
+
       return c.json({
         success: true,
         message: 'Interview completed successfully',
         interviewId
       });
     }
-    
+
     // Fallback: just acknowledge
+    console.warn('⚠️ D1 database not configured - interview completion saved to localStorage only');
+    console.warn(`⚠️ Interview ${interviewId} for user ${userId} will not persist in database`);
     return c.json({
       success: true,
       message: 'Interview completed (localStorage mode)',
@@ -491,17 +537,19 @@ app.post('/api/interview/save', async (c) => {
     if (c.env.DB) {
       const { saveInterview } = await import('./services/database');
       const result = await saveInterview(c.env.DB, data);
-      
+
       return c.json({
         success: true,
         message: 'Interview saved to database',
         interviewId: result.interviewId
       });
     }
-    
+
     // Fallback: just acknowledge (localStorage will handle it)
-    return c.json({ 
-      success: true, 
+    console.warn('⚠️ D1 database not configured - interview saved to localStorage only');
+    console.warn(`⚠️ Interview for user ${data.userId} will not persist across devices`);
+    return c.json({
+      success: true,
       message: 'Interview saved (localStorage mode)',
       interviewId: data.interviewId || 'local_' + Date.now()
     })
@@ -1091,10 +1139,11 @@ app.post('/api/analysis/start', async (c) => {
       }
 
       // Prepare transcript from database
+      // responses is already an array from getInterview(), no need to parse
       transcript = {
         userId: interview.user_id,
         interviewId: interview.id,
-        responses: JSON.parse(interview.responses),
+        responses: interview.responses, // Already an array
         completedAt: interview.updated_at
       };
     } else {

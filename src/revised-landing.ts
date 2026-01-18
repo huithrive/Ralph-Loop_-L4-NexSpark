@@ -503,6 +503,9 @@ export const REVISED_LANDING_HTML = `
       });
     });
     </script>
+
+    <script src="/static/modal-utils.js"></script>
+    <script src="/static/app.js"></script>
 </body>
 </html>
 `;

@@ -105,7 +105,19 @@ export async function saveInterview(db: D1Database, data: any) {
     if (responses && responses.length > 0) {
       for (const response of responses) {
         const responseId = generateId('resp_');
-        const questionNumber = parseInt(response.questionId.replace('q', ''));
+
+        // Handle questionId if present, otherwise derive from question_number or index
+        let questionNumber: number;
+        if (response.questionId) {
+          questionNumber = parseInt(response.questionId.replace('q', ''));
+        } else if (response.question_number) {
+          questionNumber = response.question_number;
+        } else {
+          // Fallback: use index
+          questionNumber = responses.indexOf(response) + 1;
+        }
+
+        const questionId = response.questionId || `q${questionNumber}`;
         
         // Check if response already exists
         const existing = await db.prepare(`
@@ -123,13 +135,13 @@ export async function saveInterview(db: D1Database, data: any) {
         } else {
           // Insert new response
           await db.prepare(`
-            INSERT INTO interview_responses 
+            INSERT INTO interview_responses
             (id, interview_id, question_id, question_number, question, answer)
             VALUES (?, ?, ?, ?, ?, ?)
           `).bind(
             responseId,
             finalInterviewId,
-            response.questionId,
+            questionId,
             questionNumber,
             response.question,
             response.answer
@@ -163,19 +175,47 @@ export async function completeInterview(db: D1Database, interviewId: string) {
   }
 }
 
-// Get interview history for user
-export async function getInterviewHistory(db: D1Database, userId: string) {
+// Get interview history for user with pagination
+export async function getInterviewHistory(
+  db: D1Database,
+  userId: string,
+  limit: number = 10,
+  offset: number = 0
+) {
   try {
+    // Get paginated interviews
     const interviews = await db.prepare(`
-      SELECT * FROM interview_history 
-      WHERE user_id = ? 
+      SELECT * FROM interview_history
+      WHERE user_id = ?
       ORDER BY created_at DESC
-    `).bind(userId).all();
-    
-    return interviews.results || [];
+      LIMIT ? OFFSET ?
+    `).bind(userId, limit, offset).all();
+
+    // Get total count for pagination
+    const total = await db.prepare(`
+      SELECT COUNT(*) as count FROM interviews WHERE user_id = ?
+    `).bind(userId).first();
+
+    const totalCount = total?.count || 0;
+
+    return {
+      interviews: interviews.results || [],
+      total: totalCount,
+      page: Math.floor(offset / limit),
+      pageSize: limit,
+      hasMore: (offset + limit) < totalCount,
+      hasPrevious: offset > 0
+    };
   } catch (error) {
     console.error('Error getting interview history:', error);
-    return [];
+    return {
+      interviews: [],
+      total: 0,
+      page: 0,
+      pageSize: limit,
+      hasMore: false,
+      hasPrevious: false
+    };
   }
 }
 
@@ -301,5 +341,23 @@ export async function canUnlinkAuthMethod(
   } catch (error) {
     console.error('Error checking if can unlink:', error);
     return false;
+  }
+}
+
+/**
+ * Delete an interview and all related data
+ */
+export async function deleteInterview(db: D1Database, interviewId: string) {
+  try {
+    // Delete interview (CASCADE will delete responses and analysis)
+    await db.prepare(`
+      DELETE FROM interviews WHERE id = ?
+    `).bind(interviewId).run();
+
+    console.log('Interview deleted:', interviewId);
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting interview:', error);
+    throw error;
   }
 }

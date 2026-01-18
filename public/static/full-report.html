@@ -107,7 +107,17 @@
         console.log('User:', user);
         console.log('Summary:', summary);
         console.log('Payment:', payment);
-        
+
+        // Verify summary exists
+        if (!summary || Object.keys(summary).length === 0) {
+            console.error('❌ No summary data found!');
+            showError('Interview analysis data missing. Please complete the strategy analysis first.');
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 3000);
+            return;
+        }
+
         // Verify payment
         if (!payment.paid) {
             console.error('❌ No payment found!');

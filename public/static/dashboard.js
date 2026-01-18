@@ -1,3 +1,12 @@
+// Pagination state
+const paginationState = {
+  currentPage: 0,
+  pageSize: 10,
+  total: 0,
+  hasMore: false,
+  hasPrevious: false
+};
+
 // Initialize background animation
 (() => {
   const canvas = document.getElementById('bgCanvas');
@@ -137,16 +146,29 @@ function loadUserData() {
 }
 
 // Load interview history from database
-async function loadInterviewHistory() {
+async function loadInterviewHistory(page = 0) {
   try {
     const user = checkAuth();
     if (!user) return;
-    
-    const response = await fetch(`/api/interview/history?userId=${encodeURIComponent(user.email)}`);
+
+    const offset = page * paginationState.pageSize;
+    const response = await fetch(
+      `/api/interview/history?userId=${encodeURIComponent(user.id)}&limit=${paginationState.pageSize}&offset=${offset}`
+    );
     const data = await response.json();
-    
-    if (data.success && data.interviews) {
-      displayInterviewHistory(data.interviews);
+
+    if (data.success) {
+      // Update pagination state
+      paginationState.currentPage = page;
+      paginationState.total = data.total || 0;
+      paginationState.hasMore = data.hasMore || false;
+      paginationState.hasPrevious = data.hasPrevious || false;
+
+      // Display interviews
+      displayInterviewHistory(data.interviews || []);
+
+      // Display pagination controls
+      displayPagination();
     }
   } catch (error) {
     console.error('Failed to load interview history:', error);
@@ -210,21 +232,26 @@ function displayInterviewHistory(interviews) {
         </div>
         
         <div class="flex gap-2">
-          <button onclick="viewInterview('${interview.id}')" 
+          <button onclick="viewInterview('${interview.id}')"
                   class="lcars-btn bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs flex-1">
             <i class="fas fa-eye mr-1"></i> VIEW
           </button>
           ${interview.completed ? `
-            <button onclick="analyzeInterview('${interview.id}')" 
+            <button onclick="analyzeInterview('${interview.id}')"
                     class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
               <i class="fas fa-rocket mr-1"></i> ANALYZE
             </button>
           ` : `
-            <button onclick="continueInterview('${interview.id}')" 
+            <button onclick="continueInterview('${interview.id}')"
                     class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
               <i class="fas fa-play mr-1"></i> CONTINUE
             </button>
           `}
+          <button onclick="deleteInterview('${interview.id}')"
+                  class="bg-transparent border border-white/20 hover:border-red-500 hover:bg-red-500/10 text-white/40 hover:text-red-400 px-3 py-2 rounded text-xs transition-all"
+                  title="Delete interview">
+            <i class="fas fa-trash-alt"></i>
+          </button>
         </div>
       </div>
     `;
@@ -242,14 +269,146 @@ async function viewInterview(interviewId) {
     }
   } catch (error) {
     console.error('Failed to load interview:', error);
-    alert('Failed to load interview details');
+    showError('Failed to load interview details');
   }
+}
+
+// Display pagination controls
+function displayPagination() {
+  const container = document.getElementById('paginationControls');
+  if (!container) return;
+
+  // Hide pagination if single page
+  if (paginationState.total <= paginationState.pageSize) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const totalPages = Math.ceil(paginationState.total / paginationState.pageSize);
+  const currentPage = paginationState.currentPage;
+
+  container.innerHTML = `
+    <div class="flex items-center justify-between mt-6 px-4 py-4 bg-nexspark-panel border border-nexspark-gold/30 rounded-lg">
+      <button
+        onclick="loadInterviewHistory(${currentPage - 1})"
+        ${!paginationState.hasPrevious ? 'disabled' : ''}
+        class="lcars-btn bg-nexspark-blue text-black px-6 py-2 rounded-lg transition-all ${!paginationState.hasPrevious ? 'opacity-30 cursor-not-allowed' : 'hover:bg-nexspark-pale'}"
+      >
+        <i class="fas fa-arrow-left mr-2"></i>PREVIOUS
+      </button>
+
+      <div class="text-white font-mono text-sm">
+        Page <span class="text-nexspark-gold font-bold">${currentPage + 1}</span> of <span class="text-nexspark-gold font-bold">${totalPages}</span>
+        <span class="text-white/50 ml-2">(${paginationState.total} total)</span>
+      </div>
+
+      <button
+        onclick="loadInterviewHistory(${currentPage + 1})"
+        ${!paginationState.hasMore ? 'disabled' : ''}
+        class="lcars-btn bg-nexspark-gold text-black px-6 py-2 rounded-lg transition-all ${!paginationState.hasMore ? 'opacity-30 cursor-not-allowed' : 'hover:bg-nexspark-pale'}"
+      >
+        NEXT<i class="fas fa-arrow-right ml-2"></i>
+      </button>
+    </div>
+  `;
 }
 
 // Continue an incomplete interview
 function continueInterview(interviewId) {
   localStorage.setItem('nexspark_continue_interview', interviewId);
   window.location.href = '/interview';
+}
+
+// Show custom confirmation modal
+function showConfirmModal(message, onConfirm) {
+  // Create modal overlay
+  const modal = document.createElement('div');
+  modal.id = 'confirmModal';
+  modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm';
+  modal.style.animation = 'fadeIn 0.2s ease-out';
+
+  modal.innerHTML = `
+    <div class="bg-nexspark-panel border-4 border-nexspark-red rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-nexspark-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-exclamation-triangle text-nexspark-red text-3xl"></i>
+        </div>
+        <h2 class="text-2xl font-header font-bold text-white uppercase mb-3">
+          Confirm Deletion
+        </h2>
+        <p class="text-white/80 font-mono text-sm leading-relaxed">
+          ${message}
+        </p>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="document.getElementById('confirmModal').remove()"
+                class="flex-1 py-3 bg-nexspark-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
+          <i class="fas fa-times mr-2"></i>CANCEL
+        </button>
+        <button id="confirmButton"
+                class="flex-1 py-3 bg-nexspark-red hover:bg-red-600 text-white font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
+          <i class="fas fa-trash-alt mr-2"></i>DELETE
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Add fadeIn animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  document.body.appendChild(modal);
+
+  // Attach confirm handler
+  document.getElementById('confirmButton').onclick = () => {
+    modal.remove();
+    onConfirm();
+  };
+
+  // Close on overlay click
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  };
+}
+
+// Delete an interview
+async function deleteInterview(interviewId) {
+  showConfirmModal(
+    'Are you sure you want to delete this interview? All responses and analysis will be permanently removed.',
+    async () => {
+      try {
+        const response = await fetch(`/api/interview/${interviewId}`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          console.log('✅ Interview deleted:', interviewId);
+          // Reload interview history
+          loadInterviewHistory(paginationState.currentPage);
+        } else {
+          showError('Failed to delete interview: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error deleting interview:', error);
+        showError('Failed to delete interview. Please try again.');
+      }
+    }
+  );
 }
 
 // Analyze a completed interview
@@ -276,7 +435,7 @@ async function analyzeInterview(interviewId) {
       const detectedCompany = companyMatch ? companyMatch[1].trim() : '';
       
       if (!detectedWebsite) {
-        alert('No website URL found in interview. Please complete a new interview with your website.');
+        showError('No website URL found in interview. Please complete a new interview with your website.');
         return;
       }
       
@@ -297,7 +456,7 @@ async function analyzeInterview(interviewId) {
     }
   } catch (error) {
     console.error('Failed to load interview:', error);
-    alert('Failed to load interview. Please try again.');
+    showError('Failed to load interview. Please try again.');
   }
 }
 
@@ -520,18 +679,26 @@ ${interview.strategy}
     document.body.appendChild(modal);
   } catch (e) {
     console.error('Failed to load strategy:', e);
-    alert('Failed to load growth strategy');
+    showError('Failed to load growth strategy');
   }
 }
 
 // Download strategy as PDF (placeholder)
 function downloadStrategy() {
-  alert('PDF download feature coming soon! For now, you can copy the text or take a screenshot.');
+  showAlert('PDF download feature coming soon! For now, you can copy the text or take a screenshot.', {
+    title: 'Coming Soon',
+    icon: 'fa-file-pdf',
+    iconColor: 'nexspark-blue'
+  });
 }
 
 // Schedule call (placeholder)
 function scheduleCall() {
-  alert('Scheduling feature coming soon! Please email founders@nexspark.io to schedule a call.');
+  showAlert('Scheduling feature coming soon! Please email founders@nexspark.io to schedule a call.', {
+    title: 'Coming Soon',
+    icon: 'fa-calendar',
+    iconColor: 'nexspark-blue'
+  });
 }
 
 // Start interview
@@ -547,7 +714,7 @@ function startInterview() {
 function proceedToAnalysis() {
   const interviewData = localStorage.getItem('nexspark_interview');
   if (!interviewData) {
-    alert('No interview data found. Please complete an interview first.');
+    showError('No interview data found. Please complete an interview first.');
     return;
   }
   
@@ -565,7 +732,7 @@ function proceedToAnalysis() {
       const detectedCompany = companyMatch ? companyMatch[1].trim() : '';
       
       if (!detectedWebsite) {
-        alert('Please provide your website URL in the interview to continue with analysis.');
+        showError('Please provide your website URL in the interview to continue with analysis.');
         return;
       }
       
@@ -579,7 +746,7 @@ function proceedToAnalysis() {
     window.location.href = '/strategy-analysis';
   } catch (e) {
     console.error('Failed to parse interview data:', e);
-    alert('Failed to load interview data. Please try again.');
+    showError('Failed to load interview data. Please try again.');
   }
 }
 
@@ -675,7 +842,7 @@ function loadReports() {
 function viewReportInline() {
   const summaryData = localStorage.getItem('nexspark_summary');
   if (!summaryData) {
-    alert('No report data found');
+    showError('No report data found');
     return;
   }
   
@@ -684,7 +851,7 @@ function viewReportInline() {
     showReportModal(summary);
   } catch (e) {
     console.error('Failed to load report:', e);
-    alert('Failed to load report');
+    showError('Failed to load report');
   }
 }
 
@@ -873,7 +1040,7 @@ async function downloadReportPDF() {
   const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
   
   if (!summaryData) {
-    alert('No report data found');
+    showError('No report data found');
     return;
   }
   
@@ -921,7 +1088,7 @@ async function downloadReportPDF() {
     
     // Fallback to simple report if API fails
     if (e.message.includes('timeout') || e.message.includes('network')) {
-      alert('Report generation is taking longer than expected. Using simplified version...');
+      showWarning('Report generation is taking longer than expected. Using simplified version...');
       const summary = JSON.parse(summaryData);
       const brandName = summary.brandName || summary.companyName || 'Company';
       const reportContent = generateReportHTML(summary);
@@ -936,7 +1103,7 @@ async function downloadReportPDF() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } else {
-      alert('Failed to download report. Please try again.');
+      showError('Failed to download report. Please try again.');
     }
   }
 }

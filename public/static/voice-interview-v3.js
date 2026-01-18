@@ -101,7 +101,7 @@ function autoSaveProgress() {
 }
 
 // AUTO-SAVE: Load saved progress
-function loadSavedProgress() {
+async function loadSavedProgress() {
   const saved = localStorage.getItem('nexspark_interview_progress');
   if (!saved) return false;
   
@@ -126,13 +126,17 @@ function loadSavedProgress() {
     
     // Ask user if they want to continue
     const lastSavedTime = new Date(saveData.lastSaved).toLocaleString();
-    const shouldContinue = confirm(
-      `We found your saved progress from ${lastSavedTime}.\n\n` +
-      `You were on Question ${saveData.currentQuestion + 1} of ${interviewState.totalQuestions}.\n\n` +
-      `Click OK to CONTINUE where you left off.\n` +
-      `Click Cancel to START OVER with a new interview.`
+    const shouldContinue = await showConfirm(
+      `We found your saved progress from ${lastSavedTime}.\n\nYou were on Question ${saveData.currentQuestion + 1} of ${interviewState.totalQuestions}.`,
+      {
+        title: 'Resume Interview?',
+        confirmText: 'CONTINUE',
+        cancelText: 'START OVER',
+        icon: 'fa-play-circle',
+        iconColor: 'nexspark-gold'
+      }
     );
-    
+
     if (shouldContinue) {
       // Restore progress
       interviewState.currentQuestion = saveData.currentQuestion;
@@ -218,12 +222,17 @@ async function checkExistingInterview() {
     const data = await response.json();
     
     if (data.exists) {
-      const choice = confirm(
-        `You have a previous interview from ${new Date(data.interview.createdAt).toLocaleDateString()}.\n\n` +
-        `Click OK to start a NEW interview (previous will be saved).\n` +
-        `Click Cancel to CONTINUE the previous interview.`
+      const choice = await showConfirm(
+        `You have a previous interview from ${new Date(data.interview.createdAt).toLocaleDateString()}.`,
+        {
+          title: 'Previous Interview Found',
+          confirmText: 'START NEW',
+          cancelText: 'CONTINUE OLD',
+          icon: 'fa-history',
+          iconColor: 'nexspark-blue'
+        }
       );
-      
+
       if (!choice) {
         // Continue previous interview
         loadPreviousInterview(data.interview);
@@ -330,17 +339,38 @@ function escapeHtml(text) {
 // Start Interview
 async function startInterview() {
   console.log('startInterview() called');
-  
+
   // Check authentication
   const user = checkAuth();
   if (!user) return;
-  
-  // AUTO-SAVE: Try to load saved progress first
-  const hasLoadedProgress = loadSavedProgress();
-  
-  // Check for existing interview (skip if we loaded local progress)
-  if (!hasLoadedProgress) {
-    await checkExistingInterview();
+
+  // Check if dashboard requested to continue specific interview
+  const continueInterviewId = localStorage.getItem('nexspark_continue_interview');
+  if (continueInterviewId) {
+    console.log('Continuing interview:', continueInterviewId);
+    localStorage.removeItem('nexspark_continue_interview');
+
+    // Load specific interview from database
+    try {
+      const response = await fetch(`/api/interview/${continueInterviewId}`);
+      const data = await response.json();
+
+      if (data.success && data.interview) {
+        loadPreviousInterview(data.interview);
+      } else {
+        console.error('Failed to load interview:', data.message);
+      }
+    } catch (error) {
+      console.error('Error loading interview to continue:', error);
+    }
+  } else {
+    // AUTO-SAVE: Try to load saved progress first
+    const hasLoadedProgress = await loadSavedProgress();
+
+    // Check for existing interview (skip if we loaded local progress)
+    if (!hasLoadedProgress) {
+      await checkExistingInterview();
+    }
   }
   
   console.log('User authenticated:', user);
@@ -534,7 +564,7 @@ async function startRecording() {
     console.log('Recording started with real-time transcription');
   } catch (err) {
     console.error('Error accessing microphone:', err);
-    alert('Could not access microphone. Please check your permissions.');
+    showError('Could not access microphone. Please check your permissions.');
   }
 }
 
@@ -589,7 +619,10 @@ async function finishedSpeaking() {
   const finalAnswer = document.getElementById('manualInput').value.trim() || interviewState.currentTranscript;
   
   if (!finalAnswer) {
-    alert('Please provide an answer before continuing.');
+    showAlert('Please provide an answer before continuing.', {
+      icon: 'fa-comment-slash',
+      iconColor: 'nexspark-gold'
+    });
     return;
   }
   
@@ -832,12 +865,17 @@ function continueFromLastSaved() {
 }
 
 // RECOVERY: Restart entire interview
-function restartInterview() {
-  const confirmed = confirm(
-    'Are you sure you want to start a completely new interview?\n\n' +
-    'This will clear all your current answers and start from Question 1.'
+async function restartInterview() {
+  const confirmed = await showConfirm(
+    'Are you sure you want to start a completely new interview? This will clear all your current answers and start from Question 1.',
+    {
+      title: 'Restart Interview?',
+      confirmText: 'START OVER',
+      cancelText: 'KEEP CURRENT',
+      danger: true
+    }
   );
-  
+
   if (!confirmed) return;
   
   const modal = document.getElementById('errorModal');
@@ -890,12 +928,27 @@ function pauseInterview() {
     stopRecording();
   }
   
-  alert('Interview paused. Click "Resume" to continue.');
+  showAlert('Interview paused. Click "Resume" to continue.', {
+    title: 'Interview Paused',
+    icon: 'fa-pause-circle',
+    iconColor: 'nexspark-blue'
+  });
 }
 
 // End interview
-function endInterview() {
-  if (confirm('Are you sure you want to end the interview? Your progress will be saved.')) {
+async function endInterview() {
+  const confirmed = await showConfirm(
+    'Are you sure you want to end the interview? Your progress will be saved.',
+    {
+      title: 'End Interview?',
+      confirmText: 'END',
+      cancelText: 'CONTINUE',
+      icon: 'fa-stop-circle',
+      iconColor: 'nexspark-red'
+    }
+  );
+
+  if (confirmed) {
     completeInterview();
   }
 }
@@ -1099,7 +1152,10 @@ function startAnalysis() {
   const website = document.getElementById('websiteInput').value.trim();
   
   if (!website) {
-    alert('Please enter your website URL to continue');
+    showAlert('Please enter your website URL to continue', {
+      icon: 'fa-globe',
+      iconColor: 'nexspark-gold'
+    });
     return;
   }
   
@@ -1117,7 +1173,7 @@ function startAnalysis() {
 function skipToDemo() {
   // Create demo user if not exists
   const demoUser = {
-    id: 'demo_user_' + Date.now(),
+    id: 'usr_demo_' + Date.now(),
     email: 'demo@nexspark.io',
     name: 'Demo User',
     created_at: new Date().toISOString()

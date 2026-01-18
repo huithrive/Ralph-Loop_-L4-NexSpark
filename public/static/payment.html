@@ -313,7 +313,10 @@
                 
                 // Confirm payment
                 console.log('Confirming payment with Stripe...');
-                const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                console.log('Client secret:', clientSecret);
+                console.log('Card element:', cardElement);
+
+                const confirmResult = await stripe.confirmCardPayment(clientSecret, {
                     payment_method: {
                         card: cardElement,
                         billing_details: {
@@ -321,13 +324,19 @@
                         }
                     }
                 });
-                
+
+                console.log('Stripe confirm result:', confirmResult);
+
+                const { error, paymentIntent } = confirmResult;
+
                 if (error) {
                     console.error('Stripe error:', error);
                     throw new Error(error.message);
                 }
-                
-                if (paymentIntent.status === 'succeeded') {
+
+                console.log('Payment intent status:', paymentIntent?.status);
+
+                if (paymentIntent && paymentIntent.status === 'succeeded') {
                     console.log('✅ Payment successful!', paymentIntent.id);
                     
                     // Save payment info to localStorage

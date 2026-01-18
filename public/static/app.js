@@ -124,7 +124,7 @@ function signInWithGoogle() {
   // In production, this would redirect to Google OAuth
   // For demo, simulate successful authentication
   const mockUser = {
-    id: 'user_' + Date.now(),
+    id: 'usr_' + Date.now(),
     email: 'demo@nexspark.com',
     name: 'Demo User',
     picture: 'https://via.placeholder.com/150',
@@ -135,7 +135,7 @@ function signInWithGoogle() {
   localStorage.setItem('nexspark_user', JSON.stringify(mockUser));
   
   // Show success message
-  alert('Successfully signed in with Google! Redirecting to dashboard...');
+  showSuccess('Successfully signed in! Redirecting to dashboard...', 'Welcome');
   
   // Redirect to dashboard
   window.location.href = '/dashboard';
