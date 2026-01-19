@@ -140,9 +140,12 @@ function loadUserData() {
   
   // Load interview history
   loadInterviewHistory();
-  
-  // Load reports
+
+  // Load reports from localStorage (old system)
   loadReports();
+
+  // Load generated reports from database (new system)
+  loadGeneratedReports();
 }
 
 // Load interview history from database
@@ -417,42 +420,41 @@ async function analyzeInterview(interviewId) {
     // Load the interview from database
     const response = await fetch(`/api/interview/${interviewId}`);
     const data = await response.json();
-    
+
     if (data.success && data.interview) {
       const interview = data.interview;
-      
+
       // Parse responses if string
-      const responses = typeof interview.responses === 'string' 
-        ? JSON.parse(interview.responses) 
+      const responses = typeof interview.responses === 'string'
+        ? JSON.parse(interview.responses)
         : interview.responses;
-      
+
       // Extract company name and website from first response
       const firstResponse = responses[0]?.answer || '';
       const websiteMatch = firstResponse.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})/);
       const detectedWebsite = websiteMatch ? websiteMatch[0] : '';
-      
+
       const companyMatch = firstResponse.match(/(?:company name|called|named)\s+(?:is\s+)?([A-Z][a-zA-Z\s&]+?)(?:\s+and|\s+which|\.|,|$)/i);
       const detectedCompany = companyMatch ? companyMatch[1].trim() : '';
-      
-      if (!detectedWebsite) {
-        showError('No website URL found in interview. Please complete a new interview with your website.');
-        return;
-      }
-      
-      // Save to localStorage for analysis
+
+      // Save to localStorage for the new report generation flow
       const interviewData = {
         id: interview.id,
+        interviewId: interview.id, // For compatibility
+        userId: interview.user_id,
         companyName: detectedCompany,
         website: detectedWebsite,
         responses: responses,
         completed: true,
         completedAt: interview.completed_at || interview.created_at
       };
-      
+
       localStorage.setItem('nexspark_interview', JSON.stringify(interviewData));
-      
-      // Redirect to strategy analysis
-      window.location.href = '/strategy-analysis';
+
+      console.log('✅ Loaded interview for analysis:', interviewId);
+
+      // Redirect to new report generation flow
+      window.location.href = '/generate-report';
     }
   } catch (error) {
     console.error('Failed to load interview:', error);
@@ -520,8 +522,9 @@ function updateInterviewStatus(interview) {
   const interviewStatus = document.getElementById('interviewStatus');
   const growthPlanCard = document.getElementById('growthPlanCard');
   const growthPlanStatus = document.getElementById('growthPlanStatus');
-  
-  if (interview.completed) {
+
+  try {
+    if (interview.completed) {
     interviewStatus.className = 'status-indicator status-completed';
     interviewCard.innerHTML = `
       <div class="flex items-center justify-between mb-4">
@@ -556,12 +559,18 @@ function updateInterviewStatus(interview) {
           </button>
         </div>
       `;
-      
-      // Show analysis summary
-      displayAnalysisSummary(interview.analysis);
+
+      // Show analysis summary (only if analysis is properly structured)
+      if (interview.analysis && typeof interview.analysis === 'object') {
+        displayAnalysisSummary(interview.analysis);
+      }
+    }
     } else {
-      growthPlanStatus.className = 'status-indicator status-pending';
-      growthPlanCard.innerHTML = `
+      if (growthPlanStatus) {
+        growthPlanStatus.className = 'status-indicator status-pending';
+      }
+      if (growthPlanCard) {
+        growthPlanCard.innerHTML = `
         <div class="flex items-center justify-between mb-4">
           <i class="fas fa-chart-line text-3xl text-nexspark-purple"></i>
           <span class="status-indicator status-pending"></span>
@@ -572,7 +581,10 @@ function updateInterviewStatus(interview) {
           <i class="fas fa-clock mr-1"></i> PROCESSING
         </div>
       `;
+      }
     }
+  } catch (error) {
+    console.error('Error updating interview status:', error);
   }
 }
 
@@ -580,7 +592,23 @@ function updateInterviewStatus(interview) {
 function displayAnalysisSummary(analysis) {
   const systemInfo = document.querySelector('.bg-nexspark-blue\\/10.border-l-4');
   if (!systemInfo) return;
-  
+
+  // Validate analysis object structure
+  if (!analysis || typeof analysis !== 'object') {
+    console.error('Invalid analysis object:', analysis);
+    return;
+  }
+
+  // Safely get nested properties with defaults
+  const brandProfile = analysis.brandProfile || {};
+  const recommendations = analysis.recommendations || {};
+  const industry = brandProfile.industry || 'Not specified';
+  const stage = brandProfile.stage || 'Not specified';
+  const currentChannels = Array.isArray(brandProfile.currentChannels) ? brandProfile.currentChannels : [];
+  const mainChallenges = Array.isArray(brandProfile.mainChallenges) ? brandProfile.mainChallenges : [];
+  const recommendedChannels = Array.isArray(recommendations.channels) ? recommendations.channels : [];
+  const nextSteps = Array.isArray(analysis.nextSteps) ? analysis.nextSteps : [];
+
   const summaryHTML = `
     <div class="bg-nexspark-purple/10 border-l-4 border-nexspark-purple p-6 rounded-r-lg backdrop-blur-sm mt-6">
       <div class="flex items-start gap-3">
@@ -589,50 +617,56 @@ function displayAnalysisSummary(analysis) {
           <div class="text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-3">
             Growth Analysis Summary
           </div>
-          
+
           <div class="space-y-4">
             <!-- Brand Profile -->
             <div>
               <h4 class="text-white font-header text-sm uppercase mb-2">Your Brand</h4>
               <div class="text-white/70 font-mono text-xs space-y-1">
-                <p><span class="text-nexspark-blue">Industry:</span> ${analysis.brandProfile.industry}</p>
-                <p><span class="text-nexspark-blue">Stage:</span> ${analysis.brandProfile.stage}</p>
-                <p><span class="text-nexspark-blue">Current Channels:</span> ${analysis.brandProfile.currentChannels.join(', ')}</p>
+                <p><span class="text-nexspark-blue">Industry:</span> ${industry}</p>
+                <p><span class="text-nexspark-blue">Stage:</span> ${stage}</p>
+                <p><span class="text-nexspark-blue">Current Channels:</span> ${currentChannels.length > 0 ? currentChannels.join(', ') : 'Not specified'}</p>
               </div>
             </div>
-            
+
             <!-- Main Challenges -->
+            ${mainChallenges.length > 0 ? `
             <div>
               <h4 class="text-white font-header text-sm uppercase mb-2">Main Challenges</h4>
               <ul class="text-white/70 font-mono text-xs space-y-1">
-                ${analysis.brandProfile.mainChallenges.map(c => `<li><i class="fas fa-chevron-right text-nexspark-gold mr-2"></i>${c}</li>`).join('')}
+                ${mainChallenges.map(c => `<li><i class="fas fa-chevron-right text-nexspark-gold mr-2"></i>${c}</li>`).join('')}
               </ul>
             </div>
-            
+            ` : ''}
+
             <!-- Recommendations -->
+            ${recommendations.priority ? `
             <div>
               <h4 class="text-white font-header text-sm uppercase mb-2">Priority Actions</h4>
               <div class="text-white/70 font-mono text-xs space-y-1">
-                <p class="text-nexspark-gold mb-2">${analysis.recommendations.priority}</p>
-                <p><span class="text-nexspark-blue">Recommended Channels:</span> ${analysis.recommendations.channels.join(', ')}</p>
-                <p><span class="text-nexspark-blue">Budget Range:</span> ${analysis.recommendations.budget}</p>
-                <p><span class="text-nexspark-blue">Timeline:</span> ${analysis.recommendations.timeline}</p>
+                <p class="text-nexspark-gold mb-2">${recommendations.priority}</p>
+                ${recommendedChannels.length > 0 ? `<p><span class="text-nexspark-blue">Recommended Channels:</span> ${recommendedChannels.join(', ')}</p>` : ''}
+                ${recommendations.budget ? `<p><span class="text-nexspark-blue">Budget Range:</span> ${recommendations.budget}</p>` : ''}
+                ${recommendations.timeline ? `<p><span class="text-nexspark-blue">Timeline:</span> ${recommendations.timeline}</p>` : ''}
               </div>
             </div>
-            
+            ` : ''}
+
             <!-- Next Steps -->
+            ${nextSteps.length > 0 ? `
             <div>
               <h4 class="text-white font-header text-sm uppercase mb-2">Next Steps</h4>
               <ol class="text-white/70 font-mono text-xs space-y-1 pl-5">
-                ${analysis.nextSteps ? analysis.nextSteps.map((step, i) => `<li>${i+1}. ${step}</li>`).join('') : ''}
+                ${nextSteps.map((step, i) => `<li>${i+1}. ${step}</li>`).join('')}
               </ol>
             </div>
+            ` : ''}
           </div>
         </div>
       </div>
     </div>
   `;
-  
+
   systemInfo.insertAdjacentHTML('afterend', summaryHTML);
 }
 
@@ -763,6 +797,81 @@ function logout() {
 }
 
 // Initialize dashboard
+// Reports functions
+async function loadGeneratedReports(page = 0) {
+  try {
+    const user = checkAuth();
+    if (!user) return;
+
+    console.log('Loading reports for user:', user.id);
+
+    const response = await fetch(`/api/reports/list?userId=${user.id}&limit=10&offset=${page * 10}`);
+    const data = await response.json();
+
+    console.log('Reports API response:', data);
+
+    if (data.success) {
+      displayGeneratedReports(data.reports || []);
+    }
+  } catch (error) {
+    console.error('Failed to load reports:', error);
+  }
+}
+
+function displayGeneratedReports(reports) {
+  console.log('displayGeneratedReports called with:', reports.length, 'reports');
+
+  const container = document.getElementById('generatedReports');
+
+  if (!container) {
+    console.error('❌ Container #generatedReports not found in DOM!');
+    return;
+  }
+
+  console.log('✅ Container found, rendering', reports.length, 'reports');
+
+  if (reports.length === 0) {
+    container.innerHTML = `<div class="text-center py-12 text-white/50"><i class="fas fa-file-alt text-4xl mb-4"></i><p class="font-mono text-sm">No reports yet</p></div>`;
+    return;
+  }
+
+  container.innerHTML = reports.map(report => `
+    <div class="bg-nexspark-panel border-l-4 border-nexspark-purple p-6">
+      <div class="flex justify-between mb-4">
+        <div>
+          <h3 class="text-xl font-header font-bold text-white">${report.brand_name || 'Report'}</h3>
+          <p class="text-white/60 font-mono text-xs">${new Date(report.created_at).toLocaleString()}</p>
+        </div>
+        <div class="text-green-500 font-mono text-xs"><i class="fas fa-check-circle mr-1"></i>READY</div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="window.open('/report/${report.id}', '_blank')" class="flex-1 bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs font-bold">
+          <i class="fas fa-eye mr-1"></i>VIEW
+        </button>
+        <button onclick="downloadReportById('${report.id}')" class="flex-1 bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs font-bold">
+          <i class="fas fa-download mr-1"></i>DOWNLOAD
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function downloadReportById(reportId) {
+  try {
+    const response = await fetch(`/api/report/${reportId}`);
+    const data = await response.json();
+    const blob = new Blob([data.report.html_report], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `report-${Date.now()}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    showError('Download failed: ' + error.message);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadUserData();
   

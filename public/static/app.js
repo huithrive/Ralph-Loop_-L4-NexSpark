@@ -158,114 +158,120 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Brand form submission
-document.getElementById('brandForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const formData = new FormData(e.target);
-  const data = Object.fromEntries(formData.entries());
-  
-  const submitButton = e.target.querySelector('button[type="submit"]');
-  const originalText = submitButton.innerHTML;
-  submitButton.disabled = true;
-  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>TRANSMITTING...';
-  
-  try {
-    const response = await axios.post('/api/register/brand', data);
-    
-    const messageEl = document.getElementById('brandFormMessage');
-    messageEl.classList.remove('hidden');
-    messageEl.className = 'mt-4 p-4 bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300';
-    messageEl.innerHTML = `
-      <div class="flex items-start gap-3">
-        <i class="fas fa-check-circle text-2xl"></i>
-        <div class="font-mono">
-          <strong class="block mb-2 text-lg uppercase tracking-wider">✓ Registration Successful!</strong>
-          <p class="text-sm">${response.data.message}</p>
-          <p class="mt-2 text-xs opacity-75">Digital Leon will contact you within 24 hours to schedule your growth diagnosis.</p>
+const brandForm = document.getElementById('brandForm');
+if (brandForm) {
+  brandForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>TRANSMITTING...';
+
+    try {
+      const response = await axios.post('/api/register/brand', data);
+
+      const messageEl = document.getElementById('brandFormMessage');
+      messageEl.classList.remove('hidden');
+      messageEl.className = 'mt-4 p-4 bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300';
+      messageEl.innerHTML = `
+        <div class="flex items-start gap-3">
+          <i class="fas fa-check-circle text-2xl"></i>
+          <div class="font-mono">
+            <strong class="block mb-2 text-lg uppercase tracking-wider">✓ Registration Successful!</strong>
+            <p class="text-sm">${response.data.message}</p>
+            <p class="mt-2 text-xs opacity-75">Digital Leon will contact you within 24 hours to schedule your growth diagnosis.</p>
+          </div>
         </div>
-      </div>
-    `;
-    
-    e.target.reset();
-    
-    // Auto-close after 3 seconds
-    setTimeout(() => {
-      closeModal('brand');
-    }, 3000);
-    
-  } catch (error) {
-    const messageEl = document.getElementById('brandFormMessage');
-    messageEl.classList.remove('hidden');
-    messageEl.className = 'mt-4 p-4 bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300';
-    messageEl.innerHTML = `
-      <div class="flex items-start gap-3">
-        <i class="fas fa-exclamation-circle text-2xl"></i>
-        <div class="font-mono">
-          <strong class="block mb-2 text-lg uppercase tracking-wider">✗ System Error</strong>
-          <p class="text-sm">${error.response?.data?.message || 'Registration failed. Please try again.'}</p>
+      `;
+
+      e.target.reset();
+
+      // Auto-close after 3 seconds
+      setTimeout(() => {
+        closeModal('brand');
+      }, 3000);
+
+    } catch (error) {
+      const messageEl = document.getElementById('brandFormMessage');
+      messageEl.classList.remove('hidden');
+      messageEl.className = 'mt-4 p-4 bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300';
+      messageEl.innerHTML = `
+        <div class="flex items-start gap-3">
+          <i class="fas fa-exclamation-circle text-2xl"></i>
+          <div class="font-mono">
+            <strong class="block mb-2 text-lg uppercase tracking-wider">✗ System Error</strong>
+            <p class="text-sm">${error.response?.data?.message || 'Registration failed. Please try again.'}</p>
+          </div>
         </div>
-      </div>
-    `;
-  } finally {
-    submitButton.disabled = false;
-    submitButton.innerHTML = originalText;
-  }
-});
+      `;
+    } finally {
+      submitButton.disabled = false;
+      submitButton.innerHTML = originalText;
+    }
+  });
+}
 
 // Agency form submission
-document.getElementById('agencyForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const formData = new FormData(e.target);
-  const data = Object.fromEntries(formData.entries());
-  
-  const submitButton = e.target.querySelector('button[type="submit"]');
-  const originalText = submitButton.innerHTML;
-  submitButton.disabled = true;
-  submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>TRANSMITTING...';
-  
-  try {
-    const response = await axios.post('/api/register/agency', data);
-    
-    const messageEl = document.getElementById('agencyFormMessage');
-    messageEl.classList.remove('hidden');
-    messageEl.className = 'mt-4 p-4 bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300';
-    messageEl.innerHTML = `
-      <div class="flex items-start gap-3">
-        <i class="fas fa-check-circle text-2xl"></i>
-        <div class="font-mono">
-          <strong class="block mb-2 text-lg uppercase tracking-wider">✓ Application Received!</strong>
-          <p class="text-sm">${response.data.message}</p>
-          <p class="mt-2 text-xs opacity-75">Our Digital Leon AI will review your profile and contact you with next steps.</p>
+const agencyForm = document.getElementById('agencyForm');
+if (agencyForm) {
+  agencyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>TRANSMITTING...';
+
+    try {
+      const response = await axios.post('/api/register/agency', data);
+
+      const messageEl = document.getElementById('agencyFormMessage');
+      messageEl.classList.remove('hidden');
+      messageEl.className = 'mt-4 p-4 bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300';
+      messageEl.innerHTML = `
+        <div class="flex items-start gap-3">
+          <i class="fas fa-check-circle text-2xl"></i>
+          <div class="font-mono">
+            <strong class="block mb-2 text-lg uppercase tracking-wider">✓ Application Received!</strong>
+            <p class="text-sm">${response.data.message}</p>
+            <p class="mt-2 text-xs opacity-75">Our Digital Leon AI will review your profile and contact you with next steps.</p>
+          </div>
         </div>
-      </div>
-    `;
-    
-    e.target.reset();
-    
-    // Auto-close after 3 seconds
-    setTimeout(() => {
-      closeModal('agency');
-    }, 3000);
-    
-  } catch (error) {
-    const messageEl = document.getElementById('agencyFormMessage');
-    messageEl.classList.remove('hidden');
-    messageEl.className = 'mt-4 p-4 bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300';
-    messageEl.innerHTML = `
-      <div class="flex items-start gap-3">
-        <i class="fas fa-exclamation-circle text-2xl"></i>
-        <div class="font-mono">
-          <strong class="block mb-2 text-lg uppercase tracking-wider">✗ System Error</strong>
-          <p class="text-sm">${error.response?.data?.message || 'Application failed. Please try again.'}</p>
+      `;
+
+      e.target.reset();
+
+      // Auto-close after 3 seconds
+      setTimeout(() => {
+        closeModal('agency');
+      }, 3000);
+
+    } catch (error) {
+      const messageEl = document.getElementById('agencyFormMessage');
+      messageEl.classList.remove('hidden');
+      messageEl.className = 'mt-4 p-4 bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300';
+      messageEl.innerHTML = `
+        <div class="flex items-start gap-3">
+          <i class="fas fa-exclamation-circle text-2xl"></i>
+          <div class="font-mono">
+            <strong class="block mb-2 text-lg uppercase tracking-wider">✗ System Error</strong>
+            <p class="text-sm">${error.response?.data?.message || 'Application failed. Please try again.'}</p>
+          </div>
         </div>
-      </div>
-    `;
-  } finally {
-    submitButton.disabled = false;
-    submitButton.innerHTML = originalText;
-  }
-});
+      `;
+    } finally {
+      submitButton.disabled = false;
+      submitButton.innerHTML = originalText;
+    }
+  });
+}
 
 // Smooth scroll for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {

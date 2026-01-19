@@ -220,8 +220,9 @@ async function checkExistingInterview() {
   try {
     const response = await fetch(`/api/interview/check?userId=${interviewState.userId}`);
     const data = await response.json();
-    
-    if (data.exists) {
+
+    // Only prompt to resume if interview is incomplete
+    if (data.exists && data.interview && !data.interview.completed) {
       const choice = await showConfirm(
         `You have a previous interview from ${new Date(data.interview.createdAt).toLocaleDateString()}.`,
         {
@@ -240,6 +241,9 @@ async function checkExistingInterview() {
         // Start new interview (backend will archive old one)
         interviewState.interviewId = null;
       }
+    } else {
+      // No incomplete interview found, start fresh
+      console.log('No incomplete interviews found - starting fresh');
     }
   } catch (error) {
     console.error('Error checking existing interview:', error);
@@ -249,16 +253,26 @@ async function checkExistingInterview() {
 // Load previous interview
 function loadPreviousInterview(interview) {
   interviewState.interviewId = interview.id;
-  interviewState.currentQuestion = interview.currentQuestion || 0;
   interviewState.responses = interview.responses || [];
-  
+
+  // Set current question based on responses length (not stored currentQuestion)
+  // If 10 responses exist, interview is complete
+  if (interviewState.responses.length >= interviewQuestions.length) {
+    console.log('Interview already complete, redirecting to confirmation...');
+    window.location.href = '/interview-confirmation';
+    return false; // Signal to stop execution
+  }
+
+  interviewState.currentQuestion = interviewState.responses.length;
+
   // Populate transcript with previous responses
   interviewState.responses.forEach((response, index) => {
     addToTranscript('leon', interviewQuestions[index]);
     addToTranscript('user', response.answer);
   });
-  
-  console.log('Loaded previous interview:', interview);
+
+  console.log('Loaded previous interview:', interview, `Resuming from Q${interviewState.currentQuestion + 1}`);
+  return true; // Signal to continue
 }
 
 // Initialize Web Speech API
@@ -356,7 +370,11 @@ async function startInterview() {
       const data = await response.json();
 
       if (data.success && data.interview) {
-        loadPreviousInterview(data.interview);
+        const shouldContinue = loadPreviousInterview(data.interview);
+        if (!shouldContinue) {
+          // Interview complete, redirected
+          return;
+        }
       } else {
         console.error('Failed to load interview:', data.message);
       }
@@ -372,13 +390,20 @@ async function startInterview() {
       await checkExistingInterview();
     }
   }
-  
+
+  // Check if interview is already complete (10 responses)
+  if (interviewState.responses.length >= interviewQuestions.length) {
+    console.log('✅ Interview complete, redirecting to confirmation...');
+    window.location.href = '/interview-confirmation';
+    return; // Stop execution
+  }
+
   console.log('User authenticated:', user);
   console.log('Setting interview state to active...');
-  
+
   // Initialize speech recognition
   interviewState.recognition = initSpeechRecognition();
-  
+
   // Set state
   interviewState.isActive = true;
   interviewState.currentQuestion = interviewState.currentQuestion || 0;
@@ -1025,9 +1050,9 @@ async function completeInterview() {
   document.getElementById('pauseBtn').classList.add('hidden');
   document.getElementById('endBtn').classList.add('hidden');
   
-  // Redirect to summary page after brief delay
+  // Redirect to confirmation page first
   setTimeout(() => {
-    window.location.href = '/interview-summary';
+    window.location.href = '/interview-confirmation';
   }, 1500);
 }
 

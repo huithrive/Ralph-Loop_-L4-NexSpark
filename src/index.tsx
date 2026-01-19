@@ -46,6 +46,15 @@ import {
   registerEmailPassword,
   authenticateEmailPassword
 } from './services/auth'
+import { ReportGenerator } from './services/report-generator'
+import {
+  createReportGeneration,
+  getGenerationState,
+  getGenerationByInterview,
+  getUserReports,
+  getReport,
+  deleteReport
+} from './services/database'
 import { REVISED_LANDING_HTML } from './revised-landing'
 
 const app = new Hono()
@@ -124,36 +133,42 @@ app.get('/auth/google/callback', async (c) => {
 
     // Handle user creation/linking
     if (c.env.DB) {
-      const { findOrCreateUser, linkGoogleAuth } = await import('./services/auth');
+      try {
+        const { findOrCreateUser, linkGoogleAuth } = await import('./services/auth');
 
-      // Find or create user by email (enables account linking)
-      const userId = await findOrCreateUser(c.env.DB, googleUser.email, googleUser.name);
+        console.log('Step 1: Finding or creating user...');
+        const userId = await findOrCreateUser(c.env.DB, googleUser.email, googleUser.name);
+        console.log('✅ User ID:', userId);
 
-      // Check auth provider count to determine if primary
-      const authCount = await c.env.DB.prepare(`
-        SELECT COUNT(*) as count FROM auth_providers WHERE user_id = ?
-      `).bind(userId).first();
+        console.log('Step 2: Checking auth provider count...');
+        const authCount = await c.env.DB.prepare(`
+          SELECT COUNT(*) as count FROM auth_providers WHERE user_id = ?
+        `).bind(userId).first();
+        console.log('✅ Auth count:', authCount?.count || 0);
 
-      const isPrimary = (authCount?.count || 0) === 0;
+        const isPrimary = (authCount?.count || 0) === 0;
 
-      // Link Google OAuth to user account
-      await linkGoogleAuth(c.env.DB, userId, googleUser.id, googleUser.email, isPrimary);
+        console.log('Step 3: Linking Google auth...');
+        await linkGoogleAuth(c.env.DB, userId, googleUser.id, googleUser.email, isPrimary);
+        console.log('✅ Google auth linked');
 
-      // Update user profile with Google data
-      await c.env.DB.prepare(`
-        UPDATE users
-        SET picture = ?, email_verified = ?, updated_at = CURRENT_TIMESTAMP
-        WHERE id = ?
-      `).bind(googleUser.picture, googleUser.email_verified ? 1 : 0, userId).run();
+        console.log('Step 4: Updating user profile...');
+        await c.env.DB.prepare(`
+          UPDATE users
+          SET picture = ?, email_verified = ?, updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `).bind(googleUser.picture, googleUser.email_verified ? 1 : 0, userId).run();
+        console.log('✅ User profile updated');
 
-      // Generate JWT session token
-      const sessionToken = await generateSessionToken(
-        userId,
-        c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret'
-      );
+        console.log('Step 5: Generating session token...');
+        const sessionToken = await generateSessionToken(
+          userId,
+          c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret'
+        );
+        console.log('✅ Session token generated');
 
-      // Redirect to dashboard with session
-      return c.html(`
+        // Redirect to dashboard with session
+        return c.html(`
         <script>
           localStorage.setItem('nexspark_user', JSON.stringify({
             id: '${userId}',
@@ -167,6 +182,12 @@ app.get('/auth/google/callback', async (c) => {
           window.location.href = '/dashboard';
         </script>
       `);
+
+      } catch (dbError: any) {
+        console.error('❌ Database error during OAuth:', dbError);
+        console.error('Error details:', dbError.message);
+        // Fall through to localStorage fallback
+      }
     }
 
     // Fallback: localStorage mode (no database)
@@ -337,6 +358,18 @@ app.post('/api/auth/logout', async (c) => {
 
 // Dashboard route - redirect to static file
 app.get('/dashboard', (c) => c.redirect('/static/dashboard.html'))
+
+// Interview confirmation page
+app.get('/interview-confirmation', (c) => c.redirect('/static/interview-confirmation.html'))
+
+// Report generation page
+app.get('/generate-report', (c) => c.redirect('/static/generate-report.html'))
+
+// Report viewer page
+app.get('/report/:reportId', async (c) => {
+  const reportId = c.req.param('reportId');
+  return c.redirect(`/static/report-viewer.html?reportId=${reportId}`);
+})
 
 // Growth Audit Agent route
 app.get('/growth-audit', (c) => c.redirect('/static/growth-audit.html'))
@@ -1319,6 +1352,289 @@ app.post('/api/analysis/generate-strategy', async (c) => {
       success: false,
       message: 'Failed to generate strategy: ' + (error instanceof Error ? error.message : 'Unknown error')
     }, 500);
+  }
+});
+
+// ==========================================
+// NEW REPORT GENERATION SYSTEM ENDPOINTS
+// ==========================================
+
+// Start report generation
+app.post('/api/report/start', async (c) => {
+  try {
+    const { interviewId, userId } = await c.req.json();
+
+    if (!interviewId || !userId) {
+      return c.json({ success: false, message: 'Interview ID and User ID required' }, 400);
+    }
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    // Verify user exists
+    const userExists = await c.env.DB.prepare(`
+      SELECT id FROM users WHERE id = ?
+    `).bind(userId).first();
+
+    if (!userExists) {
+      console.error('⚠️ User not found in database:', userId);
+      return c.json({
+        success: false,
+        message: 'User not found. Please sign in again.'
+      }, 404);
+    }
+
+    // Verify interview exists
+    const { getInterview } = await import('./services/database');
+    const interview = await getInterview(c.env.DB, interviewId);
+
+    if (!interview) {
+      console.error('⚠️ Interview not found in database:', interviewId);
+      return c.json({
+        success: false,
+        message: 'Interview not found. Please ensure the interview was saved properly.'
+      }, 404);
+    }
+
+    // Check if generation already exists
+    const existing = await getGenerationByInterview(c.env.DB, interviewId);
+
+    if (existing && existing.current_state !== 'COMPLETE' && existing.current_state !== 'FAILED') {
+      return c.json({
+        success: true,
+        generationId: existing.id,
+        message: 'Generation already in progress',
+        currentState: existing.current_state
+      });
+    }
+
+    const generator = new ReportGenerator(c.env.DB, c.env);
+    const generationId = await generator.start(interviewId, userId);
+
+    console.log('✅ Report generation started:', generationId);
+
+    return c.json({
+      success: true,
+      generationId,
+      message: 'Generation started'
+    });
+
+  } catch (error: any) {
+    console.error('Error starting report generation:', error);
+    return c.json({ success: false, message: error.message }, 500);
+  }
+});
+
+// Get generation state
+app.get('/api/report/state/:generationId', async (c) => {
+  try {
+    const generationId = c.req.param('generationId');
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    const generator = new ReportGenerator(c.env.DB, c.env);
+    const state = await generator.getState(generationId);
+
+    if (!state) {
+      return c.json({ success: false, message: 'Generation not found' }, 404);
+    }
+
+    return c.json({ success: true, ...state });
+
+  } catch (error: any) {
+    console.error('Error getting generation state:', error);
+    return c.json({ success: false, message: error.message }, 500);
+  }
+});
+
+// Update generation state (mark as paid)
+app.patch('/api/report/state/:generationId', async (c) => {
+  try {
+    const generationId = c.req.param('generationId');
+    const { paid, paymentId } = await c.req.json();
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    if (paid && paymentId) {
+      const { markGenerationPaid } = await import('./services/database');
+      await markGenerationPaid(c.env.DB, generationId, paymentId);
+
+      console.log('✅ Generation marked as paid:', generationId);
+    }
+
+    return c.json({ success: true, message: 'State updated' });
+
+  } catch (error: any) {
+    console.error('Error updating generation state:', error);
+    return c.json({ success: false, message: error.message }, 500);
+  }
+});
+
+// Execute specific step
+app.post('/api/report/execute-step', async (c) => {
+  try {
+    const { generationId, step, data } = await c.req.json();
+
+    if (!generationId || !step) {
+      return c.json({ success: false, message: 'Generation ID and step required' }, 400);
+    }
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    const generator = new ReportGenerator(c.env.DB, c.env);
+    const state = await generator.getState(generationId);
+
+    if (!state) {
+      return c.json({ success: false, message: 'Generation not found' }, 404);
+    }
+
+    let result;
+
+    switch (step) {
+      case 1:
+        const { getInterview } = await import('./services/database');
+        const interview = await getInterview(c.env.DB, state.interviewId);
+        result = await generator.executeStep1(generationId, interview);
+        break;
+
+      case 2:
+        if (!data?.website) {
+          return c.json({ success: false, message: 'Website required' }, 400);
+        }
+        result = await generator.executeStep2(generationId, data.website);
+        break;
+
+      case 4:
+        result = await generator.executeStep4(generationId);
+        break;
+
+      default:
+        return c.json({ success: false, message: 'Invalid step' }, 400);
+    }
+
+    return c.json({ success: true, result });
+
+  } catch (error: any) {
+    console.error('Error executing step:', error);
+    return c.json({ success: false, message: error.message }, 500);
+  }
+});
+
+// Get user's reports list
+app.get('/api/reports/list', async (c) => {
+  try {
+    const userId = c.req.query('userId');
+    const limit = parseInt(c.req.query('limit') || '10');
+    const offset = parseInt(c.req.query('offset') || '0');
+
+    if (!userId) {
+      return c.json({ success: false, message: 'User ID required' }, 400);
+    }
+
+    if (!c.env.DB) {
+      return c.json({ success: true, reports: [], total: 0, hasMore: false });
+    }
+
+    const safeLimit = Math.min(Math.max(limit, 1), 50);
+    const safeOffset = Math.max(offset, 0);
+
+    const result = await getUserReports(c.env.DB, userId, safeLimit, safeOffset);
+
+    return c.json({ success: true, ...result });
+
+  } catch (error: any) {
+    console.error('Error getting reports list:', error);
+    return c.json({ success: false, message: error.message }, 500);
+  }
+});
+
+// Get specific report
+app.get('/api/report/:reportId', async (c) => {
+  try {
+    const reportId = c.req.param('reportId');
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    const report = await getReport(c.env.DB, reportId);
+
+    if (!report) {
+      return c.json({ success: false, message: 'Report not found' }, 404);
+    }
+
+    return c.json({ success: true, report });
+
+  } catch (error: any) {
+    console.error('Error getting report:', error);
+    return c.json({ success: false, message: error.message }, 500);
+  }
+});
+
+// Delete report
+app.delete('/api/report/:reportId', async (c) => {
+  try {
+    const reportId = c.req.param('reportId');
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    await deleteReport(c.env.DB, reportId);
+
+    console.log('✅ Report deleted:', reportId);
+
+    return c.json({ success: true, message: 'Report deleted' });
+
+  } catch (error: any) {
+    console.error('Error deleting report:', error);
+    return c.json({ success: false, message: error.message }, 500);
+  }
+});
+
+// Regenerate report
+app.post('/api/report/regenerate/:interviewId', async (c) => {
+  try {
+    const interviewId = c.req.param('interviewId');
+    const { userId } = await c.req.json();
+
+    if (!userId) {
+      return c.json({ success: false, message: 'User ID required' }, 400);
+    }
+
+    if (!c.env.DB) {
+      return c.json({ success: false, message: 'Database not configured' }, 500);
+    }
+
+    // Mark old reports as not latest
+    await c.env.DB.prepare(`
+      UPDATE strategy_reports SET is_latest = 0
+      WHERE interview_id = ? AND user_id = ?
+    `).bind(interviewId, userId).run();
+
+    // Delete old generation state
+    await c.env.DB.prepare(`
+      DELETE FROM report_generations WHERE interview_id = ?
+    `).bind(interviewId).run();
+
+    // Create new generation
+    const generator = new ReportGenerator(c.env.DB, c.env);
+    const generationId = await generator.start(interviewId, userId);
+
+    console.log('✅ Report regeneration started:', generationId);
+
+    return c.json({ success: true, generationId });
+
+  } catch (error: any) {
+    console.error('Error regenerating report:', error);
+    return c.json({ success: false, message: error.message }, 500);
   }
 });
 

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generating Report | NexSpark</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Rajdhani', 'sans-serif'],
+              header: ['Antonio', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              nexspark: {
+                bg: '#000000',
+                gold: '#FF9C00',
+                blue: '#99CCFF',
+                purple: '#CC99CC',
+                red: '#CC3333',
+                dark: '#111111',
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      body {
+        background: #000000;
+        color: #99CCFF;
+      }
+
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+      .animate-spin-slow { animation: spin 3s linear infinite; }
+      .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
+
+      .step-indicator {
+        opacity: 0.3;
+        transition: all 0.3s;
+      }
+      .step-indicator.active {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+      .step-indicator.complete {
+        opacity: 1;
+      }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-8">
+    <div class="max-w-4xl w-full">
+
+        <!-- Progress Steps -->
+        <div id="progressSteps" class="flex items-center justify-between mb-12">
+            <div class="flex-1 flex items-center">
+                <div id="step1Indicator" class="step-indicator flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-nexspark-gold flex items-center justify-center">
+                        <i class="fas fa-brain text-black text-xl"></i>
+                    </div>
+                    <span class="text-white font-mono text-sm hidden md:block">Analysis</span>
+                </div>
+                <div class="flex-1 h-1 bg-white/20 mx-2"></div>
+            </div>
+
+            <div class="flex-1 flex items-center">
+                <div id="step2Indicator" class="step-indicator flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-nexspark-blue flex items-center justify-center">
+                        <i class="fas fa-search text-black text-xl"></i>
+                    </div>
+                    <span class="text-white font-mono text-sm hidden md:block">Research</span>
+                </div>
+                <div class="flex-1 h-1 bg-white/20 mx-2"></div>
+            </div>
+
+            <div class="flex-1 flex items-center">
+                <div id="step3Indicator" class="step-indicator flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-nexspark-purple flex items-center justify-center">
+                        <i class="fas fa-credit-card text-black text-xl"></i>
+                    </div>
+                    <span class="text-white font-mono text-sm hidden md:block">Payment</span>
+                </div>
+                <div class="flex-1 h-1 bg-white/20 mx-2"></div>
+            </div>
+
+            <div class="flex-1 flex items-center justify-end">
+                <div id="step4Indicator" class="step-indicator flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-nexspark-gold flex items-center justify-center">
+                        <i class="fas fa-rocket text-black text-xl"></i>
+                    </div>
+                    <span class="text-white font-mono text-sm hidden md:block">Generate</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="contentArea" class="bg-nexspark-dark rounded-2xl p-8 border-2 border-nexspark-gold/30 min-h-[400px]">
+            <!-- Dynamic content loaded here -->
+        </div>
+
+    </div>
+
+    <script src="/static/modal-utils.js"></script>
+    <script>
+        let generationId = null;
+        let pollInterval = null;
+        let stripe = null;
+        let cardElement = null;
+
+        const user = JSON.parse(localStorage.getItem('nexspark_user') || '{}');
+        const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Report Generation Wizard Loaded');
+
+            if (!user.id || !interview.id) {
+                showError('Missing interview data. Redirecting to dashboard...');
+                setTimeout(() => window.location.href = '/dashboard', 2000);
+                return;
+            }
+
+            // Initialize Stripe
+            stripe = Stripe('REDACTED_STRIPE_PUBLISHABLE');
+
+            await startOrResumeGeneration();
+        });
+
+        async function startOrResumeGeneration() {
+            try {
+                // Start new generation
+                const response = await fetch('/api/report/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        interviewId: interview.id,
+                        userId: user.id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+
+                generationId = data.generationId;
+                console.log('Generation ID:', generationId);
+
+                // Start polling for state
+                await pollGenerationState();
+
+            } catch (error) {
+                console.error('Error starting generation:', error);
+                showError('Failed to start generation: ' + error.message);
+            }
+        }
+
+        // States that require polling (AI processing)
+        const POLLING_STATES = ['NOT_STARTED', 'ANALYZING', 'RESEARCHING', 'GENERATING_STRATEGY'];
+
+        // States where user needs to take action (no polling)
+        const USER_ACTION_STATES = ['PROFILE_REVIEW', 'PREVIEW_READY', 'PAYMENT_REQUIRED'];
+
+        async function pollGenerationState() {
+            if (!generationId) return;
+
+            try {
+                const response = await fetch(`/api/report/state/${generationId}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+
+                updateUIForState(data);
+
+                // Only continue polling during AI processing states
+                if (POLLING_STATES.includes(data.currentState)) {
+                    console.log('⏳ Polling... (AI processing)');
+                    setTimeout(pollGenerationState, 2000);
+                } else if (USER_ACTION_STATES.includes(data.currentState)) {
+                    console.log('⏸️ Polling stopped (waiting for user action)');
+                    // Don't poll - wait for user to click button
+                } else if (data.currentState === 'COMPLETE' || data.currentState === 'FAILED') {
+                    console.log('✅ Polling stopped (final state)');
+                    // Final state, stop polling
+                }
+
+            } catch (error) {
+                console.error('Error polling state:', error);
+            }
+        }
+
+        function updateUIForState(state) {
+            updateStepIndicators(state.currentState, state.progressPercent);
+
+            switch (state.currentState) {
+                case 'NOT_STARTED':
+                    showProcessing('Initializing...', 0);
+                    executeStep(1);
+                    break;
+
+                case 'ANALYZING':
+                    showProcessing('Analyzing your interview with Claude Opus...', state.progressPercent);
+                    break;
+
+                case 'PROFILE_REVIEW':
+                    showProfileReview(state.step1Data);
+                    break;
+
+                case 'RESEARCHING':
+                    showProcessing('Researching competitors and market data...', state.progressPercent);
+                    break;
+
+                case 'PREVIEW_READY':
+                    showReportPreview(state.step1Data, state.step2Data);
+                    break;
+
+                case 'PAYMENT_REQUIRED':
+                    showPaymentForm(state.step1Data);
+                    break;
+
+                case 'GENERATING_STRATEGY':
+                    showProcessing('Generating comprehensive GTM strategy...', state.progressPercent);
+                    break;
+
+                case 'COMPLETE':
+                    showComplete(state.reportId);
+                    break;
+
+                case 'FAILED':
+                    showFailed(state.error, state.currentState);
+                    break;
+            }
+        }
+
+        async function executeStep(stepNumber, stepData = {}) {
+            try {
+                const payload = {
+                    generationId,
+                    step: stepNumber,
+                    data: stepData
+                };
+
+                const response = await fetch('/api/report/execute-step', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+
+                console.log(`✅ Step ${stepNumber} completed`);
+
+            } catch (error) {
+                console.error(`Error executing step ${stepNumber}:`, error);
+                showError(`Step ${stepNumber} failed: ` + error.message);
+            }
+        }
+
+        function updateStepIndicators(currentState, progress) {
+            const steps = ['step1Indicator', 'step2Indicator', 'step3Indicator', 'step4Indicator'];
+
+            const stateToStep = {
+                'ANALYZING': 1,
+                'PROFILE_REVIEW': 1,
+                'RESEARCHING': 2,
+                'PREVIEW_READY': 2,
+                'PAYMENT_REQUIRED': 3,
+                'GENERATING_STRATEGY': 4,
+                'COMPLETE': 4
+            };
+
+            const currentStep = stateToStep[currentState] || 0;
+
+            steps.forEach((stepId, index) => {
+                const element = document.getElementById(stepId);
+                if (index + 1 < currentStep) {
+                    element.classList.add('complete');
+                    element.classList.remove('active');
+                } else if (index + 1 === currentStep) {
+                    element.classList.add('active');
+                    element.classList.remove('complete');
+                } else {
+                    element.classList.remove('active', 'complete');
+                }
+            });
+        }
+
+        function showProcessing(message, progress) {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="text-center">
+                    <div class="inline-block mb-8">
+                        <i class="fas fa-rocket text-nexspark-gold text-8xl animate-spin-slow"></i>
+                    </div>
+                    <h2 class="text-4xl font-header font-bold text-white mb-4">${message}</h2>
+                    <div class="w-full bg-black/50 rounded-full h-4 mb-4">
+                        <div class="bg-nexspark-gold h-4 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                    </div>
+                    <p class="text-white/60 font-mono text-sm">${progress}% Complete</p>
+                </div>
+            `;
+        }
+
+        let currentProfile = null; // Store profile for later steps
+
+        function showProfileReview(profile) {
+            currentProfile = profile; // Save for next step
+
+            document.getElementById('contentArea').innerHTML = `
+                <div class="text-center mb-6">
+                    <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+                    <h2 class="text-3xl font-header font-bold text-white">Business Profile Extracted</h2>
+                </div>
+                <div class="bg-black/30 rounded-xl p-6 mb-6 text-left">
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div><span class="text-white/60">Brand:</span> <span class="text-white font-bold">${profile.brandName}</span></div>
+                        <div><span class="text-white/60">Website:</span> <span class="text-white">${profile.website || 'Not provided'}</span></div>
+                        <div><span class="text-white/60">Industry:</span> <span class="text-white">${profile.industry}</span></div>
+                        <div><span class="text-white/60">Stage:</span> <span class="text-white">${profile.currentStage}</span></div>
+                        <div><span class="text-white/60">Market:</span> <span class="text-white">${profile.targetMarket}</span></div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="text-white/60 text-sm mb-2">Main Challenges:</div>
+                        <ul class="list-disc list-inside text-white text-sm">
+                            ${profile.mainChallenges.map(c => `<li>${c}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <button onclick="continueToResearch()" class="w-full py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-xl uppercase rounded-xl transition-all shadow-lg">
+                    <i class="fas fa-arrow-right mr-2"></i>Continue to Research
+                </button>
+            `;
+        }
+
+        async function continueToResearch() {
+            if (!currentProfile || !currentProfile.website) {
+                showError('Website URL is required for competitor research. Please include it in your interview.');
+                return;
+            }
+
+            // Execute Step 2 with website from profile
+            await executeStep(2, { website: currentProfile.website });
+
+            // Restart polling for Step 2 (RESEARCHING state)
+            setTimeout(pollGenerationState, 1000);
+        }
+
+        function showReportPreview(profile, research) {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-header font-bold text-white mb-4">Strategy Preview Ready</h2>
+                    <p class="text-nexspark-blue font-mono">Here's what we found for ${profile.brandName}</p>
+                </div>
+                <div class="bg-black/30 rounded-xl p-6 mb-6">
+                    <h3 class="text-xl font-bold text-nexspark-gold mb-3">Top Competitors Identified:</h3>
+                    <ul class="space-y-2 text-white">
+                        ${(research.competitors || ['Competitor 1', 'Competitor 2', 'Competitor 3']).slice(0, 3).map((comp, i) => `
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500"></i>
+                                ${typeof comp === 'string' ? comp : comp.name || comp}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <div class="bg-nexspark-gold/10 border border-nexspark-gold rounded-xl p-6 mb-6">
+                    <h3 class="text-xl font-bold text-white mb-3">Full Report Includes:</h3>
+                    <ul class="grid grid-cols-2 gap-3 text-white/80 text-sm">
+                        <li><i class="fas fa-check text-nexspark-gold mr-2"></i>Competitive analysis</li>
+                        <li><i class="fas fa-check text-nexspark-gold mr-2"></i>6-month roadmap</li>
+                        <li><i class="fas fa-check text-nexspark-gold mr-2"></i>Channel strategy</li>
+                        <li><i class="fas fa-check text-nexspark-gold mr-2"></i>Budget allocation</li>
+                        <li><i class="fas fa-check text-nexspark-gold mr-2"></i>CAC/LTV projections</li>
+                        <li><i class="fas fa-check text-nexspark-gold mr-2"></i>Download HTML</li>
+                    </ul>
+                </div>
+                <button onclick="proceedToPayment()" class="w-full py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-xl uppercase rounded-xl transition-all shadow-lg">
+                    <i class="fas fa-lock mr-2"></i>Unlock Full Report - $20
+                </button>
+            `;
+        }
+
+        function proceedToPayment() {
+            // No need for flag - polling already stopped at PREVIEW_READY
+            document.getElementById('contentArea').innerHTML = generatePaymentForm();
+            initializeStripeElements();
+        }
+
+        function generatePaymentForm() {
+            return `
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-header font-bold text-white mb-2">Secure Payment</h2>
+                    <p class="text-white/60 font-mono text-sm">One-time payment • Full report access</p>
+                </div>
+                <div class="bg-nexspark-gold/10 border-2 border-nexspark-gold rounded-xl p-6 mb-6 text-center">
+                    <div class="text-6xl font-header font-bold text-nexspark-gold mb-2">$20.00</div>
+                    <p class="text-white/70 font-mono text-sm">Complete Growth Strategy Report</p>
+                </div>
+                <form id="paymentForm">
+                    <div id="cardElement" class="bg-white p-4 rounded-lg mb-4"></div>
+                    <div id="cardErrors" class="text-red-500 text-sm mb-4 min-h-[20px]"></div>
+                    <button type="submit" id="paymentSubmit" class="w-full py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-xl uppercase rounded-xl transition-all shadow-lg">
+                        <span id="paymentButtonText">Pay $20 & Generate Report</span>
+                        <i id="paymentSpinner" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                    </button>
+                </form>
+            `;
+        }
+
+        function initializeStripeElements() {
+            const elements = stripe.elements();
+            cardElement = elements.create('card');
+            cardElement.mount('#cardElement');
+
+            cardElement.on('change', (event) => {
+                const displayError = document.getElementById('cardErrors');
+                displayError.textContent = event.error ? event.error.message : '';
+            });
+
+            document.getElementById('paymentForm').addEventListener('submit', handlePaymentSubmit);
+        }
+
+        async function handlePaymentSubmit(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('paymentSubmit');
+            const buttonText = document.getElementById('paymentButtonText');
+            const spinner = document.getElementById('paymentSpinner');
+
+            submitBtn.disabled = true;
+            buttonText.textContent = 'Processing...';
+            spinner.classList.remove('hidden');
+
+            try {
+                // Create payment intent
+                const intentResponse = await fetch('/api/payment/create-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: user.id,
+                        userEmail: user.email || user.id + '@nexspark.ai',
+                        amount: 2000
+                    })
+                });
+
+                const intentData = await intentResponse.json();
+
+                if (!intentData.success) {
+                    throw new Error(intentData.message);
+                }
+
+                // Confirm payment
+                const { error, paymentIntent } = await stripe.confirmCardPayment(intentData.clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: { email: user.email }
+                    }
+                });
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+                if (paymentIntent.status === 'succeeded') {
+                    console.log('✅ Payment successful');
+
+                    // Show immediate feedback
+                    showProcessing('Payment confirmed! Generating your strategy...', 70);
+
+                    // Update generation as paid
+                    await fetch(`/api/report/state/${generationId}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paid: true, paymentId: paymentIntent.id })
+                    });
+
+                    // Execute Step 4 (this takes 30+ seconds)
+                    await executeStep(4);
+
+                    // Restart polling for Step 4 (GENERATING_STRATEGY state)
+                    setTimeout(pollGenerationState, 1000);
+                }
+
+            } catch (error) {
+                console.error('Payment error:', error);
+                isProcessingPayment = false; // Re-enable polling on error
+                document.getElementById('cardErrors').textContent = error.message;
+                submitBtn.disabled = false;
+                buttonText.textContent = 'Pay $20 & Generate Report';
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function showComplete(reportId) {
+            // Clear completed interview from localStorage since report is generated
+            localStorage.removeItem('nexspark_interview');
+            localStorage.removeItem('nexspark_interview_progress');
+            console.log('✅ Cleared completed interview from localStorage');
+
+            document.getElementById('contentArea').innerHTML = `
+                <div class="text-center">
+                    <i class="fas fa-check-circle text-green-500 text-8xl mb-6"></i>
+                    <h2 class="text-4xl font-header font-bold text-white mb-4">Report Complete!</h2>
+                    <p class="text-nexspark-blue font-mono text-lg mb-8">Your growth strategy is ready</p>
+                    <div class="flex gap-4 justify-center">
+                        <button onclick="viewReport('${reportId}')" class="px-8 py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-lg uppercase rounded-xl transition-all">
+                            <i class="fas fa-eye mr-2"></i>View Report
+                        </button>
+                        <button onclick="downloadReport('${reportId}')" class="px-8 py-4 bg-nexspark-blue hover:bg-blue-600 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
+                            <i class="fas fa-download mr-2"></i>Download
+                        </button>
+                        <button onclick="window.location.href='/dashboard'" class="px-8 py-4 bg-nexspark-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
+                            <i class="fas fa-home mr-2"></i>Dashboard
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showFailed(error, state) {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle text-nexspark-red text-8xl mb-6"></i>
+                    <h2 class="text-3xl font-header font-bold text-white mb-4">Generation Failed</h2>
+                    <p class="text-white/70 font-mono text-sm mb-8">${error || 'An error occurred'}</p>
+                    <div class="flex gap-4 justify-center">
+                        <button onclick="retryGeneration()" class="px-8 py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-lg uppercase rounded-xl transition-all">
+                            <i class="fas fa-redo mr-2"></i>Retry
+                        </button>
+                        <button onclick="window.location.href='/dashboard'" class="px-8 py-4 bg-nexspark-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
+                            <i class="fas fa-home mr-2"></i>Dashboard
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function retryGeneration() {
+            try {
+                await fetch(`/api/report/resume/${generationId}`, { method: 'POST' });
+                setTimeout(pollGenerationState, 1000);
+            } catch (error) {
+                showError('Failed to retry: ' + error.message);
+            }
+        }
+
+        async function viewReport(reportId) {
+            window.open(`/report/${reportId}`, '_blank');
+        }
+
+        async function downloadReport(reportId) {
+            try {
+                const response = await fetch(`/api/report/${reportId}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.message);
+                }
+
+                const blob = new Blob([data.report.html_report], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `nexspark-report-${data.report.brand_name}-${Date.now()}.html`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+            } catch (error) {
+                showError('Failed to download: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
