@@ -1362,7 +1362,7 @@ app.post('/api/analysis/generate-strategy', async (c) => {
 // Start report generation
 app.post('/api/report/start', async (c) => {
   try {
-    const { interviewId, userId } = await c.req.json();
+    const { interviewId, userId, format } = await c.req.json();
 
     if (!interviewId || !userId) {
       return c.json({ success: false, message: 'Interview ID and User ID required' }, 400);
@@ -1371,6 +1371,9 @@ app.post('/api/report/start', async (c) => {
     if (!c.env.DB) {
       return c.json({ success: false, message: 'Database not configured' }, 500);
     }
+
+    // Determine report format: explicit > env variable > default to legacy
+    const reportFormat = format || c.env.REPORT_FORMAT || 'legacy';
 
     // Verify user exists
     const userExists = await c.env.DB.prepare(`
@@ -1405,18 +1408,20 @@ app.post('/api/report/start', async (c) => {
         success: true,
         generationId: existing.id,
         message: 'Generation already in progress',
-        currentState: existing.current_state
+        currentState: existing.current_state,
+        format: existing.report_format || 'legacy'
       });
     }
 
-    const generator = new ReportGenerator(c.env.DB, c.env);
+    const generator = new ReportGenerator(c.env.DB, c.env, reportFormat);
     const generationId = await generator.start(interviewId, userId);
 
-    console.log('✅ Report generation started:', generationId);
+    console.log(`✅ Report generation started: ${generationId} (format: ${reportFormat})`);
 
     return c.json({
       success: true,
       generationId,
+      format: reportFormat,
       message: 'Generation started'
     });
 
@@ -1439,8 +1444,11 @@ app.get('/api/report/state/:generationId', async (c) => {
     const state = await generator.getState(generationId);
 
     if (!state) {
+      console.error(`❌ Generation not found: ${generationId}`);
       return c.json({ success: false, message: 'Generation not found' }, 404);
     }
+
+    console.log(`📊 Generation state: ${generationId} -> ${state.currentState} (${state.progressPercent}%) [format: ${state.reportFormat}]`);
 
     return c.json({ success: true, ...state });
 
@@ -1480,6 +1488,8 @@ app.post('/api/report/execute-step', async (c) => {
   try {
     const { generationId, step, data } = await c.req.json();
 
+    console.log(`🔄 Executing step ${step} for generation ${generationId}`);
+
     if (!generationId || !step) {
       return c.json({ success: false, message: 'Generation ID and step required' }, 400);
     }
@@ -1488,42 +1498,95 @@ app.post('/api/report/execute-step', async (c) => {
       return c.json({ success: false, message: 'Database not configured' }, 500);
     }
 
-    const generator = new ReportGenerator(c.env.DB, c.env);
-    const state = await generator.getState(generationId);
+    // First get the state to determine the format
+    const tempGenerator = new ReportGenerator(c.env.DB, c.env);
+    const state = await tempGenerator.getState(generationId);
 
     if (!state) {
+      console.error(`❌ Generation not found: ${generationId}`);
       return c.json({ success: false, message: 'Generation not found' }, 404);
     }
+
+    console.log(`📊 Current state: ${state.currentState}, Format: ${state.reportFormat}`);
+
+    // Create generator with the correct format
+    const generator = new ReportGenerator(c.env.DB, c.env, state.reportFormat);
 
     let result;
 
     switch (step) {
       case 1:
+        console.log('⚙️ Step 1: Analyzing interview...');
         const { getInterview } = await import('./services/database');
         const interview = await getInterview(c.env.DB, state.interviewId);
+
+        if (!interview) {
+          console.error(`❌ Interview not found: ${state.interviewId}`);
+          throw new Error('Interview not found');
+        }
+
+        console.log(`📝 Interview found, responses: ${interview.responses?.length || 0}`);
         result = await generator.executeStep1(generationId, interview);
+        console.log('✅ Step 1 completed successfully');
         break;
 
       case 2:
+        console.log('⚙️ Step 2: Researching competitors...');
         if (!data?.website) {
           return c.json({ success: false, message: 'Website required' }, 400);
         }
+        console.log(`🌐 Website: ${data.website}`);
         result = await generator.executeStep2(generationId, data.website);
+        console.log('✅ Step 2 completed successfully');
         break;
 
       case 4:
+        console.log('⚙️ Step 4: Generating strategy...');
         result = await generator.executeStep4(generationId);
+        console.log('✅ Step 4 completed successfully');
         break;
 
       default:
+        console.error(`❌ Invalid step: ${step}`);
         return c.json({ success: false, message: 'Invalid step' }, 400);
     }
 
+    console.log(`✅ Step ${step} execution complete`);
     return c.json({ success: true, result });
 
   } catch (error: any) {
-    console.error('Error executing step:', error);
-    return c.json({ success: false, message: error.message }, 500);
+    console.error(`❌ Error executing step:`, error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Stack trace:', error.stack);
+
+    // Mark generation as failed in database
+    try {
+      await c.env.DB.prepare(`
+        UPDATE report_generations
+        SET current_state = 'FAILED',
+            error_message = ?,
+            last_updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `).bind(error.message, generationId).run();
+      console.log('Updated generation state to FAILED');
+    } catch (dbError) {
+      console.error('Failed to update generation state:', dbError);
+    }
+
+    // Provide helpful error messages for common issues
+    let userMessage = error.message;
+    if (error.message.includes('timeout') || error.message.includes('524')) {
+      userMessage = 'Request timed out. This usually happens with large reports. The system will retry automatically.';
+    } else if (error.message.includes('API key')) {
+      userMessage = 'Claude API key not configured properly. Please contact support.';
+    }
+
+    return c.json({
+      success: false,
+      message: userMessage,
+      error: error.message
+    }, 500);
   }
 });
 
@@ -1603,7 +1666,7 @@ app.delete('/api/report/:reportId', async (c) => {
 app.post('/api/report/regenerate/:interviewId', async (c) => {
   try {
     const interviewId = c.req.param('interviewId');
-    const { userId } = await c.req.json();
+    const { userId, format } = await c.req.json();
 
     if (!userId) {
       return c.json({ success: false, message: 'User ID required' }, 400);
@@ -1612,6 +1675,9 @@ app.post('/api/report/regenerate/:interviewId', async (c) => {
     if (!c.env.DB) {
       return c.json({ success: false, message: 'Database not configured' }, 500);
     }
+
+    // Determine report format: explicit > env variable > default to legacy
+    const reportFormat = format || c.env.REPORT_FORMAT || 'legacy';
 
     // Mark old reports as not latest
     await c.env.DB.prepare(`
@@ -1624,13 +1690,13 @@ app.post('/api/report/regenerate/:interviewId', async (c) => {
       DELETE FROM report_generations WHERE interview_id = ?
     `).bind(interviewId).run();
 
-    // Create new generation
-    const generator = new ReportGenerator(c.env.DB, c.env);
+    // Create new generation with specified format
+    const generator = new ReportGenerator(c.env.DB, c.env, reportFormat);
     const generationId = await generator.start(interviewId, userId);
 
-    console.log('✅ Report regeneration started:', generationId);
+    console.log(`✅ Report regeneration started: ${generationId} (format: ${reportFormat})`);
 
-    return c.json({ success: true, generationId });
+    return c.json({ success: true, generationId, format: reportFormat });
 
   } catch (error: any) {
     console.error('Error regenerating report:', error);

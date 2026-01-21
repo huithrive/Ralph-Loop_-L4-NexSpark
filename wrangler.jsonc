@@ -6,11 +6,17 @@
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
+	"limits": {
+		"cpu_ms": 30000
+	},
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "nexspark-interviews",
 			"database_id": "a393086b-cffc-487a-b49a-9f147e0c445f"
 		}
-	]
+	],
+	"vars": {
+		"REPORT_FORMAT": "v2"
+	}
 }

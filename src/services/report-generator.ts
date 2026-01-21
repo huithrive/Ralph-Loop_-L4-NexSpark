@@ -1,18 +1,32 @@
 /**
  * Report Generator Service
  * Manages state machine for report generation with resume capability
+ * Supports both legacy and v2 report formats
  */
 
 import { generateId } from './database';
+import type { ReportFormat } from '../types/report-formats';
+
+// Legacy format imports (V1)
 import {
-  analyzeInterview as analyzeInterviewTranscript,
-  verifyWebsiteAndResearch,
-  generateGTMStrategy,
-  generateStrategyReport,
+  analyzeInterview as analyzeInterviewLegacy,
+  verifyWebsiteAndResearch as verifyWebsiteLegacy,
+  generateGTMStrategy as generateStrategyLegacy,
+  generateStrategyReport as generateReportLegacy,
   type InterviewTranscript,
   type BusinessProfile,
   type GTMStrategy
 } from './post-interview-analysis';
+
+// V2 format imports
+import {
+  analyzeInterview as analyzeInterviewV2,
+  verifyWebsiteAndResearch as verifyWebsiteV2,
+  generateGTMStrategy as generateStrategyV2,
+  generateStrategyReport as generateReportV2,
+} from './post-interview-analysis-v2';
+
+import type { GTMStrategyV2 } from '../types/report-formats';
 
 export type GenerationState =
   | 'NOT_STARTED'
@@ -36,15 +50,20 @@ export interface GenerationProgress {
   paid: boolean;
   reportId?: string;
   error?: string;
+  reportFormat?: ReportFormat;
 }
 
 export class ReportGenerator {
   private db: D1Database;
   private env: any;
+  private format: ReportFormat;
 
-  constructor(db: D1Database, env: any) {
+  constructor(db: D1Database, env: any, format?: ReportFormat) {
     this.db = db;
     this.env = env;
+    // Default to legacy format for backward compatibility
+    this.format = format || env.REPORT_FORMAT || 'legacy';
+    console.log(`ReportGenerator initialized with format: ${this.format}`);
   }
 
   /**
@@ -55,13 +74,13 @@ export class ReportGenerator {
 
     await this.db.prepare(`
       INSERT INTO report_generations (
-        id, interview_id, user_id, current_state, progress_percent, started_at, last_updated_at
-      ) VALUES (?, ?, ?, 'NOT_STARTED', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    `).bind(genId, interviewId, userId).run();
+        id, interview_id, user_id, current_state, progress_percent, report_format, started_at, last_updated_at
+      ) VALUES (?, ?, ?, 'NOT_STARTED', 0, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    `).bind(genId, interviewId, userId, this.format).run();
 
-    await this.logEvent(genId, 'CREATED', null, 'NOT_STARTED', {});
+    await this.logEvent(genId, 'CREATED', null, 'NOT_STARTED', { format: this.format });
 
-    console.log('✅ Report generation created:', genId);
+    console.log(`✅ Report generation created: ${genId} (format: ${this.format})`);
     return genId;
   }
 
@@ -85,7 +104,8 @@ export class ReportGenerator {
       step2Data: state.step_2_research ? JSON.parse(state.step_2_research as string) : undefined,
       paid: Boolean(state.paid),
       reportId: state.report_id as string | undefined,
-      error: state.error_message as string | undefined
+      error: state.error_message as string | undefined,
+      reportFormat: (state.report_format as ReportFormat) || 'legacy'
     };
   }
 
@@ -93,6 +113,8 @@ export class ReportGenerator {
    * Execute Step 1: Analysis
    */
   async executeStep1(generationId: string, interview: any): Promise<BusinessProfile> {
+    console.log(`📝 [Step 1] Starting analysis for generation ${generationId} (format: ${this.format})`);
+
     await this.setState(generationId, 'ANALYZING', 10);
 
     const transcript: InterviewTranscript = {
@@ -102,8 +124,24 @@ export class ReportGenerator {
       completedAt: interview.completed_at || new Date().toISOString()
     };
 
+    console.log(`📝 [Step 1] Transcript prepared with ${transcript.responses.length} responses`);
+
     const claudeApiKey = this.env.ANTHROPIC_API_KEY || '';
-    const businessProfile = await analyzeInterviewTranscript(transcript, claudeApiKey);
+
+    if (!claudeApiKey) {
+      console.error('❌ [Step 1] ANTHROPIC_API_KEY not configured!');
+      throw new Error('Claude API key not configured');
+    }
+
+    console.log(`📝 [Step 1] Using ${this.format} format analysis function`);
+
+    // Route to appropriate analysis function based on format
+    const analyzeInterview = this.format === 'v2' ? analyzeInterviewV2 : analyzeInterviewLegacy;
+
+    console.log(`📝 [Step 1] Calling Claude API...`);
+    const businessProfile = await analyzeInterview(transcript, claudeApiKey);
+
+    console.log(`📝 [Step 1] Analysis complete. Brand: ${businessProfile.brandName}`);
 
     // Save step 1 data
     await this.db.prepare(`
@@ -112,22 +150,40 @@ export class ReportGenerator {
       WHERE id = ?
     `).bind(JSON.stringify(businessProfile), generationId).run();
 
-    await this.setState(generationId, 'PROFILE_REVIEW', 35);
-    await this.logEvent(generationId, 'STATE_CHANGE', 'ANALYZING', 'PROFILE_REVIEW', { businessProfile });
+    console.log(`📝 [Step 1] Saved to database, updating state to PROFILE_REVIEW`);
 
+    await this.setState(generationId, 'PROFILE_REVIEW', 35);
+    await this.logEvent(generationId, 'STATE_CHANGE', 'ANALYZING', 'PROFILE_REVIEW', { businessProfile, format: this.format });
+
+    console.log(`✅ [Step 1] Complete`);
     return businessProfile;
   }
 
   /**
    * Execute Step 2: Research
    */
-  async executeStep2(generationId: string, website: string): Promise<any> {
+  async executeStep2(generationId: string, website: string, businessProfile?: BusinessProfile): Promise<any> {
     await this.setState(generationId, 'RESEARCHING', 40);
 
     const claudeApiKey = this.env.ANTHROPIC_API_KEY || '';
     const rapidApiKey = this.env.RAPIDAPI_KEY || '';
 
-    const research = await verifyWebsiteAndResearch(website, claudeApiKey, rapidApiKey);
+    let research: any;
+
+    if (this.format === 'v2') {
+      // V2 format: No RapidAPI, requires business profile
+      if (!businessProfile) {
+        const state = await this.getState(generationId);
+        businessProfile = state?.step1Data;
+        if (!businessProfile) {
+          throw new Error('Business profile required for V2 format research');
+        }
+      }
+      research = await verifyWebsiteV2(website, businessProfile, claudeApiKey);
+    } else {
+      // Legacy format: Uses RapidAPI
+      research = await verifyWebsiteLegacy(website, claudeApiKey, rapidApiKey);
+    }
 
     // Save step 2 data
     await this.db.prepare(`
@@ -137,7 +193,10 @@ export class ReportGenerator {
     `).bind(JSON.stringify(research), generationId).run();
 
     await this.setState(generationId, 'PREVIEW_READY', 60);
-    await this.logEvent(generationId, 'STATE_CHANGE', 'RESEARCHING', 'PREVIEW_READY', { competitors: research.competitors });
+    await this.logEvent(generationId, 'STATE_CHANGE', 'RESEARCHING', 'PREVIEW_READY', {
+      competitors: research.competitors,
+      format: this.format
+    });
 
     return research;
   }
@@ -145,7 +204,7 @@ export class ReportGenerator {
   /**
    * Execute Step 4: Generate Strategy
    */
-  async executeStep4(generationId: string): Promise<{ strategy: GTMStrategy; reportId: string }> {
+  async executeStep4(generationId: string): Promise<{ strategy: GTMStrategy | GTMStrategyV2; reportId: string }> {
     await this.setState(generationId, 'GENERATING_STRATEGY', 70);
 
     const state = await this.getState(generationId);
@@ -159,17 +218,33 @@ export class ReportGenerator {
     const claudeApiKey = this.env.ANTHROPIC_API_KEY || '';
     const rapidApiKey = this.env.RAPIDAPI_KEY || '';
 
-    // Generate GTM strategy
-    const strategy = await generateGTMStrategy(
-      businessProfile,
-      research.competitors || [],
-      research.scraped_content || '',
-      claudeApiKey,
-      rapidApiKey
-    );
+    let strategy: GTMStrategy | GTMStrategyV2;
+    let htmlReport: string;
+    let recommendedChannel: string | null = null;
 
-    // Generate HTML report
-    const htmlReport = generateStrategyReport(strategy);
+    if (this.format === 'v2') {
+      // V2 format: No RapidAPI, returns GTMStrategyV2
+      const v2Strategy = await generateStrategyV2(
+        businessProfile,
+        research.competitors || [],
+        research.scraped_content || '',
+        claudeApiKey
+      );
+      strategy = v2Strategy;
+      htmlReport = generateReportV2(v2Strategy);
+      recommendedChannel = v2Strategy.channelRecommendation.recommended;
+    } else {
+      // Legacy format: Uses RapidAPI, returns GTMStrategy
+      const legacyStrategy = await generateStrategyLegacy(
+        businessProfile,
+        research.competitors || [],
+        research.scraped_content || '',
+        claudeApiKey,
+        rapidApiKey
+      );
+      strategy = legacyStrategy;
+      htmlReport = generateReportLegacy(legacyStrategy);
+    }
 
     // Save to strategy_reports table
     const reportId = generateId('rpt_');
@@ -177,8 +252,9 @@ export class ReportGenerator {
       INSERT INTO strategy_reports (
         id, user_id, interview_id, generation_id,
         brand_name, business_profile, gtm_strategy, html_report,
+        report_format, recommended_channel,
         version, is_latest, paid, payment_id, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, CURRENT_TIMESTAMP)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, CURRENT_TIMESTAMP)
     `).bind(
       reportId,
       state.userId,
@@ -188,6 +264,8 @@ export class ReportGenerator {
       JSON.stringify(businessProfile),
       JSON.stringify(strategy),
       htmlReport,
+      this.format,
+      recommendedChannel,
       state.paid ? 1 : 0,
       state.reportId || null
     ).run();
@@ -204,7 +282,11 @@ export class ReportGenerator {
       WHERE id = ?
     `).bind(reportId, JSON.stringify(strategy), generationId).run();
 
-    await this.logEvent(generationId, 'STATE_CHANGE', 'GENERATING_STRATEGY', 'COMPLETE', { reportId });
+    await this.logEvent(generationId, 'STATE_CHANGE', 'GENERATING_STRATEGY', 'COMPLETE', {
+      reportId,
+      format: this.format,
+      recommendedChannel
+    });
 
     return { strategy, reportId };
   }
@@ -236,7 +318,7 @@ export class ReportGenerator {
         if (!state.step1Data) {
           throw new Error('Missing analysis data');
         }
-        return await this.executeStep2(generationId, state.step1Data.website);
+        return await this.executeStep2(generationId, state.step1Data.website, state.step1Data);
 
       case 'PREVIEW_READY':
         // User needs to see preview, return current data
@@ -262,7 +344,7 @@ export class ReportGenerator {
         if (failedStep === 1 && interview) {
           return await this.executeStep1(generationId, interview);
         } else if (failedStep === 2 && state.step1Data) {
-          return await this.executeStep2(generationId, state.step1Data.website);
+          return await this.executeStep2(generationId, state.step1Data.website, state.step1Data);
         }
         throw new Error('Cannot resume: missing required data');
 
