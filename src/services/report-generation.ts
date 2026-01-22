@@ -3,6 +3,9 @@
  * Uses Claude 4.5 Sonnet to generate comprehensive, slide-formatted growth reports
  */
 
+import { callClaudeJson } from './ai/claude-client';
+import { AI_MODELS } from '../config';
+
 export interface InterviewData {
   brandName: string;
   productDescription: string;
@@ -65,37 +68,22 @@ export async function generateComprehensiveReport(
 
   console.log(`📊 Generating comprehensive report for ${interviewData.brandName} with Claude 4.5 Sonnet...`);
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': claudeApiKey,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-opus-4-20250514',
-      max_tokens: 8000,
-      temperature: 0.7,
-      messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
-      ]
-    })
+  // Use new Claude client wrapper
+  const reportData = await callClaudeJson<FullReport>(prompt, claudeApiKey, {
+    model: AI_MODELS.claude.opus4,
+    maxTokens: 8000,
+    temperature: 0.7,
   });
 
-  if (!response.ok) {
-    const errorBody = await response.text();
-    console.error('Claude API error:', errorBody);
-    throw new Error(`Claude API failed: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  const reportText = data.content[0].text;
-
-  // Parse the structured report
-  const report = parseReportResponse(reportText, interviewData.brandName);
+  // Ensure metadata is populated
+  const report = {
+    ...reportData,
+    metadata: {
+      generatedAt: new Date().toISOString(),
+      brandName: interviewData.brandName,
+      provider: 'Claude Opus 4',
+    },
+  };
   
   console.log(`✅ Report generated successfully with ${report.slides.length} slides`);
   
@@ -310,44 +298,15 @@ Return ONLY the JSON object, no markdown, no explanation.`;
 
   console.log('📊 Generating enhanced summary with Claude 4.5 Sonnet...');
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': claudeApiKey,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-opus-4-20250514',
-      max_tokens: 3000,
-      temperature: 0.5,
-      messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
-      ]
-    })
+  // Use new Claude client wrapper
+  const summary: InterviewData = await callClaudeJson<InterviewData>(prompt, claudeApiKey, {
+    model: AI_MODELS.claude.opus4,
+    maxTokens: 3000,
+    temperature: 0.5,
   });
 
-  if (!response.ok) {
-    const errorBody = await response.text();
-    console.error('Claude API error:', errorBody);
-    throw new Error(`Claude API failed: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  const summaryText = data.content[0].text;
-
-  // Parse JSON from Claude's response
-  const jsonMatch = summaryText.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('Failed to parse JSON from Claude response');
-  }
-
-  const summary: InterviewData = JSON.parse(jsonMatch[0]);
   console.log('✅ Enhanced summary generated successfully');
-  
+
   return summary;
 }
 
@@ -398,47 +357,13 @@ Return ONLY the JSON object.`;
 
   console.log(`📊 Generating competitor analysis with Claude 4.5 Sonnet for ${website}...`);
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': claudeApiKey,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-opus-4-20250514',
-      max_tokens: 2000,
-      temperature: 0.7,
-      messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
-      ]
-    })
-  });
-
-  if (!response.ok) {
-    console.warn('Claude API failed for competitor analysis, using fallback');
-    return competitors.map(comp => ({
-      name: comp.replace(/\.(com|io|net|org).*/, '').replace(/^www\./, ''),
-      website: comp,
-      monthlyTraffic: 'Unknown',
-      strength: 'Established market presence',
-      weakness: 'Opportunity for differentiation'
-    }));
-  }
-
-  const data = await response.json();
-  const analysisText = data.content[0].text;
-
   try {
-    const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('No JSON found');
-    }
-
-    const parsed = JSON.parse(jsonMatch[0]);
+    // Use new Claude client wrapper
+    const parsed = await callClaudeJson(prompt, claudeApiKey, {
+      model: AI_MODELS.claude.opus4,
+      maxTokens: 2000,
+      temperature: 0.7,
+    });
     console.log(`✅ Competitor analysis generated for ${parsed.competitors?.length || 0} competitors`);
     
     return parsed.competitors || [];

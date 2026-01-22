@@ -1,6 +1,9 @@
 // Minimum Viable Agent - Day 1 Implementation
 // Simple but functional agent with basic execution tracking
 
+import { callClaude as callClaudeAPI } from '../ai/claude-client';
+import { AI_MODELS } from '../../config';
+
 export interface AgentRequest {
   userId: string;
   request: string;
@@ -213,37 +216,16 @@ Format your response clearly with:
    */
   private async callClaude(prompt: string, maxTokens: number = 1024): Promise<string> {
     const apiKey = this.env.ANTHROPIC_API_KEY;
-    
+
     if (!apiKey) {
       throw new Error('Claude API key not configured');
     }
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-opus-4-20250514',
-        max_tokens: maxTokens,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      })
+    // Use new Claude client wrapper
+    return await callClaudeAPI(prompt, apiKey, {
+      model: AI_MODELS.claude.opus4,
+      maxTokens,
     });
-
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Claude API error: ${response.status} ${error}`);
-    }
-
-    const data = await response.json();
-    return data.content[0].text;
   }
 
   /**

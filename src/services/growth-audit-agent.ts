@@ -3,6 +3,9 @@
  * Uses Claude AI and RapidAPI to generate competitive intelligence reports
  */
 
+import { callClaude } from './ai/claude-client';
+import { AI_MODELS } from '../config';
+
 interface CompetitorData {
   name: string;
   website: string;
@@ -161,31 +164,11 @@ Format your response as a structured competitive intelligence report with:
 
 Make the analysis data-driven, citing specific metrics where possible.`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': claudeApiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-opus-4-20250514',
-        max_tokens: 4096,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      })
+    // Use new Claude client wrapper
+    const analysisText = await callClaude(prompt, claudeApiKey, {
+      model: AI_MODELS.claude.opus4,
+      maxTokens: 4096,
     });
-
-    if (!response.ok) {
-      throw new Error(`Claude API request failed: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const analysisText = data.content[0].text;
 
     // Parse the structured response
     return parseClaudeAnalysis(analysisText);

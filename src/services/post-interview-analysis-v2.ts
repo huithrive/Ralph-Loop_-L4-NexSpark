@@ -26,28 +26,9 @@ import type {
   KPITarget,
 } from '../types/report-formats';
 
-/**
- * Fetch with timeout wrapper to prevent hanging requests
- */
-async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number = 120000): Promise<Response> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const response = await fetch(url, {
-      ...options,
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
-    return response;
-  } catch (error: any) {
-    clearTimeout(timeoutId);
-    if (error.name === 'AbortError') {
-      throw new Error(`Request timeout after ${timeoutMs / 1000}s`);
-    }
-    throw error;
-  }
-}
+import { callClaudeJson, callClaude } from './ai/claude-client';
+import { fetchWithTimeout } from '../utils/fetch-with-timeout';
+import { AI_MODELS, TIMEOUTS } from '../config';
 
 export interface InterviewTranscript {
   userId: string;
@@ -118,64 +99,19 @@ Respond in JSON format:
   try {
     console.log('[V2 analyzeInterview] Calling Claude API with model: claude-opus-4-5-20251101');
     console.log('[V2 analyzeInterview] Prompt length:', prompt.length, 'chars');
+    console.log('[V2 analyzeInterview] Making request to Claude API with 5min timeout...');
 
-    const requestBody = {
-      model: 'claude-opus-4-5-20251101',
-      max_tokens: 4096,
-      messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
-      ]
-    };
-
-    console.log('[V2 analyzeInterview] Making fetch request to Claude API with 2min timeout...');
-
-    const response = await fetchWithTimeout(
-      'https://api.anthropic.com/v1/messages',
+    // Use new Claude client wrapper
+    const businessProfile: BusinessProfile = await callClaudeJson<BusinessProfile>(
+      prompt,
+      claudeApiKey,
       {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': claudeApiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify(requestBody)
-      },
-      300000 // 5 minute timeout
+        model: AI_MODELS.claude.opus45,
+        maxTokens: 4096,
+        timeout: TIMEOUTS.api.extended,
+      }
     );
 
-    console.log('[V2 analyzeInterview] Fetch completed, status:', response.status);
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error('[V2 analyzeInterview] Claude API error:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorBody
-      });
-      throw new Error(`Claude API failed: ${response.statusText} (${response.status}). ${errorBody}`);
-    }
-
-    console.log('[V2 analyzeInterview] Response OK, parsing JSON...');
-    const data = await response.json();
-
-    console.log('[V2 analyzeInterview] JSON parsed, content blocks:', data.content?.length);
-    const analysisText = data.content[0].text;
-    console.log('[V2 analyzeInterview] Analysis text length:', analysisText.length);
-
-    // Extract JSON from response
-    console.log('[V2 analyzeInterview] Extracting JSON from response...');
-    const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error('[V2 analyzeInterview] ERROR: No JSON found in response');
-      console.error('[V2 analyzeInterview] Response text:', analysisText.substring(0, 500));
-      throw new Error('Failed to parse business profile from Claude response');
-    }
-
-    console.log('[V2 analyzeInterview] JSON matched, parsing business profile...');
-    const businessProfile: BusinessProfile = JSON.parse(jsonMatch[0]);
     console.log('[V2 analyzeInterview] Business profile extracted successfully');
     console.log('[V2 analyzeInterview] Brand name:', businessProfile.brandName);
     console.log('[V2 analyzeInterview] Industry:', businessProfile.industry);
@@ -293,54 +229,17 @@ Respond in JSON format:
     console.log('[V2 verifyWebsiteAndResearch] Calling Claude API for competitor analysis...');
     console.log('[V2 verifyWebsiteAndResearch] Prompt length:', competitorPrompt.length);
 
-    const response = await fetchWithTimeout(
-      'https://api.anthropic.com/v1/messages',
+    // Use new Claude client wrapper
+    const result = await callClaudeJson<{ competitors: CompetitorInsight[] }>(
+      competitorPrompt,
+      claudeApiKey,
       {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': claudeApiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-opus-4-5-20251101',
-          max_tokens: 8192,
-          temperature: 0.7,
-          messages: [
-            {
-              role: 'user',
-              content: competitorPrompt
-            }
-          ]
-        })
-      },
-      120000 // 2 minute timeout
+        model: AI_MODELS.claude.opus45,
+        maxTokens: 8192,
+        temperature: 0.7,
+        timeout: TIMEOUTS.api.default,
+      }
     );
-
-    console.log('[V2 verifyWebsiteAndResearch] Claude API response status:', response.status);
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error('[V2 verifyWebsiteAndResearch] Claude API error:', errorBody);
-      throw new Error(`Claude API failed: ${response.statusText}`);
-    }
-
-    console.log('[V2 verifyWebsiteAndResearch] Parsing response...');
-    const data = await response.json();
-    const competitorsText = data.content[0].text;
-    console.log('[V2 verifyWebsiteAndResearch] Response text length:', competitorsText.length);
-
-    // Extract JSON from response
-    console.log('[V2 verifyWebsiteAndResearch] Extracting JSON from response...');
-    const jsonMatch = competitorsText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error('[V2 verifyWebsiteAndResearch] Failed to parse competitors JSON');
-      console.error('[V2 verifyWebsiteAndResearch] Response text:', competitorsText.substring(0, 500));
-      return { valid: true, scraped_content: scrapedContent, competitors: [] };
-    }
-
-    console.log('[V2 verifyWebsiteAndResearch] JSON matched, parsing...');
-    const result = JSON.parse(jsonMatch[0]);
 
     console.log('[V2 verifyWebsiteAndResearch] Successfully identified', result.competitors.length, 'competitors');
 
@@ -576,48 +475,19 @@ Respond in valid JSON format matching this structure exactly. Be specific, actio
 
   try {
     console.log('Generating V2 GTM strategy with Claude Opus 4.5...');
-    console.log('Using 3 minute timeout for large response (32k tokens)...');
+    console.log('Using 5 minute timeout for large response (32k tokens)...');
 
-    const response = await fetchWithTimeout(
-      'https://api.anthropic.com/v1/messages',
+    // Use new Claude client wrapper
+    const strategy: GTMStrategyV2 = await callClaudeJson<GTMStrategyV2>(
+      prompt,
+      claudeApiKey,
       {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': claudeApiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-opus-4-5-20251101',
-          max_tokens: 32768,
-          temperature: 0.7,
-          messages: [
-            {
-              role: 'user',
-              content: prompt
-            }
-          ]
-        })
-      },
-      300000 // 5 minute timeout for large strategy generation
+        model: AI_MODELS.claude.opus45,
+        maxTokens: 32768,
+        temperature: 0.7,
+        timeout: TIMEOUTS.api.extended,
+      }
     );
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`Claude API failed: ${response.statusText}. ${errorBody}`);
-    }
-
-    const data = await response.json();
-    const strategyText = data.content[0].text;
-
-    // Extract JSON from response
-    const jsonMatch = strategyText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error('Failed to parse strategy JSON from response:', strategyText.substring(0, 500));
-      throw new Error('Failed to parse GTM strategy from Claude response');
-    }
-
-    const strategy: GTMStrategyV2 = JSON.parse(jsonMatch[0]);
 
     // Add business profile to strategy
     strategy.businessProfile = businessProfile;

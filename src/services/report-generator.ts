@@ -1,22 +1,11 @@
 /**
  * Report Generator Service
  * Manages state machine for report generation with resume capability
- * Supports both legacy and v2 report formats
+ * Uses V2 report format
  */
 
 import { generateId } from './database';
 import type { ReportFormat } from '../types/report-formats';
-
-// Legacy format imports (V1)
-import {
-  analyzeInterview as analyzeInterviewLegacy,
-  verifyWebsiteAndResearch as verifyWebsiteLegacy,
-  generateGTMStrategy as generateStrategyLegacy,
-  generateStrategyReport as generateReportLegacy,
-  type InterviewTranscript,
-  type BusinessProfile,
-  type GTMStrategy
-} from './post-interview-analysis';
 
 // V2 format imports
 import {
@@ -26,7 +15,7 @@ import {
   generateStrategyReport as generateReportV2,
 } from './post-interview-analysis-v2';
 
-import type { GTMStrategyV2 } from '../types/report-formats';
+import type { GTMStrategyV2, BusinessProfile } from '../types/report-formats';
 
 export type GenerationState =
   | 'NOT_STARTED'
@@ -133,13 +122,10 @@ export class ReportGenerator {
       throw new Error('Claude API key not configured');
     }
 
-    console.log(`📝 [Step 1] Using ${this.format} format analysis function`);
-
-    // Route to appropriate analysis function based on format
-    const analyzeInterview = this.format === 'v2' ? analyzeInterviewV2 : analyzeInterviewLegacy;
+    console.log(`📝 [Step 1] Using V2 format analysis function`);
 
     console.log(`📝 [Step 1] Calling Claude API...`);
-    const businessProfile = await analyzeInterview(transcript, claudeApiKey);
+    const businessProfile = await analyzeInterviewV2(transcript, claudeApiKey);
 
     console.log(`📝 [Step 1] Analysis complete. Brand: ${businessProfile.brandName}`);
 
@@ -153,7 +139,7 @@ export class ReportGenerator {
     console.log(`📝 [Step 1] Saved to database, updating state to PROFILE_REVIEW`);
 
     await this.setState(generationId, 'PROFILE_REVIEW', 35);
-    await this.logEvent(generationId, 'STATE_CHANGE', 'ANALYZING', 'PROFILE_REVIEW', { businessProfile, format: this.format });
+    await this.logEvent(generationId, 'STATE_CHANGE', 'ANALYZING', 'PROFILE_REVIEW', { businessProfile, format: 'v2' });
 
     console.log(`✅ [Step 1] Complete`);
     return businessProfile;
@@ -166,24 +152,16 @@ export class ReportGenerator {
     await this.setState(generationId, 'RESEARCHING', 40);
 
     const claudeApiKey = this.env.ANTHROPIC_API_KEY || '';
-    const rapidApiKey = this.env.RAPIDAPI_KEY || '';
 
-    let research: any;
-
-    if (this.format === 'v2') {
-      // V2 format: No RapidAPI, requires business profile
+    // V2 format: No RapidAPI, requires business profile
+    if (!businessProfile) {
+      const state = await this.getState(generationId);
+      businessProfile = state?.step1Data;
       if (!businessProfile) {
-        const state = await this.getState(generationId);
-        businessProfile = state?.step1Data;
-        if (!businessProfile) {
-          throw new Error('Business profile required for V2 format research');
-        }
+        throw new Error('Business profile required for research');
       }
-      research = await verifyWebsiteV2(website, businessProfile, claudeApiKey);
-    } else {
-      // Legacy format: Uses RapidAPI
-      research = await verifyWebsiteLegacy(website, claudeApiKey, rapidApiKey);
     }
+    const research = await verifyWebsiteV2(website, businessProfile, claudeApiKey);
 
     // Save step 2 data
     await this.db.prepare(`
@@ -195,7 +173,7 @@ export class ReportGenerator {
     await this.setState(generationId, 'PREVIEW_READY', 60);
     await this.logEvent(generationId, 'STATE_CHANGE', 'RESEARCHING', 'PREVIEW_READY', {
       competitors: research.competitors,
-      format: this.format
+      format: 'v2'
     });
 
     return research;
@@ -204,7 +182,7 @@ export class ReportGenerator {
   /**
    * Execute Step 4: Generate Strategy
    */
-  async executeStep4(generationId: string): Promise<{ strategy: GTMStrategy | GTMStrategyV2; reportId: string }> {
+  async executeStep4(generationId: string): Promise<{ strategy: GTMStrategyV2; reportId: string }> {
     await this.setState(generationId, 'GENERATING_STRATEGY', 70);
 
     const state = await this.getState(generationId);
@@ -216,35 +194,16 @@ export class ReportGenerator {
     const research = state.step2Data;
 
     const claudeApiKey = this.env.ANTHROPIC_API_KEY || '';
-    const rapidApiKey = this.env.RAPIDAPI_KEY || '';
 
-    let strategy: GTMStrategy | GTMStrategyV2;
-    let htmlReport: string;
-    let recommendedChannel: string | null = null;
-
-    if (this.format === 'v2') {
-      // V2 format: No RapidAPI, returns GTMStrategyV2
-      const v2Strategy = await generateStrategyV2(
-        businessProfile,
-        research.competitors || [],
-        research.scraped_content || '',
-        claudeApiKey
-      );
-      strategy = v2Strategy;
-      htmlReport = generateReportV2(v2Strategy);
-      recommendedChannel = v2Strategy.channelRecommendation.recommended;
-    } else {
-      // Legacy format: Uses RapidAPI, returns GTMStrategy
-      const legacyStrategy = await generateStrategyLegacy(
-        businessProfile,
-        research.competitors || [],
-        research.scraped_content || '',
-        claudeApiKey,
-        rapidApiKey
-      );
-      strategy = legacyStrategy;
-      htmlReport = generateReportLegacy(legacyStrategy);
-    }
+    // V2 format: No RapidAPI, returns GTMStrategyV2
+    const strategy = await generateStrategyV2(
+      businessProfile,
+      research.competitors || [],
+      research.scraped_content || '',
+      claudeApiKey
+    );
+    const htmlReport = generateReportV2(strategy);
+    const recommendedChannel = strategy.channelRecommendation.recommended;
 
     // Save to strategy_reports table
     const reportId = generateId('rpt_');

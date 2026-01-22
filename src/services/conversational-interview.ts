@@ -3,6 +3,10 @@
  * Multilingual, empathetic AI interviewer with real-time engagement
  */
 
+import { transcribeAudio, callOpenAIWithHistory, generateSpeech } from './ai/openai-client';
+import type { OpenAIMessage } from './ai/openai-client';
+import { AI_MODELS } from '../config';
+
 export interface ConversationMessage {
   role: 'interviewer' | 'user';
   content: string;
@@ -57,40 +61,20 @@ export async function transcribeWithLanguage(
   env?: any
 ): Promise<{ text: string; language: 'en' | 'zh' }> {
   try {
-    const { apiKey, baseURL } = getOpenAIClient(env);
-    
-    // Create form data
-    const formData = new FormData();
+    const { apiKey } = getOpenAIClient(env);
+
+    // Create blob for transcription
     const blob = new Blob([audioBuffer], { type: 'audio/webm' });
-    formData.append('file', blob, 'audio.webm');
-    formData.append('model', 'whisper-1');
-    
-    // Auto-detect language or use preferred
-    if (preferredLanguage === 'zh') {
-      formData.append('language', 'zh');
-    }
-    formData.append('response_format', 'json');
-    
-    const response = await fetch(`${baseURL}/audio/transcriptions`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: formData
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Transcription failed: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    
+
+    // Use new transcription client wrapper
+    const text = await transcribeAudio(blob, apiKey);
+
     // Detect if response is Chinese
-    const isChinese = /[\u4e00-\u9fa5]/.test(data.text);
+    const isChinese = /[\u4e00-\u9fa5]/.test(text);
     const detectedLanguage = isChinese ? 'zh' : 'en';
-    
+
     return {
-      text: data.text,
+      text,
       language: detectedLanguage
     };
   } catch (error) {
@@ -150,25 +134,19 @@ Example responses:
       .map(m => `${m.role === 'interviewer' ? 'Interviewer' : 'User'}: ${m.content}`)
       .join('\n');
 
-    const response = await fetch(`${baseURL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Recent conversation:\n${conversationHistory}\n\nUser just said: "${userAnswer}"\n\nProvide a brief, empathetic acknowledgment (${context.language === 'zh' ? '3-8个字' : '2-5 words'}).` }
-        ],
-        max_tokens: 20,
-        temperature: 0.8
-      })
+    // Use new OpenAI client wrapper
+    const messages: OpenAIMessage[] = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: `Recent conversation:\n${conversationHistory}\n\nUser just said: "${userAnswer}"\n\nProvide a brief, empathetic acknowledgment (${context.language === 'zh' ? '3-8个字' : '2-5 words'}).` }
+    ];
+
+    const response = await callOpenAIWithHistory(messages, apiKey, {
+      model: AI_MODELS.openai.gpt4,
+      maxTokens: 20,
+      temperature: 0.8
     });
 
-    const data = await response.json();
-    return data.choices[0].message.content.trim();
+    return response.trim();
   } catch (error) {
     console.error('Acknowledgment generation error:', error);
     // Fallback acknowledgments
@@ -228,25 +206,19 @@ Based on the conversation history, ask the next most valuable question.`;
       .map(m => `${m.role === 'interviewer' ? 'Interviewer' : 'User'}: ${m.content}`)
       .join('\n');
 
-    const response = await fetch(`${baseURL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Conversation so far:\n${conversationHistory}\n\nWhat's the next insightful question to ask?` }
-        ],
-        max_tokens: 150,
-        temperature: 0.7
-      })
+    // Use new OpenAI client wrapper
+    const messages: OpenAIMessage[] = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: `Conversation so far:\n${conversationHistory}\n\nWhat's the next insightful question to ask?` }
+    ];
+
+    const response = await callOpenAIWithHistory(messages, apiKey, {
+      model: AI_MODELS.openai.gpt4,
+      maxTokens: 150,
+      temperature: 0.7
     });
 
-    const data = await response.json();
-    return data.choices[0].message.content.trim();
+    return response.trim();
   } catch (error) {
     console.error('Question generation error:', error);
     // Fallback questions
@@ -347,30 +319,19 @@ Keep it concise, max 10 words per point.`;
 
     const userPrompt = `User's interview answers:\n${conversationHistory}${websiteContext}\n\nBrand Name: ${context.userProfile?.brandName || 'Not specified'}\nWebsite: ${context.userProfile?.websiteUrl || 'Not provided'}\n\nProvide real-time summary in JSON format based ONLY on this interview data.`;
 
-    const response = await fetch(`${baseURL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        max_tokens: 800,
-        temperature: 0.3,
-        response_format: { type: 'json_object' }
-      })
+    // Use new OpenAI client wrapper
+    const messages: OpenAIMessage[] = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt }
+    ];
+
+    const responseText = await callOpenAIWithHistory(messages, apiKey, {
+      model: AI_MODELS.openai.gpt4,
+      maxTokens: 800,
+      temperature: 0.3
     });
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API failed: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const summary = JSON.parse(data.choices[0].message.content);
+    const summary = JSON.parse(responseText);
     
     return {
       keyPoints: summary.keyPoints || [],
@@ -402,30 +363,14 @@ export async function synthesizeSpeech(
   env?: any
 ): Promise<ArrayBuffer> {
   try {
-    const { apiKey, baseURL } = getOpenAIClient(env);
-    
+    const { apiKey } = getOpenAIClient(env);
+
     // Choose appropriate voice for language
     const voice = language === 'zh' ? 'nova' : 'alloy'; // nova has better multilingual support
-    
-    const response = await fetch(`${baseURL}/audio/speech`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'tts-1',
-        input: text,
-        voice: voice,
-        speed: 1.0
-      })
-    });
 
-    if (!response.ok) {
-      throw new Error(`TTS failed: ${response.statusText}`);
-    }
-
-    return await response.arrayBuffer();
+    // Use new TTS client wrapper
+    const blob = await generateSpeech(text, apiKey, voice);
+    return await blob.arrayBuffer();
   } catch (error) {
     console.error('Speech synthesis error:', error);
     throw error;
