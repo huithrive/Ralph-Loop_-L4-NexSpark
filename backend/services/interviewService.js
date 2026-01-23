@@ -255,6 +255,21 @@ class InterviewService {
       // Generate session summary
       const summary = await this.generateSessionSummary(sessionId, responses);
 
+      // Trigger AI analysis automatically
+      let analysis = null;
+      try {
+        const interviewAnalysisService = require('./interviewAnalysisService');
+        const analysisResult = await interviewAnalysisService.analyzeTranscript(sessionId);
+        analysis = analysisResult.data.analysis;
+        logger.info('Interview analysis completed during completion', { sessionId });
+      } catch (analysisError) {
+        logger.warn('Interview analysis failed during completion, will be available separately', {
+          sessionId,
+          error: analysisError.message
+        });
+        // Don't fail the completion if analysis fails
+      }
+
       const response = {
         session_id: sessionId,
         status: 'completed',
@@ -262,10 +277,13 @@ class InterviewService {
         total_responses: responses.length,
         duration_minutes: completedSession.getDurationMinutes(),
         summary: summary,
+        analysis: analysis, // Include AI analysis if generated
         closing_message: INTERVIEW_SCRIPT.closing,
         next_steps: {
           action: 'generate_gtm_report',
-          message: 'Your interview analysis will be combined with your market research to create a comprehensive GTM strategy report.'
+          message: analysis ?
+            'Your interview has been analyzed! Strategic insights are ready. Next: GTM strategy report generation.' :
+            'Your interview analysis will be combined with your market research to create a comprehensive GTM strategy report.'
         }
       };
 

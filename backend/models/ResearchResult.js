@@ -81,12 +81,13 @@ class ResearchResult {
 
       const row = result.rows[0];
 
-      // Parse JSON fields
-      row.market_size = row.market_size ? JSON.parse(row.market_size) : null;
-      row.competitors = row.competitors ? JSON.parse(row.competitors) : null;
-      row.target_audience = row.target_audience ? JSON.parse(row.target_audience) : null;
-      row.channels = row.channels ? JSON.parse(row.channels) : null;
-      row.pain_points = row.pain_points ? JSON.parse(row.pain_points) : null;
+      // JSONB fields are automatically parsed by pg driver, no need to JSON.parse
+      // Just ensure they exist or set to null
+      row.market_size = row.market_size || null;
+      row.competitors = row.competitors || null;
+      row.target_audience = row.target_audience || null;
+      row.channels = row.channels || null;
+      row.pain_points = row.pain_points || null;
 
       return new ResearchResult(row);
 
@@ -214,12 +215,13 @@ class ResearchResult {
 
       const row = result.rows[0];
 
-      // Parse JSON fields
-      row.market_size = row.market_size ? JSON.parse(row.market_size) : null;
-      row.competitors = row.competitors ? JSON.parse(row.competitors) : null;
-      row.target_audience = row.target_audience ? JSON.parse(row.target_audience) : null;
-      row.channels = row.channels ? JSON.parse(row.channels) : null;
-      row.pain_points = row.pain_points ? JSON.parse(row.pain_points) : null;
+      // JSONB fields are automatically parsed by pg driver, no need to JSON.parse
+      // Just ensure they exist or set to null
+      row.market_size = row.market_size || null;
+      row.competitors = row.competitors || null;
+      row.target_audience = row.target_audience || null;
+      row.channels = row.channels || null;
+      row.pain_points = row.pain_points || null;
 
       logger.info('Research result updated', { researchId: id });
 
@@ -279,12 +281,13 @@ class ResearchResult {
 
       const row = result.rows[0];
 
-      // Parse JSON fields
-      row.market_size = row.market_size ? JSON.parse(row.market_size) : null;
-      row.competitors = row.competitors ? JSON.parse(row.competitors) : null;
-      row.target_audience = row.target_audience ? JSON.parse(row.target_audience) : null;
-      row.channels = row.channels ? JSON.parse(row.channels) : null;
-      row.pain_points = row.pain_points ? JSON.parse(row.pain_points) : null;
+      // JSONB fields are automatically parsed by pg driver, no need to JSON.parse
+      // Just ensure they exist or set to null
+      row.market_size = row.market_size || null;
+      row.competitors = row.competitors || null;
+      row.target_audience = row.target_audience || null;
+      row.channels = row.channels || null;
+      row.pain_points = row.pain_points || null;
 
       return new ResearchResult(row);
 

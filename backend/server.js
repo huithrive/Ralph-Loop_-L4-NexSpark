@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config(); // Load .env from current directory
 
 const express = require('express');
 const cors = require('cors');
@@ -24,7 +24,7 @@ app.use(helmet({
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
     ? ['https://nexspark.com'] // Add production domains here
-    : ['http://localhost:3000', 'http://localhost:3001'],
+    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8080'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -81,8 +81,10 @@ app.get('/api/health', async (req, res) => {
 // API routes
 const researchRoutes = require('./api/strategist/research');
 const interviewRoutes = require('./api/strategist/interview');
+const reportRoutes = require('./api/strategist/reports');
 app.use('/api/strategist', researchRoutes);
 app.use('/api/strategist/interview', interviewRoutes);
+app.use('/api/strategist/reports', reportRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {
@@ -145,6 +147,9 @@ async function startServer() {
       console.log(`   POST /api/strategist/interview/start - Start interview`);
       console.log(`   POST /api/strategist/interview/:id/respond - Submit response`);
       console.log(`   POST /api/strategist/interview/:id/complete - Complete interview`);
+      console.log(`   POST /api/strategist/reports/generate - Generate GTM report`);
+      console.log(`   POST /api/strategist/reports/preview - Generate report preview`);
+      console.log(`   GET  /api/strategist/reports/health - Report service health`);
       console.log('\n' + '='.repeat(50));
     });
 
