@@ -78,13 +78,17 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-// API routes
+// API routes - Strategist Module
 const researchRoutes = require('./api/strategist/research');
 const interviewRoutes = require('./api/strategist/interview');
 const reportRoutes = require('./api/strategist/reports');
 app.use('/api/strategist', researchRoutes);
 app.use('/api/strategist/interview', interviewRoutes);
 app.use('/api/strategist/reports', reportRoutes);
+
+// API routes - Executor Module
+const landingPageRoutes = require('./api/executor/landingPages');
+app.use('/api/executor/landing-pages', landingPageRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {
