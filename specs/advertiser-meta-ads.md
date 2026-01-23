@@ -79,8 +79,20 @@ Campaign (Conversions - Purchase)
 - Placements: Automatic (Instagram, Facebook)
 - Optimization: Conversions
 
+**Integration Strategy:**
+1. **Primary:** Use GoMarble MCP API (`https://apps.gomarble.ai/mcp-api/sse`)
+   - OAuth 2.0 authentication
+   - SSE-based protocol
+   - Provides Meta Ads and Google Ads integration
+   - Files: `backend/services/gomarble-mcp.js`, `backend/services/gomarble-meta-ads.js`
+2. **Fallback:** Direct Meta Marketing API integration
+   - Only if GoMarble API is not working
+   - Files: `backend/services/meta-ads.js` (fallback implementation)
+
 **Files:**
-- `backend/services/meta-ads.js`
+- `backend/services/gomarble-mcp.js` (primary)
+- `backend/services/gomarble-meta-ads.js` (primary)
+- `backend/services/meta-ads.js` (fallback)
 - `backend/api/advertiser/campaign.js`
 - `backend/models/campaign.js`
 
@@ -125,19 +137,30 @@ CREATE TABLE campaigns (
 
 ## Environment Variables
 ```
+# GoMarble MCP (Primary)
+GOMARBLE_MCP_URL=https://apps.gomarble.ai/mcp-api/sse
+GOMARBLE_OAUTH_CLIENT_ID=xxx
+GOMARBLE_OAUTH_CLIENT_SECRET=xxx
+
+# Meta Direct API (Fallback)
 META_APP_ID=xxx
 META_APP_SECRET=xxx
 META_ACCESS_TOKEN=xxx
+
+# Creative Generation
 KLING_API_KEY=xxx
 PIXVERSE_API_KEY=xxx
 ```
 
 ## Acceptance Criteria
+- [ ] GoMarble MCP API integration configured (OAuth 2.0, SSE protocol)
+- [ ] Campaign creation via GoMarble MCP API works (primary)
+- [ ] Fallback to direct Meta API if GoMarble fails
 - [ ] Kling/Pixverse generate 3-4 video creatives
 - [ ] Meta Pixel installed and verified
-- [ ] Campaign creation via Meta Marketing API works
 - [ ] Ad sets created with proper targeting
 - [ ] Ads published with creatives
 - [ ] OAuth flow for Meta and Shopify complete
 - [ ] All standard events tracked
 - [ ] Error handling and retry logic
+- [ ] Demo/mock implementation if integration fails after 3 iterations
