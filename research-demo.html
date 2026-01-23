@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSpark Research Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loading {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-6xl mx-auto p-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-900 mb-4">
+                🚀 NexSpark Research Engine
+            </h1>
+            <p class="text-xl text-gray-600">
+                AI-Powered Market Research in 30 Seconds
+            </p>
+        </div>
+
+        <!-- Input Form -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Enter Company Details</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Website URL
+                    </label>
+                    <input 
+                        type="url" 
+                        id="websiteUrl" 
+                        placeholder="https://example.com"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Product Description (100-500 words)
+                    </label>
+                    <textarea 
+                        id="productDescription" 
+                        rows="4"
+                        placeholder="Describe the product, target market, key features, and unique value proposition..."
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    ></textarea>
+                </div>
+
+                <button 
+                    onclick="startResearch()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition duration-200 text-lg"
+                >
+                    🔍 Generate Market Research
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="hidden text-center py-12">
+            <div class="loading mx-auto mb-4"></div>
+            <p class="text-gray-600 text-lg">Analyzing market data with AI...</p>
+            <p class="text-gray-500 text-sm mt-2">This takes about 30 seconds</p>
+        </div>
+
+        <!-- Error Display -->
+        <div id="error" class="hidden bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+            <h3 class="text-red-800 font-bold mb-2">❌ Error</h3>
+            <p id="errorMessage" class="text-red-600"></p>
+        </div>
+
+        <!-- Results Display -->
+        <div id="results" class="hidden space-y-6">
+            <!-- Market Size -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">📊 Market Size</h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-blue-50 p-4 rounded">
+                        <p class="text-sm text-gray-600">TAM</p>
+                        <p id="tam" class="text-2xl font-bold text-blue-600"></p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded">
+                        <p class="text-sm text-gray-600">SAM</p>
+                        <p id="sam" class="text-2xl font-bold text-green-600"></p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded">
+                        <p class="text-sm text-gray-600">Growth Rate</p>
+                        <p id="growthRate" class="text-2xl font-bold text-purple-600"></p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-sm font-medium text-gray-700 mb-2">Market Trends:</p>
+                    <ul id="trends" class="list-disc list-inside space-y-1 text-gray-600"></ul>
+                </div>
+            </div>
+
+            <!-- Competitors -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">🏆 Competitors</h2>
+                <div id="competitors" class="space-y-4"></div>
+            </div>
+
+            <!-- Target Audience -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">🎯 Target Audience</h2>
+                <div id="audience" class="space-y-4"></div>
+            </div>
+
+            <!-- Marketing Channels -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">📢 Marketing Channels</h2>
+                <div id="channels" class="space-y-4"></div>
+            </div>
+
+            <!-- Pain Points -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">😰 Customer Pain Points</h2>
+                <div id="painPoints" class="space-y-4"></div>
+            </div>
+
+            <!-- Opportunities -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">💡 Growth Opportunities</h2>
+                <div id="opportunities" class="space-y-3"></div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="bg-gray-50 rounded-lg p-6 text-center">
+                <p class="text-sm text-gray-600">
+                    ⚡ Analysis completed in <span id="duration" class="font-bold"></span> seconds
+                    • 💰 Cost: <span id="cost" class="font-bold"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function startResearch() {
+            const websiteUrl = document.getElementById('websiteUrl').value;
+            const productDescription = document.getElementById('productDescription').value;
+
+            // Validation
+            if (!websiteUrl || !productDescription) {
+                showError('Please fill in both fields');
+                return;
+            }
+
+            if (productDescription.length < 100) {
+                showError('Product description should be at least 100 characters');
+                return;
+            }
+
+            // Hide previous results and errors
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('error').classList.add('hidden');
+            
+            // Show loading
+            document.getElementById('loading').classList.remove('hidden');
+
+            try {
+                const response = await fetch('http://localhost:3001/api/strategist/research', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        website_url: websiteUrl,
+                        product_description: productDescription
+                    })
+                });
+
+                const result = await response.json();
+
+                // Hide loading
+                document.getElementById('loading').classList.add('hidden');
+
+                if (!response.ok) {
+                    showError(result.message || 'Failed to generate research');
+                    return;
+                }
+
+                displayResults(result.data);
+
+            } catch (error) {
+                document.getElementById('loading').classList.add('hidden');
+                showError('Failed to connect to API. Make sure the server is running on port 3001.');
+                console.error(error);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('error').classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        function displayResults(data) {
+            const research = data.data;
+            
+            // Market Size
+            document.getElementById('tam').textContent = research.market_size.tam;
+            document.getElementById('sam').textContent = research.market_size.sam;
+            document.getElementById('growthRate').textContent = research.market_size.growthRate;
+            
+            const trendsList = document.getElementById('trends');
+            trendsList.innerHTML = '';
+            research.market_size.trends.forEach(trend => {
+                const li = document.createElement('li');
+                li.textContent = trend;
+                trendsList.appendChild(li);
+            });
+
+            // Competitors
+            const competitorsDiv = document.getElementById('competitors');
+            competitorsDiv.innerHTML = '';
+            research.competitors.forEach(comp => {
+                competitorsDiv.innerHTML += `
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-gray-800">${comp.name}</h3>
+                            <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded">${comp.marketShare}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">${comp.positioning}</p>
+                        <p class="text-sm text-gray-500 mb-2">💰 ${comp.pricing}</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <p class="text-xs font-medium text-green-600">Strengths:</p>
+                                <ul class="text-xs text-gray-600">
+                                    ${comp.strengths.map(s => `<li>• ${s}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-red-600">Weaknesses:</p>
+                                <ul class="text-xs text-gray-600">
+                                    ${comp.weaknesses.map(w => `<li>• ${w}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Target Audience
+            const audienceDiv = document.getElementById('audience');
+            const primary = research.target_audience.primary;
+            audienceDiv.innerHTML = `
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-gray-800 mb-2">Demographics</h3>
+                        <p class="text-sm text-gray-600">Age: ${primary.demographics.age}</p>
+                        <p class="text-sm text-gray-600">Gender: ${primary.demographics.gender}</p>
+                        <p class="text-sm text-gray-600">Income: ${primary.demographics.income}</p>
+                        <p class="text-sm text-gray-600">Education: ${primary.demographics.education}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 mb-2">Psychographics</h3>
+                        <p class="text-sm font-medium text-gray-700">Values:</p>
+                        <ul class="text-sm text-gray-600 mb-2">
+                            ${primary.psychographics.values.map(v => `<li>• ${v}</li>`).join('')}
+                        </ul>
+                        <p class="text-sm font-medium text-gray-700">Interests:</p>
+                        <ul class="text-sm text-gray-600">
+                            ${primary.psychographics.interests.map(i => `<li>• ${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            // Marketing Channels
+            const channelsDiv = document.getElementById('channels');
+            channelsDiv.innerHTML = '';
+            research.channels.forEach(channel => {
+                const priorityColor = channel.priority === 'high' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800';
+                channelsDiv.innerHTML += `
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-gray-800">${channel.channel}</h3>
+                            <span class="${priorityColor} text-sm px-3 py-1 rounded">${channel.priority}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">${channel.rationale}</p>
+                        <div class="flex gap-4 text-sm">
+                            <span class="text-gray-600">CPA: <b>${channel.estimatedCPA}</b></span>
+                            <span class="text-green-600">ROAS: <b>${channel.expectedROAS}</b></span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Pain Points
+            const painPointsDiv = document.getElementById('painPoints');
+            painPointsDiv.innerHTML = '';
+            research.pain_points.forEach(pain => {
+                const severityColor = pain.severity === 'high' ? 'text-red-600' : 'text-yellow-600';
+                painPointsDiv.innerHTML += `
+                    <div class="border-l-4 border-red-400 pl-4">
+                        <h3 class="font-bold text-gray-800 ${severityColor}">${pain.problem}</h3>
+                        <p class="text-sm text-gray-600 mt-1">Frequency: ${pain.frequency}</p>
+                        <p class="text-sm text-gray-600 mt-1">💡 Opportunity: ${pain.opportunity}</p>
+                    </div>
+                `;
+            });
+
+            // Opportunities
+            const opportunitiesDiv = document.getElementById('opportunities');
+            opportunitiesDiv.innerHTML = '';
+            research.opportunities.forEach(opp => {
+                opportunitiesDiv.innerHTML += `
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h3 class="font-bold text-gray-800 mb-1">${opp.title}</h3>
+                        <p class="text-sm text-gray-600 mb-2">${opp.description}</p>
+                        <div class="flex gap-2 text-xs">
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded">Impact: ${opp.impact}</span>
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">Effort: ${opp.effort}</span>
+                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded">${opp.timeframe}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Performance Metrics
+            const duration = (data.metadata.processing.duration / 1000).toFixed(1);
+            const inputCost = (data.metadata.processing.tokenUsage.input_tokens * 0.000003).toFixed(4);
+            const outputCost = (data.metadata.processing.tokenUsage.output_tokens * 0.000015).toFixed(4);
+            const totalCost = (parseFloat(inputCost) + parseFloat(outputCost)).toFixed(4);
+            
+            document.getElementById('duration').textContent = duration;
+            document.getElementById('cost').textContent = `$${totalCost}`;
+
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+

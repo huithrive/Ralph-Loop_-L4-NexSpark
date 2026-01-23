@@ -80,7 +80,9 @@ app.get('/api/health', async (req, res) => {
 
 // API routes
 const researchRoutes = require('./api/strategist/research');
+const interviewRoutes = require('./api/strategist/interview');
 app.use('/api/strategist', researchRoutes);
+app.use('/api/strategist/interview', interviewRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {
@@ -138,7 +140,11 @@ async function startServer() {
       console.log(`📊 Environment: ${process.env.NODE_ENV}`);
       console.log('\n📋 Available endpoints:');
       console.log(`   GET  /api/health - Health check`);
-      console.log(`   *    /api/strategist/* - (Not implemented yet)`);
+      console.log(`   POST /api/strategist/research - Market research`);
+      console.log(`   GET  /api/strategist/research/:id - Get research`);
+      console.log(`   POST /api/strategist/interview/start - Start interview`);
+      console.log(`   POST /api/strategist/interview/:id/respond - Submit response`);
+      console.log(`   POST /api/strategist/interview/:id/complete - Complete interview`);
       console.log('\n' + '='.repeat(50));
     });
 
