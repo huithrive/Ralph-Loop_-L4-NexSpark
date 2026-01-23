@@ -14,12 +14,26 @@ import {
   exchangeCodeForToken,
   getGoogleUser,
   generateSessionToken,
-  verifySessionToken
+  verifySessionToken,
+  getGoogleAuthUrl
 } from '../services/google-oauth';
 import { successResponse, errorResponse } from '../utils/api-response';
 import { TIMEOUTS } from '../config';
 
 export const authRoutes = new Hono();
+
+// Google OAuth - Initiate OAuth flow
+authRoutes.get('/google', (c) => {
+  const googleClientId = c.env.GOOGLE_CLIENT_ID;
+  const redirectUri = c.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/callback';
+
+  if (!googleClientId) {
+    return c.text('Google OAuth not configured', 500);
+  }
+
+  const authUrl = getGoogleAuthUrl(googleClientId, redirectUri);
+  return c.redirect(authUrl);
+});
 
 // Email/Password Login
 authRoutes.post('/login', async (c) => {
@@ -80,48 +94,122 @@ authRoutes.post('/register', async (c) => {
 authRoutes.get('/google/callback', async (c) => {
   try {
     const code = c.req.query('code');
+    const error = c.req.query('error');
+
+    if (error) {
+      console.error('OAuth error:', error);
+      return c.html(`
+        <script>
+          alert('Google sign-in failed: ${error}');
+          window.location.href = '/';
+        </script>
+      `);
+    }
 
     if (!code) {
-      return c.redirect('/?error=no_code');
+      return c.html(`
+        <script>
+          alert('No authorization code received');
+          window.location.href = '/';
+        </script>
+      `);
     }
 
     // Exchange code for tokens
     const googleClientId = c.env.GOOGLE_CLIENT_ID || '';
     const googleClientSecret = c.env.GOOGLE_CLIENT_SECRET || '';
-    const redirectUri = c.env.GOOGLE_REDIRECT_URI || '';
+    const redirectUri = c.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/callback';
 
     const tokens = await exchangeCodeForToken(code, googleClientId, googleClientSecret, redirectUri);
 
     // Get user info
-    const userInfo = await getGoogleUser(tokens.access_token);
+    const googleUser = await getGoogleUser(tokens.access_token);
 
-    if (!userInfo.email) {
-      return c.redirect('/?error=no_email');
+    console.log('✅ Google user authenticated:', googleUser.email);
+
+    // Handle database operations if available
+    if (c.env.DB) {
+      try {
+        console.log('Finding or creating user...');
+        const userId = await findOrCreateUser(
+          c.env.DB,
+          googleUser.email,
+          googleUser.name || 'User',
+          'brand'
+        );
+        console.log('✅ User ID:', userId);
+
+        // Link Google auth
+        console.log('Linking Google auth...');
+        await linkGoogleAuth(c.env.DB, userId, googleUser.id, googleUser.email, true);
+        console.log('✅ Google auth linked');
+
+        // Update user profile with Google info
+        await c.env.DB.prepare(`
+          UPDATE users
+          SET picture = ?, email_verified = ?, updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `).bind(googleUser.picture, googleUser.email_verified ? 1 : 0, userId).run();
+
+        // Generate JWT session token
+        const jwtSecret = c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret';
+        const sessionToken = await generateSessionToken(userId, jwtSecret);
+        console.log('✅ Session token generated');
+
+        // Return inline script that sets localStorage and redirects
+        return c.html(`
+          <script>
+            localStorage.setItem('nexspark_user', JSON.stringify({
+              id: '${userId}',
+              email: '${googleUser.email}',
+              name: '${googleUser.name}',
+              picture: '${googleUser.picture}',
+              email_verified: ${googleUser.email_verified}
+            }));
+            localStorage.setItem('nexspark_session', '${sessionToken}');
+            console.log('✅ Google authentication successful');
+            window.location.href = '/dashboard';
+          </script>
+        `);
+
+      } catch (dbError: any) {
+        console.error('❌ Database error during OAuth:', dbError);
+        // Fall through to fallback
+      }
     }
 
-    // Find or create user
-    const userId = await findOrCreateUser(
-      c.env.DB,
-      userInfo.email,
-      userInfo.name || 'User',
-      'brand'
-    );
+    // Fallback: localStorage mode (no database)
+    console.log('⚠️ Database not configured - using localStorage fallback');
 
-    // Link Google auth
-    await linkGoogleAuth(c.env.DB, userId, userInfo.id, userInfo.email, true);
+    const user = {
+      id: 'usr_' + googleUser.id,
+      email: googleUser.email,
+      name: googleUser.name,
+      picture: googleUser.picture,
+      email_verified: googleUser.email_verified
+    };
 
-    // Get user data
-    const user = await getUserByEmail(c.env.DB, userInfo.email);
+    const jwtSecret = c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret';
+    const sessionToken = await generateSessionToken(user.id, jwtSecret);
 
-    // Generate JWT session token
-    const jwtSecret = c.env.JWT_SECRET || 'default-secret';
-    const sessionToken = await generateSessionToken(userId, jwtSecret);
+    // Return inline script for fallback mode
+    return c.html(`
+      <script>
+        localStorage.setItem('nexspark_user', JSON.stringify(${JSON.stringify(user)}));
+        localStorage.setItem('nexspark_session', '${sessionToken}');
+        console.log('✅ Google authentication successful');
+        window.location.href = '/dashboard';
+      </script>
+    `);
 
-    // Redirect with session info
-    return c.redirect(`/?auth=success&sessionToken=${sessionToken}&userId=${userId}&userName=${encodeURIComponent(user?.name || 'User')}&userEmail=${encodeURIComponent(userInfo.email)}`);
   } catch (error: any) {
-    console.error('Google OAuth error:', error);
-    return c.redirect('/?error=oauth_failed');
+    console.error('OAuth callback error:', error);
+    return c.html(`
+      <script>
+        alert('Authentication failed: ${error.message}');
+        window.location.href = '/';
+      </script>
+    `);
   }
 });
 
@@ -129,33 +217,9 @@ authRoutes.get('/google/callback', async (c) => {
 authRoutes.post('/logout', async (c) => {
   try {
     // JWT tokens are stateless, so logout is handled on client side
-    // Just return success
     return c.json(successResponse(null, 'Logged out successfully'));
   } catch (error: any) {
     console.error('Logout error:', error);
-    return c.json(errorResponse(error.message), 500);
-  }
-});
-
-// Verify Session
-authRoutes.get('/verify', async (c) => {
-  try {
-    const sessionToken = c.req.header('Authorization')?.replace('Bearer ', '');
-
-    if (!sessionToken) {
-      return c.json(errorResponse('No session token provided'), 401);
-    }
-
-    const jwtSecret = c.env.JWT_SECRET || 'default-secret';
-    const payload = await verifySessionToken(sessionToken, jwtSecret);
-
-    if (!payload) {
-      return c.json(errorResponse('Invalid or expired session'), 401);
-    }
-
-    return c.json(successResponse({ valid: true, userId: payload.userId }));
-  } catch (error: any) {
-    console.error('Verify error:', error);
     return c.json(errorResponse(error.message), 500);
   }
 });

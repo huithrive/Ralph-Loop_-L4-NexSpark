@@ -14,8 +14,48 @@ import {
 import { transcribeAudio } from '../services/ai/openai-client';
 import { successResponse, errorResponse } from '../utils/api-response';
 import { generateInterviewId } from '../utils/id-generator';
+import { DEFAULT_QUESTIONS } from '../config/defaults';
 
 export const interviewRoutes = new Hono();
+
+// Get interview history (with pagination)
+interviewRoutes.get('/history', async (c) => {
+  try {
+    const userId = c.req.query('userId');
+    const limit = parseInt(c.req.query('limit') || '10');
+    const offset = parseInt(c.req.query('offset') || '0');
+
+    if (!userId) {
+      return c.json(errorResponse('userId is required'), 400);
+    }
+
+    if (!c.env.DB) {
+      console.warn('⚠️ D1 database not configured for interview history');
+      return c.json({
+        success: true,
+        interviews: [],
+        total: 0,
+        page: 0,
+        pageSize: limit,
+        hasMore: false,
+        hasPrevious: false
+      });
+    }
+
+    const safeLimit = Math.min(Math.max(limit, 1), 50);
+    const safeOffset = Math.max(offset, 0);
+
+    const result = await getInterviewHistory(c.env.DB, userId, safeLimit, safeOffset);
+
+    return c.json({
+      success: true,
+      ...result
+    });
+  } catch (error: any) {
+    console.error('Get interview history error:', error);
+    return c.json(errorResponse(error.message), 500);
+  }
+});
 
 // Check for existing interview
 interviewRoutes.get('/check', async (c) => {
@@ -63,23 +103,6 @@ interviewRoutes.get('/:id', async (c) => {
     });
   } catch (error: any) {
     console.error('Get interview error:', error);
-    return c.json(errorResponse(error.message), 500);
-  }
-});
-
-// Get all interviews for a user
-interviewRoutes.get('/user/:userId', async (c) => {
-  try {
-    const userId = c.req.param('userId');
-
-    const interviews = await getInterviewHistory(c.env.DB, userId);
-
-    return c.json({
-      success: true,
-      interviews: interviews || [],
-    });
-  } catch (error: any) {
-    console.error('Get interviews error:', error);
     return c.json(errorResponse(error.message), 500);
   }
 });
@@ -149,6 +172,58 @@ interviewRoutes.delete('/:id', async (c) => {
     return c.json(successResponse(null, 'Interview deleted'));
   } catch (error: any) {
     console.error('Delete interview error:', error);
+    return c.json(errorResponse(error.message), 500);
+  }
+});
+
+// Get default interview questions
+interviewRoutes.get('/questions', (c) => {
+  return c.json({
+    success: true,
+    questions: DEFAULT_QUESTIONS
+  });
+});
+
+// Analyze interview
+interviewRoutes.post('/analyze', async (c) => {
+  try {
+    const { interviewId } = await c.req.json();
+
+    if (!interviewId) {
+      return c.json(errorResponse('interviewId is required'), 400);
+    }
+
+    const { analyzeInterview } = await import('../services/post-interview-analysis-v2');
+    const analysis = await analyzeInterview(interviewId, c.env.ANTHROPIC_API_KEY);
+
+    return c.json({
+      success: true,
+      analysis
+    });
+  } catch (error: any) {
+    console.error('Analyze interview error:', error);
+    return c.json(errorResponse(error.message), 500);
+  }
+});
+
+// Summarize interview
+interviewRoutes.post('/summarize', async (c) => {
+  try {
+    const { responses } = await c.req.json();
+
+    if (!responses || !Array.isArray(responses)) {
+      return c.json(errorResponse('responses array is required'), 400);
+    }
+
+    const { generateEnhancedSummary } = await import('../services/report-generation');
+    const summary = await generateEnhancedSummary(responses, c.env.ANTHROPIC_API_KEY);
+
+    return c.json({
+      success: true,
+      summary
+    });
+  } catch (error: any) {
+    console.error('Summarize interview error:', error);
     return c.json(errorResponse(error.message), 500);
   }
 });

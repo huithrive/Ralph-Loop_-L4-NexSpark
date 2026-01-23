@@ -36,30 +36,47 @@ paymentRoutes.post('/create-intent', async (c) => {
   }
 });
 
-// Create checkout session - Placeholder for future Stripe Checkout integration
-paymentRoutes.post('/create-checkout', async (c) => {
+// Verify payment
+paymentRoutes.post('/verify', async (c) => {
   try {
-    // For now, we only support Payment Intents (embedded card form)
-    // Stripe Checkout can be added later if needed
-    return c.json(errorResponse('Checkout sessions not implemented yet. Use payment intents.'), 501);
+    const { paymentIntentId } = await c.req.json();
+
+    if (!paymentIntentId) {
+      return c.json(errorResponse('paymentIntentId is required'), 400);
+    }
+
+    const { verifyPayment } = await import('../services/stripe-payment');
+    const result = await verifyPayment(paymentIntentId, c.env.STRIPE_SECRET_KEY);
+
+    return c.json({
+      success: true,
+      ...result
+    });
   } catch (error: any) {
-    console.error('Create checkout session error:', error);
+    console.error('Verify payment error:', error);
     return c.json(errorResponse(error.message), 500);
   }
 });
 
-// Webhook for Stripe events (if needed)
-paymentRoutes.post('/webhook', async (c) => {
+// Get payment status
+paymentRoutes.get('/status', async (c) => {
   try {
-    const sig = c.req.header('stripe-signature');
-    const body = await c.req.text();
+    const userId = c.req.query('userId');
+    const reportId = c.req.query('reportId');
 
-    // TODO: Verify webhook signature and process events
-    console.log('Stripe webhook received');
+    if (!userId) {
+      return c.json(errorResponse('userId is required'), 400);
+    }
 
-    return c.json(successResponse());
+    const { hasUserPaid } = await import('../services/stripe-payment');
+    const hasPaid = await hasUserPaid(c.env.DB, userId, reportId);
+
+    return c.json({
+      success: true,
+      paid: hasPaid
+    });
   } catch (error: any) {
-    console.error('Webhook error:', error);
+    console.error('Payment status error:', error);
     return c.json(errorResponse(error.message), 500);
   }
 });

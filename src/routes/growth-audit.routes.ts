@@ -11,8 +11,8 @@ import { successResponse, errorResponse } from '../utils/api-response';
 
 export const growthAuditRoutes = new Hono();
 
-// Run growth audit
-growthAuditRoutes.post('/run', async (c) => {
+// Generate growth audit report
+growthAuditRoutes.post('/generate', async (c) => {
   try {
     const { competitors, industryContext } = await c.req.json();
 
@@ -47,10 +47,41 @@ growthAuditRoutes.post('/run', async (c) => {
 
     return c.json({
       success: true,
-      audit: report,
+      report,
     });
   } catch (error: any) {
-    console.error('Growth audit error:', error);
+    console.error('Growth audit generate error:', error);
     return c.json(errorResponse(error.message), 500);
   }
+});
+
+// Fetch traffic data for a domain
+growthAuditRoutes.post('/traffic', async (c) => {
+  try {
+    const { domain } = await c.req.json();
+
+    if (!domain) {
+      return c.json(errorResponse('domain is required'), 400);
+    }
+
+    const rapidApiKey = c.env.RAPIDAPI_KEY || '';
+    const trafficData = await fetchTrafficData(domain, rapidApiKey);
+
+    return c.json({
+      success: true,
+      trafficData
+    });
+  } catch (error: any) {
+    console.error('Traffic fetch error:', error);
+    return c.json(errorResponse(error.message), 500);
+  }
+});
+
+// Get growth audit status (simple status endpoint)
+growthAuditRoutes.get('/status', (c) => {
+  return c.json({
+    success: true,
+    status: 'ready',
+    message: 'Growth audit service is operational'
+  });
 });

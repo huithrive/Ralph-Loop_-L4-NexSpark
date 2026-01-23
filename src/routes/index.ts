@@ -10,3 +10,4 @@ export { analysisRoutes } from './analysis.routes';
 export { conversationalRoutes } from './conversational.routes';
 export { agentRoutes } from './agent.routes';
 export { growthAuditRoutes } from './growth-audit.routes';
+export { previewRoutes } from './preview.routes';

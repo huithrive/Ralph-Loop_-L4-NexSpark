@@ -147,23 +147,6 @@ reportRoutes.post('/execute-step', async (c) => {
   }
 });
 
-// Resume failed generation
-reportRoutes.post('/resume/:generationId', async (c) => {
-  try {
-    const generationId = c.req.param('generationId');
-
-    await updateGenerationState(c.env.DB, generationId, {
-      current_state: 'NOT_STARTED',
-      error: null,
-    });
-
-    return c.json(successResponse());
-  } catch (error: any) {
-    console.error('Resume generation error:', error);
-    return c.json(errorResponse(error.message), 500);
-  }
-});
-
 // Get report by ID
 reportRoutes.get('/:reportId', async (c) => {
   try {
@@ -189,19 +172,95 @@ reportRoutes.get('/:reportId', async (c) => {
   }
 });
 
-// Get all reports for user
-reportRoutes.get('/user/:userId', async (c) => {
+// Delete report
+reportRoutes.delete('/:reportId', async (c) => {
   try {
-    const userId = c.req.param('userId');
+    const reportId = c.req.param('reportId');
 
-    const reports = await getUserReports(c.env.DB, userId);
+    const { deleteReport } = await import('../services/database');
+    await deleteReport(c.env.DB, reportId);
+
+    return c.json(successResponse(null, 'Report deleted'));
+  } catch (error: any) {
+    console.error('Delete report error:', error);
+    return c.json(errorResponse(error.message), 500);
+  }
+});
+
+// Generate report (alternative flow)
+reportRoutes.post('/generate', async (c) => {
+  try {
+    const { interviewId, userId } = await c.req.json();
+
+    if (!interviewId || !userId) {
+      return c.json(errorResponse('interviewId and userId are required'), 400);
+    }
+
+    // Use ReportGenerator for full generation
+    const { ReportGenerator } = await import('../services/report-generator');
+    const generator = new ReportGenerator(c.env.DB, c.env, 'v2');
+
+    const generationId = generateGenerationId();
+    await generator.createGeneration(generationId, userId, interviewId);
+
+    // Get interview data
+    const { getInterview } = await import('../services/database');
+    const interview = await getInterview(c.env.DB, interviewId);
+
+    if (!interview) {
+      return c.json(errorResponse('Interview not found'), 404);
+    }
+
+    // Execute all steps
+    await generator.executeStep1(generationId, interview);
+    const state = await generator.getState(generationId);
+
+    if (state?.step1Data?.website) {
+      await generator.executeStep2(generationId, state.step1Data.website);
+    }
 
     return c.json({
       success: true,
-      reports: reports || [],
+      generationId,
+      message: 'Report generation started'
     });
   } catch (error: any) {
-    console.error('Get user reports error:', error);
+    console.error('Generate report error:', error);
+    return c.json(errorResponse(error.message), 500);
+  }
+});
+
+// Regenerate report for interview
+reportRoutes.post('/regenerate/:interviewId', async (c) => {
+  try {
+    const interviewId = c.req.param('interviewId');
+    const { userId } = await c.req.json();
+
+    if (!userId) {
+      return c.json(errorResponse('userId is required'), 400);
+    }
+
+    // Create new generation
+    const generationId = generateGenerationId();
+    const now = new Date().toISOString();
+
+    await createReportGeneration(c.env.DB, {
+      id: generationId,
+      userId,
+      interviewId,
+      currentState: 'NOT_STARTED',
+      progressPercent: 0,
+      paid: false,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    return c.json({
+      success: true,
+      generationId
+    });
+  } catch (error: any) {
+    console.error('Regenerate report error:', error);
     return c.json(errorResponse(error.message), 500);
   }
 });

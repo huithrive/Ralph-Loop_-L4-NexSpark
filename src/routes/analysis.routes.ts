@@ -13,6 +13,28 @@ import { successResponse, errorResponse } from '../utils/api-response';
 
 export const analysisRoutes = new Hono();
 
+// Start analysis (same as analyze but different response format)
+analysisRoutes.post('/start', async (c) => {
+  try {
+    const { interviewId, userId, responses } = await c.req.json();
+
+    if (!interviewId || !userId) {
+      return c.json(errorResponse('interviewId and userId are required'), 400);
+    }
+
+    const analysis = await analyzeInterview(interviewId, c.env.ANTHROPIC_API_KEY);
+
+    return c.json({
+      success: true,
+      analysis,
+      businessProfile: analysis
+    });
+  } catch (error: any) {
+    console.error('Analysis start error:', error);
+    return c.json(errorResponse(error.message), 500);
+  }
+});
+
 // Analyze interview transcript
 analysisRoutes.post('/analyze', async (c) => {
   try {
