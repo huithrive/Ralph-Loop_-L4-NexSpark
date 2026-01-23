@@ -88,7 +88,9 @@ app.use('/api/strategist/reports', reportRoutes);
 
 // API routes - Executor Module
 const landingPageRoutes = require('./api/executor/landingPages');
+const shopifyRoutes = require('./api/executor/shopify');
 app.use('/api/executor/landing-pages', landingPageRoutes);
+app.use('/api/executor/shopify', shopifyRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {
