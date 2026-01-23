@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSpark Interview Agent - Test Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            margin-bottom: 40px;
+            padding: 30px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .step.completed {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .success {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 2px solid #f87171;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            background: #e5e7eb;
+            border-radius: 10px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .response-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 NexSpark Interview Agent</h1>
+            <p>Complete Strategy Interview Testing Interface</p>
+        </div>
+
+        <div class="content">
+            <!-- Step 1: Create Research -->
+            <div class="step" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Create Market Research</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="websiteUrl">Website URL</label>
+                    <input type="url" id="websiteUrl" placeholder="https://example.com" value="https://myawesomesaas.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="productDescription">Product Description</label>
+                    <textarea id="productDescription" placeholder="Describe your SaaS product...">An innovative project management SaaS that helps remote teams collaborate more effectively with AI-powered task prioritization, real-time collaboration tools, and automated workflow optimization. Built for modern distributed teams who need to stay productive across time zones.</textarea>
+                </div>
+
+                <button id="createResearchBtn" onclick="createResearch()">
+                    Create Market Research
+                    <span id="research-loading" class="loading hidden"></span>
+                </button>
+
+                <div id="research-result"></div>
+            </div>
+
+            <!-- Step 2: Start Interview -->
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Start Interview Session</div>
+                </div>
+
+                <p>Ready to start your strategic interview? This will take about 10-12 minutes and cover 4 key areas:</p>
+                <ul style="margin: 15px 0 15px 30px; line-height: 1.6;">
+                    <li>Your brand story and motivation</li>
+                    <li>Marketing channel experience</li>
+                    <li>Revenue goals and competitive positioning</li>
+                    <li>Resource constraints and success definition</li>
+                </ul>
+
+                <button id="startInterviewBtn" onclick="startInterview()" disabled>
+                    Start Interview Session
+                    <span id="interview-loading" class="loading hidden"></span>
+                </button>
+
+                <div id="interview-result"></div>
+            </div>
+
+            <!-- Step 3: Interview Questions -->
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Answer Questions</div>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+
+                <div id="currentQuestion"></div>
+
+                <div class="form-group">
+                    <label for="responseText">Your Response</label>
+                    <textarea id="responseText" placeholder="Please provide a detailed response..."></textarea>
+                </div>
+
+                <div class="response-stats">
+                    <span>Words: <span id="wordCount">0</span></span>
+                    <span>Min: 20 words for quality response</span>
+                </div>
+
+                <button id="submitResponseBtn" onclick="submitResponse()" disabled>
+                    Submit Response
+                    <span id="response-loading" class="loading hidden"></span>
+                </button>
+
+                <div id="response-result"></div>
+            </div>
+
+            <!-- Step 4: Complete Interview -->
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Interview Complete</div>
+                </div>
+
+                <div id="completion-result"></div>
+
+                <button id="completeInterviewBtn" onclick="completeInterview()" disabled>
+                    Complete Interview & Generate Analysis
+                    <span id="complete-loading" class="loading hidden"></span>
+                </button>
+
+                <div id="final-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentResearchId = null;
+        let currentSessionId = null;
+        let currentQuestionNumber = 1;
+        let totalQuestions = 4;
+        const API_BASE = 'http://localhost:3001/api/strategist';
+
+        // Utility functions
+        function showSuccess(element, message) {
+            element.innerHTML = `<div class="success">${message}</div>`;
+        }
+
+        function showError(element, message) {
+            element.innerHTML = `<div class="error">Error: ${message}</div>`;
+        }
+
+        function showLoading(elementId, show = true) {
+            const loading = document.getElementById(elementId);
+            if (loading) {
+                loading.classList.toggle('hidden', !show);
+            }
+        }
+
+        function updateProgress(current, total) {
+            const percentage = (current / total) * 100;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+
+        function markStepCompleted(stepId) {
+            const step = document.getElementById(stepId);
+            step.classList.remove('active');
+            step.classList.add('completed');
+        }
+
+        function activateStep(stepId) {
+            // Remove active class from all steps
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            // Add active class to current step
+            document.getElementById(stepId).classList.add('active');
+        }
+
+        // Word counting for responses
+        document.getElementById('responseText').addEventListener('input', function() {
+            const text = this.value.trim();
+            const wordCount = text ? text.split(/\s+/).length : 0;
+            document.getElementById('wordCount').textContent = wordCount;
+
+            // Enable/disable submit button based on word count
+            const submitBtn = document.getElementById('submitResponseBtn');
+            submitBtn.disabled = wordCount < 10;
+        });
+
+        // Step 1: Create Research
+        async function createResearch() {
+            const websiteUrl = document.getElementById('websiteUrl').value;
+            const productDescription = document.getElementById('productDescription').value;
+            const resultDiv = document.getElementById('research-result');
+            const btn = document.getElementById('createResearchBtn');
+
+            if (!websiteUrl || !productDescription) {
+                showError(resultDiv, 'Please fill in all fields');
+                return;
+            }
+
+            btn.disabled = true;
+            showLoading('research-loading', true);
+
+            try {
+                const response = await fetch(`${API_BASE}/research`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        website_url: websiteUrl,
+                        product_description: productDescription
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentResearchId = data.data.research_id;
+                    showSuccess(resultDiv, `✅ Market research completed! Research ID: ${currentResearchId.substring(0, 8)}...`);
+
+                    markStepCompleted('step1');
+                    activateStep('step2');
+
+                    // Enable next step
+                    document.getElementById('startInterviewBtn').disabled = false;
+                } else {
+                    showError(resultDiv, data.error?.message || 'Failed to create research');
+                }
+            } catch (error) {
+                showError(resultDiv, `Network error: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                showLoading('research-loading', false);
+            }
+        }
+
+        // Step 2: Start Interview
+        async function startInterview() {
+            const resultDiv = document.getElementById('interview-result');
+            const btn = document.getElementById('startInterviewBtn');
+
+            btn.disabled = true;
+            showLoading('interview-loading', true);
+
+            try {
+                const response = await fetch(`${API_BASE}/interview/start`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        research_id: currentResearchId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentSessionId = data.data.session_id;
+                    totalQuestions = data.data.total_questions;
+
+                    showSuccess(resultDiv, `✅ Interview started! Session ID: ${currentSessionId.substring(0, 8)}...`);
+
+                    // Display first question
+                    displayQuestion(data.data.question, data.data.welcome_message);
+
+                    markStepCompleted('step2');
+                    activateStep('step3');
+
+                    // Enable response submission
+                    updateProgress(0, totalQuestions);
+                } else {
+                    showError(resultDiv, data.error?.message || 'Failed to start interview');
+                }
+            } catch (error) {
+                showError(resultDiv, `Network error: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                showLoading('interview-loading', false);
+            }
+        }
+
+        // Display question
+        function displayQuestion(question, welcomeMessage = null) {
+            const questionDiv = document.getElementById('currentQuestion');
+
+            let html = '';
+
+            if (welcomeMessage) {
+                html += `
+                    <div class="question-card" style="background: #f0fdf4; border-color: #10b981;">
+                        <div style="color: #10b981; font-weight: 600; margin-bottom: 15px;">👋 Welcome Message</div>
+                        <p style="margin-bottom: 10px;">${welcomeMessage.greeting}</p>
+                        <p style="margin-bottom: 10px;">${welcomeMessage.explanation}</p>
+                        <p><strong>${welcomeMessage.instruction}</strong></p>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="question-card">
+                    <div class="question-number">Question ${question.number} of ${totalQuestions} - ${question.category.replace('_', ' ').toUpperCase()}</div>
+                    <div class="question-text">${question.text}</div>
+                    <div style="color: #666; font-size: 0.9rem;">⏱️ Recommended time: ${question.time_limit} minutes</div>
+                </div>
+            `;
+
+            questionDiv.innerHTML = html;
+
+            // Clear previous response
+            document.getElementById('responseText').value = '';
+            document.getElementById('wordCount').textContent = '0';
+        }
+
+        // Step 3: Submit Response
+        async function submitResponse() {
+            const responseText = document.getElementById('responseText').value.trim();
+            const resultDiv = document.getElementById('response-result');
+            const btn = document.getElementById('submitResponseBtn');
+
+            if (!responseText || responseText.split(/\s+/).length < 10) {
+                showError(resultDiv, 'Please provide a more detailed response (at least 10 words)');
+                return;
+            }
+
+            btn.disabled = true;
+            showLoading('response-loading', true);
+
+            try {
+                const response = await fetch(`${API_BASE}/interview/${currentSessionId}/respond`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question_number: currentQuestionNumber,
+                        response_text: responseText
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = `✅ Response saved! Words: ${data.data.word_count}, Quality: ${data.data.quality_score}/3`;
+                    showSuccess(resultDiv, stats);
+
+                    currentQuestionNumber++;
+                    updateProgress(currentQuestionNumber - 1, totalQuestions);
+
+                    // Check if we need next question or can complete
+                    if (data.data.next_action === 'next_question') {
+                        // Get next question
+                        setTimeout(getNextQuestion, 1500);
+                    } else if (data.data.next_action === 'complete_interview') {
+                        // Enable completion
+                        setTimeout(() => {
+                            markStepCompleted('step3');
+                            activateStep('step4');
+                            document.getElementById('completeInterviewBtn').disabled = false;
+                        }, 1500);
+                    }
+                } else {
+                    showError(resultDiv, data.error?.message || 'Failed to save response');
+                }
+            } catch (error) {
+                showError(resultDiv, `Network error: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                showLoading('response-loading', false);
+            }
+        }
+
+        // Get next question
+        async function getNextQuestion() {
+            try {
+                const response = await fetch(`${API_BASE}/interview/${currentSessionId}/next`);
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.data.status === 'in_progress') {
+                        displayQuestion(data.data.question);
+                        document.getElementById('responseText').value = '';
+                        document.getElementById('wordCount').textContent = '0';
+                        document.getElementById('submitResponseBtn').disabled = true;
+                    } else {
+                        // Ready for completion
+                        markStepCompleted('step3');
+                        activateStep('step4');
+                        document.getElementById('completeInterviewBtn').disabled = false;
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to get next question:', error);
+            }
+        }
+
+        // Step 4: Complete Interview
+        async function completeInterview() {
+            const resultDiv = document.getElementById('completion-result');
+            const finalDiv = document.getElementById('final-result');
+            const btn = document.getElementById('completeInterviewBtn');
+
+            btn.disabled = true;
+            showLoading('complete-loading', true);
+
+            try {
+                const response = await fetch(`${API_BASE}/interview/${currentSessionId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const summary = data.data.summary;
+
+                    let summaryHtml = `
+                        <div class="success">
+                            <h3>🎉 Interview Complete!</h3>
+                            <p><strong>Duration:</strong> ${data.data.duration_minutes} minutes</p>
+                            <p><strong>Total Responses:</strong> ${summary.total_responses}</p>
+                            <p><strong>Average Quality Score:</strong> ${summary.response_quality.average_quality_score.toFixed(1)}/3.0</p>
+                            <p><strong>Completion Rate:</strong> ${summary.completion_rate}%</p>
+                        </div>
+                    `;
+
+                    showSuccess(resultDiv, summaryHtml);
+
+                    // Check if AI analysis was generated
+                    let analysisHtml = '';
+                    if (data.data.analysis) {
+                        const analysis = data.data.analysis;
+                        analysisHtml = `
+                            <div style="background: #f0fdf4; padding: 25px; border-radius: 12px; border: 2px solid #10b981; margin-top: 20px;">
+                                <h3 style="color: #10b981; margin-bottom: 15px;">🧠 AI Strategic Analysis</h3>
+
+                                ${analysis.brand_positioning ? `
+                                <div style="margin-bottom: 15px;">
+                                    <h4>🎯 Brand Positioning</h4>
+                                    <p><strong>Value Proposition:</strong> ${analysis.brand_positioning.value_proposition || 'Not analyzed'}</p>
+                                    <p><strong>Clarity Level:</strong> ${analysis.brand_positioning.positioning_clarity || 'Not assessed'}</p>
+                                </div>
+                                ` : ''}
+
+                                ${analysis.resource_constraints ? `
+                                <div style="margin-bottom: 15px;">
+                                    <h4>⏰ Resource Constraints</h4>
+                                    <p><strong>Time Availability:</strong> ${analysis.resource_constraints.time_availability || 'Not specified'}</p>
+                                    <p><strong>Budget Range:</strong> ${analysis.resource_constraints.budget_range || 'Not specified'}</p>
+                                    <p><strong>Marketing Experience:</strong> ${analysis.resource_constraints.marketing_experience || 'Not assessed'}</p>
+                                </div>
+                                ` : ''}
+
+                                ${analysis.strategic_insights ? `
+                                <div style="margin-bottom: 15px;">
+                                    <h4>💡 Strategic Insights</h4>
+                                    ${analysis.strategic_insights.strengths ? `<p><strong>Strengths:</strong> ${analysis.strategic_insights.strengths.join(', ')}</p>` : ''}
+                                    ${analysis.strategic_insights.recommended_focus ? `<p><strong>Recommended Focus:</strong> ${analysis.strategic_insights.recommended_focus.join(', ')}</p>` : ''}
+                                </div>
+                                ` : ''}
+
+                                <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 6px;">
+                                    <strong>🎉 AI Analysis Complete!</strong> Strategic insights extracted from your responses.
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        analysisHtml = `
+                            <div style="background: #fef3c7; padding: 20px; border-radius: 12px; border: 2px solid #f59e0b; margin-top: 20px;">
+                                <h4 style="color: #92400e; margin-bottom: 10px;">⚠️ Analysis Pending</h4>
+                                <p style="color: #92400e;">The interview completed successfully, but AI analysis requires Claude API configuration. The basic interview data has been captured and stored.</p>
+                            </div>
+                        `;
+                    }
+
+                    // Show next steps
+                    finalDiv.innerHTML = `
+                        <div style="background: #f8f9ff; padding: 25px; border-radius: 12px; border: 2px solid #667eea;">
+                            <h3 style="color: #667eea; margin-bottom: 15px;">🚀 Next Steps</h3>
+                            <p style="margin-bottom: 15px;">${data.data.next_steps.message}</p>
+
+                            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #e5e5e5;">
+                                <h4 style="margin-bottom: 10px;">🎯 Interview Data Captured:</h4>
+                                <ul style="margin-left: 20px; line-height: 1.6;">
+                                    ${summary.key_topics_covered.map(topic => `<li>${topic}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 20px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 8px;">
+                                <strong>✅ Test Complete!</strong> The interview agent is working ${data.data.analysis ? 'perfectly with AI analysis' : 'correctly (AI analysis requires API key)'}.
+                            </div>
+                        </div>
+                        ${analysisHtml}
+                    `;
+
+                    markStepCompleted('step4');
+                } else {
+                    showError(resultDiv, data.error?.message || 'Failed to complete interview');
+                }
+            } catch (error) {
+                showError(resultDiv, `Network error: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                showLoading('complete-loading', false);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            activateStep('step1');
+        });
+    </script>
+</body>
+</html>

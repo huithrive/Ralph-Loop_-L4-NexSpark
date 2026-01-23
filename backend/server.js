@@ -12,10 +12,10 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      defaultSrc: ['\'self\''],
+      styleSrc: ['\'self\'', '\'unsafe-inline\''],
+      scriptSrc: ['\'self\''],
+      imgSrc: ['\'self\'', 'data:', 'https:'],
     },
   },
 }));
@@ -24,8 +24,8 @@ app.use(helmet({
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
     ? ['https://nexspark.com'] // Add production domains here
-    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8080'],
-  credentials: true,
+    : '*', // Allow all origins in development for file:// protocol support
+  credentials: process.env.NODE_ENV === 'production',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -141,15 +141,15 @@ async function startServer() {
       console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
       console.log(`📊 Environment: ${process.env.NODE_ENV}`);
       console.log('\n📋 Available endpoints:');
-      console.log(`   GET  /api/health - Health check`);
-      console.log(`   POST /api/strategist/research - Market research`);
-      console.log(`   GET  /api/strategist/research/:id - Get research`);
-      console.log(`   POST /api/strategist/interview/start - Start interview`);
-      console.log(`   POST /api/strategist/interview/:id/respond - Submit response`);
-      console.log(`   POST /api/strategist/interview/:id/complete - Complete interview`);
-      console.log(`   POST /api/strategist/reports/generate - Generate GTM report`);
-      console.log(`   POST /api/strategist/reports/preview - Generate report preview`);
-      console.log(`   GET  /api/strategist/reports/health - Report service health`);
+      console.log('   GET  /api/health - Health check');
+      console.log('   POST /api/strategist/research - Market research');
+      console.log('   GET  /api/strategist/research/:id - Get research');
+      console.log('   POST /api/strategist/interview/start - Start interview');
+      console.log('   POST /api/strategist/interview/:id/respond - Submit response');
+      console.log('   POST /api/strategist/interview/:id/complete - Complete interview');
+      console.log('   POST /api/strategist/reports/generate - Generate GTM report');
+      console.log('   POST /api/strategist/reports/preview - Generate report preview');
+      console.log('   GET  /api/strategist/reports/health - Report service health');
       console.log('\n' + '='.repeat(50));
     });
 

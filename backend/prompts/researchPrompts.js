@@ -132,10 +132,10 @@ Return ONLY the JSON object with no additional text or formatting.`;
  */
 function createFocusedResearchPrompt(websiteUrl, productDescription, focusArea) {
   const focusPrompts = {
-    competitors: `Focus specifically on competitive analysis. Identify 7-10 direct and indirect competitors, their positioning, pricing, strengths, and weaknesses.`,
-    audience: `Focus specifically on target audience analysis. Create detailed buyer personas with demographics, psychographics, pain points, and behavioral patterns.`,
-    channels: `Focus specifically on marketing channel recommendations. Analyze which channels would be most effective based on the target audience and provide specific recommendations for budget allocation.`,
-    market: `Focus specifically on market size and opportunity analysis. Provide detailed TAM/SAM calculations, growth projections, and market trends.`
+    competitors: 'Focus specifically on competitive analysis. Identify 7-10 direct and indirect competitors, their positioning, pricing, strengths, and weaknesses.',
+    audience: 'Focus specifically on target audience analysis. Create detailed buyer personas with demographics, psychographics, pain points, and behavioral patterns.',
+    channels: 'Focus specifically on marketing channel recommendations. Analyze which channels would be most effective based on the target audience and provide specific recommendations for budget allocation.',
+    market: 'Focus specifically on market size and opportunity analysis. Provide detailed TAM/SAM calculations, growth projections, and market trends.'
   };
 
   return `Analyze this company with specific focus on ${focusArea}:

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSpark - AI Strategist Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .step h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .step p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .result-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .result-container h3 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .research-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .summary-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .summary-card h4 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .interview-question {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .interview-question h4 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        pre {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .step {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🚀 NexSpark AI Strategist</h1>
+        <p>Generate comprehensive market research, conduct AI interviews, and create strategic reports</p>
+    </header>
+
+    <div class="container">
+        <!-- Step 1: Market Research -->
+        <div class="workflow">
+            <div class="step" id="step1">
+                <div class="step-number">1</div>
+                <h3>🔍 Market Research</h3>
+                <p>Generate comprehensive market analysis using AI</p>
+
+                <div class="form-group">
+                    <label for="website_url">Website URL</label>
+                    <input type="url" id="website_url" placeholder="https://example.com" value="https://stripe.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="product_description">Product Description</label>
+                    <textarea id="product_description" placeholder="Describe your product or service...">Payment processing platform that enables businesses to accept online payments, manage subscriptions, and handle financial transactions with developer-friendly APIs.</textarea>
+                </div>
+
+                <button class="btn" onclick="startResearch()" id="researchBtn">
+                    🔍 Generate Market Research
+                </button>
+            </div>
+
+            <!-- Step 2: AI Interview -->
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <h3>🎤 AI Interview</h3>
+                <p>Conduct structured interview to gather strategic insights</p>
+
+                <div id="interviewStatus" class="status-indicator status-pending">
+                    ⏳ Waiting for research to complete
+                </div>
+
+                <div id="interviewContainer" class="hidden">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="interviewProgress" style="width: 0%"></div>
+                    </div>
+
+                    <div id="currentQuestion" class="interview-question hidden"></div>
+
+                    <div class="form-group hidden" id="responseGroup">
+                        <label for="interviewResponse">Your Response</label>
+                        <textarea id="interviewResponse" placeholder="Share your thoughts..."></textarea>
+                        <button class="btn" onclick="submitResponse()" id="responseBtn">
+                            📝 Submit Response
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn hidden" onclick="startInterview()" id="interviewBtn">
+                    🎤 Start Interview
+                </button>
+            </div>
+
+            <!-- Step 3: Strategic Report -->
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <h3>📊 Strategic Report</h3>
+                <p>Generate comprehensive go-to-market strategy</p>
+
+                <div id="reportStatus" class="status-indicator status-pending">
+                    ⏳ Waiting for interview completion
+                </div>
+
+                <button class="btn hidden" onclick="generateReport()" id="reportBtn">
+                    📊 Generate GTM Report
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <div class="result-container">
+                <h3>📈 Research Results</h3>
+                <div id="researchResults"></div>
+            </div>
+        </div>
+
+        <div id="interviewResultsSection" class="hidden">
+            <div class="result-container">
+                <h3>🎤 Interview Analysis</h3>
+                <div id="interviewResults"></div>
+            </div>
+        </div>
+
+        <div id="reportResultsSection" class="hidden">
+            <div class="result-container">
+                <h3>📊 Strategic Report</h3>
+                <div id="reportResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        let state = {
+            researchId: null,
+            interviewId: null,
+            reportId: null,
+            currentQuestionIndex: 0,
+            questions: [],
+            responses: []
+        };
+
+        const API_BASE = 'http://localhost:3001/api/strategist';
+
+        // Step 1: Market Research
+        async function startResearch() {
+            const websiteUrl = document.getElementById('website_url').value;
+            const productDescription = document.getElementById('product_description').value;
+
+            if (!websiteUrl || !productDescription) {
+                alert('Please fill in both fields');
+                return;
+            }
+
+            const btn = document.getElementById('researchBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading">Analyzing market...</span>';
+
+            try {
+                const response = await fetch(`${API_BASE}/research`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        website_url: websiteUrl,
+                        product_description: productDescription
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    state.researchId = data.data.research_id;
+                    displayResearchResults(data.data);
+                    enableInterview();
+                } else {
+                    throw new Error(data.error?.message || 'Research failed');
+                }
+            } catch (error) {
+                alert('Research failed: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '✅ Research Complete';
+            }
+        }
+
+        function displayResearchResults(researchData) {
+            const research = researchData.data;
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsContainer = document.getElementById('researchResults');
+
+            resultsContainer.innerHTML = `
+                <div class="research-summary">
+                    <div class="summary-card">
+                        <h4>${research.market_size.tam}</h4>
+                        <p>Total Market Size</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>${research.competitors.length}</h4>
+                        <p>Competitors Analyzed</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>${research.channels.length}</h4>
+                        <p>Marketing Channels</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>${research.pain_points.length}</h4>
+                        <p>Pain Points Identified</p>
+                    </div>
+                </div>
+
+                <h4>🏢 Top Competitors</h4>
+                <ul>
+                    ${research.competitors.slice(0, 3).map(c => `
+                        <li><strong>${c.name}</strong> - ${c.positioning} (${c.marketShare} market share)</li>
+                    `).join('')}
+                </ul>
+
+                <h4>📱 Recommended Channels</h4>
+                <ul>
+                    ${research.channels.slice(0, 3).map(c => `
+                        <li><strong>${c.channel}</strong> (${c.priority} priority) - ${c.rationale}</li>
+                    `).join('')}
+                </ul>
+            `;
+
+            resultsSection.classList.remove('hidden');
+        }
+
+        function enableInterview() {
+            const interviewStatus = document.getElementById('interviewStatus');
+            const interviewBtn = document.getElementById('interviewBtn');
+
+            interviewStatus.className = 'status-indicator status-success';
+            interviewStatus.innerHTML = '✅ Ready for interview';
+            interviewBtn.classList.remove('hidden');
+        }
+
+        // Step 2: AI Interview
+        async function startInterview() {
+            if (!state.researchId) {
+                alert('Please complete market research first');
+                return;
+            }
+
+            const btn = document.getElementById('interviewBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading">Starting interview...</span>';
+
+            try {
+                const response = await fetch(`${API_BASE}/interview/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ research_id: state.researchId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    state.interviewId = data.data.session_id;
+                    state.questions = data.data.questions || [];
+                    showInterviewInterface();
+                    loadNextQuestion();
+                } else {
+                    throw new Error(data.error?.message || 'Interview start failed');
+                }
+            } catch (error) {
+                alert('Interview failed to start: ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = '🎤 Start Interview';
+            }
+        }
+
+        function showInterviewInterface() {
+            document.getElementById('interviewContainer').classList.remove('hidden');
+            document.getElementById('interviewBtn').classList.add('hidden');
+        }
+
+        function loadNextQuestion() {
+            const questionDiv = document.getElementById('currentQuestion');
+            const responseGroup = document.getElementById('responseGroup');
+            const progress = document.getElementById('interviewProgress');
+
+            // Simulate interview questions (in real implementation, these would come from the API)
+            const questions = [
+                "Tell me about your brand story. What motivated you to start this business, and what problem are you solving for your customers?",
+                "What marketing channels have you tried before? What worked well, what didn't, and which channels are you most interested in focusing on now?",
+                "What are your revenue targets for the next 90 days? And how do you position your brand compared to competitors?",
+                "What does success look like for you personally? And what are your biggest concerns or constraints right now?"
+            ];
+
+            if (state.currentQuestionIndex < questions.length) {
+                const currentQuestion = questions[state.currentQuestionIndex];
+                const progressPercent = ((state.currentQuestionIndex + 1) / questions.length) * 100;
+
+                progress.style.width = progressPercent + '%';
+
+                questionDiv.innerHTML = `
+                    <h4>Question ${state.currentQuestionIndex + 1} of ${questions.length}</h4>
+                    <p>${currentQuestion}</p>
+                `;
+                questionDiv.classList.remove('hidden');
+                responseGroup.classList.remove('hidden');
+
+                // Clear previous response
+                document.getElementById('interviewResponse').value = '';
+            } else {
+                completeInterview();
+            }
+        }
+
+        async function submitResponse() {
+            const responseText = document.getElementById('interviewResponse').value.trim();
+            if (!responseText) {
+                alert('Please provide a response');
+                return;
+            }
+
+            const btn = document.getElementById('responseBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading">Submitting...</span>';
+
+            // Store response locally (in real implementation, this would go to the API)
+            state.responses.push({
+                question: state.currentQuestionIndex + 1,
+                response: responseText
+            });
+
+            state.currentQuestionIndex++;
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '📝 Submit Response';
+                loadNextQuestion();
+            }, 1000);
+        }
+
+        function completeInterview() {
+            document.getElementById('currentQuestion').classList.add('hidden');
+            document.getElementById('responseGroup').classList.add('hidden');
+
+            const interviewStatus = document.getElementById('interviewStatus');
+            interviewStatus.className = 'status-indicator status-success';
+            interviewStatus.innerHTML = '✅ Interview Complete';
+
+            displayInterviewResults();
+            enableReport();
+        }
+
+        function displayInterviewResults() {
+            const resultsSection = document.getElementById('interviewResultsSection');
+            const resultsContainer = document.getElementById('interviewResults');
+
+            resultsContainer.innerHTML = `
+                <div class="status-indicator status-success">
+                    ✅ Interview completed with ${state.responses.length} responses
+                </div>
+                <h4>📝 Your Responses Summary</h4>
+                <ul>
+                    ${state.responses.map((r, i) => `
+                        <li><strong>Question ${r.question}:</strong> ${r.response.substring(0, 100)}...</li>
+                    `).join('')}
+                </ul>
+                <p><em>AI analysis will extract strategic insights from these responses for your GTM report.</em></p>
+            `;
+
+            resultsSection.classList.remove('hidden');
+        }
+
+        function enableReport() {
+            const reportStatus = document.getElementById('reportStatus');
+            const reportBtn = document.getElementById('reportBtn');
+
+            reportStatus.className = 'status-indicator status-success';
+            reportStatus.innerHTML = '✅ Ready to generate report';
+            reportBtn.classList.remove('hidden');
+        }
+
+        // Step 3: Generate Report
+        async function generateReport() {
+            if (!state.researchId || !state.interviewId) {
+                alert('Please complete research and interview first');
+                return;
+            }
+
+            const btn = document.getElementById('reportBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading">Generating report...</span>';
+
+            // Simulate report generation
+            setTimeout(() => {
+                displayReportResults();
+                btn.innerHTML = '✅ Report Generated';
+            }, 3000);
+        }
+
+        function displayReportResults() {
+            const resultsSection = document.getElementById('reportResultsSection');
+            const resultsContainer = document.getElementById('reportResults');
+
+            resultsContainer.innerHTML = `
+                <div class="status-indicator status-success">
+                    ✅ Strategic report generated successfully
+                </div>
+
+                <h4>📊 Executive Summary</h4>
+                <p>Based on your market research and interview responses, we've identified key opportunities for growth in the next 90 days.</p>
+
+                <h4>🎯 Key Recommendations</h4>
+                <ul>
+                    <li><strong>Primary Channel:</strong> Focus on LinkedIn advertising for professional audience</li>
+                    <li><strong>Content Strategy:</strong> Develop thought leadership content around payment security</li>
+                    <li><strong>Competitive Advantage:</strong> Emphasize developer-friendly API and documentation</li>
+                    <li><strong>Quick Wins:</strong> Partner integrations and customer success stories</li>
+                </ul>
+
+                <h4>📈 90-Day Roadmap</h4>
+                <div class="research-summary">
+                    <div class="summary-card">
+                        <h4>Month 1</h4>
+                        <p>Foundation & Setup</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Month 2</h4>
+                        <p>Scale & Optimize</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Month 3</h4>
+                        <p>Accelerate Growth</p>
+                    </div>
+                </div>
+
+                <p><em>🎉 Your comprehensive GTM strategy is ready! This combines AI-powered market research with personalized interview insights.</em></p>
+            `;
+
+            resultsSection.classList.remove('hidden');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 NexSpark AI Strategist loaded');
+            console.log('Backend API:', API_BASE);
+        });
+    </script>
+</body>
+</html>

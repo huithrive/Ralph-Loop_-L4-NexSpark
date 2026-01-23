@@ -90,7 +90,7 @@ async function runMigrations() {
         await recordMigration(migrationFile);
         completedCount++;
       } else {
-        console.error(`\n❌ Migration failed. Stopping here.`);
+        console.error('\n❌ Migration failed. Stopping here.');
         process.exit(1);
       }
     }

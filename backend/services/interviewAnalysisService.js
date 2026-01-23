@@ -424,16 +424,16 @@ Extract specific, actionable insights based on the actual responses. If informat
     // Provide general guidance based on experience level
     let recommendation = {
       mentioned_budget: mentioned,
-      recommended_range: "$500-2000/month",
-      rationale: "Standard recommendation for SMB growth marketing"
+      recommended_range: '$500-2000/month',
+      rationale: 'Standard recommendation for SMB growth marketing'
     };
 
     if (experience === 'beginner') {
-      recommendation.recommended_range = "$300-1000/month";
-      recommendation.rationale = "Conservative start to learn what works";
+      recommendation.recommended_range = '$300-1000/month';
+      recommendation.rationale = 'Conservative start to learn what works';
     } else if (experience === 'advanced') {
-      recommendation.recommended_range = "$1000-5000/month";
-      recommendation.rationale = "Higher budget justified by experience and execution capability";
+      recommendation.recommended_range = '$1000-5000/month';
+      recommendation.rationale = 'Higher budget justified by experience and execution capability';
     }
 
     return recommendation;
@@ -448,25 +448,25 @@ Extract specific, actionable insights based on the actual responses. If informat
     const urgency = analysis.personal_motivations.timeline_pressure;
     const experience = analysis.resource_constraints.marketing_experience;
 
-    let timeframe = "90-120 days";
-    let rationale = "Standard timeframe for GTM strategy execution";
+    let timeframe = '90-120 days';
+    let rationale = 'Standard timeframe for GTM strategy execution';
 
     if (urgency === 'high' && experience !== 'beginner') {
-      timeframe = "60-90 days";
-      rationale = "Accelerated timeline due to high urgency and capability";
+      timeframe = '60-90 days';
+      rationale = 'Accelerated timeline due to high urgency and capability';
     } else if (experience === 'beginner' || urgency === 'none') {
-      timeframe = "120-180 days";
-      rationale = "Extended timeline for learning and gradual scaling";
+      timeframe = '120-180 days';
+      rationale = 'Extended timeline for learning and gradual scaling';
     }
 
     return {
       recommended_timeframe: timeframe,
       rationale: rationale,
       key_milestones: [
-        "Week 1-2: Setup and preparation",
-        "Week 3-6: Initial campaign launch",
-        "Week 7-10: Optimization and scaling",
-        "Week 11-12: Evaluation and planning"
+        'Week 1-2: Setup and preparation',
+        'Week 3-6: Initial campaign launch',
+        'Week 7-10: Optimization and scaling',
+        'Week 11-12: Evaluation and planning'
       ]
     };
   }

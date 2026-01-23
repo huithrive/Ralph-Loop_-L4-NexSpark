@@ -41,17 +41,17 @@ function outputLog(logObject) {
   const logString = JSON.stringify(logObject);
 
   switch (logObject.level) {
-    case 'ERROR':
-      console.error(logString);
-      break;
-    case 'WARN':
-      console.warn(logString);
-      break;
-    case 'DEBUG':
-      console.debug(logString);
-      break;
-    default:
-      console.log(logString);
+  case 'ERROR':
+    console.error(logString);
+    break;
+  case 'WARN':
+    console.warn(logString);
+    break;
+  case 'DEBUG':
+    console.debug(logString);
+    break;
+  default:
+    console.log(logString);
   }
 }
 
