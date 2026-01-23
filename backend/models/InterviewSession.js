@@ -71,8 +71,8 @@ class InterviewSession {
 
       const row = result.rows[0];
 
-      // Parse JSON fields
-      row.analysis = row.analysis ? JSON.parse(row.analysis) : null;
+      // JSONB fields are already parsed by PostgreSQL
+      // row.analysis is already an object, no need to JSON.parse()
 
       return new InterviewSession(row);
 
@@ -99,7 +99,7 @@ class InterviewSession {
 
       return result.rows.map(row => {
         // Parse JSON fields
-        row.analysis = row.analysis ? JSON.parse(row.analysis) : null;
+        // JSONB field is already parsed, no need to JSON.parse()
         return new InterviewSession(row);
       });
 
@@ -154,8 +154,8 @@ class InterviewSession {
 
       const row = result.rows[0];
 
-      // Parse JSON fields
-      row.analysis = row.analysis ? JSON.parse(row.analysis) : null;
+      // JSONB fields are already parsed by PostgreSQL
+      // row.analysis is already an object, no need to JSON.parse()
 
       logger.info('Interview session updated', { sessionId: id });
 
@@ -191,7 +191,7 @@ class InterviewSession {
       }
 
       const row = result.rows[0];
-      row.analysis = row.analysis ? JSON.parse(row.analysis) : null;
+      // JSONB field is already parsed by PostgreSQL, no need to JSON.parse()
 
       logger.info('Interview session completed', { sessionId: id });
 
@@ -224,7 +224,7 @@ class InterviewSession {
       }
 
       const row = result.rows[0];
-      row.analysis = row.analysis ? JSON.parse(row.analysis) : null;
+      // JSONB field is already parsed by PostgreSQL, no need to JSON.parse()
 
       logger.debug('Interview question advanced', {
         sessionId: id,
@@ -264,7 +264,7 @@ class InterviewSession {
       const result = await query(sql, [limit, offset]);
 
       const sessions = result.rows.map(row => {
-        row.analysis = row.analysis ? JSON.parse(row.analysis) : null;
+        // JSONB field is already parsed, no need to JSON.parse()
         return new InterviewSession(row);
       });
 
@@ -301,7 +301,7 @@ class InterviewSession {
       const result = await query(sql, [limit, offset]);
 
       const sessions = result.rows.map(row => {
-        row.analysis = row.analysis ? JSON.parse(row.analysis) : null;
+        // JSONB field is already parsed, no need to JSON.parse()
         return new InterviewSession(row);
       });
 

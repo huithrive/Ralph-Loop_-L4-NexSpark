@@ -85,10 +85,11 @@ class InterviewService {
         throw new Error('Interview session is not active');
       }
 
-      const nextQuestionNumber = InterviewQuestionHelpers.getNextQuestion(session.current_question);
+      // current_question already represents the next question to ask
+      const nextQuestionNumber = session.current_question;
 
       // Check if interview is complete
-      if (!nextQuestionNumber) {
+      if (InterviewQuestionHelpers.isComplete(nextQuestionNumber)) {
         return {
           status: 'ready_for_completion',
           message: 'All questions answered. Ready to complete interview.',

@@ -1,5 +1,5 @@
 // Test setup for NexSpark backend
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 
 // Test database connection (you may want to use a separate test database)
 const { connectWithRetry } = require('../config/database');

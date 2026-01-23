@@ -116,11 +116,7 @@ class ResearchResult {
 
       return result.rows.map(row => {
         // Parse JSON fields
-        row.market_size = row.market_size ? JSON.parse(row.market_size) : null;
-        row.competitors = row.competitors ? JSON.parse(row.competitors) : null;
-        row.target_audience = row.target_audience ? JSON.parse(row.target_audience) : null;
-        row.channels = row.channels ? JSON.parse(row.channels) : null;
-        row.pain_points = row.pain_points ? JSON.parse(row.pain_points) : null;
+        // JSONB fields are already parsed by PostgreSQL, no need to JSON.parse()
 
         return new ResearchResult(row);
       });
@@ -153,11 +149,7 @@ class ResearchResult {
 
       const results = result.rows.map(row => {
         // Parse JSON fields
-        row.market_size = row.market_size ? JSON.parse(row.market_size) : null;
-        row.competitors = row.competitors ? JSON.parse(row.competitors) : null;
-        row.target_audience = row.target_audience ? JSON.parse(row.target_audience) : null;
-        row.channels = row.channels ? JSON.parse(row.channels) : null;
-        row.pain_points = row.pain_points ? JSON.parse(row.pain_points) : null;
+        // JSONB fields are already parsed by PostgreSQL, no need to JSON.parse()
 
         return new ResearchResult(row);
       });

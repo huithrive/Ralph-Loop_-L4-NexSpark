@@ -76,7 +76,7 @@ class GTMReport {
       const row = result.rows[0];
 
       // Parse JSON fields
-      row.report_data = row.report_data ? JSON.parse(row.report_data) : null;
+      // JSONB field is already parsed by PostgreSQL, no need to JSON.parse()
 
       return new GTMReport(row);
 
@@ -103,7 +103,7 @@ class GTMReport {
 
       return result.rows.map(row => {
         // Parse JSON fields
-        row.report_data = row.report_data ? JSON.parse(row.report_data) : null;
+        // JSONB field is already parsed by PostgreSQL, no need to JSON.parse()
         return new GTMReport(row);
       });
 
@@ -135,7 +135,7 @@ class GTMReport {
       }
 
       const row = result.rows[0];
-      row.report_data = row.report_data ? JSON.parse(row.report_data) : null;
+      // JSONB field is already parsed by PostgreSQL, no need to JSON.parse()
 
       return new GTMReport(row);
 
@@ -170,7 +170,7 @@ class GTMReport {
 
       const reports = result.rows.map(row => {
         // Parse JSON fields
-        row.report_data = row.report_data ? JSON.parse(row.report_data) : null;
+        // JSONB field is already parsed by PostgreSQL, no need to JSON.parse()
         return new GTMReport(row);
       });
 
@@ -205,7 +205,7 @@ class GTMReport {
       const result = await query(sql, [status, limit, offset]);
 
       const reports = result.rows.map(row => {
-        row.report_data = row.report_data ? JSON.parse(row.report_data) : null;
+        // JSONB field is already parsed by PostgreSQL, no need to JSON.parse()
         return new GTMReport(row);
       });
 
@@ -261,7 +261,7 @@ class GTMReport {
       }
 
       const row = result.rows[0];
-      row.report_data = row.report_data ? JSON.parse(row.report_data) : null;
+      // JSONB field is already parsed by PostgreSQL, no need to JSON.parse()
 
       logger.info('GTM report updated', { reportId: id });
 
