@@ -1,26 +1,27 @@
-const { callClaude, callClaudeForJSON, getRateLimitStatus } = require('../services/claudeService');
-
-// Mock the Anthropic SDK
+// Mock the Anthropic SDK BEFORE requiring the service
 jest.mock('@anthropic-ai/sdk');
 
-describe('Claude Service', () => {
-  let mockCreate;
+// Set up environment before service initialization
+process.env.ANTHROPIC_API_KEY = 'test-api-key';
 
+// Set up the mock implementation before requiring
+const mockCreate = jest.fn();
+const Anthropic = require('@anthropic-ai/sdk');
+Anthropic.mockImplementation(() => ({
+  messages: {
+    create: mockCreate
+  }
+}));
+
+// Now require the service with mocks in place
+const { callClaude, callClaudeForJSON, getRateLimitStatus } = require('../services/claudeService');
+
+describe('Claude Service', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock the Anthropic client
-    const Anthropic = require('@anthropic-ai/sdk');
-    mockCreate = jest.fn();
-
-    Anthropic.mockImplementation(() => ({
-      messages: {
-        create: mockCreate
-      }
-    }));
-
-    // Ensure API key is set for tests
-    process.env.ANTHROPIC_API_KEY = 'test-api-key';
+    // Reset the mock implementation for each test
+    mockCreate.mockClear();
   });
 
   describe('callClaude', () => {
@@ -61,6 +62,9 @@ describe('Claude Service', () => {
     });
 
     test('should handle 401 authentication error', async () => {
+      // Ensure API key is set so we can test the 401 error path
+      process.env.ANTHROPIC_API_KEY = 'test-api-key';
+
       const error = new Error('Unauthorized');
       error.status = 401;
       mockCreate.mockRejectedValue(error);
@@ -69,6 +73,9 @@ describe('Claude Service', () => {
     });
 
     test('should handle 429 rate limit error', async () => {
+      // Ensure API key is set so we can test the 429 error path
+      process.env.ANTHROPIC_API_KEY = 'test-api-key';
+
       const error = new Error('Rate limited');
       error.status = 429;
       mockCreate.mockRejectedValue(error);
@@ -79,6 +86,9 @@ describe('Claude Service', () => {
 
   describe('callClaudeForJSON', () => {
     test('should parse JSON response correctly', async () => {
+      // Ensure API key is set for JSON tests
+      process.env.ANTHROPIC_API_KEY = 'test-api-key';
+
       const mockResponse = {
         content: [{ text: '{"test": "value", "number": 42}' }],
         usage: { input_tokens: 10, output_tokens: 5 }
@@ -94,6 +104,9 @@ describe('Claude Service', () => {
     });
 
     test('should handle JSON wrapped in code blocks', async () => {
+      // Ensure API key is set for JSON tests
+      process.env.ANTHROPIC_API_KEY = 'test-api-key';
+
       const mockResponse = {
         content: [{ text: '```json\n{"test": "value"}\n```' }],
         usage: { input_tokens: 10, output_tokens: 5 }
@@ -108,6 +121,9 @@ describe('Claude Service', () => {
     });
 
     test('should throw error for invalid JSON', async () => {
+      // Ensure API key is set for JSON tests
+      process.env.ANTHROPIC_API_KEY = 'test-api-key';
+
       const mockResponse = {
         content: [{ text: 'Invalid JSON response' }],
         usage: { input_tokens: 10, output_tokens: 5 }
