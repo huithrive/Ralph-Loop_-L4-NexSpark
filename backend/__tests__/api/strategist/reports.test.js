@@ -2,16 +2,18 @@
  * Tests for GTM Reports API endpoints
  */
 
+// Mock dependencies FIRST before any imports
+jest.mock('../../../services/reportGenerationService');
+jest.mock('../../../services/dataSynthesisService');
+jest.mock('../../../utils/logger');
+jest.mock('../../../models/ResearchResult');
+jest.mock('../../../models/InterviewSession');
+
 const request = require('supertest');
 const express = require('express');
 const reportRoutes = require('../../../api/strategist/reports');
 const reportGenerationService = require('../../../services/reportGenerationService');
 const dataSynthesisService = require('../../../services/dataSynthesisService');
-
-// Mock dependencies
-jest.mock('../../../services/reportGenerationService');
-jest.mock('../../../services/dataSynthesisService');
-jest.mock('../../../utils/logger');
 
 const app = express();
 app.use(express.json());
@@ -24,7 +26,7 @@ describe('Reports API', () => {
 
   describe('POST /api/strategist/reports/generate', () => {
     const validRequest = {
-      researchId: '123e4567-e89b-12d3-a456-426614174000',
+      researchId: '123e4567-e89b-42d3-a456-426614174001',
       options: {
         autoImprove: true,
         generateBySections: false
@@ -76,7 +78,7 @@ describe('Reports API', () => {
     test('should generate report with interview data', async () => {
       const requestWithInterview = {
         ...validRequest,
-        interviewSessionId: '987fcdeb-51a2-34e5-b678-123456789abc'
+        interviewSessionId: '987fcdeb-51a2-44e5-b678-123456789def'
       };
 
       reportGenerationService.generateGTMReport.mockResolvedValue({
@@ -241,7 +243,7 @@ describe('Reports API', () => {
     test('should generate preview with interview data', async () => {
       const requestWithInterview = {
         ...validRequest,
-        interviewSessionId: '987fcdeb-51a2-34e5-b678-123456789abc'
+        interviewSessionId: '987fcdeb-51a2-44e5-b678-123456789def'
       };
 
       reportGenerationService.generateReportPreview.mockResolvedValue(mockPreview);
