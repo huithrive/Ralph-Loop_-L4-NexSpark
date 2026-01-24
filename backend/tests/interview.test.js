@@ -38,6 +38,51 @@ describe('Interview System Tests', () => {
 
     const research = await ResearchResult.create(researchData);
     testResearchId = research.id;
+
+    // Create a completed interview session for analysis testing
+    const sessionData = {
+      research_id: testResearchId,
+      status: 'completed',
+      current_question: 4,
+      started_at: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
+      completed_at: new Date()
+    };
+
+    const session = await InterviewSession.create(sessionData);
+    testSessionId = session.id;
+
+    // Create sample interview responses
+    const responses = [
+      {
+        session_id: testSessionId,
+        question_number: 1,
+        question_text: 'Tell me about your brand story. What motivated you to start this business, and what problem are you solving for your customers?',
+        response_text: 'I started this business because I saw small business owners struggling with expensive and complex marketing tools. Our SaaS platform provides affordable, easy-to-use marketing automation that helps them compete with larger companies. We focus on simplicity and results.'
+      },
+      {
+        session_id: testSessionId,
+        question_number: 2,
+        question_text: 'What marketing channels have you tried before? What worked well, what didn\'t, and which channels are you most interested in focusing on now?',
+        response_text: 'I\'ve tried Google Ads with moderate success, but struggled with Facebook ads due to complexity. Email marketing worked well for customer retention. I want to focus on Google Ads and content marketing moving forward, as they align with our technical audience.'
+      },
+      {
+        session_id: testSessionId,
+        question_number: 3,
+        question_text: 'What are your revenue targets for the next 90 days? And how do you position your brand compared to competitors?',
+        response_text: 'My target is $10,000 monthly recurring revenue within 90 days. We position ourselves as the affordable alternative to expensive enterprise tools, with better customer support and simpler onboarding than competitors like HubSpot or Marketo.'
+      },
+      {
+        session_id: testSessionId,
+        question_number: 4,
+        question_text: 'What does success look like for you personally? And what are your biggest concerns or constraints right now?',
+        response_text: 'Success means financial freedom and helping other small businesses grow. My biggest constraints are time - I can dedicate about 20 hours per week to marketing - and budget, around $1500 per month. I worry about scaling too fast and compromising quality.'
+      }
+    ];
+
+    // Create all responses
+    for (const responseData of responses) {
+      await InterviewResponse.create(responseData);
+    }
   });
 
   afterAll(async () => {

@@ -155,7 +155,7 @@ class InterviewAnalysisService {
       );
 
       // Validate and enrich analysis
-      const enrichedAnalysis = await this.enrichAnalysis(claudeResponse, transcript);
+      const enrichedAnalysis = await this.enrichAnalysis(claudeResponse.data, transcript);
 
       return enrichedAnalysis;
 
