@@ -89,8 +89,32 @@ app.use('/api/strategist/reports', reportRoutes);
 // API routes - Executor Module
 const landingPageRoutes = require('./api/executor/landingPages');
 const shopifyRoutes = require('./api/executor/shopify');
+const domainRoutes = require('./api/executor/domains');
+const creativeRoutes = require('./api/executor/creative');
 app.use('/api/executor/landing-pages', landingPageRoutes);
 app.use('/api/executor/shopify', shopifyRoutes);
+app.use('/api/executor/domains', domainRoutes);
+app.use('/api/executor/creative', creativeRoutes);
+
+// API routes - Advertiser Module
+const campaignRoutes = require('./api/advertiser/campaign');
+const advertiserAuthRoutes = require('./api/advertiser/auth');
+const pixelRoutes = require('./api/advertiser/pixel');
+app.use('/api/advertiser/campaigns', campaignRoutes);
+app.use('/api/advertiser/auth', advertiserAuthRoutes);
+app.use('/api/advertiser/pixel', pixelRoutes);
+
+// API routes - Analyzer Module
+const performanceRoutes = require('./api/analyzer/performance');
+const optimizeRoutes = require('./api/analyzer/optimize');
+const dashboardRoutes = require('./api/analyzer/dashboard');
+const healthRoutes = require('./api/analyzer/health');
+const analyzerReportsRoutes = require('./api/analyzer/reports');
+app.use('/api/analyzer/performance', performanceRoutes);
+app.use('/api/analyzer/optimize', optimizeRoutes);
+app.use('/api/analyzer/dashboard', dashboardRoutes);
+app.use('/api/analyzer/health', healthRoutes);
+app.use('/api/analyzer/reports', analyzerReportsRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {
@@ -156,6 +180,23 @@ async function startServer() {
       console.log('   POST /api/strategist/reports/generate - Generate GTM report');
       console.log('   POST /api/strategist/reports/preview - Generate report preview');
       console.log('   GET  /api/strategist/reports/health - Report service health');
+      console.log('   POST /api/executor/creative/generate - Generate video from image');
+      console.log('   GET  /api/executor/creative/:id - Get creative details');
+      console.log('   GET  /api/executor/creative/:id/status - Poll status updates');
+      console.log('   GET  /api/executor/creatives - List creatives');
+      console.log('   POST /api/advertiser/campaigns/create - Create Meta/Google campaign');
+      console.log('   GET  /api/advertiser/campaigns/:id - Get campaign details');
+      console.log('   PUT  /api/advertiser/campaigns/:id/status - Update campaign status');
+      console.log('   GET  /api/advertiser/campaigns - List campaigns');
+      console.log('   POST /api/advertiser/pixel/install - Install Meta Pixel');
+      console.log('   GET  /api/advertiser/auth/meta/connect - Connect Meta Business Manager');
+      console.log('   GET  /api/advertiser/auth/google/connect - Connect Google Ads');
+      console.log('   GET  /api/analyzer/performance/:campaign_id - Get campaign performance');
+      console.log('   GET  /api/analyzer/performance - Get multi-campaign performance');
+      console.log('   POST /api/analyzer/optimize/:campaign_id - Run campaign optimization');
+      console.log('   GET  /api/analyzer/dashboard/:user_id - Get dashboard data');
+      console.log('   GET  /api/analyzer/health/system - Get system health status');
+      console.log('   POST /api/analyzer/reports/generate - Generate weekly report');
       console.log('\n' + '='.repeat(50));
     });
 

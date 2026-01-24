@@ -6,7 +6,7 @@ const { body, validationResult } = require('express-validator');
 const LovableService = require('../../services/lovableService');
 const { GTMReport } = require('../../models');
 const logger = require('../../utils/logger');
-const { formatSuccessResponse, formatErrorResponse } = require('../../utils/responseFormatter');
+const { success: formatSuccessResponse, error: formatErrorResponse } = require('../../utils/responseFormatter');
 
 const router = express.Router();
 const lovableService = new LovableService();

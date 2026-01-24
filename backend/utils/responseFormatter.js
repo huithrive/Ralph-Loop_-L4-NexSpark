@@ -44,9 +44,16 @@ function error(message, statusCode = 500, errorCode = null, details = {}) {
     }
   };
 
+  // Add error_code at top level for test compatibility
+  if (errorCode) {
+    response.error_code = errorCode;
+  }
+
   // Add details if provided and not empty
   if (Object.keys(details).length > 0) {
     response.error.details = details;
+    // Also add details at top level as 'data' for test compatibility
+    response.data = details;
   }
 
   // Don't expose internal error details in production
