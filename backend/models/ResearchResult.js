@@ -81,13 +81,18 @@ class ResearchResult {
 
       const row = result.rows[0];
 
-      // JSONB fields are automatically parsed by pg driver, no need to JSON.parse
-      // Just ensure they exist or set to null
-      row.market_size = row.market_size || null;
-      row.competitors = row.competitors || null;
-      row.target_audience = row.target_audience || null;
-      row.channels = row.channels || null;
-      row.pain_points = row.pain_points || null;
+      // Parse JSONB fields - handle both string and object types
+      // (strings from mocked data, objects from real database)
+      row.market_size = row.market_size ?
+        (typeof row.market_size === 'string' ? JSON.parse(row.market_size) : row.market_size) : null;
+      row.competitors = row.competitors ?
+        (typeof row.competitors === 'string' ? JSON.parse(row.competitors) : row.competitors) : null;
+      row.target_audience = row.target_audience ?
+        (typeof row.target_audience === 'string' ? JSON.parse(row.target_audience) : row.target_audience) : null;
+      row.channels = row.channels ?
+        (typeof row.channels === 'string' ? JSON.parse(row.channels) : row.channels) : null;
+      row.pain_points = row.pain_points ?
+        (typeof row.pain_points === 'string' ? JSON.parse(row.pain_points) : row.pain_points) : null;
 
       return new ResearchResult(row);
 
@@ -115,8 +120,17 @@ class ResearchResult {
       const result = await query(sql, [websiteUrl, limit]);
 
       return result.rows.map(row => {
-        // Parse JSON fields
-        // JSONB fields are already parsed by PostgreSQL, no need to JSON.parse()
+        // Parse JSONB fields - handle both string and object types
+        row.market_size = row.market_size ?
+          (typeof row.market_size === 'string' ? JSON.parse(row.market_size) : row.market_size) : null;
+        row.competitors = row.competitors ?
+          (typeof row.competitors === 'string' ? JSON.parse(row.competitors) : row.competitors) : null;
+        row.target_audience = row.target_audience ?
+          (typeof row.target_audience === 'string' ? JSON.parse(row.target_audience) : row.target_audience) : null;
+        row.channels = row.channels ?
+          (typeof row.channels === 'string' ? JSON.parse(row.channels) : row.channels) : null;
+        row.pain_points = row.pain_points ?
+          (typeof row.pain_points === 'string' ? JSON.parse(row.pain_points) : row.pain_points) : null;
 
         return new ResearchResult(row);
       });
@@ -148,8 +162,17 @@ class ResearchResult {
       const result = await query(sql, [limit, offset]);
 
       const results = result.rows.map(row => {
-        // Parse JSON fields
-        // JSONB fields are already parsed by PostgreSQL, no need to JSON.parse()
+        // Parse JSONB fields - handle both string and object types
+        row.market_size = row.market_size ?
+          (typeof row.market_size === 'string' ? JSON.parse(row.market_size) : row.market_size) : null;
+        row.competitors = row.competitors ?
+          (typeof row.competitors === 'string' ? JSON.parse(row.competitors) : row.competitors) : null;
+        row.target_audience = row.target_audience ?
+          (typeof row.target_audience === 'string' ? JSON.parse(row.target_audience) : row.target_audience) : null;
+        row.channels = row.channels ?
+          (typeof row.channels === 'string' ? JSON.parse(row.channels) : row.channels) : null;
+        row.pain_points = row.pain_points ?
+          (typeof row.pain_points === 'string' ? JSON.parse(row.pain_points) : row.pain_points) : null;
 
         return new ResearchResult(row);
       });
@@ -207,13 +230,17 @@ class ResearchResult {
 
       const row = result.rows[0];
 
-      // JSONB fields are automatically parsed by pg driver, no need to JSON.parse
-      // Just ensure they exist or set to null
-      row.market_size = row.market_size || null;
-      row.competitors = row.competitors || null;
-      row.target_audience = row.target_audience || null;
-      row.channels = row.channels || null;
-      row.pain_points = row.pain_points || null;
+      // Parse JSONB fields - handle both string and object types
+      row.market_size = row.market_size ?
+        (typeof row.market_size === 'string' ? JSON.parse(row.market_size) : row.market_size) : null;
+      row.competitors = row.competitors ?
+        (typeof row.competitors === 'string' ? JSON.parse(row.competitors) : row.competitors) : null;
+      row.target_audience = row.target_audience ?
+        (typeof row.target_audience === 'string' ? JSON.parse(row.target_audience) : row.target_audience) : null;
+      row.channels = row.channels ?
+        (typeof row.channels === 'string' ? JSON.parse(row.channels) : row.channels) : null;
+      row.pain_points = row.pain_points ?
+        (typeof row.pain_points === 'string' ? JSON.parse(row.pain_points) : row.pain_points) : null;
 
       logger.info('Research result updated', { researchId: id });
 
@@ -273,13 +300,17 @@ class ResearchResult {
 
       const row = result.rows[0];
 
-      // JSONB fields are automatically parsed by pg driver, no need to JSON.parse
-      // Just ensure they exist or set to null
-      row.market_size = row.market_size || null;
-      row.competitors = row.competitors || null;
-      row.target_audience = row.target_audience || null;
-      row.channels = row.channels || null;
-      row.pain_points = row.pain_points || null;
+      // Parse JSONB fields - handle both string and object types
+      row.market_size = row.market_size ?
+        (typeof row.market_size === 'string' ? JSON.parse(row.market_size) : row.market_size) : null;
+      row.competitors = row.competitors ?
+        (typeof row.competitors === 'string' ? JSON.parse(row.competitors) : row.competitors) : null;
+      row.target_audience = row.target_audience ?
+        (typeof row.target_audience === 'string' ? JSON.parse(row.target_audience) : row.target_audience) : null;
+      row.channels = row.channels ?
+        (typeof row.channels === 'string' ? JSON.parse(row.channels) : row.channels) : null;
+      row.pain_points = row.pain_points ?
+        (typeof row.pain_points === 'string' ? JSON.parse(row.pain_points) : row.pain_points) : null;
 
       return new ResearchResult(row);
 
