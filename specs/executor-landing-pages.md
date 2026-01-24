@@ -1,7 +1,7 @@
-# Module 2: Executor - Landing Page Builder
+# Module 2: Executor - Landing Pages and Creatives
 
 ## Purpose
-Automated landing page creation using Lovable API, Shopify integration, and domain management.
+Automated landing page creation using Lovable API, Shopify integration, domain management, and creative asset generation (video and image) for Meta and Google advertisements.
 
 ## Components
 
