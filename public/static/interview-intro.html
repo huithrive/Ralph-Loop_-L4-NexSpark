@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Steps - NexSpark Growth OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Shared Modules -->
+    <script src="/static/shared/storage.js"></script>
+    <script src="/static/shared/star-field.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Rajdhani', 'sans-serif'],
+              header: ['Antonio', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              nexspark: {
+                bg: '#000000',
+                gold: '#FF9C00',
+                pale: '#FFCC99',
+                red: '#CC3333',
+                blue: '#99CCFF',
+                purple: '#CC99CC',
+                dark: '#111111',
+                panel: 'rgba(20, 20, 25, 0.9)'
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #000000;
+            color: #99CCFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+            background: #000;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+            border-left: 1px solid #333;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF9C00;
+            border-radius: 6px;
+            border: 2px solid #000;
+        }
+
+        .step-card {
+            transition: all 0.3s ease;
+            background: rgba(20, 20, 25, 0.9);
+            border: 2px solid rgba(153, 204, 255, 0.3);
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: #FF9C00;
+            box-shadow: 0 0 30px rgba(255, 156, 0, 0.3);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+            font-family: 'Antonio', sans-serif;
+        }
+
+        .lcars-btn {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Antonio', sans-serif;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .lcars-btn:hover {
+            filter: brightness(1.2);
+            transform: translateX(5px);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes countdown {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
+        }
+
+        .countdown-bar {
+            animation: countdown 30s linear forwards;
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Star Field Background -->
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4 py-12">
+        <div class="max-w-4xl w-full">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-nexspark-gold rounded-full mb-4 shadow-2xl pulse-animation">
+                    <i class="fas fa-check-circle text-black text-5xl"></i>
+                </div>
+                <h1 class="text-5xl md:text-6xl font-header font-bold text-white mb-4 uppercase tracking-wider">
+                    <span class="text-nexspark-gold">Payment</span> Successful!
+                </h1>
+                <p class="text-2xl font-mono text-nexspark-blue">
+                    Transaction Complete: <span class="text-nexspark-gold font-bold">$20</span>
+                </p>
+            </div>
+
+            <!-- Main Content Card -->
+            <div class="rounded-2xl shadow-2xl p-8 md:p-12 mb-6 bg-nexspark-panel border-2 border-nexspark-gold backdrop-blur-xl">
+                <h2 class="text-4xl font-header font-bold uppercase tracking-wider mb-6 text-nexspark-gold">
+                    <i class="fas fa-rocket mr-3"></i>
+                    Mission Briefing
+                </h2>
+
+                <p class="text-lg font-mono mb-8 leading-relaxed text-nexspark-blue">
+                    Before generating your comprehensive Go-to-Market report, our AI Growth Expert will conduct a brief interview to understand your brand DNA and current market position.
+                </p>
+
+                <!-- Process Steps -->
+                <div class="space-y-6 mb-8">
+                    <!-- Step 1 -->
+                    <div class="step-card rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="step-number shrink-0 bg-nexspark-gold text-black">1</div>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-header font-bold mb-3 uppercase text-nexspark-gold">
+                                    <i class="fas fa-microphone-alt mr-2"></i>
+                                    Voice Interview
+                                </h3>
+                                <p class="font-mono leading-relaxed text-nexspark-blue">
+                                    Our AI expert will ask <strong class="text-nexspark-gold">10 questions</strong> to understand your brand, audience, and growth challenges. Duration: <strong class="text-nexspark-gold">10 minutes</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-card rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="step-number shrink-0 bg-nexspark-blue text-black">2</div>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-header font-bold mb-3 uppercase text-nexspark-blue">
+                                    <i class="fas fa-chart-line mr-2"></i>
+                                    Data Integration
+                                </h3>
+                                <p class="font-mono leading-relaxed text-nexspark-blue">
+                                    Access intelligence from platforms tracking <strong class="text-nexspark-gold">billions</strong> in marketing spend. Analysis covers competitor traffic and market movements over <strong class="text-nexspark-gold">6 months</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-card rounded-xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="step-number shrink-0 bg-nexspark-purple text-black">3</div>
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-header font-bold mb-3 uppercase text-nexspark-purple">
+                                    <i class="fas fa-file-alt mr-2"></i>
+                                    Report Generation
+                                </h3>
+                                <p class="font-mono leading-relaxed text-nexspark-blue">
+                                    AI generates your personalized Go-to-Market report with actionable insights, competitive intelligence, and a <strong class="text-nexspark-gold">6-month execution roadmap</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Value Proposition -->
+                <div class="bg-black/40 rounded-xl p-6 mb-8 border-l-4 border-nexspark-purple">
+                    <div class="flex items-start gap-4">
+                        <div class="shrink-0">
+                            <i class="fas fa-sparkles text-3xl text-nexspark-purple"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-xl font-header font-bold text-white mb-4 uppercase tracking-wider">
+                                Traditional Agency vs. NexSpark
+                            </h4>
+                            <div class="grid md:grid-cols-2 gap-6 font-mono text-sm">
+                                <div>
+                                    <p class="text-nexspark-blue mb-3 font-bold uppercase tracking-wider">Traditional Agency:</p>
+                                    <ul class="space-y-2 text-white/70">
+                                        <li><i class="fas fa-clock text-nexspark-red mr-2"></i> 1-2 weeks delivery</li>
+                                        <li><i class="fas fa-dollar-sign text-nexspark-red mr-2"></i> $2,000-$5,000+ cost</li>
+                                        <li><i class="fas fa-calendar text-nexspark-red mr-2"></i> Multiple meetings</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="text-nexspark-gold mb-3 font-bold uppercase tracking-wider">NexSpark AI:</p>
+                                    <ul class="space-y-2 text-nexspark-gold">
+                                        <li><i class="fas fa-bolt mr-2"></i> Few minutes delivery</li>
+                                        <li><i class="fas fa-check mr-2"></i> Only $20 investment</li>
+                                        <li><i class="fas fa-robot mr-2"></i> One AI interview</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="text-center">
+                    <button id="startInterview" class="lcars-btn inline-flex items-center justify-center px-10 py-4 bg-nexspark-gold text-black text-xl font-bold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200">
+                        <i class="fas fa-play-circle mr-3 text-2xl"></i>
+                        Start Interview Now
+                    </button>
+                    <p class="text-sm text-nexspark-blue font-mono mt-4">
+                        <i class="fas fa-clock mr-1"></i>
+                        Estimated time: 10 minutes
+                    </p>
+                </div>
+            </div>
+
+            <!-- Countdown Progress Bar -->
+            <div class="bg-nexspark-panel backdrop-blur-sm rounded-lg p-4 border-2 border-nexspark-blue/30">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-white font-mono text-sm">
+                        <i class="fas fa-info-circle text-nexspark-blue mr-2"></i>
+                        Auto-starting in <span id="countdown" class="text-nexspark-gold font-bold">30</span> seconds
+                    </span>
+                    <span class="text-nexspark-blue font-mono text-sm font-bold">Step 1 of 3</span>
+                </div>
+                <div class="w-full h-2 bg-black/50 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-nexspark-gold to-nexspark-pale countdown-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Star Field Background (auto-initialized by star-field.js) -->
+
+    <!-- Page Logic -->
+    <script>
+        // Check authentication
+        const user = Storage.getUser();
+        if (!user) {
+            console.warn('No user found, redirecting to login');
+            window.location.href = '/login';
+        }
+
+        // Get website from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const website = urlParams.get('website');
+
+        // Get preview data from sessionStorage if available
+        const previewData = sessionStorage.getItem('nexspark_preview');
+
+        console.log('Interview intro initialized:', { website, hasPreviewData: !!previewData });
+
+        // Start interview button
+        document.getElementById('startInterview').addEventListener('click', function() {
+            console.log('Starting interview...');
+
+            // Add loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-3 text-2xl"></i> Launching Interview...';
+            this.disabled = true;
+
+            // Redirect to voice interview with website param
+            const websiteParam = website ? `?website=${encodeURIComponent(website)}` : '';
+            setTimeout(() => {
+                window.location.href = `/voice-interview${websiteParam}`;
+            }, 1000);
+        });
+
+        // Countdown timer
+        let timeLeft = 30;
+        const countdownElement = document.getElementById('countdown');
+
+        const countdownInterval = setInterval(() => {
+            timeLeft--;
+            countdownElement.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                const button = document.getElementById('startInterview');
+                if (button && !button.disabled) {
+                    console.log('Auto-starting interview...');
+                    button.click();
+                }
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

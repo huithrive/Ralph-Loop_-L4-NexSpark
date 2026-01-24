@@ -58,23 +58,62 @@ paymentRoutes.post('/verify', async (c) => {
   }
 });
 
+// Record payment (for pay-before-interview flow)
+paymentRoutes.post('/record', async (c) => {
+  try {
+    const { userId, paymentIntentId, amount, interviewId } = await c.req.json();
+
+    if (!userId || !paymentIntentId) {
+      return c.json(errorResponse('userId and paymentIntentId are required'), 400);
+    }
+
+    const { recordPayment } = await import('../services/stripe-payment');
+    await recordPayment(
+      c.env.DB,
+      userId,
+      interviewId || 'pre_interview',  // Use placeholder if no interview yet
+      paymentIntentId,
+      amount || 2000
+    );
+
+    return c.json({
+      success: true,
+      message: 'Payment recorded'
+    });
+  } catch (error: any) {
+    console.error('Record payment error:', error);
+    return c.json(errorResponse(error.message), 500);
+  }
+});
+
 // Get payment status
 paymentRoutes.get('/status', async (c) => {
   try {
     const userId = c.req.query('userId');
-    const reportId = c.req.query('reportId');
+    const interviewId = c.req.query('interviewId');
 
     if (!userId) {
       return c.json(errorResponse('userId is required'), 400);
     }
 
-    const { hasUserPaid } = await import('../services/stripe-payment');
-    const hasPaid = await hasUserPaid(c.env.DB, userId, reportId);
-
-    return c.json({
-      success: true,
-      paid: hasPaid
-    });
+    // If interviewId provided, check specific interview payment
+    // Otherwise, check if user has any successful payment (pay-before-interview flow)
+    if (interviewId) {
+      const { hasUserPaid } = await import('../services/stripe-payment');
+      const hasPaid = await hasUserPaid(c.env.DB, userId, interviewId);
+      return c.json({
+        success: true,
+        paid: hasPaid
+      });
+    } else {
+      const { hasUserPaidAny } = await import('../services/stripe-payment');
+      const result = await hasUserPaidAny(c.env.DB, userId);
+      return c.json({
+        success: true,
+        paid: result.paid,
+        paymentId: result.paymentId
+      });
+    }
   } catch (error: any) {
     console.error('Payment status error:', error);
     return c.json(errorResponse(error.message), 500);

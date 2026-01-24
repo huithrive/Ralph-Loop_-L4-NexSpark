@@ -99,6 +99,22 @@ const InterviewAPI = {
       body: formData,
     }).then((res) => res.json());
   },
+
+  /**
+   * Transcribe audio using conversational interview endpoint (Whisper API)
+   * @param {Blob} audioBlob - Audio blob to transcribe
+   * @param {string} language - Language code (default: 'en')
+   * @returns {Promise<{success: boolean, text: string}>}
+   */
+  conversationalTranscribe: (audioBlob, language = 'en') => {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+    formData.append('language', language);
+    return fetch('/api/conversational-interview/transcribe', {
+      method: 'POST',
+      body: formData,
+    }).then((res) => res.json());
+  },
 };
 
 /**

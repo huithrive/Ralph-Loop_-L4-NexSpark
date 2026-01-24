@@ -63,11 +63,23 @@ export async function transcribeWithLanguage(
   try {
     const { apiKey } = getOpenAIClient(env);
 
-    // Create blob for transcription
+    console.log('Transcribing audio:', {
+      bufferSize: audioBuffer.byteLength,
+      preferredLanguage
+    });
+
+    // Validate audio buffer
+    if (audioBuffer.byteLength < 1000) {
+      throw new Error('Audio buffer too small. Recording may be corrupted.');
+    }
+
+    // Create blob for transcription (keep original format)
     const blob = new Blob([audioBuffer], { type: 'audio/webm' });
 
     // Use new transcription client wrapper
     const text = await transcribeAudio(blob, apiKey);
+
+    console.log('Transcription result:', text.substring(0, 100));
 
     // Detect if response is Chinese
     const isChinese = /[\u4e00-\u9fa5]/.test(text);

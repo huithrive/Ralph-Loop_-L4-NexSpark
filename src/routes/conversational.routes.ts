@@ -146,6 +146,18 @@ conversationalRoutes.post('/transcribe', async (c) => {
       return c.json(errorResponse('No audio file provided'), 400);
     }
 
+    console.log('Received audio file:', {
+      name: audioFile.name,
+      type: audioFile.type,
+      size: audioFile.size,
+      language
+    });
+
+    // Validate file size
+    if (audioFile.size < 1000) {
+      return c.json(errorResponse('Audio file too small. Please record a longer message.'), 400);
+    }
+
     const audioBuffer = await audioFile.arrayBuffer();
     const result = await transcribeWithLanguage(audioBuffer, language, c.env);
 

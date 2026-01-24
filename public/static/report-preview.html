@@ -6,28 +6,63 @@
     <title>Growth Strategy Preview - NexSpark Growth OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
-    
+
+    <!-- Shared Modules -->
+    <script src="/static/shared/storage.js"></script>
+    <script src="/static/shared/api-client.js"></script>
+    <script src="/static/shared/star-field.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Rajdhani', 'sans-serif'],
+              header: ['Antonio', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              nexspark: {
+                bg: '#000000',
+                gold: '#FF9C00',
+                pale: '#FFCC99',
+                red: '#CC3333',
+                blue: '#99CCFF',
+                purple: '#CC99CC',
+                dark: '#111111',
+                panel: 'rgba(20, 20, 25, 0.9)'
+              }
+            }
+          }
+        }
+      }
+    </script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
-        
         body {
-            font-family: 'Space Mono', monospace;
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 100%);
-            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #000000;
+            color: #99CCFF;
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        
-        .font-header {
-            font-family: 'Orbitron', sans-serif;
+
+        ::-webkit-scrollbar {
+            width: 12px;
+            background: #000;
         }
-        
-        .nexspark-gold { color: #FF9C00; }
-        .nexspark-blue { color: #99CCFF; }
-        .nexspark-purple { color: #CC99CC; }
-        .nexspark-panel { background: rgba(26, 31, 58, 0.8); }
-        .nexspark-dark { background: rgba(10, 14, 26, 0.9); }
-        
+        ::-webkit-scrollbar-track {
+            background: #000;
+            border-left: 1px solid #333;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF9C00;
+            border-radius: 6px;
+            border: 2px solid #000;
+        }
+
         .loading-spinner {
             border: 3px solid rgba(255, 156, 0, 0.3);
             border-top-color: #FF9C00;
@@ -36,25 +71,20 @@
             height: 40px;
             animation: spin 1s linear infinite;
         }
-        
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+
         .fade-in {
             animation: fadeIn 0.5s ease-out;
         }
-        
-        .preview-locked {
-            filter: blur(4px);
-            pointer-events: none;
-        }
-        
+
         /* Tooltip for jargon simplification */
         .tooltip {
             position: relative;
@@ -62,11 +92,11 @@
             border-bottom: 2px dotted #FF9C00;
             cursor: help;
         }
-        
+
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 300px;
-            background-color: rgba(26, 31, 58, 0.95);
+            width: 280px;
+            background-color: rgba(20, 20, 25, 0.98);
             color: #fff;
             text-align: left;
             border-radius: 8px;
@@ -75,14 +105,14 @@
             z-index: 1000;
             bottom: 125%;
             left: 50%;
-            margin-left: -150px;
+            margin-left: -140px;
             opacity: 0;
             transition: opacity 0.3s;
             border: 2px solid #FF9C00;
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.4;
         }
-        
+
         .tooltip .tooltiptext::after {
             content: "";
             position: absolute;
@@ -93,267 +123,292 @@
             border-style: solid;
             border-color: #FF9C00 transparent transparent transparent;
         }
-        
+
         .tooltip:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
         }
+
+        .section-card {
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(255, 156, 0, 0.2);
+        }
     </style>
 </head>
-<body class="p-8">
-    <!-- Sticky Floating CTA Button (shows after scrolling) -->
-    <div id="floatingCTA" class="hidden fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
-        <button onclick="document.getElementById('unlockCTA').scrollIntoView({ behavior: 'smooth', block: 'center' })" 
-                class="px-8 py-5 bg-gradient-to-r from-nexspark-gold to-yellow-500 text-black font-header font-bold text-2xl uppercase rounded-xl shadow-2xl hover:shadow-[0_0_40px_rgba(255,156,0,0.8)] border-4 border-yellow-600 flex items-center gap-4 animate-bounce hover:animate-none transition-all hover:scale-105">
-            <i class="fas fa-unlock-alt text-3xl"></i>
-            <div class="text-left">
-                <div>Unlock Full Report</div>
-                <div class="text-sm font-normal">Only $20</div>
-            </div>
-            <i class="fas fa-arrow-down text-2xl animate-bounce"></i>
+<body class="relative">
+    <!-- Star Field Background -->
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Floating CTA Button -->
+    <div id="floatingCTA" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+        <button onclick="document.getElementById('unlockCTA').scrollIntoView({ behavior: 'smooth', block: 'center' })"
+                class="px-6 py-4 bg-nexspark-gold text-black font-header font-bold text-lg uppercase rounded-xl shadow-2xl hover:bg-nexspark-pale border-2 border-yellow-600 flex items-center gap-3 transition-all hover:scale-105">
+            <i class="fas fa-unlock-alt text-xl"></i>
+            <span>Unlock Full Report - $20</span>
+            <i class="fas fa-arrow-down animate-bounce"></i>
         </button>
     </div>
-    
-    <div class="max-w-6xl mx-auto">
-        <!-- Header -->
-        <div class="mb-8 text-center">
-            <h1 class="text-5xl font-header font-bold text-nexspark-gold uppercase tracking-wider mb-3">
-                <i class="fas fa-rocket mr-3"></i>Your Growth Strategy Preview
-            </h1>
-            <p class="text-nexspark-blue font-mono text-xl">
-                Here's what your complete report will include
-            </p>
-        </div>
-        
-        <!-- Table of Contents -->
-        <div class="nexspark-panel border-2 border-nexspark-gold rounded-xl p-8 mb-8">
-            <h2 class="text-3xl font-header font-bold text-white uppercase mb-6">
-                <i class="fas fa-list-check mr-3"></i>Report Structure
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-gold">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="text-2xl font-header font-bold text-nexspark-gold">1</span>
-                        <h3 class="font-header font-bold text-lg text-white">Executive Summary</h3>
-                    </div>
-                    <p class="text-white/70 text-sm pl-9">Your market opportunity & key insights</p>
-                </div>
-                
-                <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-blue">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="text-2xl font-header font-bold text-nexspark-blue">2</span>
-                        <h3 class="font-header font-bold text-lg text-white">Competitive Intelligence</h3>
-                        <span class="bg-green-500 text-white text-xs px-2 py-1 rounded font-bold">PREVIEW</span>
-                    </div>
-                    <p class="text-white/70 text-sm pl-9">Top 3 competitors with traffic data</p>
-                </div>
-                
-                <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-purple">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="text-2xl font-header font-bold text-nexspark-purple">3</span>
-                        <h3 class="font-header font-bold text-lg text-white">6-Month GTM Roadmap</h3>
-                        <span class="bg-green-500 text-white text-xs px-2 py-1 rounded font-bold">PREVIEW</span>
-                    </div>
-                    <p class="text-white/70 text-sm pl-9">Month-by-month action plan</p>
-                </div>
-                
-                <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-gold">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="text-2xl font-header font-bold text-nexspark-gold">4</span>
-                        <h3 class="font-header font-bold text-lg text-white">Channel Strategy</h3>
-                        <span class="bg-green-500 text-white text-xs px-2 py-1 rounded font-bold">PREVIEW</span>
-                    </div>
-                    <p class="text-white/70 text-sm pl-9">Paid ads benchmarks & projections</p>
-                </div>
-                
-                <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-blue">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="text-2xl font-header font-bold text-nexspark-blue">5</span>
-                        <h3 class="font-header font-bold text-lg text-white">Budget & ROI Projections</h3>
-                    </div>
-                    <p class="text-white/70 text-sm pl-9">CAC, LTV, and unit economics</p>
-                </div>
-                
-                <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-purple">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="text-2xl font-header font-bold text-nexspark-purple">6</span>
-                        <h3 class="font-header font-bold text-lg text-white">Downloadable Report</h3>
-                    </div>
-                    <p class="text-white/70 text-sm pl-9">Professional HTML format</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Competitor Preview Section -->
-        <div id="competitorSection" class="nexspark-panel border-2 border-nexspark-blue rounded-xl p-8 mb-8">
-            <h2 class="text-3xl font-header font-bold text-nexspark-blue uppercase mb-6">
-                <i class="fas fa-users mr-3"></i>Competitive Intelligence Preview
-            </h2>
-            
-            <!-- Loading State -->
-            <div id="competitorLoading" class="text-center py-12">
-                <div class="loading-spinner mx-auto mb-4"></div>
-                <p class="text-white font-mono text-lg mb-2">
-                    <i class="fas fa-search mr-2"></i>NexSpark AI identifying competitors...
+
+    <div class="relative z-10 min-h-screen p-4 md:p-8">
+        <!-- Main Container with Gold Border -->
+        <div class="max-w-5xl mx-auto bg-black/80 border-2 border-nexspark-gold/60 rounded-2xl p-6 md:p-8 backdrop-blur-sm shadow-[0_0_60px_rgba(255,156,0,0.15)]">
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-header font-bold text-nexspark-gold uppercase tracking-wider mb-3">
+                    <i class="fas fa-rocket mr-3"></i>Growth Strategy Preview
+                </h1>
+                <p class="text-nexspark-blue font-mono text-lg">
+                    Here's what your complete report will include
                 </p>
-                <p class="text-white/60 text-sm">Analyzing market and traffic data</p>
             </div>
-            
-            <!-- Competitor Data (Hidden initially) -->
-            <div id="competitorData" class="hidden">
-                <!-- Will be populated by JavaScript -->
+
+            <!-- Table of Contents -->
+            <div class="bg-nexspark-panel rounded-xl p-6 mb-6 border-l-4 border-nexspark-gold">
+                <h2 class="text-2xl font-header font-bold text-white uppercase mb-4">
+                    <i class="fas fa-list-check mr-2 text-nexspark-gold"></i>Report Structure
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-black/40 rounded-lg p-3 border-l-4 border-nexspark-gold">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-header font-bold text-nexspark-gold">1</span>
+                            <span class="font-header font-bold text-white">Executive Summary</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 rounded-lg p-3 border-l-4 border-nexspark-blue">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-header font-bold text-nexspark-blue">2</span>
+                            <span class="font-header font-bold text-white">Competitive Intelligence</span>
+                            <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded font-bold ml-auto">PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 rounded-lg p-3 border-l-4 border-nexspark-purple">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-header font-bold text-nexspark-purple">3</span>
+                            <span class="font-header font-bold text-white">6-Month Roadmap</span>
+                            <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded font-bold ml-auto">PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 rounded-lg p-3 border-l-4 border-nexspark-gold">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-header font-bold text-nexspark-gold">4</span>
+                            <span class="font-header font-bold text-white">Channel Strategy</span>
+                            <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded font-bold ml-auto">PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 rounded-lg p-3 border-l-4 border-nexspark-blue">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-header font-bold text-nexspark-blue">5</span>
+                            <span class="font-header font-bold text-white">Budget & ROI Projections</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 rounded-lg p-3 border-l-4 border-nexspark-purple">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-header font-bold text-nexspark-purple">6</span>
+                            <span class="font-header font-bold text-white">Downloadable Report</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <!-- Roadmap Preview Section -->
-        <div id="roadmapSection" class="nexspark-panel border-2 border-nexspark-purple rounded-xl p-8 mb-8">
-            <h2 class="text-3xl font-header font-bold text-nexspark-purple uppercase mb-6">
-                <i class="fas fa-calendar-alt mr-3"></i>6-Month Growth Roadmap Preview
-            </h2>
-            
-            <!-- Loading State -->
-            <div id="roadmapLoading" class="text-center py-12">
-                <div class="loading-spinner mx-auto mb-4"></div>
-                <p class="text-white font-mono text-lg mb-2">
-                    <i class="fas fa-route mr-2"></i>NexSpark AI building your roadmap...
+
+            <!-- Competitor Preview Section -->
+            <div id="competitorSection" class="section-card bg-nexspark-panel rounded-xl p-6 mb-6 border-l-4 border-nexspark-blue">
+                <h2 class="text-2xl font-header font-bold text-nexspark-blue uppercase mb-4">
+                    <i class="fas fa-users mr-2"></i>Competitive Intelligence Preview
+                </h2>
+
+                <!-- Loading State -->
+                <div id="competitorLoading" class="text-center py-8">
+                    <div class="loading-spinner mx-auto mb-4"></div>
+                    <p class="text-white font-mono mb-1">
+                        <i class="fas fa-search mr-2"></i>Identifying competitors...
+                    </p>
+                    <p class="text-white/60 text-sm">Analyzing market data</p>
+                </div>
+
+                <!-- Competitor Data -->
+                <div id="competitorData" class="hidden"></div>
+            </div>
+
+            <!-- Roadmap Preview Section -->
+            <div id="roadmapSection" class="section-card bg-nexspark-panel rounded-xl p-6 mb-6 border-l-4 border-nexspark-purple">
+                <h2 class="text-2xl font-header font-bold text-nexspark-purple uppercase mb-4">
+                    <i class="fas fa-calendar-alt mr-2"></i>6-Month Growth Roadmap Preview
+                </h2>
+
+                <!-- Loading State -->
+                <div id="roadmapLoading" class="text-center py-8">
+                    <div class="loading-spinner mx-auto mb-4"></div>
+                    <p class="text-white font-mono mb-1">
+                        <i class="fas fa-route mr-2"></i>Building your roadmap...
+                    </p>
+                    <p class="text-white/60 text-sm">Creating month-by-month strategy</p>
+                </div>
+
+                <!-- Roadmap Data -->
+                <div id="roadmapData" class="hidden"></div>
+            </div>
+
+            <!-- Benchmarks Preview Section -->
+            <div id="benchmarksSection" class="section-card bg-nexspark-panel rounded-xl p-6 mb-6 border-l-4 border-nexspark-gold">
+                <h2 class="text-2xl font-header font-bold text-nexspark-gold uppercase mb-4">
+                    <i class="fas fa-chart-line mr-2"></i>Paid Ads Benchmarks Preview
+                </h2>
+
+                <!-- Loading State -->
+                <div id="benchmarksLoading" class="text-center py-8">
+                    <div class="loading-spinner mx-auto mb-4"></div>
+                    <p class="text-white font-mono mb-1">
+                        <i class="fas fa-calculator mr-2"></i>Calculating benchmarks...
+                    </p>
+                    <p class="text-white/60 text-sm">Generating industry projections</p>
+                </div>
+
+                <!-- Benchmarks Data -->
+                <div id="benchmarksData" class="hidden"></div>
+            </div>
+
+            <!-- Unlock CTA -->
+            <div id="unlockCTA" class="hidden bg-nexspark-panel border-2 border-nexspark-gold rounded-xl p-8 text-center shadow-[0_0_40px_rgba(255,156,0,0.2)]">
+                <div class="mb-4">
+                    <div class="text-5xl">🎯</div>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-header font-bold text-white mb-4 uppercase tracking-wide">
+                    Unlock Your Complete Growth Strategy
+                </h2>
+
+                <p class="text-white/80 text-lg mb-6 max-w-2xl mx-auto">
+                    You've seen the preview. Get the full report with detailed insights:
                 </p>
-                <p class="text-white/60 text-sm">Creating month-by-month strategy</p>
-            </div>
-            
-            <!-- Roadmap Data (Hidden initially) -->
-            <div id="roadmapData" class="hidden">
-                <!-- Will be populated by JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Benchmarks Preview Section -->
-        <div id="benchmarksSection" class="nexspark-panel border-2 border-nexspark-gold rounded-xl p-8 mb-8">
-            <h2 class="text-3xl font-header font-bold text-nexspark-gold uppercase mb-6">
-                <i class="fas fa-chart-line mr-3"></i>Paid Ads Benchmarks Preview
-            </h2>
-            
-            <!-- Loading State -->
-            <div id="benchmarksLoading" class="text-center py-12">
-                <div class="loading-spinner mx-auto mb-4"></div>
-                <p class="text-white font-mono text-lg mb-2">
-                    <i class="fas fa-calculator mr-2"></i>NexSpark AI calculating benchmarks...
-                </p>
-                <p class="text-white/60 text-sm">Generating industry-specific projections</p>
-            </div>
-            
-            <!-- Benchmarks Data (Hidden initially) -->
-            <div id="benchmarksData" class="hidden">
-                <!-- Will be populated by JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Unlock CTA -->
-        <div id="unlockCTA" class="hidden nexspark-panel border-4 border-nexspark-gold rounded-2xl p-12 text-center mb-8 shadow-[0_0_50px_rgba(255,156,0,0.3)] animate-pulse-slow">
-            <div class="mb-6 inline-block">
-                <div class="text-6xl animate-bounce">🎯</div>
-            </div>
-            <h2 class="text-5xl md:text-6xl font-header font-bold text-white mb-6 uppercase tracking-wide">
-                <i class="fas fa-unlock-alt text-nexspark-gold mr-4"></i>Unlock Your Complete Growth Strategy
-            </h2>
-            
-            <p class="text-white/90 text-lg mb-6">
-                You've seen the preview. Here's what you'll get with the full report:
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left max-w-3xl mx-auto">
-                <div class="flex items-center gap-3 text-white/90">
-                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
-                    <span>Complete competitive analysis with detailed insights</span>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6 text-left max-w-2xl mx-auto">
+                    <div class="flex items-center gap-2 text-white/80">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Complete competitive analysis</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-white/80">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Month-by-month execution roadmap</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-white/80">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Channel strategies & tactics</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-white/80">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Budget optimization & ROI projections</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-white/80">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>CAC/LTV analysis</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-white/80">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span>Downloadable HTML report</span>
+                    </div>
                 </div>
-                <div class="flex items-center gap-3 text-white/90">
-                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
-                    <span>Detailed month-by-month execution roadmap</span>
+
+                <div class="mb-6">
+                    <div class="text-5xl font-header font-bold text-white mb-2">$20</div>
+                    <div class="text-nexspark-blue font-mono">One-time payment • Full access</div>
+                    <div class="text-green-400 text-sm font-mono mt-1">
+                        <i class="fas fa-check-circle mr-1"></i>30-Day Money-Back Guarantee
+                    </div>
                 </div>
-                <div class="flex items-center gap-3 text-white/90">
-                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
-                    <span>Exact channel strategies & tactical recommendations</span>
-                </div>
-                <div class="flex items-center gap-3 text-white/90">
-                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
-                    <span>Budget optimization with ROI projections</span>
-                </div>
-                <div class="flex items-center gap-3 text-white/90">
-                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
-                    <span>CAC/LTV analysis & unit economics breakdown</span>
-                </div>
-                <div class="flex items-center gap-3 text-white/90">
-                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
-                    <span>Downloadable professional HTML report</span>
+
+                <button id="unlockBtn" class="px-12 py-5 bg-nexspark-gold text-black font-header font-bold text-2xl uppercase rounded-xl hover:bg-nexspark-pale transition-all transform hover:scale-105 shadow-xl">
+                    <i class="fas fa-unlock-alt mr-3"></i>
+                    Unlock Full Report Now
+                </button>
+
+                <div class="mt-6 flex items-center justify-center gap-6 text-white/60 text-sm">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-shield-check text-green-400"></i>
+                        <span>Secure Payment</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-clock text-nexspark-blue"></i>
+                        <span>Instant Access</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="mb-8">
-                <div class="text-7xl md:text-8xl font-header font-bold text-white mb-4 animate-pulse">$20</div>
-                <div class="text-nexspark-blue text-2xl font-semibold">One-time payment • Full access forever</div>
-                <div class="text-green-400 text-lg font-semibold mt-2">
-                    <i class="fas fa-check-circle mr-2"></i>30-Day Money-Back Guarantee
-                </div>
-            </div>
-            
-            <button id="unlockBtn" class="group relative px-16 py-8 bg-gradient-to-r from-nexspark-gold via-yellow-400 to-nexspark-gold text-black font-header font-bold text-4xl uppercase rounded-2xl hover:from-yellow-300 hover:via-nexspark-gold hover:to-yellow-300 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-[0_0_60px_rgba(255,156,0,0.8)] border-4 border-yellow-600 animate-pulse">
-                <i class="fas fa-unlock-alt mr-4 text-5xl"></i>
-                <span class="relative z-10">Unlock Full Report Now</span>
-                <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 rounded-2xl transition-opacity"></div>
-            </button>
-            
-            <div class="mt-8 flex items-center justify-center gap-6 text-white/70">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-shield-check text-green-400 text-xl"></i>
-                    <span>Secure Payment</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-clock text-blue-400 text-xl"></i>
-                    <span>Instant Access</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-download text-purple-400 text-xl"></i>
-                    <span>PDF Download</span>
-                </div>
-            </div>
-            
-            <p class="text-white/50 text-sm mt-6">
-                <i class="fas fa-lock mr-2"></i>Powered by Stripe • 256-bit SSL Encryption
-            </p>
         </div>
     </div>
-    
+
     <script>
         // Check authentication
         function checkAuth() {
-            const user = localStorage.getItem('nexspark_user');
-            if (!user) {
-                console.log('No user found, redirecting to home');
+            const user = Storage.getUser();
+            const session = Storage.getSession();
+
+            if (!user || !session) {
+                const currentUrl = encodeURIComponent(window.location.pathname + window.location.search);
+                window.location.href = '/login?returnUrl=' + currentUrl;
+                return null;
+            }
+            return user;
+        }
+
+        // Get website from URL parameter
+        function getWebsite() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const website = urlParams.get('website');
+
+            if (!website) {
                 window.location.href = '/';
                 return null;
             }
-            return JSON.parse(user);
+            return website;
         }
-        
-        // Get summary from localStorage
-        function getSummary() {
-            const summary = localStorage.getItem('nexspark_summary');
-            if (!summary) {
-                console.error('No summary found, redirecting to interview');
-                window.location.href = '/interview';
-                return null;
+
+        // Generate basic summary from website URL
+        function generateBasicSummary(website) {
+            let brandName = 'Your Business';
+            let domain = website;
+
+            try {
+                const url = new URL(website);
+                domain = url.hostname.replace('www.', '');
+                const parts = domain.split('.');
+                if (parts.length > 0) {
+                    brandName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+                }
+            } catch (e) {
+                const cleanDomain = website.replace(/https?:\/\//g, '').replace('www.', '').split('/')[0];
+                const parts = cleanDomain.split('.');
+                if (parts.length > 0) {
+                    brandName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+                }
             }
-            return JSON.parse(summary);
+
+            return {
+                brandName: brandName,
+                website: website,
+                domain: domain,
+                industry: 'Technology',
+                productDescription: 'Your product or service'
+            };
         }
-        
+
         // State management
         const previewState = {
+            websiteUrl: null,
             competitors: null,
             roadmap: null,
             benchmarks: null,
             allLoaded: false
         };
-        
+
         // Check if all previews are loaded
         function checkAllLoaded() {
             if (previewState.competitors && previewState.roadmap && previewState.benchmarks) {
@@ -361,42 +416,52 @@
                 showUnlockCTA();
             }
         }
-        
+
         // Show unlock CTA
         function showUnlockCTA() {
             document.getElementById('unlockCTA').classList.remove('hidden');
             document.getElementById('unlockCTA').classList.add('fade-in');
-            
-            // Scroll to CTA
+
             setTimeout(() => {
-                document.getElementById('unlockCTA').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
+                document.getElementById('unlockCTA').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
                 });
             }, 500);
         }
-        
+
         // Unlock button handler
         document.getElementById('unlockBtn').addEventListener('click', () => {
-            // Redirect to dedicated payment page
-            window.location.href = '/payment';
+            const websiteSummary = generateBasicSummary(previewState.websiteUrl);
+            const previewData = {
+                website: previewState.websiteUrl,
+                brandName: websiteSummary.brandName,
+                domain: websiteSummary.domain,
+                industry: websiteSummary.industry,
+                productDescription: websiteSummary.productDescription,
+                competitors: previewState.competitors || [],
+                roadmap: previewState.roadmap || null,
+                benchmarks: previewState.benchmarks || null,
+                timestamp: new Date().toISOString()
+            };
+
+            sessionStorage.setItem('nexspark_preview', JSON.stringify(previewData));
+            window.location.href = `/payment?website=${encodeURIComponent(previewState.websiteUrl)}`;
         });
-        
+
         // Load benchmarks preview
         async function loadBenchmarksPreview(summary) {
             try {
-                console.log('📈 Loading benchmarks preview...');
-                
+                const sessionToken = Storage.getSession();
                 const response = await axios.post('/api/preview/benchmarks', {
                     summary: summary
+                }, {
+                    headers: { 'Authorization': 'Bearer ' + sessionToken }
                 });
-                
+
                 if (response.data.success) {
-                    const benchmarks = response.data.benchmarks;
-                    previewState.benchmarks = benchmarks;
-                    
-                    console.log('✅ Benchmarks loaded:', benchmarks);
-                    displayBenchmarks(benchmarks);
+                    previewState.benchmarks = response.data.benchmarks;
+                    displayBenchmarks(response.data.benchmarks);
                     checkAllLoaded();
                 } else {
                     throw new Error(response.data.message || 'Failed to load benchmarks');
@@ -406,163 +471,115 @@
                 showBenchmarksError(error.message);
             }
         }
-        
+
         // Display benchmarks
         function displayBenchmarks(benchmarks) {
             const benchmarksData = document.getElementById('benchmarksData');
-            
-            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
-            
-            // Google Ads
+
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+
             if (benchmarks.googleAds) {
                 const ga = benchmarks.googleAds;
                 html += `
-                    <div class="nexspark-dark rounded-lg p-6 border-l-4 border-nexspark-gold fade-in">
-                        <h3 class="text-2xl font-header font-bold text-white mb-4">
-                            <i class="fab fa-google text-nexspark-gold mr-2"></i>
-                            Google Ads
+                    <div class="bg-black/40 rounded-lg p-4 border-l-4 border-nexspark-gold fade-in">
+                        <h3 class="text-xl font-header font-bold text-white mb-3">
+                            <i class="fab fa-google text-nexspark-gold mr-2"></i>Google Ads
                         </h3>
-                        
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">
-                                    Target <span class="tooltip">CPC<span class="tooltiptext"><strong>Cost Per Click</strong> - The average amount you pay each time someone clicks your ad. Lower CPC means more clicks for your budget.</span></span>
-                                </span>
-                                <span class="text-nexspark-gold font-bold text-lg">${ga.targetCPC || 'N/A'}</span>
+                        <div class="space-y-2">
+                            <div class="flex justify-between p-2 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Target <span class="tooltip">CPC<span class="tooltiptext"><strong>Cost Per Click</strong> - Average cost per ad click</span></span></span>
+                                <span class="text-nexspark-gold font-bold">${ga.targetCPC || 'N/A'}</span>
                             </div>
-                            
-                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">
-                                    Expected <span class="tooltip">CTR<span class="tooltiptext"><strong>Click-Through Rate</strong> - The percentage of people who see your ad and click on it. Higher CTR means your ads are more relevant and engaging.</span></span>
-                                </span>
-                                <span class="text-nexspark-blue font-bold text-lg">${ga.expectedCTR || 'N/A'}</span>
+                            <div class="flex justify-between p-2 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Expected <span class="tooltip">CTR<span class="tooltiptext"><strong>Click-Through Rate</strong> - % who click your ad</span></span></span>
+                                <span class="text-nexspark-blue font-bold">${ga.expectedCTR || 'N/A'}</span>
                             </div>
-                            
-                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">
-                                    Projected <span class="tooltip">CAC<span class="tooltiptext"><strong>Customer Acquisition Cost</strong> - The total amount you spend to gain one new customer. Includes ad spend, clicks, and conversions. Lower is better!</span></span>
-                                </span>
-                                <span class="text-nexspark-purple font-bold text-lg">${ga.projectedCAC || 'N/A'}</span>
+                            <div class="flex justify-between p-2 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Projected <span class="tooltip">CAC<span class="tooltiptext"><strong>Customer Acquisition Cost</strong> - Cost to acquire one customer</span></span></span>
+                                <span class="text-nexspark-purple font-bold">${ga.projectedCAC || 'N/A'}</span>
                             </div>
-                            
-                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">Recommended Budget</span>
-                                <span class="text-white font-bold text-lg">${ga.recommendedBudget || 'N/A'}</span>
-                            </div>
-                            
-                            <div class="flex justify-between items-center p-3 bg-green-900/20 border border-green-500/30 rounded">
-                                <span class="text-green-400 font-bold">
-                                    Expected <span class="tooltip">ROI<span class="tooltiptext"><strong>Return on Investment</strong> - For every dollar you spend, how much profit you get back. 2x ROI means you earn $2 for every $1 spent.</span></span>
-                                </span>
-                                <span class="text-green-400 font-bold text-xl">${ga.expectedROI || 'N/A'}</span>
+                            <div class="flex justify-between p-2 bg-green-900/20 border border-green-500/30 rounded">
+                                <span class="text-green-400 font-bold">Expected ROI</span>
+                                <span class="text-green-400 font-bold">${ga.expectedROI || 'N/A'}</span>
                             </div>
                         </div>
                     </div>
                 `;
             }
-            
-            // Facebook Ads
+
             if (benchmarks.facebookAds) {
                 const fb = benchmarks.facebookAds;
                 html += `
-                    <div class="nexspark-dark rounded-lg p-6 border-l-4 border-nexspark-blue fade-in" style="animation-delay: 0.2s">
-                        <h3 class="text-2xl font-header font-bold text-white mb-4">
-                            <i class="fab fa-facebook text-nexspark-blue mr-2"></i>
-                            Facebook/Instagram Ads
+                    <div class="bg-black/40 rounded-lg p-4 border-l-4 border-nexspark-blue fade-in">
+                        <h3 class="text-xl font-header font-bold text-white mb-3">
+                            <i class="fab fa-facebook text-nexspark-blue mr-2"></i>Facebook/Instagram
                         </h3>
-                        
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">
-                                    Target <span class="tooltip">CPM<span class="tooltiptext"><strong>Cost Per Thousand Impressions</strong> - The cost to show your ad 1,000 times. Lower CPM means more people see your ad for less money.</span></span>
-                                </span>
-                                <span class="text-nexspark-gold font-bold text-lg">${fb.targetCPM || 'N/A'}</span>
+                        <div class="space-y-2">
+                            <div class="flex justify-between p-2 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Target <span class="tooltip">CPM<span class="tooltiptext"><strong>Cost Per 1,000 Impressions</strong></span></span></span>
+                                <span class="text-nexspark-gold font-bold">${fb.targetCPM || 'N/A'}</span>
                             </div>
-                            
-                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">
-                                    Expected <span class="tooltip">CTR<span class="tooltiptext"><strong>Click-Through Rate</strong> - The percentage of people who see your ad and click on it. Higher CTR means your ads are more relevant and engaging.</span></span>
-                                </span>
-                                <span class="text-nexspark-blue font-bold text-lg">${fb.expectedCTR || 'N/A'}</span>
+                            <div class="flex justify-between p-2 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Expected <span class="tooltip">CTR<span class="tooltiptext"><strong>Click-Through Rate</strong></span></span></span>
+                                <span class="text-nexspark-blue font-bold">${fb.expectedCTR || 'N/A'}</span>
                             </div>
-                            
-                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">
-                                    Projected <span class="tooltip">CAC<span class="tooltiptext"><strong>Customer Acquisition Cost</strong> - The total amount you spend to gain one new customer. Includes ad spend, clicks, and conversions. Lower is better!</span></span>
-                                </span>
-                                <span class="text-nexspark-purple font-bold text-lg">${fb.projectedCAC || 'N/A'}</span>
+                            <div class="flex justify-between p-2 bg-nexspark-panel rounded">
+                                <span class="text-white/70">Projected <span class="tooltip">CAC<span class="tooltiptext"><strong>Customer Acquisition Cost</strong></span></span></span>
+                                <span class="text-nexspark-purple font-bold">${fb.projectedCAC || 'N/A'}</span>
                             </div>
-                            
-                            <div class="flex justify-between items-center p-3 bg-nexspark-panel rounded">
-                                <span class="text-white/70">Recommended Budget</span>
-                                <span class="text-white font-bold text-lg">${fb.recommendedBudget || 'N/A'}</span>
-                            </div>
-                            
-                            <div class="flex justify-between items-center p-3 bg-green-900/20 border border-green-500/30 rounded">
-                                <span class="text-green-400 font-bold">
-                                    Expected <span class="tooltip">ROI<span class="tooltiptext"><strong>Return on Investment</strong> - For every dollar you spend, how much profit you get back. 2x ROI means you earn $2 for every $1 spent.</span></span>
-                                </span>
-                                <span class="text-green-400 font-bold text-xl">${fb.expectedROI || 'N/A'}</span>
+                            <div class="flex justify-between p-2 bg-green-900/20 border border-green-500/30 rounded">
+                                <span class="text-green-400 font-bold">Expected ROI</span>
+                                <span class="text-green-400 font-bold">${fb.expectedROI || 'N/A'}</span>
                             </div>
                         </div>
                     </div>
                 `;
             }
-            
+
             html += '</div>';
-            
-            // Add recommendation
+
             if (benchmarks.recommendation) {
                 html += `
-                    <div class="mt-6 nexspark-panel rounded-lg p-6 border-2 border-nexspark-gold">
-                        <h4 class="text-lg font-header font-bold text-nexspark-gold mb-3">
+                    <div class="mt-4 bg-black/40 rounded-lg p-4 border-l-4 border-nexspark-gold">
+                        <h4 class="font-header font-bold text-nexspark-gold mb-2">
                             <i class="fas fa-chart-pie mr-2"></i>Recommended Channel Mix
                         </h4>
-                        <p class="text-white/90 text-lg">
-                            ${benchmarks.recommendation}
-                        </p>
+                        <p class="text-white/80">${benchmarks.recommendation}</p>
                     </div>
                 `;
             }
-            
+
             benchmarksData.innerHTML = html;
-            
-            // Hide loading, show data
             document.getElementById('benchmarksLoading').classList.add('hidden');
             benchmarksData.classList.remove('hidden');
         }
-        
-        // Show benchmarks error
+
         function showBenchmarksError(message) {
             const benchmarksData = document.getElementById('benchmarksData');
             benchmarksData.innerHTML = `
-                <div class="text-center py-8">
-                    <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-3"></i>
+                <div class="text-center py-6">
+                    <i class="fas fa-exclamation-circle text-3xl text-red-500 mb-2"></i>
                     <p class="text-white/70">${message}</p>
-                    <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-nexspark-gold text-black font-bold rounded">
-                        Try Again
-                    </button>
+                    <button onclick="location.reload()" class="mt-3 px-4 py-2 bg-nexspark-gold text-black font-bold rounded">Try Again</button>
                 </div>
             `;
             document.getElementById('benchmarksLoading').classList.add('hidden');
             benchmarksData.classList.remove('hidden');
         }
-        
+
         // Load roadmap preview
         async function loadRoadmapPreview(summary) {
             try {
-                console.log('📅 Loading roadmap preview...');
-                
+                const sessionToken = Storage.getSession();
                 const response = await axios.post('/api/preview/roadmap', {
                     summary: summary
+                }, {
+                    headers: { 'Authorization': 'Bearer ' + sessionToken }
                 });
-                
+
                 if (response.data.success) {
-                    const roadmap = response.data.roadmap;
-                    previewState.roadmap = roadmap;
-                    
-                    console.log('✅ Roadmap loaded:', roadmap);
-                    displayRoadmap(roadmap, summary);
+                    previewState.roadmap = response.data.roadmap;
+                    displayRoadmap(response.data.roadmap);
                     checkAllLoaded();
                 } else {
                     throw new Error(response.data.message || 'Failed to load roadmap');
@@ -572,113 +589,97 @@
                 showRoadmapError(error.message);
             }
         }
-        
+
         // Display roadmap
-        function displayRoadmap(roadmap, summary) {
+        function displayRoadmap(roadmap) {
             const roadmapData = document.getElementById('roadmapData');
-            
-            let html = '<div class="space-y-6">';
-            
+
+            let html = '<div class="space-y-4">';
+
             if (roadmap.phases && Array.isArray(roadmap.phases)) {
                 roadmap.phases.forEach((phase, index) => {
                     html += `
-                        <div class="nexspark-dark rounded-lg p-6 border-l-4 border-nexspark-purple fade-in" style="animation-delay: ${index * 0.2}s">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-16 h-16 bg-nexspark-purple rounded-lg flex items-center justify-center">
-                                    <span class="text-2xl font-header font-bold text-white">${phase.months || `${index + 1}`}</span>
+                        <div class="bg-black/40 rounded-lg p-4 border-l-4 border-nexspark-purple fade-in">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-12 h-12 bg-nexspark-purple rounded-lg flex items-center justify-center">
+                                    <span class="text-lg font-header font-bold text-white">${phase.months || index + 1}</span>
                                 </div>
                                 <div>
-                                    <h3 class="text-2xl font-header font-bold text-white">
-                                        ${phase.name || `Phase ${index + 1}`}
-                                    </h3>
+                                    <h3 class="text-lg font-header font-bold text-white">${phase.name || 'Phase ' + (index + 1)}</h3>
                                     <p class="text-nexspark-purple text-sm">Months ${phase.months || ''}</p>
                                 </div>
                             </div>
-                            
-                            <div class="mb-4">
-                                <h4 class="text-nexspark-blue font-bold text-sm uppercase mb-2">
-                                    <i class="fas fa-tasks mr-2"></i>Key Actions:
-                                </h4>
-                                <ul class="space-y-2">
-                                    ${phase.actions && Array.isArray(phase.actions) ? 
+
+                            <div class="mb-3">
+                                <h4 class="text-nexspark-blue font-bold text-sm uppercase mb-2">Key Actions:</h4>
+                                <ul class="space-y-1">
+                                    ${phase.actions && Array.isArray(phase.actions) ?
                                         phase.actions.map(action => `
-                                            <li class="flex items-start gap-2 text-white/90">
-                                                <i class="fas fa-check-circle text-green-400 mt-1"></i>
+                                            <li class="flex items-start gap-2 text-white/80 text-sm">
+                                                <i class="fas fa-check-circle text-green-400 mt-0.5"></i>
                                                 <span>${action}</span>
                                             </li>
-                                        `).join('') : 
-                                        '<li class="text-white/70">No actions specified</li>'
+                                        `).join('') :
+                                        '<li class="text-white/60">No actions specified</li>'
                                     }
                                 </ul>
                             </div>
-                            
-                            <div class="bg-nexspark-panel rounded p-3 border border-nexspark-gold/30">
-                                <div class="text-nexspark-gold font-bold text-sm mb-1">
-                                    <i class="fas fa-bullseye mr-2"></i>Goal
-                                </div>
-                                <div class="text-white/90">${phase.goal || 'N/A'}</div>
+
+                            <div class="bg-nexspark-panel rounded p-2 border border-nexspark-gold/30">
+                                <span class="text-nexspark-gold font-bold text-sm mr-2">Goal:</span>
+                                <span class="text-white/80 text-sm">${phase.goal || 'N/A'}</span>
                             </div>
                         </div>
                     `;
                 });
             }
-            
+
             html += '</div>';
-            
-            // Add expected outcome
+
             if (roadmap.expectedOutcome) {
                 html += `
-                    <div class="mt-6 nexspark-panel rounded-lg p-6 border-2 border-nexspark-gold">
-                        <h4 class="text-lg font-header font-bold text-nexspark-gold mb-3">
+                    <div class="mt-4 bg-black/40 rounded-lg p-4 border-l-4 border-nexspark-gold">
+                        <h4 class="font-header font-bold text-nexspark-gold mb-2">
                             <i class="fas fa-trophy mr-2"></i>Expected Outcome
                         </h4>
-                        <p class="text-white/90 text-lg">
-                            ${roadmap.expectedOutcome}
-                        </p>
+                        <p class="text-white/80">${roadmap.expectedOutcome}</p>
                     </div>
                 `;
             }
-            
+
             roadmapData.innerHTML = html;
-            
-            // Hide loading, show data
             document.getElementById('roadmapLoading').classList.add('hidden');
             roadmapData.classList.remove('hidden');
         }
-        
-        // Show roadmap error
+
         function showRoadmapError(message) {
             const roadmapData = document.getElementById('roadmapData');
             roadmapData.innerHTML = `
-                <div class="text-center py-8">
-                    <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-3"></i>
+                <div class="text-center py-6">
+                    <i class="fas fa-exclamation-circle text-3xl text-red-500 mb-2"></i>
                     <p class="text-white/70">${message}</p>
-                    <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-nexspark-gold text-black font-bold rounded">
-                        Try Again
-                    </button>
+                    <button onclick="location.reload()" class="mt-3 px-4 py-2 bg-nexspark-gold text-black font-bold rounded">Try Again</button>
                 </div>
             `;
             document.getElementById('roadmapLoading').classList.add('hidden');
             roadmapData.classList.remove('hidden');
         }
-        
+
         // Load competitor preview
         async function loadCompetitorPreview(summary) {
             try {
-                console.log('📊 Loading competitor preview...');
-                
+                const sessionToken = Storage.getSession();
                 const response = await axios.post('/api/preview/competitors', {
                     website: summary.website,
                     industry: summary.industry || '',
                     competitors: summary.competitors || []
+                }, {
+                    headers: { 'Authorization': 'Bearer ' + sessionToken }
                 });
-                
+
                 if (response.data.success) {
-                    const competitors = response.data.competitors;
-                    previewState.competitors = competitors;
-                    
-                    console.log('✅ Competitors loaded:', competitors);
-                    displayCompetitors(competitors, summary);
+                    previewState.competitors = response.data.competitors;
+                    displayCompetitors(response.data.competitors, summary);
                     checkAllLoaded();
                 } else {
                     throw new Error(response.data.message || 'Failed to load competitors');
@@ -688,150 +689,117 @@
                 showCompetitorError(error.message);
             }
         }
-        
+
         // Display competitors
         function displayCompetitors(competitors, summary) {
             const competitorData = document.getElementById('competitorData');
-            
-            let html = '<div class="space-y-6">';
-            
+
+            let html = '<div class="space-y-4">';
+
             competitors.forEach((comp, index) => {
                 html += `
-                    <div class="nexspark-dark rounded-lg p-6 border-l-4 border-nexspark-blue fade-in" style="animation-delay: ${index * 0.2}s">
-                        <div class="flex items-start justify-between mb-4">
+                    <div class="bg-black/40 rounded-lg p-4 border-l-4 border-nexspark-blue fade-in">
+                        <div class="flex items-start justify-between mb-3">
                             <div>
-                                <h3 class="text-xl font-header font-bold text-white mb-1">
+                                <h3 class="text-lg font-header font-bold text-white mb-1">
                                     <i class="fas fa-building mr-2 text-nexspark-blue"></i>
                                     Competitor #${index + 1}: ${comp.name || 'Unknown'}
                                 </h3>
                                 <p class="text-nexspark-blue text-sm font-mono">
-                                    <i class="fas fa-globe mr-2"></i>${comp.website || 'N/A'}
+                                    <i class="fas fa-globe mr-1"></i>${comp.website || 'N/A'}
                                 </p>
                             </div>
                             <div class="text-right">
-                                <div class="text-2xl font-header font-bold text-nexspark-gold">
-                                    ${comp.monthlyTraffic || 'N/A'}
-                                </div>
+                                <div class="text-xl font-header font-bold text-nexspark-gold">${comp.monthlyTraffic || 'N/A'}</div>
                                 <div class="text-xs text-white/60">Monthly Traffic</div>
                             </div>
                         </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div class="bg-green-900/20 rounded p-3 border border-green-500/30">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="bg-green-900/20 rounded p-2 border border-green-500/30">
                                 <div class="text-green-400 font-bold text-sm mb-1">
-                                    <i class="fas fa-thumbs-up mr-2"></i>Strength
+                                    <i class="fas fa-thumbs-up mr-1"></i>Strength
                                 </div>
-                                <div class="text-white/90 text-sm">${comp.strength || 'N/A'}</div>
+                                <div class="text-white/80 text-sm">${comp.strength || 'N/A'}</div>
                             </div>
-                            
-                            <div class="bg-red-900/20 rounded p-3 border border-red-500/30">
+                            <div class="bg-red-900/20 rounded p-2 border border-red-500/30">
                                 <div class="text-red-400 font-bold text-sm mb-1">
-                                    <i class="fas fa-exclamation-triangle mr-2"></i>Weakness / Opportunity
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>Opportunity
                                 </div>
-                                <div class="text-white/90 text-sm">${comp.weakness || 'N/A'}</div>
+                                <div class="text-white/80 text-sm">${comp.weakness || 'N/A'}</div>
                             </div>
                         </div>
                     </div>
                 `;
             });
-            
+
             html += '</div>';
-            
-            // Add differentiation insight if summary is available
+
             if (summary) {
                 html += `
-                    <div class="mt-6 nexspark-panel rounded-lg p-6 border-2 border-nexspark-gold">
-                        <h4 class="text-lg font-header font-bold text-nexspark-gold mb-3">
+                    <div class="mt-4 bg-black/40 rounded-lg p-4 border-l-4 border-nexspark-gold">
+                        <h4 class="font-header font-bold text-nexspark-gold mb-2">
                             <i class="fas fa-lightbulb mr-2"></i>Your Differentiation Opportunity
                         </h4>
-                        <p class="text-white/90">
-                            Based on this analysis, you have opportunities to differentiate through 
-                            ${summary.biggestChallenge ? 'addressing ' + summary.biggestChallenge.toLowerCase() : 'your unique value proposition'} 
+                        <p class="text-white/80">
+                            Based on this analysis, you have opportunities to differentiate through
+                            ${summary.biggestChallenge ? 'addressing ' + summary.biggestChallenge.toLowerCase() : 'your unique value proposition'}
                             while leveraging ${summary.bestChannel || 'your best-performing channels'}.
                         </p>
                     </div>
                 `;
             }
-            
+
             competitorData.innerHTML = html;
-            
-            // Hide loading, show data
             document.getElementById('competitorLoading').classList.add('hidden');
             competitorData.classList.remove('hidden');
         }
-        
-        // Show competitor error
+
         function showCompetitorError(message) {
             const competitorData = document.getElementById('competitorData');
             competitorData.innerHTML = `
-                <div class="text-center py-8">
-                    <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-3"></i>
+                <div class="text-center py-6">
+                    <i class="fas fa-exclamation-circle text-3xl text-red-500 mb-2"></i>
                     <p class="text-white/70">${message}</p>
-                    <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-nexspark-gold text-black font-bold rounded">
-                        Try Again
-                    </button>
+                    <button onclick="location.reload()" class="mt-3 px-4 py-2 bg-nexspark-gold text-black font-bold rounded">Try Again</button>
                 </div>
             `;
             document.getElementById('competitorLoading').classList.add('hidden');
             competitorData.classList.remove('hidden');
         }
-        
+
         // Initialize on page load
         window.addEventListener('DOMContentLoaded', () => {
             const user = checkAuth();
             if (!user) return;
-            
-            const summary = getSummary();
-            if (!summary) return;
-            
-            // Extract website from interview if not present
-            if (!summary.website) {
-                const interview = localStorage.getItem('nexspark_interview');
-                if (interview) {
-                    const interviewData = JSON.parse(interview);
-                    // Try to extract website from first response (which asks for brand name/website)
-                    if (interviewData.responses && interviewData.responses.length > 0) {
-                        const firstResponse = interviewData.responses[0].answer || '';
-                        // Simple URL extraction
-                        const urlMatch = firstResponse.match(/https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/);
-                        if (urlMatch) {
-                            summary.website = urlMatch[0].replace(/^www\./, 'https://www.');
-                            localStorage.setItem('nexspark_summary', JSON.stringify(summary));
-                        }
-                    }
-                }
-                
-                // If still no website, use a placeholder
-                if (!summary.website) {
-                    summary.website = summary.brandName ? `https://www.${summary.brandName.toLowerCase().replace(/\s+/g, '')}.com` : 'https://example.com';
-                    localStorage.setItem('nexspark_summary', JSON.stringify(summary));
-                }
-            }
-            
-            console.log('🚀 Starting preview generation...');
-            console.log('Summary:', summary);
-            
-            // Load all previews
+
+            const website = getWebsite();
+            if (!website) return;
+
+            previewState.websiteUrl = website;
+            const summary = generateBasicSummary(website);
+
+            localStorage.setItem('nexspark_website', website);
+            localStorage.setItem('nexspark_preview_summary', JSON.stringify(summary));
+
+            console.log('Starting preview generation for:', website);
+
             loadCompetitorPreview(summary);
             loadRoadmapPreview(summary);
             loadBenchmarksPreview(summary);
-            
-            console.log('✅ Preview page initialized');
         });
-        
+
         // Show floating CTA after scrolling
         let floatingCTAShown = false;
         window.addEventListener('scroll', () => {
             const unlockCTA = document.getElementById('unlockCTA');
             const floatingCTA = document.getElementById('floatingCTA');
-            
-            if (!unlockCTA || unlockCTA.classList.contains('hidden')) {
-                return; // Don't show floating CTA until main CTA is visible
-            }
-            
+
+            if (!unlockCTA || unlockCTA.classList.contains('hidden')) return;
+
             const unlockCTARect = unlockCTA.getBoundingClientRect();
             const isUnlockCTAVisible = unlockCTARect.top < window.innerHeight && unlockCTARect.bottom > 0;
-            
+
             if (!isUnlockCTAVisible && !floatingCTAShown) {
                 floatingCTA.classList.remove('hidden');
                 floatingCTAShown = true;

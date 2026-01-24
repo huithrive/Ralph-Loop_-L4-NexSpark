@@ -26,16 +26,66 @@ reportRoutes.post('/start', async (c) => {
       return c.json(errorResponse('interviewId and userId are required'), 400);
     }
 
+    // Ensure user exists in database (create if not)
+    try {
+      const existingUser = await c.env.DB.prepare(
+        'SELECT id FROM users WHERE id = ?'
+      ).bind(userId).first();
+
+      if (!existingUser) {
+        // Create user record
+        await c.env.DB.prepare(`
+          INSERT INTO users (id, email, name, type, created_at, updated_at)
+          VALUES (?, ?, ?, 'anonymous', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `).bind(userId, `${userId}@anonymous.local`, 'Anonymous User').run();
+        console.log('Created anonymous user:', userId);
+      }
+    } catch (userError) {
+      console.warn('User check/create error:', userError);
+    }
+
+    // Ensure interview exists in database
+    const existingInterview = await c.env.DB.prepare(
+      'SELECT id FROM interviews WHERE id = ?'
+    ).bind(interviewId).first();
+
+    if (!existingInterview) {
+      // Create interview record if it doesn't exist
+      const { getLatestVersion } = await import('../services/database');
+      const version = await getLatestVersion(c.env.DB, userId);
+
+      await c.env.DB.prepare(`
+        INSERT INTO interviews (id, user_id, version, current_question, completed, created_at, updated_at)
+        VALUES (?, ?, ?, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `).bind(interviewId, userId, version).run();
+      console.log('Created interview record:', interviewId);
+    }
+
+    // Check if user has already paid (pay-before-interview flow)
+    let alreadyPaid = false;
+    let paymentId: string | null = null;
+
+    try {
+      const { hasUserPaidAny } = await import('../services/stripe-payment');
+      const paymentStatus = await hasUserPaidAny(c.env.DB, userId);
+      alreadyPaid = paymentStatus.paid === true;
+      paymentId = typeof paymentStatus.paymentId === 'string' ? paymentStatus.paymentId : null;
+      console.log('Payment status check:', { alreadyPaid, paymentId });
+    } catch (paymentCheckError) {
+      console.warn('Failed to check payment status, defaulting to unpaid:', paymentCheckError);
+    }
+
     const generationId = generateGenerationId();
     const now = new Date().toISOString();
 
     await createReportGeneration(c.env.DB, {
       id: generationId,
-      userId,
-      interviewId,
+      userId: String(userId),
+      interviewId: String(interviewId),
       currentState: 'NOT_STARTED',
       progressPercent: 0,
-      paid: false,
+      paid: alreadyPaid,
+      paymentId: paymentId,
       createdAt: now,
       updatedAt: now,
     });
@@ -43,6 +93,7 @@ reportRoutes.post('/start', async (c) => {
     return c.json({
       success: true,
       generationId,
+      alreadyPaid,
     });
   } catch (error: any) {
     console.error('Start report generation error:', error);
@@ -246,11 +297,12 @@ reportRoutes.post('/regenerate/:interviewId', async (c) => {
 
     await createReportGeneration(c.env.DB, {
       id: generationId,
-      userId,
-      interviewId,
+      userId: String(userId),
+      interviewId: String(interviewId),
       currentState: 'NOT_STARTED',
       progressPercent: 0,
       paid: false,
+      paymentId: null,
       createdAt: now,
       updatedAt: now,
     });
@@ -267,69 +319,75 @@ reportRoutes.post('/regenerate/:interviewId', async (c) => {
 
 // Helper functions for step execution
 async function executeStep1(env: any, generation: any) {
-  const { analyzeInterview } = await import('../services/report-generation');
+  const { ReportGenerator } = await import('../services/report-generator');
+  const generator = new ReportGenerator(env.DB, env, 'v2');
 
-  const step1Data = await analyzeInterview(generation.interviewId, env);
+  // Get interview data
+  const interview = await env.DB.prepare(`
+    SELECT i.*, GROUP_CONCAT(r.answer, '|||') as answers, GROUP_CONCAT(r.question, '|||') as questions
+    FROM interviews i
+    LEFT JOIN interview_responses r ON i.id = r.interview_id
+    WHERE i.id = ?
+    GROUP BY i.id
+  `).bind(generation.interviewId).first();
+
+  if (!interview) {
+    throw new Error('Interview not found');
+  }
+
+  // Parse responses
+  const answers = interview.answers ? interview.answers.split('|||') : [];
+  const questions = interview.questions ? interview.questions.split('|||') : [];
+  interview.responses = answers.map((answer: string, idx: number) => ({
+    question: questions[idx] || '',
+    answer: answer
+  }));
+
+  console.log('Executing step 1 with interview:', interview.id);
+  const businessProfile = await generator.executeStep1(generation.id, interview);
 
   return {
     currentState: 'PROFILE_REVIEW' as ReportGenerationState,
     progressPercent: 25,
-    step1Data: JSON.stringify(step1Data),
+    step1Data: JSON.stringify(businessProfile),
   };
 }
 
 async function executeStep2(env: any, generation: any, data: any) {
-  const { researchCompetitors } = await import('../services/report-generation');
+  const { ReportGenerator } = await import('../services/report-generator');
+  const generator = new ReportGenerator(env.DB, env, 'v2');
 
-  const step1Data = generation.step1Data ? JSON.parse(generation.step1Data) : {};
-  const step2Data = await researchCompetitors(step1Data, env);
+  const step1Data = generation.step1Data ? JSON.parse(generation.step1Data) : generation.step_1_analysis ? JSON.parse(generation.step_1_analysis) : {};
+
+  if (!step1Data.website) {
+    throw new Error('Missing website from step 1 data');
+  }
+
+  console.log('Executing step 2 with website:', step1Data.website);
+  const researchData = await generator.executeStep2(generation.id, step1Data.website, step1Data);
 
   return {
     currentState: 'PREVIEW_READY' as ReportGenerationState,
     progressPercent: 50,
-    step2Data: JSON.stringify(step2Data),
+    step2Data: JSON.stringify(researchData),
   };
 }
 
 async function executeStep4(env: any, generation: any) {
-  const step1Data = generation.step1Data ? JSON.parse(generation.step1Data) : {};
-  const step2Data = generation.step2Data ? JSON.parse(generation.step2Data) : {};
+  const { ReportGenerator } = await import('../services/report-generator');
+  const generator = new ReportGenerator(env.DB, env, 'v2');
 
-  const { generateReport } = await import('../services/report-generation');
-  const reportHtml = await generateReport(
-    generation.interviewId,
-    step1Data,
-    step2Data,
-    env
-  );
+  // Check payment
+  if (!generation.paid) {
+    throw new Error('Payment required before generating strategy');
+  }
 
-  const reportId = generateReportId();
-
-  // Save report to database
-  await env.DB.prepare(`
-    INSERT INTO strategy_reports (
-      id, user_id, interview_id, generation_id,
-      brand_name, html_report, report_format,
-      version, is_latest, paid, payment_id, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, 'v2', 1, 1, ?, ?, CURRENT_TIMESTAMP)
-  `).bind(
-    reportId,
-    generation.userId,
-    generation.interviewId,
-    generation.id,
-    step1Data.brandName || 'Unknown',
-    reportHtml,
-    generation.paid ? 1 : 0,
-    generation.paymentId || null
-  ).run();
-
-  // Update generation to complete
-  const { completeGeneration } = await import('../services/database');
-  await completeGeneration(env.DB, generation.id, reportId);
+  console.log('Executing step 4 for generation:', generation.id);
+  const result = await generator.executeStep4(generation.id);
 
   return {
     currentState: 'COMPLETE' as ReportGenerationState,
     progressPercent: 100,
-    reportId,
+    reportId: result.reportId,
   };
 }

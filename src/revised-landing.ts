@@ -13,6 +13,9 @@ export const REVISED_LANDING_HTML = `
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Shared Modules -->
+    <script src="/static/shared/storage.js"></script>
     
     <script>
       tailwind.config = {
@@ -157,6 +160,30 @@ export const REVISED_LANDING_HTML = `
                         </div>
                     </div>
 
+                    <!-- Website Input Form -->
+                    <div class="mb-8 max-w-4xl">
+                        <div class="bg-nexspark-panel border-2 border-nexspark-gold/30 rounded-xl p-6 backdrop-blur-sm">
+                            <form id="websiteForm" class="flex flex-col sm:flex-row gap-3">
+                                <input
+                                    type="text"
+                                    id="websiteInput"
+                                    placeholder="Enter your website (e.g., yamabushifarms.com)"
+                                    class="flex-1 px-6 py-4 text-lg bg-nexspark-dark text-white border-2 border-nexspark-blue/30 focus:border-nexspark-gold focus:outline-none rounded-lg font-mono"
+                                    required
+                                />
+                                <button
+                                    type="submit"
+                                    class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-8 py-4 rounded-lg text-lg whitespace-nowrap font-bold"
+                                >
+                                    <i class="fas fa-bolt mr-2"></i>LAUNCH ANALYSIS
+                                </button>
+                            </form>
+                            <p class="text-white/50 text-sm mt-3 font-mono">
+                                <i class="fas fa-info-circle mr-1"></i>Enter your domain or brand name to get started
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- Trust Indicators Grid -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl">
                         <div class="bg-black/60 border-t-4 border-nexspark-gold p-4 backdrop-blur-sm">
@@ -211,12 +238,101 @@ export const REVISED_LANDING_HTML = `
         </div>
     </section>
 
+    <!-- Success Stories Section -->
+    <section id="proven-results" class="relative z-10 py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="h-20 w-20 bg-nexspark-gold rounded-tl-3xl flex items-center justify-center">
+                    <span class="text-black font-header text-4xl font-bold">02</span>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
+                        Proven Results
+                    </h2>
+                    <p class="text-nexspark-gold font-mono text-sm uppercase tracking-widest mt-2">Real Clients, Real Growth</p>
+                </div>
+            </div>
+
+            <!-- Positioning Statement -->
+            <div class="bg-nexspark-gold/10 border-l-4 border-nexspark-gold p-6 rounded-r-lg mb-12">
+                <p class="text-white/90 font-mono text-base leading-relaxed">
+                    <i class="fas fa-chart-line text-nexspark-gold mr-3"></i>
+                    We don't just work with SaaS and subscription software—we excel with <span class="text-nexspark-gold font-bold">D2C brands</span> and <span class="text-nexspark-blue font-bold">B2C companies</span> selling directly to consumers. From physical products to digital subscriptions, we deliver exceptional results across all sectors.
+                </p>
+            </div>
+
+            <!-- Case Studies Showcase -->
+            <div class="max-w-3xl mx-auto mb-8">
+                <!-- Yamabushi Case Study (Video) -->
+                <div class="group relative bg-nexspark-panel rounded-xl overflow-hidden border-2 border-nexspark-gold/30 hover:border-nexspark-gold transition-all duration-300 cursor-pointer" onclick="openVideoModal(0)">
+                    <div class="aspect-video relative overflow-hidden bg-black">
+                        <img src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg" alt="Yamabushi Success Story" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-24 h-24 rounded-full bg-nexspark-gold/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-play text-black text-3xl ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-nexspark-gold text-black px-4 py-2 rounded-full font-header font-bold text-sm uppercase">
+                                D2C Brand
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-3xl md:text-4xl font-header font-bold text-nexspark-gold uppercase mb-4">
+                            Yamabushi Farms
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-black/40 p-4 rounded-lg border-l-4 border-nexspark-gold">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-rocket text-nexspark-gold text-xl mt-1"></i>
+                                    <div>
+                                        <p class="text-white/90 font-mono text-base">
+                                            <span class="text-nexspark-gold font-bold text-xl">10x Revenue</span>
+                                        </p>
+                                        <p class="text-white/60 font-mono text-sm">in just 2 months</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-black/40 p-4 rounded-lg border-l-4 border-nexspark-gold">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-chart-bar text-nexspark-gold text-xl mt-1"></i>
+                                    <div>
+                                        <p class="text-white/90 font-mono text-base">
+                                            <span class="text-nexspark-gold font-bold text-xl">3x ROAS</span>
+                                        </p>
+                                        <p class="text-white/60 font-mono text-sm">achieved in 1 month</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-nexspark-gold/20">
+                            <span class="text-nexspark-blue font-mono text-sm uppercase tracking-wider">D2C CPG Brands</span>
+                            <span class="text-white/60 font-mono text-sm">
+                                <i class="fas fa-video mr-2"></i> Click to Watch Full Story
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center">
+                <p class="text-white/70 font-mono text-sm mb-4">
+                    <i class="fas fa-award text-nexspark-gold mr-2"></i>
+                    Join successful brands who've transformed their growth with NexSpark
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- How It Works Section -->
     <section class="relative z-10 py-20 px-4">
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center gap-4 mb-12">
                 <div class="h-20 w-20 bg-nexspark-blue rounded-tl-3xl flex items-center justify-center">
-                    <span class="text-black font-header text-4xl font-bold">02</span>
+                    <span class="text-black font-header text-4xl font-bold">03</span>
                 </div>
                 <div class="flex-1">
                     <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
@@ -281,7 +397,7 @@ export const REVISED_LANDING_HTML = `
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center gap-4 mb-12">
                 <div class="h-20 w-20 bg-nexspark-gold rounded-tl-3xl flex items-center justify-center">
-                    <span class="text-black font-header text-4xl font-bold">03</span>
+                    <span class="text-black font-header text-4xl font-bold">04</span>
                 </div>
                 <div class="flex-1">
                     <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
@@ -417,6 +533,31 @@ export const REVISED_LANDING_HTML = `
         </div>
     </section>
 
+    <!-- Video Modal -->
+    <div id="videoModal" class="hidden fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4">
+        <div class="relative w-full max-w-6xl">
+            <button onclick="closeVideoModal()" class="absolute -top-12 right-0 text-white hover:text-nexspark-gold transition-colors">
+                <i class="fas fa-times text-3xl"></i>
+            </button>
+            <div class="bg-nexspark-panel rounded-xl overflow-hidden border-2 border-nexspark-gold">
+                <div class="aspect-video">
+                    <iframe id="videoPlayer" width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="p-6 bg-black/50">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 id="videoTitle" class="text-2xl font-header font-bold text-white uppercase mb-2"></h3>
+                            <p id="videoDescription" class="text-white/70 font-mono text-sm"></p>
+                        </div>
+                        <button id="nextVideoBtn" onclick="nextVideo()" class="px-6 py-3 bg-nexspark-gold text-black font-header font-bold uppercase rounded-lg hover:bg-nexspark-gold/80 transition-all">
+                            Next Case <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Background Animation Script -->
     <script>
     (() => {
@@ -477,7 +618,104 @@ export const REVISED_LANDING_HTML = `
         canvas.height = window.innerHeight;
       });
     })();
-    
+
+    // Video Modal Functionality
+    const videoData = [
+        {
+            id: 'nw1XYryhdIU',
+            title: 'Yamabushi Farms',
+            description: 'D2C Brand • 10x Revenue in 2 Months • 3x ROAS in 1 Month'
+        }
+    ];
+
+    let currentVideoIndex = 0;
+
+    function openVideoModal(index) {
+        currentVideoIndex = index;
+        const video = videoData[index];
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
+        const title = document.getElementById('videoTitle');
+        const description = document.getElementById('videoDescription');
+        const nextBtn = document.getElementById('nextVideoBtn');
+
+        // Set video source with autoplay
+        player.src = 'https://www.youtube.com/embed/' + video.id + '?autoplay=1&rel=0';
+        title.textContent = video.title;
+        description.textContent = video.description;
+
+        // Show/hide next button
+        if (index === videoData.length - 1) {
+            nextBtn.textContent = 'Close';
+            nextBtn.onclick = closeVideoModal;
+        } else {
+            nextBtn.innerHTML = 'Next Case <i class="fas fa-arrow-right ml-2"></i>';
+            nextBtn.onclick = nextVideo;
+        }
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
+
+        // Stop video
+        player.src = '';
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function nextVideo() {
+        currentVideoIndex = (currentVideoIndex + 1) % videoData.length;
+        openVideoModal(currentVideoIndex);
+    }
+
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeVideoModal();
+        }
+    });
+
+    // Website Form Handler (Login-Required Preview)
+    document.getElementById('websiteForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const websiteInput = document.getElementById('websiteInput');
+        let website = websiteInput.value.trim();
+
+        // Validate input
+        if (!website) {
+            alert('Please enter a website or brand name');
+            return;
+        }
+
+        // Normalize URL - add https:// if not present
+        if (!website.startsWith('http://') && !website.startsWith('https://')) {
+            website = 'https://' + website;
+        }
+
+        // Check if user is logged in using shared Storage module
+        const user = Storage.getUser();
+        const session = Storage.getSession();
+
+        if (!user || !session) {
+            // Not logged in - redirect to login with return URL
+            const returnUrl = '/report-preview?website=' + encodeURIComponent(website);
+            const loginUrl = '/login?returnUrl=' + encodeURIComponent(returnUrl);
+            console.log('Not authenticated. Redirecting to login...');
+            console.log('Return URL:', returnUrl);
+            console.log('Login URL:', loginUrl);
+            window.location.href = loginUrl;
+            return;
+        }
+
+        // User is logged in - go directly to preview
+        window.location.href = '/report-preview?website=' + encodeURIComponent(website);
+    });
+
     // Start interview (requires login)
     function startInterview() {
       // Check if user is already logged in

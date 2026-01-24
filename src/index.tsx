@@ -186,9 +186,22 @@ app.get('/dashboard', (c) => {
   return c.redirect('/static/dashboard.html');
 });
 
-// Interview pages
-app.get('/interview', (c) => c.redirect('/static/interview-v3.html'));
-app.get('/interview-v3', (c) => c.redirect('/static/interview-v3.html'));
+// Auth pages
+app.get('/login', (c) => {
+  const url = new URL(c.req.url);
+  const queryString = url.search;
+  return c.redirect('/static/login.html' + queryString);
+});
+app.get('/register', (c) => {
+  const url = new URL(c.req.url);
+  const queryString = url.search;
+  return c.redirect('/static/register.html' + queryString);
+});
+
+// Interview pages (voice interview v2 is now the default)
+app.get('/voice-interview', (c) => c.redirect('/static/voice-interview-v2.html'));
+app.get('/interview', (c) => c.redirect('/static/voice-interview-v2.html'));
+app.get('/interview-v3', (c) => c.redirect('/static/voice-interview-v2.html'));
 app.get('/interview-confirmation', (c) => c.redirect('/static/interview-confirmation.html'));
 app.get('/interview-summary', (c) => c.redirect('/static/interview-summary.html'));
 app.get('/website-confirmation', (c) => c.redirect('/static/website-confirmation.html'));
@@ -196,7 +209,11 @@ app.get('/website-confirmation', (c) => c.redirect('/static/website-confirmation
 // Report pages
 app.get('/generate-report', (c) => c.redirect('/static/generate-report.html'));
 app.get('/report/:reportId', (c) => c.redirect('/static/report-viewer.html?reportId=' + c.req.param('reportId')));
-app.get('/report-preview', (c) => c.redirect('/static/report-preview.html'));
+app.get('/report-preview', (c) => {
+  const url = new URL(c.req.url);
+  const queryString = url.search;
+  return c.redirect('/static/report-preview.html' + queryString);
+});
 app.get('/full-report', (c) => c.redirect('/static/full-report.html'));
 
 // Strategy and audit pages
@@ -205,6 +222,9 @@ app.get('/growth-audit', (c) => c.redirect('/static/growth-audit.html'));
 
 // Payment page
 app.get('/payment', (c) => c.redirect('/static/payment.html'));
+
+// Interview intro page (post-payment transition)
+app.get('/interview-intro', (c) => c.redirect('/static/interview-intro.html'));
 
 // Conversational interview page
 app.get('/conversational-interview', (c) => c.redirect('/static/conversational-interview.html'));

@@ -238,14 +238,30 @@
         // Get user data
         const user = checkAuth();
         if (!user) throw new Error('Not authenticated');
-        
-        // Get summary
-        const summaryData = localStorage.getItem('nexspark_summary');
-        if (!summaryData) {
-            console.error('No summary found');
-            window.location.href = '/interview';
+
+        // Get website from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const website = urlParams.get('website');
+
+        // Get preview data from sessionStorage (temporary data from preview page)
+        const previewData = sessionStorage.getItem('nexspark_preview');
+
+        if (!website && !previewData) {
+            console.error('No website or preview data found, redirecting to home');
+            window.location.href = '/';
+            throw new Error('Missing required data');
         }
-        const summary = JSON.parse(summaryData);
+
+        // Parse preview data or create minimal summary from URL
+        const summary = previewData ? JSON.parse(previewData) : {
+            website: website,
+            brandName: website.replace(/^https?:\/\/(www\.)?/, '').split('.')[0],
+            industry: 'Technology',
+            productDescription: 'Product or service',
+            timestamp: new Date().toISOString()
+        };
+
+        console.log('Payment page initialized with:', { website, hasPreviewData: !!previewData });
         
         // Initialize Stripe
         const stripe = Stripe('REDACTED_STRIPE_PUBLISHABLE');
@@ -338,17 +354,32 @@
 
                 if (paymentIntent && paymentIntent.status === 'succeeded') {
                     console.log('✅ Payment successful!', paymentIntent.id);
-                    
-                    // Save payment info to localStorage
+
+                    // Record payment in database (for pay-before-interview flow)
+                    try {
+                        await axios.post('/api/payment/record', {
+                            userId: user.id,
+                            paymentIntentId: paymentIntent.id,
+                            amount: 2000
+                        });
+                        console.log('✅ Payment recorded in database');
+                    } catch (recordError) {
+                        console.warn('Failed to record payment in DB:', recordError);
+                        // Continue anyway - payment succeeded with Stripe
+                    }
+
+                    // Save payment info to localStorage (persistent)
                     localStorage.setItem('nexspark_payment', JSON.stringify({
                         paymentIntentId: paymentIntent.id,
                         amount: 2000,
                         paid: true,
                         timestamp: new Date().toISOString()
                     }));
-                    
-                    // Redirect to report generation
-                    window.location.href = '/full-report';
+
+                    // Keep preview data in sessionStorage for next page
+                    // Redirect to interview intro page with website param
+                    const websiteParam = summary.website ? `?website=${encodeURIComponent(summary.website)}` : '';
+                    window.location.href = `/interview-intro${websiteParam}`;
                 } else {
                     throw new Error('Payment was not successful. Status: ' + paymentIntent.status);
                 }

@@ -167,7 +167,7 @@
 
                 <!-- Google OAuth Button -->
                 <button
-                    onclick="window.location.href='/auth/google'"
+                    id="googleSignUpBtn"
                     class="w-full lcars-btn bg-white hover:bg-gray-100 text-black font-bold py-4 rounded-lg text-lg mb-6 flex items-center justify-center gap-3"
                 >
                     <svg class="w-6 h-6" viewBox="0 0 24 24">
@@ -291,9 +291,17 @@
 
           console.log('✅ Registration successful');
 
-          // Redirect to dashboard after brief delay
+          // Check for return URL parameter
+          const urlParams = new URLSearchParams(window.location.search);
+          const returnUrl = urlParams.get('returnUrl');
+
+          // Redirect to return URL or dashboard after brief delay
           setTimeout(() => {
-            window.location.href = '/dashboard';
+            if (returnUrl) {
+              window.location.href = decodeURIComponent(returnUrl);
+            } else {
+              window.location.href = '/dashboard';
+            }
           }, 1500);
         } else {
           // Show error
@@ -311,6 +319,20 @@
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
       }
+    });
+
+    // Google Sign Up Button Handler
+    document.getElementById('googleSignUpBtn').addEventListener('click', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const returnUrl = urlParams.get('returnUrl');
+
+      let googleAuthUrl = '/auth/google';
+      if (returnUrl) {
+        googleAuthUrl += '?returnUrl=' + encodeURIComponent(returnUrl);
+      }
+
+      console.log('Redirecting to Google OAuth:', googleAuthUrl);
+      window.location.href = googleAuthUrl;
     });
     </script>
 

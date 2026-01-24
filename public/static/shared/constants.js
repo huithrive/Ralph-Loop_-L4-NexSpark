@@ -3,18 +3,24 @@
  */
 
 const CONSTANTS = {
-  // Default interview questions
+  // Default interview questions (6 questions)
   INTERVIEW_QUESTIONS: [
-    "Welcome! I'm Digital Leon, your AI growth strategist. Let's start with the basics - what's your brand name or the name of the product you're trying to grow?",
-    "Perfect! How would you describe your product in your own words? What does it do and who is it for?",
-    "When did you start this brand and what motivated you to create it? What problem were you trying to solve?",
-    "What's your current monthly revenue?",
-    "Which marketing channels are you currently using? For each channel, tell me roughly how much you're spending per month and what results you're seeing.",
-    "What's your best performing channel and what specific metrics can you share? For example, conversion rates, ROI, or customer acquisition cost.",
-    "What's the biggest challenge you're facing with growth right now?",
-    "Who is your ideal customer? Describe them in detail - demographics, behaviors, pain points, and where they spend their time.",
-    "Who are your top 3 competitors and what makes your brand different from them? What's your unique value proposition?",
-    "What's your main goal for the next 6 months? Be specific about revenue, customer growth, or market expansion targets.",
+    "When and why did you start this brand? What problem were you trying to solve?",
+    "How do you define your product? What core problem does it solve for customers?",
+    "What marketing channels are you currently using? Why did you choose these channels, and how are they performing?",
+    "What's your biggest challenge right now? What are your main goals and challenges for the next 3-6 months?",
+    "Who do you consider your ideal customer? Can you describe them?",
+    "Who are your main competitors? What sets you apart from them?"
+  ],
+
+  // Example answers for each question
+  EXAMPLE_ANSWERS: [
+    "Example: 'I started this brand in 2022 because I couldn't find affordable, sustainable packaging for my homemade products. I wanted to help other small businesses like mine.'",
+    "Example: 'We make eco-friendly food storage containers that keep food fresh 3x longer than regular containers. We solve the problem of food waste and plastic pollution.'",
+    "Example: 'We're using Instagram and Facebook ads. I chose social media because that's where my target audience is. Instagram is working well, but Facebook ads aren't converting yet.'",
+    "Example: 'Our biggest challenge is customer acquisition cost. In 3-6 months, we want to reach $10K MRR and improve our conversion rate from 2% to 5%.'",
+    "Example: 'Our ideal customer is a health-conscious mom, aged 30-45, who shops online and cares about sustainability. She's willing to pay more for quality.'",
+    "Example: 'Our main competitors are GreenPack and EcoStore. We're different because we use 100% recycled materials and our products are more affordable.'"
   ],
 
   // Color scheme

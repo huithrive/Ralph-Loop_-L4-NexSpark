@@ -74,30 +74,34 @@ export async function getIncompleteInterview(db: D1Database, userId: string) {
 export async function saveInterview(db: D1Database, data: any) {
   try {
     const { userId, interviewId, currentQuestion, responses, completed } = data;
-    
-    let finalInterviewId = interviewId;
-    
-    // If no interview ID, create new interview
-    if (!finalInterviewId) {
-      finalInterviewId = generateId('int_');
+
+    let finalInterviewId = interviewId || generateId('int_');
+
+    // Check if interview exists
+    const existing = await db.prepare(`
+      SELECT id FROM interviews WHERE id = ?
+    `).bind(finalInterviewId).first();
+
+    if (!existing) {
+      // Create new interview (with client-provided or generated ID)
       const version = await getLatestVersion(db, userId);
-      
+
       await db.prepare(`
         INSERT INTO interviews (id, user_id, version, current_question, completed)
         VALUES (?, ?, ?, ?, ?)
-      `).bind(finalInterviewId, userId, version, currentQuestion, completed ? 1 : 0).run();
-      
-      console.log('Created new interview:', finalInterviewId, version);
+      `).bind(finalInterviewId, userId, version, currentQuestion || 0, completed ? 1 : 0).run();
+
+      console.log('Created new interview:', finalInterviewId, 'version:', version);
     } else {
       // Update existing interview
       await db.prepare(`
-        UPDATE interviews 
-        SET current_question = ?, 
+        UPDATE interviews
+        SET current_question = ?,
             updated_at = CURRENT_TIMESTAMP,
             completed = ?
         WHERE id = ?
-      `).bind(currentQuestion, completed ? 1 : 0, finalInterviewId).run();
-      
+      `).bind(currentQuestion || 0, completed ? 1 : 0, finalInterviewId).run();
+
       console.log('Updated interview:', finalInterviewId);
     }
     
@@ -118,20 +122,23 @@ export async function saveInterview(db: D1Database, data: any) {
         }
 
         const questionId = response.questionId || `q${questionNumber}`;
-        
+        // Ensure all values are defined (D1 doesn't accept undefined)
+        const questionText = response.question || `Question ${questionNumber}`;
+        const answerText = response.answer || '';
+
         // Check if response already exists
         const existing = await db.prepare(`
-          SELECT id FROM interview_responses 
+          SELECT id FROM interview_responses
           WHERE interview_id = ? AND question_number = ?
         `).bind(finalInterviewId, questionNumber).first();
-        
+
         if (existing) {
           // Update existing response
           await db.prepare(`
-            UPDATE interview_responses 
-            SET answer = ? 
+            UPDATE interview_responses
+            SET answer = ?
             WHERE id = ?
-          `).bind(response.answer, existing.id).run();
+          `).bind(answerText, existing.id).run();
         } else {
           // Insert new response
           await db.prepare(`
@@ -143,8 +150,8 @@ export async function saveInterview(db: D1Database, data: any) {
             finalInterviewId,
             questionId,
             questionNumber,
-            response.question,
-            response.answer
+            questionText,
+            answerText
           ).run();
         }
       }
@@ -371,19 +378,49 @@ export async function deleteInterview(db: D1Database, interviewId: string) {
  */
 export async function createReportGeneration(
   db: D1Database,
-  interviewId: string,
-  userId: string
+  data: {
+    id: string;
+    userId: string;
+    interviewId: string;
+    currentState: string;
+    progressPercent: number;
+    paid: boolean;
+    paymentId?: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }
 ) {
   try {
-    const genId = generateId('gen_');
+    // Ensure all values are primitive types for D1
+    const id = String(data.id);
+    const interviewId = String(data.interviewId);
+    const userId = String(data.userId);
+    const currentState = String(data.currentState);
+    const progressPercent = Number(data.progressPercent) || 0;
+    const paid = data.paid ? 1 : 0;
+    const paymentId = typeof data.paymentId === 'string' ? data.paymentId : null;
+    const startedAt = String(data.createdAt);
+    const lastUpdatedAt = String(data.updatedAt);
+
+    console.log('Creating report generation:', { id, interviewId, userId, currentState, paid, paymentId });
 
     await db.prepare(`
       INSERT INTO report_generations (
-        id, interview_id, user_id, current_state, started_at, last_updated_at
-      ) VALUES (?, ?, ?, 'NOT_STARTED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    `).bind(genId, interviewId, userId).run();
+        id, interview_id, user_id, current_state, progress_percent, paid, payment_id, started_at, last_updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      id,
+      interviewId,
+      userId,
+      currentState,
+      progressPercent,
+      paid,
+      paymentId,
+      startedAt,
+      lastUpdatedAt
+    ).run();
 
-    return { success: true, generationId: genId };
+    return { success: true, generationId: id };
   } catch (error) {
     console.error('Error creating generation:', error);
     throw error;
@@ -427,15 +464,57 @@ export async function getGenerationByInterview(db: D1Database, interviewId: stri
 export async function updateGenerationState(
   db: D1Database,
   generationId: string,
-  state: string,
-  progress: number
+  updates: {
+    currentState?: string;
+    progressPercent?: number;
+    step1Data?: string;
+    step2Data?: string;
+    paid?: boolean;
+    paymentId?: string;
+    error?: string;
+  }
 ) {
   try {
-    await db.prepare(`
+    // Build dynamic update query based on what fields are provided
+    const fields: string[] = ['last_updated_at = CURRENT_TIMESTAMP'];
+    const values: any[] = [];
+
+    if (updates.currentState !== undefined) {
+      fields.push('current_state = ?');
+      values.push(updates.currentState);
+    }
+    if (updates.progressPercent !== undefined) {
+      fields.push('progress_percent = ?');
+      values.push(updates.progressPercent);
+    }
+    if (updates.step1Data !== undefined) {
+      fields.push('step1_data = ?');
+      values.push(updates.step1Data);
+    }
+    if (updates.step2Data !== undefined) {
+      fields.push('step2_data = ?');
+      values.push(updates.step2Data);
+    }
+    if (updates.paid !== undefined) {
+      fields.push('paid = ?');
+      values.push(updates.paid ? 1 : 0);
+    }
+    if (updates.paymentId !== undefined) {
+      fields.push('payment_id = ?');
+      values.push(updates.paymentId);
+    }
+    if (updates.error !== undefined) {
+      fields.push('error = ?');
+      values.push(updates.error);
+    }
+
+    const query = `
       UPDATE report_generations
-      SET current_state = ?, progress_percent = ?, last_updated_at = CURRENT_TIMESTAMP
+      SET ${fields.join(', ')}
       WHERE id = ?
-    `).bind(state, progress, generationId).run();
+    `;
+
+    await db.prepare(query).bind(...values, generationId).run();
 
     return { success: true };
   } catch (error) {

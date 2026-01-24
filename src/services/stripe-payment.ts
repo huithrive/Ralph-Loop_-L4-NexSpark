@@ -18,14 +18,15 @@ export interface PaymentVerification {
 }
 
 /**
- * Create a Stripe payment intent for $20 report purchase
+ * Create a Stripe payment intent for report purchase
  */
 export async function createPaymentIntent(
+  amount: number,
+  currency: string,
   userId: string,
   userEmail: string,
-  interviewId: string,
   stripeSecretKey: string
-): Promise<PaymentIntent> {
+): Promise<string> {
   try {
     const response = await fetch('https://api.stripe.com/v1/payment_intents', {
       method: 'POST',
@@ -34,10 +35,9 @@ export async function createPaymentIntent(
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
-        amount: '2000', // $20.00 in cents
-        currency: 'usd',
+        amount: amount.toString(),
+        currency: currency,
         'metadata[userId]': userId,
-        'metadata[interviewId]': interviewId,
         'metadata[product]': 'growth_strategy_report',
         'receipt_email': userEmail,
         'description': 'NexSpark Growth Strategy Report - Comprehensive 6-Month GTM Plan'
@@ -51,12 +51,7 @@ export async function createPaymentIntent(
 
     const paymentIntent = await response.json();
 
-    return {
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
-      amount: 2000,
-      currency: 'usd'
-    };
+    return paymentIntent.client_secret;
   } catch (error) {
     console.error('Error creating payment intent:', error);
     throw error;
@@ -158,5 +153,32 @@ export async function hasUserPaid(
   } catch (error) {
     console.error('Error checking payment status:', error);
     return false;
+  }
+}
+
+/**
+ * Check if user has any successful payment (for pay-before-interview flow)
+ * Returns true if user has paid for any report
+ */
+export async function hasUserPaidAny(
+  db: D1Database,
+  userId: string
+): Promise<{ paid: boolean; paymentId?: string }> {
+  try {
+    const result = await db.prepare(`
+      SELECT payment_intent_id
+      FROM payments
+      WHERE user_id = ? AND status = 'succeeded'
+      ORDER BY created_at DESC
+      LIMIT 1
+    `).bind(userId).first<{ payment_intent_id: string }>();
+
+    if (result?.payment_intent_id) {
+      return { paid: true, paymentId: result.payment_intent_id };
+    }
+    return { paid: false };
+  } catch (error) {
+    console.error('Error checking user payment status:', error);
+    return { paid: false };
   }
 }

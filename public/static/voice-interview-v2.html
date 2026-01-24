@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Interview - NexSpark Growth OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Shared Modules -->
+    <script src="/static/shared/storage.js"></script>
+    <script src="/static/shared/constants.js"></script>
+    <script src="/static/shared/api-client.js"></script>
+    <script src="/static/shared/star-field.js"></script>
+    <script src="/static/shared/voice-recorder.js"></script>
+    <script src="/static/shared/interview-manager.js"></script>
+    <script src="/static/shared/ui-templates.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Rajdhani', 'sans-serif'],
+              header: ['Antonio', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              nexspark: {
+                bg: '#000000',
+                gold: '#FF9C00',
+                pale: '#FFCC99',
+                red: '#CC3333',
+                blue: '#99CCFF',
+                purple: '#CC99CC',
+                dark: '#111111',
+                panel: 'rgba(20, 20, 25, 0.9)'
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #000000;
+            color: #99CCFF;
+            min-height: 100vh;
+        }
+
+        /* Progress steps */
+        .progress-step {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .progress-step.completed {
+            background: #27ae60;
+            color: white;
+        }
+
+        .progress-step.current {
+            background: #FF9C00;
+            color: black;
+            box-shadow: 0 0 20px rgba(255, 156, 0, 0.6);
+        }
+
+        .progress-step.pending {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-line {
+            height: 3px;
+            width: 40px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-line.completed {
+            background: #27ae60;
+        }
+
+        .mic-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #FF9C00;
+            background: #FF9C00;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 156, 0, 0.6);
+        }
+
+        .mic-button.listening {
+            background: #99CCFF;
+            border-color: #99CCFF;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .mic-button.processing {
+            background: #CC99CC;
+            border-color: #CC99CC;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(153, 204, 255, 0.6); }
+            50% { transform: scale(1.1); box-shadow: 0 0 60px rgba(153, 204, 255, 0.8); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .editable-panel {
+            background: rgba(20, 20, 25, 0.9);
+            border: 2px solid rgba(255, 156, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .editable-panel:focus-within {
+            border-color: #FF9C00;
+        }
+
+        textarea {
+            background: transparent;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            resize: none;
+        }
+
+        textarea:focus {
+            outline: none;
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Star Field Background -->
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <div class="relative z-10 min-h-screen p-4 md:p-8 flex items-center justify-center">
+        <!-- Main Container with Gold Border -->
+        <div class="w-full max-w-5xl bg-black/80 border-2 border-nexspark-gold/60 rounded-2xl p-6 md:p-8 backdrop-blur-sm shadow-[0_0_60px_rgba(255,156,0,0.15)]">
+
+            <!-- Progress Steps -->
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <div id="progressSteps" class="flex items-center">
+                    <!-- Steps rendered by JS -->
+                </div>
+            </div>
+
+            <!-- Question Section -->
+            <div class="bg-nexspark-panel border-l-4 border-nexspark-blue rounded-lg p-5 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-nexspark-blue/20 flex items-center justify-center flex-shrink-0">
+                        <span id="questionNumber" class="text-nexspark-blue font-bold">1</span>
+                    </div>
+                    <div class="flex-1">
+                        <p id="questionText" class="text-white text-xl font-medium leading-relaxed">
+                            Loading question...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Answer (Always Visible) -->
+            <div class="bg-nexspark-panel/60 border-l-4 border-nexspark-purple/50 rounded-lg p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-lightbulb text-nexspark-gold text-lg mt-0.5"></i>
+                    <div>
+                        <p class="text-nexspark-gold font-mono text-xs uppercase tracking-wider mb-1">Example Answer</p>
+                        <p id="exampleAnswerText" class="text-white/70 font-mono text-sm leading-relaxed">
+                            Loading example...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editable Answer -->
+            <div class="mb-6">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-edit text-nexspark-gold"></i>
+                    <h2 class="font-header text-base text-nexspark-gold uppercase tracking-wider">Edit Your Answer</h2>
+                    <span id="charCount" class="ml-auto text-white/40 font-mono text-xs">0 chars</span>
+                </div>
+                <div class="editable-panel p-4">
+                    <textarea
+                        id="answerText"
+                        rows="5"
+                        class="w-full text-sm"
+                        placeholder="Hold the mic button to speak, or type your answer here..."
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Bottom: Mic + Navigation -->
+            <div class="flex items-center justify-between">
+                <button
+                    id="skipButton"
+                    class="px-5 py-3 bg-nexspark-dark border-2 border-nexspark-blue/30 text-nexspark-blue font-header uppercase tracking-wider rounded-lg hover:border-nexspark-blue transition-all"
+                >
+                    <i class="fas fa-forward mr-2"></i>Skip
+                </button>
+
+                <!-- Mic Button -->
+                <div class="flex flex-col items-center">
+                    <button id="micButton" class="mic-button mb-2">
+                        <i id="micIcon" class="fas fa-microphone text-black text-3xl"></i>
+                    </button>
+                    <div id="statusText" class="text-center">
+                        <p class="text-nexspark-gold font-header text-sm uppercase">Ready</p>
+                        <p class="text-nexspark-blue font-mono text-xs">Hold to record</p>
+                    </div>
+                </div>
+
+                <button
+                    id="nextButton"
+                    class="px-8 py-3 bg-nexspark-gold text-black font-header text-lg uppercase tracking-wider rounded-lg hover:bg-nexspark-pale transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled
+                >
+                    <i class="fas fa-arrow-right mr-2"></i>Next
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interview Logic -->
+    <script>
+        // Check authentication
+        const user = Storage.getUser();
+        if (!user) {
+            console.warn('No user found, redirecting to login');
+            window.location.href = '/login';
+        }
+
+        // Get DOM elements
+        const elements = {
+            progressSteps: document.getElementById('progressSteps'),
+            questionNumber: document.getElementById('questionNumber'),
+            questionText: document.getElementById('questionText'),
+            exampleAnswerText: document.getElementById('exampleAnswerText'),
+            answerText: document.getElementById('answerText'),
+            charCount: document.getElementById('charCount'),
+            micButton: document.getElementById('micButton'),
+            micIcon: document.getElementById('micIcon'),
+            statusText: document.getElementById('statusText'),
+            skipButton: document.getElementById('skipButton'),
+            nextButton: document.getElementById('nextButton')
+        };
+
+        const totalQuestions = CONSTANTS.INTERVIEW_QUESTIONS.length;
+
+        // Render progress steps
+        function renderProgressSteps(currentIndex) {
+            let html = '';
+            for (let i = 0; i < totalQuestions; i++) {
+                const status = i < currentIndex ? 'completed' : (i === currentIndex ? 'current' : 'pending');
+                const icon = i < currentIndex ? '<i class="fas fa-check text-sm"></i>' : (i + 1);
+                html += `<div class="progress-step ${status}">${icon}</div>`;
+                if (i < totalQuestions - 1) {
+                    const lineStatus = i < currentIndex ? 'completed' : '';
+                    html += `<div class="progress-line ${lineStatus}"></div>`;
+                }
+            }
+            elements.progressSteps.innerHTML = html;
+        }
+
+        // Update status display
+        function updateStatusDisplay(status) {
+            const statusConfig = {
+                ready: { title: 'Ready', subtitle: 'Hold to record', titleColor: 'text-nexspark-gold' },
+                listening: { title: 'Recording...', subtitle: 'Release when done', titleColor: 'text-nexspark-blue' },
+                processing: { title: 'Transcribing...', subtitle: 'Please wait', titleColor: 'text-nexspark-purple' }
+            };
+
+            const config = statusConfig[status] || statusConfig.ready;
+            elements.statusText.innerHTML = `
+                <p class="${config.titleColor} font-header text-lg uppercase">${config.title}</p>
+                <p class="text-nexspark-blue font-mono text-xs">${config.subtitle}</p>
+            `;
+
+            // Update mic button state
+            elements.micButton.classList.remove('listening', 'processing');
+            if (status === 'listening') elements.micButton.classList.add('listening');
+            if (status === 'processing') elements.micButton.classList.add('processing');
+        }
+
+        // Character count
+        elements.answerText.addEventListener('input', function() {
+            const len = this.value.length;
+            elements.charCount.textContent = `${len} char${len !== 1 ? 's' : ''}`;
+            elements.nextButton.disabled = !this.value.trim();
+        });
+
+        // Initialize VoiceRecorder
+        const recorder = new VoiceRecorder({
+            transcribeEndpoint: '/api/conversational-interview/transcribe',
+            onStatusChange: updateStatusDisplay,
+            onTranscriptionComplete: (text) => {
+                // Append to editable answer
+                const existingAnswer = elements.answerText.value;
+                if (!existingAnswer.trim()) {
+                    elements.answerText.value = text;
+                } else {
+                    const separator = existingAnswer.endsWith(' ') ? '' : ' ';
+                    elements.answerText.value = existingAnswer + separator + text;
+                }
+                elements.answerText.dispatchEvent(new Event('input'));
+                elements.nextButton.disabled = false;
+            },
+            onError: (error) => {
+                InterviewUI.showAlert(error.message, 'error');
+            }
+        });
+
+        // Initialize InterviewManager
+        const interview = new InterviewManager(CONSTANTS.INTERVIEW_QUESTIONS, {
+            userId: user.id,
+            onQuestionChange: (question) => {
+                if (question) {
+                    elements.questionNumber.textContent = question.number;
+                    elements.questionText.textContent = question.text;
+                    elements.answerText.value = '';
+                    elements.charCount.textContent = '0 chars';
+                    elements.nextButton.disabled = true;
+                    renderProgressSteps(question.index);
+
+                    // Update example answer
+                    if (CONSTANTS.EXAMPLE_ANSWERS && CONSTANTS.EXAMPLE_ANSWERS[question.index]) {
+                        elements.exampleAnswerText.textContent = CONSTANTS.EXAMPLE_ANSWERS[question.index];
+                    }
+                }
+            },
+            onProgress: () => {},
+            onComplete: (interviewId) => {
+                console.log('Interview completed:', interviewId);
+                window.location.href = '/generate-report';
+            },
+            onError: (error) => {
+                InterviewUI.showAlert(error.message, 'error');
+            }
+        });
+
+        // Microphone button events (hold to record)
+        elements.micButton.addEventListener('mousedown', () => recorder.startRecording());
+        elements.micButton.addEventListener('mouseup', () => recorder.stopRecording());
+        elements.micButton.addEventListener('mouseleave', () => {
+            if (recorder.isRecording) recorder.stopRecording();
+        });
+        elements.micButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            recorder.startRecording();
+        });
+        elements.micButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            recorder.stopRecording();
+        });
+        elements.micButton.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            if (recorder.isRecording) recorder.stopRecording();
+        });
+
+        // Skip button
+        elements.skipButton.addEventListener('click', async () => {
+            try {
+                const hasNext = await interview.skipQuestion();
+                if (!hasNext) await interview.complete();
+            } catch (error) {
+                InterviewUI.showAlert(error.message, 'error');
+            }
+        });
+
+        // Next button
+        elements.nextButton.addEventListener('click', async () => {
+            const answer = elements.answerText.value.trim();
+            if (!answer) {
+                InterviewUI.showAlert('Please provide an answer before continuing', 'warning');
+                return;
+            }
+            try {
+                await interview.addAnswer(answer);
+                const hasNext = interview.nextQuestion();
+                if (!hasNext) await interview.complete();
+            } catch (error) {
+                InterviewUI.showAlert(error.message, 'error');
+            }
+        });
+
+        // Initialize first question
+        updateStatusDisplay('ready');
+        const firstQuestion = interview.getCurrentQuestion();
+        if (firstQuestion) {
+            elements.questionNumber.textContent = firstQuestion.number;
+            elements.questionText.textContent = firstQuestion.text;
+            renderProgressSteps(0);
+
+            if (CONSTANTS.EXAMPLE_ANSWERS && CONSTANTS.EXAMPLE_ANSWERS[0]) {
+                elements.exampleAnswerText.textContent = CONSTANTS.EXAMPLE_ANSWERS[0];
+            }
+        }
+
+        console.log('✅ Voice interview initialized with', totalQuestions, 'questions');
+    </script>
+</body>
+</html>

@@ -31,7 +31,11 @@ authRoutes.get('/google', (c) => {
     return c.text('Google OAuth not configured', 500);
   }
 
-  const authUrl = getGoogleAuthUrl(googleClientId, redirectUri);
+  // Get returnUrl from query parameter and pass it through OAuth state
+  const returnUrl = c.req.query('returnUrl');
+  const state = returnUrl ? btoa(JSON.stringify({ returnUrl })) : undefined;
+
+  const authUrl = getGoogleAuthUrl(googleClientId, redirectUri, state);
   return c.redirect(authUrl);
 });
 
@@ -44,7 +48,8 @@ authRoutes.post('/login', async (c) => {
       return c.json(errorResponse('Email and password are required'), 400);
     }
 
-    const jwtSecret = c.env.JWT_SECRET || 'default-secret';
+    const jwtSecret = c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret';
+    console.log('[Login] Using JWT secret:', jwtSecret.substring(0, 10) + '...');
     const result = await authenticateEmailPassword(c.env.DB, email, password, jwtSecret);
 
     if (!result.success) {
@@ -71,7 +76,8 @@ authRoutes.post('/register', async (c) => {
       return c.json(errorResponse('Email, password, and name are required'), 400);
     }
 
-    const jwtSecret = c.env.JWT_SECRET || 'default-secret';
+    const jwtSecret = c.env.JWT_SECRET || c.env.GOOGLE_CLIENT_SECRET || 'dev-secret';
+    console.log('[Register] Using JWT secret:', jwtSecret.substring(0, 10) + '...');
     const result = await registerEmailPassword(c.env.DB, email, password, name, jwtSecret, type);
 
     if (!result.success) {
@@ -95,6 +101,22 @@ authRoutes.get('/google/callback', async (c) => {
   try {
     const code = c.req.query('code');
     const error = c.req.query('error');
+    const stateParam = c.req.query('state');
+
+    // Extract returnUrl from state parameter
+    let returnUrl = '/dashboard';
+    if (stateParam) {
+      try {
+        const stateData = JSON.parse(atob(stateParam));
+        if (stateData.returnUrl) {
+          returnUrl = stateData.returnUrl;
+        }
+      } catch (e) {
+        console.warn('Failed to parse state parameter:', e);
+      }
+    }
+
+    console.log('OAuth callback - returnUrl:', returnUrl);
 
     if (error) {
       console.error('OAuth error:', error);
@@ -168,7 +190,7 @@ authRoutes.get('/google/callback', async (c) => {
             }));
             localStorage.setItem('nexspark_session', '${sessionToken}');
             console.log('✅ Google authentication successful');
-            window.location.href = '/dashboard';
+            window.location.href = '${returnUrl}';
           </script>
         `);
 
@@ -198,7 +220,7 @@ authRoutes.get('/google/callback', async (c) => {
         localStorage.setItem('nexspark_user', JSON.stringify(${JSON.stringify(user)}));
         localStorage.setItem('nexspark_session', '${sessionToken}');
         console.log('✅ Google authentication successful');
-        window.location.href = '/dashboard';
+        window.location.href = '${returnUrl}';
       </script>
     `);
 

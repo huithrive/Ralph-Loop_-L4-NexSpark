@@ -3,6 +3,6 @@
  */
 
 export const RATE_LIMITS = {
-  maxAttempts: 5,
+  maxAttempts: 100, // Increased for development - adjust lower for production
   windowMs: 900000, // 15 minutes
 } as const;
