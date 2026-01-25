@@ -5,7 +5,7 @@ const express = require('express');
 const { body, validationResult, query } = require('express-validator');
 const DomainService = require('../../services/domainService');
 const logger = require('../../utils/logger');
-const { formatSuccessResponse, formatErrorResponse } = require('../../utils/responseFormatter');
+const { success, error } = require('../../utils/responseFormatter');
 
 const router = express.Router();
 const domainService = new DomainService();
@@ -23,7 +23,7 @@ router.get('/search', [
     // Validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json(formatErrorResponse(
+      return res.status(400).json(error(
         'Invalid request parameters',
         'VALIDATION_ERROR',
         errors.array()
@@ -43,7 +43,7 @@ router.get('/search', [
       provider: result.provider
     });
 
-    res.status(200).json(formatSuccessResponse({
+    res.status(200).json(success({
       domain: result.domain,
       available: result.available,
       price: result.price,
@@ -65,7 +65,7 @@ router.get('/search', [
   } catch (error) {
     logger.error('Domain search failed', error, { domain: req.query.domain });
 
-    res.status(500).json(formatErrorResponse(
+    res.status(500).json(error(
       'Domain search failed',
       'DOMAIN_SEARCH_ERROR',
       { error: error.message }
@@ -86,7 +86,7 @@ router.get('/suggestions', [
     // Validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json(formatErrorResponse(
+      return res.status(400).json(error(
         'Invalid request parameters',
         'VALIDATION_ERROR',
         errors.array()
@@ -107,7 +107,7 @@ router.get('/suggestions', [
       availableCount: result.available_count
     });
 
-    res.status(200).json(formatSuccessResponse({
+    res.status(200).json(success({
       keyword: result.keyword,
       suggestions: result.suggestions,
       search_criteria: {
@@ -130,7 +130,7 @@ router.get('/suggestions', [
   } catch (error) {
     logger.error('Domain suggestions failed', error, { keyword: req.query.keyword });
 
-    res.status(500).json(formatErrorResponse(
+    res.status(500).json(error(
       'Domain suggestions generation failed',
       'DOMAIN_SUGGESTIONS_ERROR',
       { error: error.message }
@@ -161,7 +161,7 @@ router.post('/register', [
     // Validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json(formatErrorResponse(
+      return res.status(400).json(error(
         'Invalid request parameters',
         'VALIDATION_ERROR',
         errors.array()
@@ -181,7 +181,7 @@ router.post('/register', [
     // Check domain availability first
     const availability = await domainService.searchDomain(domain, options.provider);
     if (!availability.available) {
-      return res.status(400).json(formatErrorResponse(
+      return res.status(400).json(error(
         'Domain is not available for registration',
         'DOMAIN_NOT_AVAILABLE',
         { domain, provider: availability.provider }
@@ -198,7 +198,7 @@ router.post('/register', [
       status: result.status
     });
 
-    res.status(200).json(formatSuccessResponse({
+    res.status(200).json(success({
       domain: result.domain,
       registration_id: result.registration_id,
       status: result.status,
@@ -229,7 +229,7 @@ router.post('/register', [
       provider: req.body.options?.provider
     });
 
-    res.status(500).json(formatErrorResponse(
+    res.status(500).json(error(
       'Domain registration failed',
       'DOMAIN_REGISTRATION_ERROR',
       { error: error.message }
@@ -255,7 +255,7 @@ router.post('/dns', [
     // Validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json(formatErrorResponse(
+      return res.status(400).json(error(
         'Invalid request parameters',
         'VALIDATION_ERROR',
         errors.array()
@@ -281,7 +281,7 @@ router.post('/dns', [
       totalRecords: result.total_records
     });
 
-    res.status(200).json(formatSuccessResponse({
+    res.status(200).json(success({
       domain: result.domain,
       provider: result.provider,
       records_configured: result.records_configured,
@@ -308,7 +308,7 @@ router.post('/dns', [
       provider: req.body.provider
     });
 
-    res.status(500).json(formatErrorResponse(
+    res.status(500).json(error(
       'DNS configuration failed',
       'DNS_CONFIGURATION_ERROR',
       { error: error.message }
@@ -330,7 +330,7 @@ router.post('/shopify-setup', [
     // Validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json(formatErrorResponse(
+      return res.status(400).json(error(
         'Invalid request parameters',
         'VALIDATION_ERROR',
         errors.array()
@@ -365,7 +365,7 @@ router.post('/shopify-setup', [
       recordsConfigured: result.records_configured
     });
 
-    res.status(200).json(formatSuccessResponse({
+    res.status(200).json(success({
       domain: result.domain,
       shopify_domain,
       provider: result.provider,
@@ -399,7 +399,7 @@ router.post('/shopify-setup', [
       shopify_domain: req.body.shopify_domain
     });
 
-    res.status(500).json(formatErrorResponse(
+    res.status(500).json(error(
       'Shopify domain setup failed',
       'SHOPIFY_DOMAIN_SETUP_ERROR',
       { error: error.message }
@@ -424,7 +424,7 @@ router.get('/providers', async (req, res) => {
       capabilities: key === 'mock' ? ['Testing', 'Demo'] : ['Search', 'Register', 'DNS Management']
     }));
 
-    res.status(200).json(formatSuccessResponse({
+    res.status(200).json(success({
       default_provider: defaultProvider,
       total_providers: providers.length,
       providers: providerDetails,
@@ -438,7 +438,7 @@ router.get('/providers', async (req, res) => {
   } catch (error) {
     logger.error('Failed to get providers', error);
 
-    res.status(500).json(formatErrorResponse(
+    res.status(500).json(error(
       'Failed to retrieve providers information',
       'PROVIDERS_ERROR',
       { error: error.message }
@@ -454,7 +454,7 @@ router.get('/health', async (req, res) => {
   try {
     const healthStatus = await domainService.getHealthStatus();
 
-    res.status(200).json(formatSuccessResponse(
+    res.status(200).json(success(
       healthStatus,
       'Domain service is operational'
     ));
@@ -462,7 +462,7 @@ router.get('/health', async (req, res) => {
   } catch (error) {
     logger.error('Domain health check failed', error);
 
-    res.status(500).json(formatErrorResponse(
+    res.status(500).json(error(
       'Domain service health check failed',
       'HEALTH_CHECK_ERROR',
       { error: error.message }
