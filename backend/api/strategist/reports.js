@@ -104,18 +104,18 @@ router.post('/generate',
         interviewSessionId: req.body.interviewSessionId
       });
 
-      // Handle specific error types
-      if (error.message.includes('not found')) {
-        return res.status(404).json({
-          error: 'Resource Not Found',
+      // Handle specific error types (check more specific patterns first)
+      if (error.message.includes('Invalid inputs')) {
+        return res.status(400).json({
+          error: 'Invalid Request',
           message: error.message,
           timestamp: new Date().toISOString()
         });
       }
 
-      if (error.message.includes('Invalid inputs')) {
-        return res.status(400).json({
-          error: 'Invalid Request',
+      if (error.message.includes('not found')) {
+        return res.status(404).json({
+          error: 'Resource Not Found',
           message: error.message,
           timestamp: new Date().toISOString()
         });

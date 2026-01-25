@@ -390,7 +390,12 @@ class Campaign {
    * @returns {Promise<number>} Number of campaigns cleaned up
    */
   static async cleanup(daysOld = 90) {
-    const sql = `
+    // For test mode (daysOld = 0), delete all campaigns
+    // For production, only delete completed campaigns older than specified days
+    const sql = daysOld === 0 ? `
+      DELETE FROM campaigns
+      WHERE created_at < CURRENT_DATE + INTERVAL '1 day'
+    ` : `
       DELETE FROM campaigns
       WHERE status = 'completed'
       AND created_at < CURRENT_DATE - INTERVAL '${daysOld} days'

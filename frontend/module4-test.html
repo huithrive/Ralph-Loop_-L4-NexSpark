@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSpark - Module 4 (Analyzer) Test Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .test-sections {
+            display: grid;
+            gap: 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .section-header:hover {
+            transform: translateY(-2px);
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-content {
+            padding: 25px;
+            display: none;
+        }
+
+        .section.active .section-content {
+            display: block;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .section.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .response-container {
+            margin-top: 20px;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .response-content {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .status-success {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .status-error {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .sample-data {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .sample-data h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: ' ⏳';
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Module 4 - Analyzer</h1>
+            <p>Performance Tracking, Optimization, Dashboards & Reports</p>
+        </div>
+
+        <div class="test-sections">
+            <!-- Performance Analytics Section -->
+            <div class="section active">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>📈 Performance Analytics</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="sample-data">
+                        <h4>📌 Sample Campaign ID</h4>
+                        <p><strong>c767d5d1-521c-42a4-b660-67671077a29a</strong> - Test Campaign (Meta)</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Campaign ID</label>
+                            <input type="text" id="perf-campaign-id" value="c767d5d1-521c-42a4-b660-67671077a29a" placeholder="Enter campaign UUID">
+                        </div>
+                        <div class="form-group">
+                            <label>Data Source</label>
+                            <select id="perf-data-source">
+                                <option value="auto">Auto (Intelligent Selection)</option>
+                                <option value="gomarble_mcp">GoMarble MCP</option>
+                                <option value="direct_api">Direct API</option>
+                                <option value="mock">Mock Data</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="perf-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="perf-end-date">
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="perf-include-history">
+                        <label for="perf-include-history">Include Historical Data</label>
+                    </div>
+
+                    <button class="btn" onclick="getCampaignPerformance()">Get Campaign Performance</button>
+                    <button class="btn btn-secondary" onclick="getPerformanceHistory()">Get Performance History</button>
+                    <button class="btn btn-secondary" onclick="getMultiCampaignPerformance()">Multi-Campaign Performance</button>
+
+                    <div class="response-container" id="perf-response-container" style="display: none;">
+                        <div class="response-header">
+                            <strong>API Response:</strong>
+                            <span id="perf-status"></span>
+                        </div>
+                        <div class="response-content" id="perf-response"></div>
+                    </div>
+
+                    <div class="metrics-grid" id="perf-metrics" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Campaign Optimization Section -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>⚡ Campaign Optimization</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Campaign ID</label>
+                        <input type="text" id="opt-campaign-id" value="c767d5d1-521c-42a4-b660-67671077a29a" placeholder="Enter campaign UUID">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="opt-auto-execute">
+                            <label for="opt-auto-execute">Auto Execute Optimizations</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="opt-dry-run" checked>
+                            <label for="opt-dry-run">Dry Run (Analysis Only)</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Max Actions</label>
+                        <select id="opt-max-actions">
+                            <option value="1">1 Action</option>
+                            <option value="3">3 Actions</option>
+                            <option value="5" selected>5 Actions</option>
+                            <option value="10">10 Actions</option>
+                        </select>
+                    </div>
+
+                    <button class="btn" onclick="runCampaignOptimization()">Run Campaign Optimization</button>
+                    <button class="btn btn-secondary" onclick="getOptimizationRules()">View Optimization Rules</button>
+                    <button class="btn btn-secondary" onclick="getOptimizationHistory()">Get Optimization History</button>
+                    <button class="btn btn-success" onclick="runBulkOptimization()">Run Bulk Optimization</button>
+
+                    <div class="response-container" id="opt-response-container" style="display: none;">
+                        <div class="response-header">
+                            <strong>API Response:</strong>
+                            <span id="opt-status"></span>
+                        </div>
+                        <div class="response-content" id="opt-response"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Analytics Section -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>📊 Dashboard Analytics</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="sample-data">
+                        <h4>📌 Sample User ID</h4>
+                        <p><strong>123e4567-e89b-12d3-a456-426614174000</strong> - Test User</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>User ID</label>
+                        <input type="text" id="dash-user-id" value="123e4567-e89b-12d3-a456-426614174000" placeholder="Enter user UUID">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dashboard Sections</label>
+                        <select id="dash-sections" multiple size="6">
+                            <option value="campaign_performance">Campaign Performance</option>
+                            <option value="website_analytics">Website Analytics</option>
+                            <option value="revenue_tracking">Revenue Tracking</option>
+                            <option value="goal_progress">Goal Progress</option>
+                            <option value="system_health">System Health</option>
+                            <option value="notifications">Notifications</option>
+                        </select>
+                        <small>Hold Ctrl/Cmd to select multiple sections (leave empty for all)</small>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="dash-cache" checked>
+                        <label for="dash-cache">Use Cache</label>
+                    </div>
+
+                    <button class="btn" onclick="getDashboardData()">Get Dashboard Data</button>
+                    <button class="btn btn-secondary" onclick="getDashboardSummary()">Get Dashboard Summary</button>
+                    <button class="btn btn-secondary" onclick="getDashboardNotifications()">Get Notifications</button>
+                    <button class="btn btn-success" onclick="updateDashboardConfig()">Update Dashboard Config</button>
+
+                    <div class="response-container" id="dash-response-container" style="display: none;">
+                        <div class="response-header">
+                            <strong>API Response:</strong>
+                            <span id="dash-status"></span>
+                        </div>
+                        <div class="response-content" id="dash-response"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Health Section -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>🏥 System Health</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="form-row">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="health-include-history">
+                            <label for="health-include-history">Include Service History</label>
+                        </div>
+                        <div class="form-group">
+                            <label>Specific Services</label>
+                            <select id="health-services" multiple size="6">
+                                <option value="database">Database</option>
+                                <option value="gomarble_mcp">GoMarble MCP</option>
+                                <option value="meta_api">Meta API</option>
+                                <option value="google_ads">Google Ads</option>
+                                <option value="shopify">Shopify</option>
+                                <option value="server">Server</option>
+                            </select>
+                            <small>Leave empty for all services</small>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="getSystemHealth()">Get System Health</button>
+                    <button class="btn btn-secondary" onclick="getHealthAlerts()">Get Health Alerts</button>
+                    <button class="btn btn-secondary" onclick="triggerHealthCheck()">Trigger Manual Health Check</button>
+                    <button class="btn btn-success" onclick="getServiceHealth()">Get Specific Service Health</button>
+
+                    <div class="response-container" id="health-response-container" style="display: none;">
+                        <div class="response-header">
+                            <strong>API Response:</strong>
+                            <span id="health-status"></span>
+                        </div>
+                        <div class="response-content" id="health-response"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Generation Section -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2>📋 Reports Generation</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>User ID</label>
+                        <input type="text" id="report-user-id" value="123e4567-e89b-12d3-a456-426614174000" placeholder="Enter user UUID">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Report Type</label>
+                            <select id="report-type">
+                                <option value="weekly_performance">Weekly Performance</option>
+                                <option value="monthly_summary">Monthly Summary</option>
+                                <option value="custom">Custom Report</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Output Format</label>
+                            <select id="report-format">
+                                <option value="json">JSON</option>
+                                <option value="pdf">PDF</option>
+                                <option value="html">HTML</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="report-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="report-end-date">
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="report-include-charts">
+                        <label for="report-include-charts">Include Charts</label>
+                    </div>
+
+                    <button class="btn" onclick="generateReport()">Generate Report</button>
+                    <button class="btn btn-secondary" onclick="getReportHistory()">Get Report History</button>
+                    <button class="btn btn-secondary" onclick="scheduleReport()">Schedule Report</button>
+
+                    <div class="response-container" id="report-response-container" style="display: none;">
+                        <div class="response-header">
+                            <strong>API Response:</strong>
+                            <span id="report-status"></span>
+                        </div>
+                        <div class="response-content" id="report-response"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('active');
+        }
+
+        // Set default dates
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            document.getElementById('perf-start-date').value = weekAgo.toISOString().split('T')[0];
+            document.getElementById('perf-end-date').value = today.toISOString().split('T')[0];
+            document.getElementById('report-start-date').value = weekAgo.toISOString().split('T')[0];
+            document.getElementById('report-end-date').value = today.toISOString().split('T')[0];
+        });
+
+        function formatResponse(data, isError = false) {
+            return JSON.stringify(data, null, 2);
+        }
+
+        function updateStatus(containerId, statusId, responseId, response, isError = false) {
+            document.getElementById(containerId).style.display = 'block';
+            document.getElementById(statusId).textContent = isError ? 'Error' : 'Success';
+            document.getElementById(statusId).className = isError ? 'status-error' : 'status-success';
+            document.getElementById(responseId).textContent = formatResponse(response);
+        }
+
+        function setLoading(button, isLoading) {
+            if (isLoading) {
+                button.classList.add('loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+
+        // Performance Analytics Functions
+        async function getCampaignPerformance() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignId = document.getElementById('perf-campaign-id').value;
+                const dataSource = document.getElementById('perf-data-source').value;
+                const startDate = document.getElementById('perf-start-date').value;
+                const endDate = document.getElementById('perf-end-date').value;
+                const includeHistory = document.getElementById('perf-include-history').checked;
+
+                const params = new URLSearchParams();
+                if (dataSource !== 'auto') params.append('data_source', dataSource);
+                if (startDate) params.append('start_date', startDate + 'T00:00:00Z');
+                if (endDate) params.append('end_date', endDate + 'T23:59:59Z');
+                if (includeHistory) params.append('include_history', 'true');
+
+                const response = await fetch(`${API_BASE}/api/analyzer/performance/${campaignId}?${params}`);
+                const data = await response.json();
+
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', data, !response.ok);
+
+                if (response.ok && data.data && data.data.metrics) {
+                    displayPerformanceMetrics(data.data.metrics);
+                }
+            } catch (error) {
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        function displayPerformanceMetrics(metrics) {
+            const metricsGrid = document.getElementById('perf-metrics');
+            metricsGrid.innerHTML = '';
+            metricsGrid.style.display = 'grid';
+
+            const metricCards = [
+                { label: 'Impressions', value: metrics.impressions || 0 },
+                { label: 'Clicks', value: metrics.clicks || 0 },
+                { label: 'Conversions', value: metrics.conversions || 0 },
+                { label: 'Spend', value: '$' + (metrics.spend || 0) },
+                { label: 'Revenue', value: '$' + (metrics.revenue || 0) },
+                { label: 'CTR', value: (metrics.ctr || 0) + '%' },
+                { label: 'CPC', value: '$' + (metrics.cpc || 0) },
+                { label: 'ROAS', value: (metrics.roas || 0) + 'x' }
+            ];
+
+            metricCards.forEach(metric => {
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                card.innerHTML = `
+                    <div class="metric-value">${metric.value}</div>
+                    <div class="metric-label">${metric.label}</div>
+                `;
+                metricsGrid.appendChild(card);
+            });
+        }
+
+        async function getPerformanceHistory() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignId = document.getElementById('perf-campaign-id').value;
+                const response = await fetch(`${API_BASE}/api/analyzer/performance/${campaignId}/history?days=30`);
+                const data = await response.json();
+
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getMultiCampaignPerformance() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = '123e4567-e89b-12d3-a456-426614174000';
+                const response = await fetch(`${API_BASE}/api/analyzer/performance?user_id=${userId}&aggregate=true`);
+                const data = await response.json();
+
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        // Optimization Functions
+        async function runCampaignOptimization() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignId = document.getElementById('opt-campaign-id').value;
+                const autoExecute = document.getElementById('opt-auto-execute').checked;
+                const dryRun = document.getElementById('opt-dry-run').checked;
+                const maxActions = document.getElementById('opt-max-actions').value;
+
+                const requestBody = {
+                    auto_execute: autoExecute,
+                    dry_run: dryRun,
+                    max_actions: parseInt(maxActions)
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/optimize/${campaignId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getOptimizationRules() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/analyzer/optimize/rules`);
+                const data = await response.json();
+
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getOptimizationHistory() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignId = document.getElementById('opt-campaign-id').value;
+                const response = await fetch(`${API_BASE}/api/analyzer/optimize/${campaignId}/history?limit=20`);
+                const data = await response.json();
+
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function runBulkOptimization() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignIds = [
+                    'c767d5d1-521c-42a4-b660-67671077a29a',
+                    'fba308df-0ab9-4fd0-9bf7-97c37e5b996b',
+                    '7ab8a1c0-38c9-4cf2-b401-8ebc87ea485e'
+                ];
+
+                const requestBody = {
+                    campaign_ids: campaignIds,
+                    auto_execute: false,
+                    dry_run: true,
+                    parallel: true
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/optimize/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        // Dashboard Functions
+        async function getDashboardData() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+                const sectionsSelect = document.getElementById('dash-sections');
+                const cache = document.getElementById('dash-cache').checked;
+
+                const selectedSections = Array.from(sectionsSelect.selectedOptions).map(option => option.value);
+
+                const params = new URLSearchParams();
+                if (selectedSections.length > 0) {
+                    params.append('sections', selectedSections.join(','));
+                }
+                if (!cache) params.append('cache', 'false');
+
+                const response = await fetch(`${API_BASE}/api/analyzer/dashboard/${userId}?${params}`);
+                const data = await response.json();
+
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getDashboardSummary() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+                const response = await fetch(`${API_BASE}/api/analyzer/dashboard/${userId}/summary`);
+                const data = await response.json();
+
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getDashboardNotifications() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+                const response = await fetch(`${API_BASE}/api/analyzer/dashboard/${userId}/notifications?limit=20`);
+                const data = await response.json();
+
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function updateDashboardConfig() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+
+                const configUpdate = {
+                    layout: 'grid',
+                    theme: 'dark',
+                    auto_refresh: true,
+                    refresh_interval: 5,
+                    goal_revenue: 15000,
+                    notification_preferences: {
+                        email: true,
+                        push: true,
+                        sms: false
+                    }
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/dashboard/${userId}/config`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(configUpdate)
+                });
+
+                const data = await response.json();
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        // System Health Functions
+        async function getSystemHealth() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const includeHistory = document.getElementById('health-include-history').checked;
+                const servicesSelect = document.getElementById('health-services');
+                const selectedServices = Array.from(servicesSelect.selectedOptions).map(option => option.value);
+
+                const params = new URLSearchParams();
+                if (includeHistory) params.append('include_history', 'true');
+                if (selectedServices.length > 0) {
+                    params.append('services', selectedServices.join(','));
+                }
+
+                const response = await fetch(`${API_BASE}/api/analyzer/health/system?${params}`);
+                const data = await response.json();
+
+                updateStatus('health-response-container', 'health-status', 'health-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('health-response-container', 'health-status', 'health-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getHealthAlerts() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/analyzer/health/alerts?hours=24&limit=50`);
+                const data = await response.json();
+
+                updateStatus('health-response-container', 'health-status', 'health-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('health-response-container', 'health-status', 'health-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function triggerHealthCheck() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/analyzer/health/check`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                updateStatus('health-response-container', 'health-status', 'health-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('health-response-container', 'health-status', 'health-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getServiceHealth() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const serviceName = 'database'; // Example service
+                const response = await fetch(`${API_BASE}/api/analyzer/health/services/${serviceName}?hours=24`);
+                const data = await response.json();
+
+                updateStatus('health-response-container', 'health-status', 'health-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('health-response-container', 'health-status', 'health-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        // Reports Functions
+        async function generateReport() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('report-user-id').value;
+                const reportType = document.getElementById('report-type').value;
+                const format = document.getElementById('report-format').value;
+                const startDate = document.getElementById('report-start-date').value;
+                const endDate = document.getElementById('report-end-date').value;
+                const includeCharts = document.getElementById('report-include-charts').checked;
+
+                const requestBody = {
+                    user_id: userId,
+                    report_type: reportType,
+                    format: format,
+                    date_range: {
+                        start: startDate + 'T00:00:00Z',
+                        end: endDate + 'T23:59:59Z'
+                    },
+                    include_charts: includeCharts
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/reports/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('report-response-container', 'report-status', 'report-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('report-response-container', 'report-status', 'report-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getReportHistory() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('report-user-id').value;
+                const response = await fetch(`${API_BASE}/api/analyzer/reports/history/${userId}?limit=20`);
+                const data = await response.json();
+
+                updateStatus('report-response-container', 'report-status', 'report-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('report-response-container', 'report-status', 'report-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function scheduleReport() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('report-user-id').value;
+                const reportType = document.getElementById('report-type').value;
+
+                const requestBody = {
+                    user_id: userId,
+                    report_type: reportType,
+                    schedule: 'weekly',
+                    day_of_week: 'monday',
+                    time: '09:00',
+                    enabled: true
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/reports/schedule`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('report-response-container', 'report-status', 'report-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('report-response-container', 'report-status', 'report-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+    </script>
+</body>
+</html>

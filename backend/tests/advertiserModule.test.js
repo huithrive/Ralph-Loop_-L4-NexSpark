@@ -302,7 +302,7 @@ describe('Advertiser Module (Module 3)', () => {
           user_id: '123e4567-e89b-12d3-a456-426614174000',
           research_id: '123e4567-e89b-12d3-a456-426614174001',
           platform: 'meta',
-          creative_ids: ['non-existent-creative'],
+          creative_ids: ['00000000-0000-0000-0000-000000000000'],
           campaign_name: 'Invalid Creative Campaign',
           budget_daily: 20,
           targeting: { locations: ['US'] }

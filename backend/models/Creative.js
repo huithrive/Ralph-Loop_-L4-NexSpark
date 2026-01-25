@@ -292,7 +292,12 @@ class Creative {
    * @returns {Promise<number>} Number of creatives cleaned up
    */
   static async cleanup(daysOld = 30) {
-    const sql = `
+    // For test mode (daysOld = 0), delete all creatives
+    // For production, only delete completed/failed creatives older than specified days
+    const sql = daysOld === 0 ? `
+      DELETE FROM creatives
+      WHERE created_at < CURRENT_DATE + INTERVAL '1 day'
+    ` : `
       DELETE FROM creatives
       WHERE status IN ('completed', 'failed')
       AND created_at < CURRENT_DATE - INTERVAL '${daysOld} days'

@@ -9,7 +9,7 @@ const logger = require('../utils/logger');
 
 class PixverseService {
   constructor() {
-    this.baseURL = 'https://app-api.pixverseai.cn';
+    this.baseURL = 'https://app-api.pixverse.ai';
     this.apiKey = process.env.PIXVERSE_API_KEY;
     this.defaultModel = 'v4.5';
     this.pollInterval = 3000; // 3 seconds as recommended

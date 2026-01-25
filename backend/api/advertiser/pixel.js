@@ -24,6 +24,7 @@ router.post('/install', [
     if (!errors.isEmpty()) {
       return res.status(400).json(formatErrorResponse(
         'Invalid request parameters',
+        400,
         'VALIDATION_ERROR',
         errors.array()
       ));
@@ -110,6 +111,7 @@ router.post('/install', [
 
     res.status(500).json(formatErrorResponse(
       'Meta Pixel installation failed',
+      500,
       'PIXEL_INSTALL_ERROR',
       { error: error.message }
     ));
@@ -128,6 +130,7 @@ router.get('/verify/:pixel_id', async (req, res) => {
     if (!shop_domain) {
       return res.status(400).json(formatErrorResponse(
         'Shop domain is required',
+        400,
         'MISSING_SHOP_DOMAIN',
         { pixel_id }
       ));
@@ -161,6 +164,7 @@ router.get('/verify/:pixel_id', async (req, res) => {
 
     res.status(500).json(formatErrorResponse(
       'Pixel verification failed',
+      500,
       'VERIFICATION_ERROR',
       { pixel_id: req.params.pixel_id, error: error.message }
     ));
@@ -181,6 +185,7 @@ router.delete('/uninstall', [
     if (!errors.isEmpty()) {
       return res.status(400).json(formatErrorResponse(
         'Invalid request parameters',
+        400,
         'VALIDATION_ERROR',
         errors.array()
       ));
@@ -209,6 +214,7 @@ router.delete('/uninstall', [
 
     res.status(500).json(formatErrorResponse(
       'Pixel uninstall failed',
+      500,
       'UNINSTALL_ERROR',
       { error: error.message }
     ));

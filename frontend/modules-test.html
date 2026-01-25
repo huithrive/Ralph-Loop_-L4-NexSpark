@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSpark - Module 2 & 3 Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            border: none;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0 0 10px 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .module-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .module-section h2 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .api-group {
+            margin-bottom: 2rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .api-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e1e5e9;
+            cursor: pointer;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .api-header:hover {
+            background: #e9ecef;
+        }
+
+        .api-header h3 {
+            color: #333;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .api-method {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            color: white;
+        }
+
+        .api-method.POST { background: #28a745; }
+        .api-method.GET { background: #007bff; }
+        .api-method.PUT { background: #ffc107; color: #333; }
+        .api-method.DELETE { background: #dc3545; }
+
+        .api-body {
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .api-body.expanded {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .response-container {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+
+        .response-container.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .response-container.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .response-container pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .status-draft { background: #6c757d; color: white; }
+        .status-active { background: #28a745; color: white; }
+        .status-processing { background: #ffc107; color: #333; }
+        .status-completed { background: #17a2b8; color: white; }
+        .status-failed { background: #dc3545; color: white; }
+        .status-pending { background: #fd7e14; color: white; }
+
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .loading::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .toggle-arrow {
+            transition: transform 0.3s ease;
+            margin-left: auto;
+        }
+
+        .toggle-arrow.expanded {
+            transform: rotate(180deg);
+        }
+
+        .file-input {
+            margin-bottom: 1rem;
+        }
+
+        .sample-data {
+            background: #e9ecef;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .sample-data:hover {
+            background: #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🚀 NexSpark Module 2 & 3 Testing</h1>
+        <p>Test Executor (Landing Pages, Shopify, Creative Generation) and Advertiser (Campaigns, Meta Pixel, OAuth)</p>
+    </header>
+
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('module2')">📤 Module 2 - Executor</button>
+            <button class="tab" onclick="switchTab('module3')">📢 Module 3 - Advertiser</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Module 2 - Executor -->
+            <div id="module2" class="tab-panel active">
+                <!-- Landing Pages API -->
+                <div class="module-section">
+                    <h2>🏗️ Landing Pages API</h2>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('landing-generate')">
+                            <div>
+                                <span class="api-method POST">POST</span>
+                                <h3>/api/executor/landing-pages/generate</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="landing-generate" class="api-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Report ID (required)</label>
+                                    <input type="text" id="landing-report-id" placeholder="e.g., 123e4567-e89b-12d3-a456-426614174000">
+                                    <div class="sample-data" onclick="fillSampleData('landing-report-id', '123e4567-e89b-12d3-a456-426614174000')">
+                                        Click to use sample UUID
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Page Type</label>
+                                    <select id="landing-page-type">
+                                        <option value="landing_page">Landing Page</option>
+                                        <option value="sales_page">Sales Page</option>
+                                        <option value="product_page">Product Page</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Logo URL</label>
+                                    <input type="url" id="landing-logo" placeholder="https://example.com/logo.png">
+                                </div>
+                                <div class="form-group">
+                                    <label>Primary Color</label>
+                                    <input type="text" id="landing-color" placeholder="#667eea" pattern="^#[0-9A-F]{6}$">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Brand Images (comma-separated URLs)</label>
+                                <textarea id="landing-images" placeholder="https://example.com/image1.jpg, https://example.com/image2.png"></textarea>
+                            </div>
+                            <button class="btn" onclick="generateLandingPage()">🏗️ Generate Landing Page</button>
+                            <div id="landing-generate-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('landing-preview')">
+                            <div>
+                                <span class="api-method POST">POST</span>
+                                <h3>/api/executor/landing-pages/preview</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="landing-preview" class="api-body">
+                            <div class="form-group">
+                                <label>Report ID</label>
+                                <input type="text" id="preview-report-id" placeholder="e.g., 123e4567-e89b-12d3-a456-426614174000">
+                            </div>
+                            <button class="btn" onclick="previewLandingPage()">👁️ Preview Landing Page</button>
+                            <div id="landing-preview-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('landing-health')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/executor/landing-pages/health</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="landing-health" class="api-body">
+                            <button class="btn" onclick="checkLandingHealth()">🏥 Check Health</button>
+                            <div id="landing-health-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Creative Generation API -->
+                <div class="module-section">
+                    <h2>🎨 Creative Generation API</h2>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('creative-generate')">
+                            <div>
+                                <span class="api-method POST">POST</span>
+                                <h3>/api/executor/creative/generate</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="creative-generate" class="api-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>User ID (required)</label>
+                                    <input type="text" id="creative-user-id" placeholder="User UUID">
+                                    <div class="sample-data" onclick="fillSampleData('creative-user-id', generateUUID())">
+                                        Click to generate UUID
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Research ID (required)</label>
+                                    <input type="text" id="creative-research-id" placeholder="Research UUID">
+                                    <div class="sample-data" onclick="fillSampleData('creative-research-id', generateUUID())">
+                                        Click to generate UUID
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Creative Type</label>
+                                    <select id="creative-type">
+                                        <option value="video">Video</option>
+                                        <option value="image">Image</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Style</label>
+                                    <select id="creative-style">
+                                        <option value="">Default</option>
+                                        <option value="anime">Anime</option>
+                                        <option value="3d_animation">3D Animation</option>
+                                        <option value="clay">Clay</option>
+                                        <option value="cyberpunk">Cyberpunk</option>
+                                        <option value="comic">Comic</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Prompt (required)</label>
+                                <textarea id="creative-prompt" placeholder="Describe the video/image you want to create...">A professional product advertisement showing a sleek smartphone floating in space with colorful particles</textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Duration (seconds)</label>
+                                    <select id="creative-duration">
+                                        <option value="5">5 seconds</option>
+                                        <option value="8">8 seconds</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quality</label>
+                                    <select id="creative-quality">
+                                        <option value="720p">720p</option>
+                                        <option value="360p">360p</option>
+                                        <option value="540p">540p</option>
+                                        <option value="1080p">1080p</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group file-input">
+                                <label>Source Image (optional)</label>
+                                <input type="file" id="creative-image" accept="image/jpeg,image/jpg,image/png,image/webp">
+                                <small>JPEG, PNG, WebP formats. Max 20MB.</small>
+                            </div>
+                            <button class="btn" onclick="generateCreative()">🎨 Generate Creative</button>
+                            <div id="creative-generate-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('creative-status')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/executor/creative/:id/status</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="creative-status" class="api-body">
+                            <div class="form-group">
+                                <label>Creative ID</label>
+                                <input type="text" id="creative-status-id" placeholder="Creative UUID">
+                            </div>
+                            <button class="btn" onclick="checkCreativeStatus()">🔍 Check Status</button>
+                            <div id="creative-status-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('creative-list')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/executor/creatives</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="creative-list" class="api-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>User ID (optional)</label>
+                                    <input type="text" id="list-user-id" placeholder="User UUID">
+                                </div>
+                                <div class="form-group">
+                                    <label>Creative Type (optional)</label>
+                                    <select id="list-creative-type">
+                                        <option value="">All</option>
+                                        <option value="video">Video</option>
+                                        <option value="image">Image</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn" onclick="listCreatives()">📋 List Creatives</button>
+                            <div id="creative-list-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shopify API -->
+                <div class="module-section">
+                    <h2>🛍️ Shopify Integration API</h2>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('shopify-auth')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/executor/shopify/auth</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="shopify-auth" class="api-body">
+                            <div class="form-group">
+                                <label>Shop Domain (required)</label>
+                                <input type="text" id="shopify-domain" placeholder="example-store.myshopify.com">
+                                <div class="sample-data" onclick="fillSampleData('shopify-domain', 'test-store-nexspark.myshopify.com')">
+                                    Click to use test store
+                                </div>
+                            </div>
+                            <button class="btn" onclick="initiateShopifyAuth()">🔐 Start OAuth Flow</button>
+                            <div id="shopify-auth-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('shopify-health')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/executor/shopify/health</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="shopify-health" class="api-body">
+                            <button class="btn" onclick="checkShopifyHealth()">🏥 Check Health</button>
+                            <div id="shopify-health-response"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 3 - Advertiser -->
+            <div id="module3" class="tab-panel">
+                <!-- OAuth Authentication API -->
+                <div class="module-section">
+                    <h2>🔐 OAuth Authentication API</h2>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('meta-auth')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/advertiser/auth/meta/connect</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="meta-auth" class="api-body">
+                            <div class="form-group">
+                                <label>User ID (optional)</label>
+                                <input type="text" id="meta-user-id" placeholder="User UUID">
+                                <div class="sample-data" onclick="fillSampleData('meta-user-id', generateUUID())">
+                                    Click to generate UUID
+                                </div>
+                            </div>
+                            <button class="btn" onclick="connectMeta()">🔗 Connect Meta Business Manager</button>
+                            <div id="meta-auth-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('google-auth')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/advertiser/auth/google/connect</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="google-auth" class="api-body">
+                            <div class="form-group">
+                                <label>User ID (optional)</label>
+                                <input type="text" id="google-user-id" placeholder="User UUID">
+                                <div class="sample-data" onclick="fillSampleData('google-user-id', generateUUID())">
+                                    Click to generate UUID
+                                </div>
+                            </div>
+                            <button class="btn" onclick="connectGoogle()">🔗 Connect Google Ads</button>
+                            <div id="google-auth-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('auth-status')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/advertiser/auth/status</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="auth-status" class="api-body">
+                            <div class="form-group">
+                                <label>User ID (optional)</label>
+                                <input type="text" id="status-user-id" placeholder="User UUID">
+                            </div>
+                            <button class="btn" onclick="checkAuthStatus()">📊 Check Auth Status</button>
+                            <div id="auth-status-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campaign Management API -->
+                <div class="module-section">
+                    <h2>📢 Campaign Management API</h2>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('campaign-create')">
+                            <div>
+                                <span class="api-method POST">POST</span>
+                                <h3>/api/advertiser/campaign/create</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="campaign-create" class="api-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>User ID (required)</label>
+                                    <input type="text" id="campaign-user-id" placeholder="User UUID">
+                                    <div class="sample-data" onclick="fillSampleData('campaign-user-id', generateUUID())">
+                                        Click to generate UUID
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Research ID (required)</label>
+                                    <input type="text" id="campaign-research-id" placeholder="Research UUID">
+                                    <div class="sample-data" onclick="fillSampleData('campaign-research-id', generateUUID())">
+                                        Click to generate UUID
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Platform</label>
+                                    <select id="campaign-platform">
+                                        <option value="meta">Meta (Facebook/Instagram)</option>
+                                        <option value="google">Google Ads</option>
+                                        <option value="both">Both Platforms</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Daily Budget ($)</label>
+                                    <input type="number" id="campaign-budget" min="5" max="500" value="50" placeholder="50">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Campaign Name</label>
+                                <input type="text" id="campaign-name" placeholder="Holiday Sale Campaign 2026">
+                                <div class="sample-data" onclick="fillSampleData('campaign-name', 'Test Campaign - ' + new Date().toISOString().slice(0, 10))">
+                                    Click for sample name
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Creative IDs (comma-separated)</label>
+                                <input type="text" id="campaign-creatives" placeholder="uuid1, uuid2, uuid3">
+                                <div class="sample-data" onclick="fillSampleData('campaign-creatives', generateUUID() + ', ' + generateUUID())">
+                                    Click to generate sample creative IDs
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Ad Copy (optional)</label>
+                                <textarea id="campaign-ad-copy" placeholder="Transform your business with our revolutionary platform. Start your free trial today!">Transform your business with our AI-powered platform. Get started today and see results in 30 days or your money back!</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Targeting (JSON)</label>
+                                <textarea id="campaign-targeting">{"age_min": 25, "age_max": 55, "interests": ["technology", "business", "entrepreneurship"], "countries": ["US", "CA", "UK", "AU"]}</textarea>
+                            </div>
+                            <button class="btn" onclick="createCampaign()">🚀 Create Campaign</button>
+                            <div id="campaign-create-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('campaign-get')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/advertiser/campaign/:id</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="campaign-get" class="api-body">
+                            <div class="form-group">
+                                <label>Campaign ID</label>
+                                <input type="text" id="get-campaign-id" placeholder="Campaign UUID">
+                            </div>
+                            <button class="btn" onclick="getCampaign()">📋 Get Campaign Details</button>
+                            <div id="campaign-get-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('campaign-performance')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/advertiser/campaign/:id/performance</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="campaign-performance" class="api-body">
+                            <div class="form-group">
+                                <label>Campaign ID</label>
+                                <input type="text" id="performance-campaign-id" placeholder="Campaign UUID">
+                            </div>
+                            <button class="btn" onclick="getCampaignPerformance()">📈 Get Performance Data</button>
+                            <div id="campaign-performance-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('campaign-list')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/advertiser/campaigns</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="campaign-list" class="api-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>User ID (optional)</label>
+                                    <input type="text" id="list-campaigns-user-id" placeholder="User UUID">
+                                </div>
+                                <div class="form-group">
+                                    <label>Platform (optional)</label>
+                                    <select id="list-campaigns-platform">
+                                        <option value="">All</option>
+                                        <option value="meta">Meta</option>
+                                        <option value="google">Google</option>
+                                        <option value="both">Both</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn" onclick="listCampaigns()">📋 List Campaigns</button>
+                            <div id="campaign-list-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta Pixel API -->
+                <div class="module-section">
+                    <h2>📊 Meta Pixel API</h2>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('pixel-install')">
+                            <div>
+                                <span class="api-method POST">POST</span>
+                                <h3>/api/advertiser/pixel/install</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="pixel-install" class="api-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>User ID (required)</label>
+                                    <input type="text" id="pixel-user-id" placeholder="User UUID">
+                                    <div class="sample-data" onclick="fillSampleData('pixel-user-id', generateUUID())">
+                                        Click to generate UUID
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Shop Domain (required)</label>
+                                    <input type="text" id="pixel-shop-domain" placeholder="example-store.com">
+                                    <div class="sample-data" onclick="fillSampleData('pixel-shop-domain', 'test-store-nexspark.com')">
+                                        Click to use test domain
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Meta Pixel ID (optional - will generate if not provided)</label>
+                                <input type="text" id="pixel-id" placeholder="123456789012345">
+                                <div class="sample-data" onclick="fillSampleData('pixel-id', Math.floor(Math.random() * 9000000000) + 1000000000)">
+                                    Click to generate sample pixel ID
+                                </div>
+                            </div>
+                            <button class="btn" onclick="installMetaPixel()">📊 Install Meta Pixel</button>
+                            <div id="pixel-install-response"></div>
+                        </div>
+                    </div>
+
+                    <div class="api-group">
+                        <div class="api-header" onclick="toggleAPI('pixel-verify')">
+                            <div>
+                                <span class="api-method GET">GET</span>
+                                <h3>/api/advertiser/pixel/verify/:pixel_id</h3>
+                            </div>
+                            <span class="toggle-arrow">▼</span>
+                        </div>
+                        <div id="pixel-verify" class="api-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Pixel ID</label>
+                                    <input type="text" id="verify-pixel-id" placeholder="123456789012345">
+                                </div>
+                                <div class="form-group">
+                                    <label>Shop Domain</label>
+                                    <input type="text" id="verify-shop-domain" placeholder="example-store.com">
+                                </div>
+                            </div>
+                            <button class="btn" onclick="verifyMetaPixel()">🔍 Verify Pixel</button>
+                            <div id="pixel-verify-response"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+
+            // Update tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // API section toggle
+        function toggleAPI(apiId) {
+            const body = document.getElementById(apiId);
+            const arrow = body.parentElement.querySelector('.toggle-arrow');
+
+            body.classList.toggle('expanded');
+            arrow.classList.toggle('expanded');
+        }
+
+        // Utility functions
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function fillSampleData(elementId, value) {
+            document.getElementById(elementId).value = value;
+        }
+
+        function showResponse(containerId, data, isError = false) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="response-container ${isError ? 'error' : 'success'}">
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function setLoading(buttonElement, isLoading = true) {
+            if (isLoading) {
+                buttonElement.disabled = true;
+                buttonElement.innerHTML = '<span class="loading">Processing...</span>';
+            } else {
+                buttonElement.disabled = false;
+                // Will be set by individual functions
+            }
+        }
+
+        // Module 2 - Executor APIs
+
+        // Landing Pages
+        async function generateLandingPage() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const images = document.getElementById('landing-images').value
+                    .split(',')
+                    .map(img => img.trim())
+                    .filter(img => img);
+
+                const requestBody = {
+                    report_id: document.getElementById('landing-report-id').value,
+                    page_type: document.getElementById('landing-page-type').value,
+                    brand_assets: {
+                        logo: document.getElementById('landing-logo').value || undefined,
+                        images: images.length > 0 ? images : undefined
+                    },
+                    customization: {
+                        primary_color: document.getElementById('landing-color').value || undefined
+                    }
+                };
+
+                const response = await fetch(`${API_BASE}/api/executor/landing-pages/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                showResponse('landing-generate-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Generated!' : '❌ Failed';
+            } catch (error) {
+                showResponse('landing-generate-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function previewLandingPage() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/executor/landing-pages/preview`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        report_id: document.getElementById('preview-report-id').value
+                    })
+                });
+
+                const data = await response.json();
+                showResponse('landing-preview-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Preview Ready!' : '❌ Failed';
+            } catch (error) {
+                showResponse('landing-preview-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function checkLandingHealth() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/executor/landing-pages/health`);
+                const data = await response.json();
+                showResponse('landing-health-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Healthy' : '❌ Unhealthy';
+            } catch (error) {
+                showResponse('landing-health-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Error';
+            }
+        }
+
+        // Creative Generation
+        async function generateCreative() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const formData = new FormData();
+
+                // Add text fields
+                formData.append('user_id', document.getElementById('creative-user-id').value);
+                formData.append('research_id', document.getElementById('creative-research-id').value);
+                formData.append('creative_type', document.getElementById('creative-type').value);
+                formData.append('prompt', document.getElementById('creative-prompt').value);
+                formData.append('duration', document.getElementById('creative-duration').value);
+                formData.append('quality', document.getElementById('creative-quality').value);
+
+                const style = document.getElementById('creative-style').value;
+                if (style) formData.append('style', style);
+
+                // Add image file if selected
+                const imageFile = document.getElementById('creative-image').files[0];
+                if (imageFile) {
+                    formData.append('image', imageFile);
+                }
+
+                const response = await fetch(`${API_BASE}/api/executor/creative/generate`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                showResponse('creative-generate-response', data, !response.ok);
+
+                if (response.ok && data.data?.creative_id) {
+                    // Auto-fill status check with the returned creative ID
+                    document.getElementById('creative-status-id').value = data.data.creative_id;
+                }
+
+                btn.innerHTML = response.ok ? '✅ Generated!' : '❌ Failed';
+            } catch (error) {
+                showResponse('creative-generate-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function checkCreativeStatus() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const creativeId = document.getElementById('creative-status-id').value;
+                const response = await fetch(`${API_BASE}/api/executor/creative/${creativeId}/status`);
+                const data = await response.json();
+                showResponse('creative-status-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Status Retrieved' : '❌ Failed';
+            } catch (error) {
+                showResponse('creative-status-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function listCreatives() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const params = new URLSearchParams();
+                const userId = document.getElementById('list-user-id').value;
+                const creativeType = document.getElementById('list-creative-type').value;
+
+                if (userId) params.append('user_id', userId);
+                if (creativeType) params.append('creative_type', creativeType);
+
+                const response = await fetch(`${API_BASE}/api/executor/creatives?${params}`);
+                const data = await response.json();
+                showResponse('creative-list-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Listed!' : '❌ Failed';
+            } catch (error) {
+                showResponse('creative-list-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        // Shopify
+        async function initiateShopifyAuth() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const shop = document.getElementById('shopify-domain').value;
+                const response = await fetch(`${API_BASE}/api/executor/shopify/auth?shop=${encodeURIComponent(shop)}`);
+                const data = await response.json();
+                showResponse('shopify-auth-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Auth URL Generated!' : '❌ Failed';
+            } catch (error) {
+                showResponse('shopify-auth-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function checkShopifyHealth() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/executor/shopify/health`);
+                const data = await response.json();
+                showResponse('shopify-health-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Healthy' : '❌ Unhealthy';
+            } catch (error) {
+                showResponse('shopify-health-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Error';
+            }
+        }
+
+        // Module 3 - Advertiser APIs
+
+        // OAuth Authentication
+        async function connectMeta() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const params = new URLSearchParams();
+                const userId = document.getElementById('meta-user-id').value;
+                if (userId) params.append('user_id', userId);
+
+                const response = await fetch(`${API_BASE}/api/advertiser/auth/meta/connect?${params}`);
+                const data = await response.json();
+                showResponse('meta-auth-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Auth URL Generated!' : '❌ Failed';
+            } catch (error) {
+                showResponse('meta-auth-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function connectGoogle() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const params = new URLSearchParams();
+                const userId = document.getElementById('google-user-id').value;
+                if (userId) params.append('user_id', userId);
+
+                const response = await fetch(`${API_BASE}/api/advertiser/auth/google/connect?${params}`);
+                const data = await response.json();
+                showResponse('google-auth-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Auth URL Generated!' : '❌ Failed';
+            } catch (error) {
+                showResponse('google-auth-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function checkAuthStatus() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const params = new URLSearchParams();
+                const userId = document.getElementById('status-user-id').value;
+                if (userId) params.append('user_id', userId);
+
+                const response = await fetch(`${API_BASE}/api/advertiser/auth/status?${params}`);
+                const data = await response.json();
+                showResponse('auth-status-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Status Retrieved!' : '❌ Failed';
+            } catch (error) {
+                showResponse('auth-status-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        // Campaign Management
+        async function createCampaign() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const creativeIds = document.getElementById('campaign-creatives').value
+                    .split(',')
+                    .map(id => id.trim())
+                    .filter(id => id);
+
+                let targeting;
+                try {
+                    targeting = JSON.parse(document.getElementById('campaign-targeting').value);
+                } catch (e) {
+                    targeting = { error: 'Invalid JSON format' };
+                }
+
+                const requestBody = {
+                    user_id: document.getElementById('campaign-user-id').value,
+                    research_id: document.getElementById('campaign-research-id').value,
+                    platform: document.getElementById('campaign-platform').value,
+                    campaign_name: document.getElementById('campaign-name').value,
+                    creative_ids: creativeIds,
+                    budget_daily: parseFloat(document.getElementById('campaign-budget').value),
+                    ad_copy: document.getElementById('campaign-ad-copy').value || undefined,
+                    targeting: targeting
+                };
+
+                const response = await fetch(`${API_BASE}/api/advertiser/campaign/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                showResponse('campaign-create-response', data, !response.ok);
+
+                if (response.ok && data.data?.campaign_id) {
+                    // Auto-fill other forms with the campaign ID
+                    document.getElementById('get-campaign-id').value = data.data.campaign_id;
+                    document.getElementById('performance-campaign-id').value = data.data.campaign_id;
+                }
+
+                btn.innerHTML = response.ok ? '✅ Campaign Created!' : '❌ Failed';
+            } catch (error) {
+                showResponse('campaign-create-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function getCampaign() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const campaignId = document.getElementById('get-campaign-id').value;
+                const response = await fetch(`${API_BASE}/api/advertiser/campaign/${campaignId}`);
+                const data = await response.json();
+                showResponse('campaign-get-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Campaign Retrieved!' : '❌ Failed';
+            } catch (error) {
+                showResponse('campaign-get-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function getCampaignPerformance() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const campaignId = document.getElementById('performance-campaign-id').value;
+                const response = await fetch(`${API_BASE}/api/advertiser/campaign/${campaignId}/performance`);
+                const data = await response.json();
+                showResponse('campaign-performance-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Performance Data!' : '❌ Failed';
+            } catch (error) {
+                showResponse('campaign-performance-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function listCampaigns() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const params = new URLSearchParams();
+                const userId = document.getElementById('list-campaigns-user-id').value;
+                const platform = document.getElementById('list-campaigns-platform').value;
+
+                if (userId) params.append('user_id', userId);
+                if (platform) params.append('platform', platform);
+
+                const response = await fetch(`${API_BASE}/api/advertiser/campaigns?${params}`);
+                const data = await response.json();
+                showResponse('campaign-list-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Campaigns Listed!' : '❌ Failed';
+            } catch (error) {
+                showResponse('campaign-list-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        // Meta Pixel
+        async function installMetaPixel() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const requestBody = {
+                    user_id: document.getElementById('pixel-user-id').value,
+                    shop_domain: document.getElementById('pixel-shop-domain').value,
+                    pixel_id: document.getElementById('pixel-id').value || undefined
+                };
+
+                const response = await fetch(`${API_BASE}/api/advertiser/pixel/install`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                showResponse('pixel-install-response', data, !response.ok);
+
+                if (response.ok && data.data?.pixel_id) {
+                    // Auto-fill verify form
+                    document.getElementById('verify-pixel-id').value = data.data.pixel_id;
+                    document.getElementById('verify-shop-domain').value = requestBody.shop_domain;
+                }
+
+                btn.innerHTML = response.ok ? '✅ Pixel Installed!' : '❌ Failed';
+            } catch (error) {
+                showResponse('pixel-install-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        async function verifyMetaPixel() {
+            const btn = event.target;
+            setLoading(btn);
+
+            try {
+                const pixelId = document.getElementById('verify-pixel-id').value;
+                const shopDomain = document.getElementById('verify-shop-domain').value;
+
+                const response = await fetch(`${API_BASE}/api/advertiser/pixel/verify/${pixelId}?shop_domain=${encodeURIComponent(shopDomain)}`);
+                const data = await response.json();
+                showResponse('pixel-verify-response', data, !response.ok);
+                btn.innerHTML = response.ok ? '✅ Pixel Verified!' : '❌ Failed';
+            } catch (error) {
+                showResponse('pixel-verify-response', { error: error.message }, true);
+                btn.innerHTML = '❌ Failed';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 NexSpark Module 2 & 3 Testing loaded');
+            console.log('Backend API:', API_BASE);
+
+            // Auto-expand first API in each section for easier testing
+            const firstAPIs = ['landing-generate', 'meta-auth'];
+            firstAPIs.forEach(apiId => {
+                const element = document.getElementById(apiId);
+                if (element) {
+                    element.classList.add('expanded');
+                    element.parentElement.querySelector('.toggle-arrow').classList.add('expanded');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

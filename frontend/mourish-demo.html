@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSpark Demo - Mourish Premium Mushroom Coffee Launch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 25%, #CD853F 50%, #DEB887 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .demo-header h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .demo-header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .demo-scenario {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .company-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .company-logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #8B4513;
+        }
+
+        .demo-scenario h3 {
+            font-size: 1.4rem;
+            color: #fff;
+            flex: 1;
+        }
+
+        .demo-scenario p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .business-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .metric-item {
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(34, 139, 34, 0.3);
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(34, 139, 34, 0.4);
+        }
+
+        .demo-btn.secondary {
+            background: linear-gradient(135deg, #DEB887 0%, #F4E4BC 100%);
+            color: #8B4513;
+            box-shadow: 0 8px 25px rgba(222, 184, 135, 0.3);
+        }
+
+        .demo-btn.secondary:hover {
+            box-shadow: 0 12px 35px rgba(222, 184, 135, 0.4);
+        }
+
+        .demo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .progress-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            margin-top: 20px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background: rgba(255,255,255,0.3);
+            z-index: 0;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            border: 2px solid rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .step-circle.active {
+            background: #228B22;
+            border-color: #228B22;
+            box-shadow: 0 0 20px rgba(34, 139, 34, 0.5);
+        }
+
+        .step-circle.completed {
+            background: #32CD32;
+            border-color: #32CD32;
+        }
+
+        .step-circle.completed::before {
+            content: '✓';
+            font-size: 14px;
+        }
+
+        .step-label {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Module Cards */
+        .modules-container {
+            display: grid;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            overflow: hidden;
+            opacity: 0.6;
+            transition: all 0.5s ease;
+            transform: translateY(20px);
+        }
+
+        .module-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            box-shadow: 0 25px 80px rgba(0,0,0,0.15);
+        }
+
+        .module-header {
+            padding: 30px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .module-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .module-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .module-1 .module-icon { background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); }
+        .module-2 .module-icon { background: linear-gradient(135deg, #228B22 0%, #32CD32 100%); }
+        .module-3 .module-icon { background: linear-gradient(135deg, #DAA520 0%, #FFD700 100%); }
+        .module-4 .module-icon { background: linear-gradient(135deg, #CD853F 0%, #DEB887 100%); }
+
+        .module-title h3 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .module-description {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .module-content {
+            padding: 30px;
+        }
+
+        .demo-output {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .loading-animation {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 3px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #64748b;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            } 40% {
+                transform: scale(1);
+            }
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #22c55e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .result-content {
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .metric-card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #8B4513;
+            margin-bottom: 5px;
+        }
+
+        .metric-card-label {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .success-indicator {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .demo-footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            margin-top: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-footer h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .demo-footer p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .roi-highlight {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #8B4513;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .demo-header h1 { font-size: 2.5rem; }
+            .demo-header .subtitle { font-size: 1.1rem; }
+            .demo-controls { flex-direction: column; align-items: center; }
+            .progress-steps { flex-direction: column; gap: 20px; }
+            .progress-step::after { display: none; }
+            .module-content { padding: 20px; }
+            .business-metrics { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="demo-header">
+            <div class="brand-logo">
+                <div class="logo-icon">🍄</div>
+                <h1>NexSpark × Mourish</h1>
+            </div>
+            <p class="subtitle">AI-Powered Launch: Premium Mushroom Coffee Product Line</p>
+
+            <div class="demo-scenario">
+                <div class="scenario-header">
+                    <div class="company-info">
+                        <div class="company-logo">M</div>
+                        <div>
+                            <h3>Mourish Expansion Strategy</h3>
+                        </div>
+                    </div>
+                </div>
+                <p>Mourish, the premium mushroom wellness brand, wants to expand beyond supplements into the lucrative functional coffee market. Watch as NexSpark's AI platform conducts market research, validates their new "FocusBlend" mushroom coffee concept, creates a complete launch strategy, builds conversion-optimized assets, and launches profitable advertising campaigns—transforming a product idea into a six-figure revenue stream.</p>
+
+                <div class="business-metrics">
+                    <div class="metric-item">
+                        <div class="metric-value">$2.3M</div>
+                        <div class="metric-label">Current Revenue</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">85K+</div>
+                        <div class="metric-label">Active Subscribers</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">4.8★</div>
+                        <div class="metric-label">Customer Rating</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">32%</div>
+                        <div class="metric-label">Repeat Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-controls">
+                <button class="demo-btn" onclick="startMourishDemo()">
+                    🚀 Launch Mourish Coffee Demo
+                </button>
+                <button class="demo-btn secondary" onclick="resetDemo()">
+                    🔄 Reset Demo
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <h2>Mourish Coffee Launch Progress</h2>
+                <div class="progress-steps">
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-1">1</div>
+                        <div class="step-label">Coffee Market Research</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-2">2</div>
+                        <div class="step-label">Customer Validation</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-3">3</div>
+                        <div class="step-label">Launch Strategy</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-4">4</div>
+                        <div class="step-label">Product Pages</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-5">5</div>
+                        <div class="step-label">E-Commerce Integration</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-6">6</div>
+                        <div class="step-label">Marketing Campaigns</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-7">7</div>
+                        <div class="step-label">Growth Analytics</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modules -->
+        <div class="modules-container">
+            <!-- Module 1: Strategist -->
+            <div class="module-card module-1" id="module-1">
+                <div class="module-header">
+                    <div class="module-title">
+                        <div class="module-icon">🧠</div>
+                        <div>
+                            <h3>Module 1 - Market Intelligence</h3>
+                            <p class="module-description">AI-powered functional coffee market analysis and competitive positioning</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div id="strategist-status">Ready to analyze mushroom coffee market opportunity...</div>
+                    <div class="demo-output" id="strategist-output"></div>
+                </div>
+            </div>
+
+            <!-- Module 2: Executor -->
+            <div class="module-card module-2" id="module-2">
+                <div class="module-header">
+                    <div class="module-title">
+                        <div class="module-icon">🏗️</div>
+                        <div>
+                            <h3>Module 2 - Asset Creation</h3>
+                            <p class="module-description">Product pages, brand assets, and Shopify integration for FocusBlend Coffee</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div id="executor-status">Awaiting strategy completion...</div>
+                    <div class="demo-output" id="executor-output"></div>
+                </div>
+            </div>
+
+            <!-- Module 3: Advertiser -->
+            <div class="module-card module-3" id="module-3">
+                <div class="module-header">
+                    <div class="module-title">
+                        <div class="module-icon">📈</div>
+                        <div>
+                            <h3>Module 3 - Growth Marketing</h3>
+                            <p class="module-description">Multi-channel advertising campaigns targeting coffee and wellness enthusiasts</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div id="advertiser-status">Preparing targeting and creative assets...</div>
+                    <div class="demo-output" id="advertiser-output"></div>
+                </div>
+            </div>
+
+            <!-- Module 4: Analyzer -->
+            <div class="module-card module-4" id="module-4">
+                <div class="module-header">
+                    <div class="module-title">
+                        <div class="module-icon">📊</div>
+                        <div>
+                            <h3>Module 4 - Performance Intelligence</h3>
+                            <p class="module-description">Real-time analytics, automated optimization, and revenue tracking</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div id="analyzer-status">Ready to track and optimize campaign performance...</div>
+                    <div class="demo-output" id="analyzer-output"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Footer -->
+        <div class="demo-footer">
+            <h3>🎯 Mourish Coffee Launch Results</h3>
+            <p>NexSpark's AI platform transformed Mourish's product expansion from concept to profitable revenue stream. The FocusBlend mushroom coffee achieved product-market fit validation, premium positioning in the functional beverage market, and achieved profitability within the first month of launch.</p>
+
+            <div class="roi-highlight">
+                <div style="font-size: 1.2rem; margin-bottom: 8px;">💰 Projected ROI: 340% in First Quarter</div>
+                <div>$89K investment → $312K projected revenue</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentStep = 0;
+        let demoData = {};
+
+        // Mourish-specific demo scenario data
+        const MOURISH_SCENARIO = {
+            company: "Mourish",
+            currentBusiness: "Premium mushroom wellness supplements",
+            newProduct: "FocusBlend Mushroom Coffee",
+            description: "Organic coffee blend with Lion's Mane, Cordyceps, and Chaga mushrooms for cognitive enhancement and sustained energy",
+            targetMarket: "Health-conscious coffee drinkers, biohackers, and productivity-focused professionals aged 28-45",
+            budget: "50000-100000",
+            userId: "mourish-demo-user-id",
+            currentRevenue: "$2.3M annual",
+            customerBase: "85,000+ subscribers"
+        };
+
+        function updateProgress(stepNum) {
+            // Reset all steps
+            for (let i = 1; i <= 7; i++) {
+                const step = document.getElementById(`step-${i}`);
+                step.classList.remove('active', 'completed');
+                if (i < stepNum) {
+                    step.classList.add('completed');
+                    step.textContent = '';
+                } else if (i === stepNum) {
+                    step.classList.add('active');
+                    step.textContent = i;
+                } else {
+                    step.textContent = i;
+                }
+            }
+        }
+
+        function activateModule(moduleNum) {
+            // Deactivate all modules
+            document.querySelectorAll('.module-card').forEach(module => {
+                module.classList.remove('active');
+            });
+
+            // Activate current module
+            document.getElementById(`module-${moduleNum}`).classList.add('active');
+        }
+
+        function showLoading(outputId) {
+            const output = document.getElementById(outputId);
+            output.innerHTML = `
+                <div class="loading-animation">
+                    <span>AI Processing</span>
+                    <div class="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showSuccess(outputId, content) {
+            const output = document.getElementById(outputId);
+            output.innerHTML = `
+                <div class="result-card">
+                    <div class="result-header">
+                        <span>✅</span>
+                        <span class="success-indicator">Analysis Complete</span>
+                    </div>
+                    <div class="result-content">${content}</div>
+                </div>
+            `;
+        }
+
+        async function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function startMourishDemo() {
+            document.querySelector('.demo-btn').disabled = true;
+            currentStep = 1;
+
+            // Step 1: Market Research - Functional Coffee Market
+            await runCoffeeMarketResearch();
+            await delay(2500);
+
+            // Step 2: Customer Validation - Mourish Customer Base
+            await runMourishCustomerValidation();
+            await delay(2500);
+
+            // Step 3: Launch Strategy - FocusBlend GTM
+            await generateFocusBlendStrategy();
+            await delay(2500);
+
+            // Step 4: Product Page Creation
+            await createProductPages();
+            await delay(2500);
+
+            // Step 5: Shopify Integration
+            await integrateWithMourishStore();
+            await delay(2500);
+
+            // Step 6: Marketing Campaigns
+            await launchCoffeeCampaigns();
+            await delay(2500);
+
+            // Step 7: Performance Analytics
+            await showMourishPerformance();
+
+            document.querySelector('.demo-btn').disabled = false;
+        }
+
+        async function runCoffeeMarketResearch() {
+            currentStep = 1;
+            updateProgress(1);
+            activateModule(1);
+
+            document.getElementById('strategist-status').textContent = 'Analyzing functional coffee market and Mourish positioning...';
+            showLoading('strategist-output');
+
+            await delay(3500);
+
+            const content = `
+                <strong>Functional Coffee Market Analysis</strong><br><br>
+                📊 <strong>Market Opportunity:</strong><br>
+                • Functional Coffee Market: $1.8B (18% annual growth)<br>
+                • Mushroom Coffee Segment: $286M (35% growth rate)<br>
+                • Target Demographic: 42M health-conscious coffee drinkers<br><br>
+
+                🎯 <strong>Mourish Competitive Advantage:</strong><br>
+                • Established wellness brand with 85K+ subscribers<br>
+                • 4.8★ rating indicates high customer trust<br>
+                • 32% repeat purchase rate shows loyalty<br>
+                • Opportunity: Leverage existing customer base for coffee launch<br><br>
+
+                💡 <strong>Key Market Insights:</strong><br>
+                • Premium positioning opportunity ($24-32 per bag)<br>
+                • Subscription model potential (68% higher LTV)<br>
+                • Cross-sell opportunity to existing mushroom supplement customers<br>
+                • Gap: Organic, third-party tested mushroom coffee blends
+            `;
+
+            showSuccess('strategist-output', content);
+            document.getElementById('strategist-status').innerHTML = '<span class="success-indicator">✅ Market opportunity validated: $286M addressable market</span>';
+        }
+
+        async function runMourishCustomerValidation() {
+            currentStep = 2;
+            updateProgress(2);
+
+            document.getElementById('strategist-status').textContent = 'Surveying Mourish customers for coffee product validation...';
+            showLoading('strategist-output');
+
+            await delay(3000);
+
+            const content = `
+                <strong>Mourish Customer Insights - Coffee Product</strong><br><br>
+                ☕ <strong>Customer Coffee Habits:</strong><br>
+                • 78% of Mourish customers drink coffee daily<br>
+                • 65% interested in functional coffee benefits<br>
+                • Average spend: $18-28/month on premium coffee<br>
+                • 89% would try mushroom coffee from trusted wellness brand<br><br>
+
+                💰 <strong>Pricing Validation:</strong><br>
+                • Sweet spot: $26-29 for premium mushroom coffee<br>
+                • 72% prefer subscription model (15% discount)<br>
+                • Willingness to pay premium for organic + tested<br><br>
+
+                🌟 <strong>Product Requirements:</strong><br>
+                • Must-have: Lion's Mane for cognitive benefits<br>
+                • Desired: Smooth taste (no mushroom aftertaste)<br>
+                • Important: Third-party tested for purity<br>
+                • Subscription preference: Monthly delivery<br><br>
+
+                📈 <strong>Launch Prediction:</strong><br>
+                • 25-30% of existing customers likely to try<br>
+                • Estimated first month: 18K-22K orders<br>
+                • Projected monthly recurring: $380K-450K
+            `;
+
+            showSuccess('strategist-output', content);
+            document.getElementById('strategist-status').innerHTML = '<span class="success-indicator">✅ Strong validation: 78% of customers want mushroom coffee</span>';
+        }
+
+        async function generateFocusBlendStrategy() {
+            currentStep = 3;
+            updateProgress(3);
+
+            document.getElementById('strategist-status').textContent = 'Creating comprehensive FocusBlend launch strategy...';
+            showLoading('strategist-output');
+
+            await delay(3500);
+
+            const content = `
+                <strong>FocusBlend Mushroom Coffee - Launch Strategy</strong><br><br>
+                🎯 <strong>Product Positioning:</strong><br>
+                • "The coffee that makes you smarter" - cognitive enhancement focus<br>
+                • Premium organic blend with clinically studied mushrooms<br>
+                • Target: Productivity-focused professionals and biohackers<br><br>
+
+                💰 <strong>Pricing Strategy:</strong><br>
+                • Retail: $28.99 per bag (30-day supply)<br>
+                • Subscription: $24.99 (15% discount + free shipping)<br>
+                • Launch promo: $19.99 for first order to drive trials<br><br>
+
+                📈 <strong>Go-to-Market Plan:</strong><br>
+                <strong>Phase 1 (Month 1):</strong> Email existing customers, limited launch<br>
+                <strong>Phase 2 (Month 2):</strong> Social media, influencer partnerships<br>
+                <strong>Phase 3 (Month 3):</strong> Paid advertising, podcast sponsorships<br><br>
+
+                🎬 <strong>Marketing Channels:</strong><br>
+                • Primary: Email to 85K subscribers (expected 22% open rate)<br>
+                • Instagram/TikTok: Wellness and productivity influencers<br>
+                • Google Ads: "Mushroom coffee" and cognitive keywords<br>
+                • Podcasts: Biohacking and entrepreneur shows<br><br>
+
+                📊 <strong>Success Metrics:</strong><br>
+                • Target: 8,500 customers in first 90 days<br>
+                • Revenue goal: $625K in quarter 1<br>
+                • Subscription rate: 65% of customers<br>
+                • Customer acquisition cost: <$35
+            `;
+
+            showSuccess('strategist-output', content);
+            document.getElementById('strategist-status').innerHTML = '<span class="success-indicator">✅ Launch strategy complete: $625K Q1 revenue target</span>';
+        }
+
+        async function createProductPages() {
+            currentStep = 4;
+            updateProgress(4);
+            activateModule(2);
+
+            document.getElementById('executor-status').textContent = 'Generating FocusBlend product pages and brand assets...';
+            showLoading('executor-output');
+
+            await delay(3000);
+
+            const content = `
+                <strong>FocusBlend Product Assets Created</strong><br><br>
+                🌐 <strong>Product Landing Page:</strong><br>
+                • Hero section: "Unlock Your Mental Edge with Every Sip"<br>
+                • Benefits: Focus enhancement, sustained energy, stress reduction<br>
+                • Social proof: Customer testimonials and clinical studies<br>
+                • Clear CTA: "Start Your Focus Journey - Try Risk-Free"<br><br>
+
+                🎨 <strong>Brand Assets:</strong><br>
+                • Product photography: 12 high-res lifestyle images<br>
+                • Video content: 60s product demonstration<br>
+                • Infographics: Mushroom benefits and brewing guide<br>
+                • Package design: Premium kraft bags with clear labeling<br><br>
+
+                📱 <strong>Mobile Optimization:</strong><br>
+                • Page load speed: <2.3 seconds<br>
+                • Mobile conversion rate: Optimized for 18-24% target<br>
+                • One-click subscription setup<br><br>
+
+                ✅ <strong>Conversion Elements:</strong><br>
+                • Risk-free 30-day money-back guarantee<br>
+                • Free shipping on subscription orders<br>
+                • Limited-time launch discount display<br>
+                • Trust badges: Organic, third-party tested, GMO-free
+            `;
+
+            showSuccess('executor-output', content);
+            document.getElementById('executor-status').innerHTML = '<span class="success-indicator">✅ Product pages created with 18-24% conversion target</span>';
+        }
+
+        async function integrateWithMourishStore() {
+            currentStep = 5;
+            updateProgress(5);
+
+            document.getElementById('executor-status').textContent = 'Integrating FocusBlend with existing Mourish Shopify store...';
+            showLoading('executor-output');
+
+            await delay(2800);
+
+            const content = `
+                <strong>Shopify Integration Complete</strong><br><br>
+                🛒 <strong>E-Commerce Setup:</strong><br>
+                • Added to existing getmourish.com store<br>
+                • Product URL: getmourish.com/products/focusblend-coffee<br>
+                • Inventory: 2,500 bags ready for launch<br>
+                • SKU management: Integrated with existing system<br><br>
+
+                💳 <strong>Payment & Subscription:</strong><br>
+                • Existing payment gateways maintained<br>
+                • SealSubscriptions integration for recurring orders<br>
+                • One-click upsells to existing mushroom products<br>
+                • Bundle options: Coffee + supplements packages<br><br>
+
+                📦 <strong>Fulfillment:</strong><br>
+                • Same-day processing with existing warehouse<br>
+                • 2-day shipping maintained<br>
+                • Subscription packaging: Branded coffee mailers<br>
+                • Cross-sell inserts with other Mourish products<br><br>
+
+                📊 <strong>Analytics Integration:</strong><br>
+                • Google Analytics: Product tracking setup<br>
+                • Facebook Pixel: Coffee-specific events<br>
+                • Hotjar: User behavior tracking on product pages<br>
+                • Judge.me: Review collection for social proof
+            `;
+
+            showSuccess('executor-output', content);
+            document.getElementById('executor-status').innerHTML = '<span class="success-indicator">✅ Shopify integration complete - ready for launch</span>';
+        }
+
+        async function launchCoffeeCampaigns() {
+            currentStep = 6;
+            updateProgress(6);
+            activateModule(3);
+
+            document.getElementById('advertiser-status').textContent = 'Launching multi-channel marketing campaigns...';
+            showLoading('advertiser-output');
+
+            await delay(3200);
+
+            const content = `
+                <strong>Marketing Campaigns Launched</strong><br><br>
+                📧 <strong>Email Campaign (Phase 1):</strong><br>
+                • Audience: 85,000 Mourish subscribers<br>
+                • Subject: "NEW: The Coffee That Boosts Your Brain"<br>
+                • Launch discount: $19.99 (first order)<br>
+                • Expected: 22% open rate, 8.5% click rate<br><br>
+
+                📱 <strong>Social Media Campaigns:</strong><br>
+                • Instagram Ads: Targeting wellness + coffee interests<br>
+                • TikTok: Influencer partnerships with productivity creators<br>
+                • Facebook: Lookalike audiences based on existing customers<br>
+                • Budget: $2,400/day across platforms<br><br>
+
+                🔍 <strong>Google Ads:</strong><br>
+                • Search campaigns: "mushroom coffee", "cognitive coffee"<br>
+                • Shopping ads: Product listings with reviews<br>
+                • YouTube: Educational content on mushroom benefits<br>
+                • Budget: $1,800/day<br><br>
+
+                🎙️ <strong>Influencer Partnerships:</strong><br>
+                • 12 wellness influencers (100K-500K followers)<br>
+                • 6 biohacking podcasts for sponsorships<br>
+                • 4 productivity YouTubers for product integration<br><br>
+
+                📊 <strong>Campaign Targets:</strong><br>
+                • Total daily ad spend: $4,200<br>
+                • Target CPA: <$35<br>
+                • Expected ROAS: 4.2x<br>
+                • First week goal: 1,200 new customers
+            `;
+
+            showSuccess('advertiser-output', content);
+            document.getElementById('advertiser-status').innerHTML = '<span class="success-indicator">✅ Multi-channel campaigns live: $4.2K daily spend</span>';
+        }
+
+        async function showMourishPerformance() {
+            currentStep = 7;
+            updateProgress(7);
+            activateModule(4);
+
+            document.getElementById('analyzer-status').textContent = 'Tracking performance and optimizing campaigns...';
+            showLoading('analyzer-output');
+
+            await delay(3500);
+
+            // Show comprehensive performance metrics
+            const metricsHTML = `
+                <div class="result-card">
+                    <div class="result-header">
+                        <span>🚀</span>
+                        <span class="success-indicator">FocusBlend Launch - First 30 Days</span>
+                    </div>
+                    <div class="result-content">
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-card-value">3,847</div>
+                                <div class="metric-card-label">New Customers</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-value">68%</div>
+                                <div class="metric-card-label">Subscription Rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-value">$187K</div>
+                                <div class="metric-card-label">Revenue (Month 1)</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-value">4.6x</div>
+                                <div class="metric-card-label">ROAS</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-value">$28.50</div>
+                                <div class="metric-card-label">Customer CAC</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-value">$156</div>
+                                <div class="metric-card-label">Customer LTV</div>
+                            </div>
+                        </div>
+                        <br>
+                        <strong>🎯 Performance Highlights:</strong><br>
+                        • Email campaign: 24% open rate, 11.2% conversion<br>
+                        • Instagram ads: Best performing creative - morning routine videos<br>
+                        • Google Search: Ranking #3 for "mushroom coffee benefits"<br>
+                        • Customer satisfaction: 4.7★ average rating<br><br>
+
+                        <strong>🔄 AI Optimizations Applied:</strong><br>
+                        • Increased budget on morning routine creative (+45%)<br>
+                        • Expanded targeting to productivity tool users<br>
+                        • Implemented automated email sequences for trials<br>
+                        • Cross-promoted with supplement subscription customers<br><br>
+
+                        <strong>📈 Q2 Projections:</strong><br>
+                        • Monthly recurring revenue: $425K<br>
+                        • Total customers: 12,500<br>
+                        • Quarterly revenue: $650K (104% of target)
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('analyzer-output').innerHTML = metricsHTML;
+            document.getElementById('analyzer-status').innerHTML = '<span class="success-indicator">✅ Performance tracking active - 104% of revenue target achieved</span>';
+
+            // Final success state
+            updateProgress(8); // Completion
+        }
+
+        function resetDemo() {
+            currentStep = 0;
+            demoData = {};
+
+            // Reset progress
+            for (let i = 1; i <= 7; i++) {
+                const step = document.getElementById(`step-${i}`);
+                step.classList.remove('active', 'completed');
+                step.textContent = i;
+            }
+
+            // Reset modules
+            document.querySelectorAll('.module-card').forEach(module => {
+                module.classList.remove('active');
+            });
+
+            // Reset content
+            document.getElementById('strategist-status').textContent = 'Ready to analyze mushroom coffee market opportunity...';
+            document.getElementById('executor-status').textContent = 'Awaiting strategy completion...';
+            document.getElementById('advertiser-status').textContent = 'Preparing targeting and creative assets...';
+            document.getElementById('analyzer-status').textContent = 'Ready to track and optimize campaign performance...';
+
+            document.querySelectorAll('.demo-output').forEach(output => {
+                output.innerHTML = '';
+            });
+
+            document.querySelector('.demo-btn').disabled = false;
+        }
+
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            resetDemo();
+        });
+    </script>
+</body>
+</html>

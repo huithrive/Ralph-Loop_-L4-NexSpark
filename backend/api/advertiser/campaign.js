@@ -35,6 +35,7 @@ router.post('/create', [
     if (!errors.isEmpty()) {
       return res.status(400).json(formatErrorResponse(
         'Invalid request parameters',
+        400,
         'VALIDATION_ERROR',
         errors.array()
       ));
@@ -68,6 +69,7 @@ router.post('/create', [
     if (invalidCreativeIds.length > 0) {
       return res.status(400).json(formatErrorResponse(
         'Some creative IDs are not available',
+        400,
         'INVALID_CREATIVES',
         {
           invalid_creative_ids: invalidCreativeIds,
@@ -121,6 +123,7 @@ router.post('/create', [
 
     res.status(500).json(formatErrorResponse(
       'Campaign creation failed',
+      500,
       'CAMPAIGN_CREATE_ERROR',
       { error: error.message }
     ));
@@ -140,6 +143,7 @@ router.get('/:id', async (req, res) => {
     if (!campaign) {
       return res.status(404).json(formatErrorResponse(
         'Campaign not found',
+        404,
         'NOT_FOUND',
         { campaign_id: id }
       ));
@@ -170,6 +174,7 @@ router.get('/:id', async (req, res) => {
 
     res.status(500).json(formatErrorResponse(
       'Failed to retrieve campaign',
+      500,
       'CAMPAIGN_GET_ERROR',
       { campaign_id: req.params.id, error: error.message }
     ));
@@ -188,6 +193,7 @@ router.put('/:id/status', [
     if (!errors.isEmpty()) {
       return res.status(400).json(formatErrorResponse(
         'Invalid request parameters',
+        400,
         'VALIDATION_ERROR',
         errors.array()
       ));
@@ -201,6 +207,7 @@ router.put('/:id/status', [
     if (!campaign) {
       return res.status(404).json(formatErrorResponse(
         'Campaign not found',
+        404,
         'NOT_FOUND',
         { campaign_id: id }
       ));
@@ -231,6 +238,7 @@ router.put('/:id/status', [
 
     res.status(500).json(formatErrorResponse(
       'Failed to update campaign status',
+      500,
       'STATUS_UPDATE_ERROR',
       { campaign_id: req.params.id, error: error.message }
     ));
@@ -253,6 +261,7 @@ router.get('/', [
     if (!errors.isEmpty()) {
       return res.status(400).json(formatErrorResponse(
         'Invalid query parameters',
+        400,
         'VALIDATION_ERROR',
         errors.array()
       ));
@@ -296,6 +305,7 @@ router.get('/', [
 
     res.status(500).json(formatErrorResponse(
       'Failed to list campaigns',
+      500,
       'CAMPAIGN_LIST_ERROR',
       { error: error.message }
     ));
@@ -315,6 +325,7 @@ router.get('/:id/performance', async (req, res) => {
     if (!campaign) {
       return res.status(404).json(formatErrorResponse(
         'Campaign not found',
+        404,
         'NOT_FOUND',
         { campaign_id: id }
       ));
@@ -351,6 +362,7 @@ router.get('/:id/performance', async (req, res) => {
 
     res.status(500).json(formatErrorResponse(
       'Failed to get campaign performance',
+      500,
       'PERFORMANCE_ERROR',
       { campaign_id: req.params.id, error: error.message }
     ));

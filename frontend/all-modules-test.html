@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSpark - Complete Platform Test Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .module-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: white;
+            color: #4f46e5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .module-content {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .module-content.active {
+            display: block;
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .module-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .module-sections {
+            display: grid;
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .section {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            border-color: #4f46e5;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #334155;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .section-header:hover {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+
+        .section-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-content {
+            padding: 20px;
+            display: none;
+            background: #fafbfc;
+        }
+
+        .section.active .section-content {
+            display: block;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+            color: #64748b;
+        }
+
+        .section.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        }
+
+        .response-container {
+            margin-top: 15px;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .response-content {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .status-success {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .status-error {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .sample-data {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .sample-data h4 {
+            color: #92400e;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .sample-data p {
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: ' ⏳';
+        }
+
+        .workflow-card {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            border: 1px solid #0284c7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .workflow-card h4 {
+            color: #0369a1;
+            margin-bottom: 10px;
+        }
+
+        .workflow-steps {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            background: white;
+            border: 1px solid #0284c7;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: #0369a1;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-healthy { background-color: #10b981; }
+        .status-warning { background-color: #f59e0b; }
+        .status-critical { background-color: #ef4444; }
+
+        @media (max-width: 768px) {
+            .module-tabs {
+                flex-direction: column;
+            }
+
+            .form-row, .form-row-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 NexSpark Platform</h1>
+            <p>Complete AI-Powered E-Commerce Marketing Platform Testing Interface</p>
+        </div>
+
+        <!-- Module Tabs -->
+        <div class="module-tabs">
+            <button class="tab active" onclick="switchModule('module1')">🧠 Module 1 - Strategist</button>
+            <button class="tab" onclick="switchModule('module2')">📤 Module 2 - Executor</button>
+            <button class="tab" onclick="switchModule('module3')">📢 Module 3 - Advertiser</button>
+            <button class="tab" onclick="switchModule('module4')">📊 Module 4 - Analyzer</button>
+        </div>
+
+        <!-- Module 1 - Strategist -->
+        <div class="module-content active" id="module1">
+            <div class="module-header">
+                <h2>🧠 Module 1 - Strategist</h2>
+                <p>Market Research, Customer Interviews, and Go-to-Market Strategy</p>
+            </div>
+
+            <div class="module-sections">
+                <div class="workflow-card">
+                    <h4>🔄 Complete Workflow</h4>
+                    <div class="workflow-steps">
+                        <div class="workflow-step">1. Market Research</div>
+                        <div class="workflow-step">2. Customer Interview</div>
+                        <div class="workflow-step">3. Generate GTM Report</div>
+                        <div class="workflow-step">4. Preview & Download</div>
+                    </div>
+                </div>
+
+                <!-- Market Research Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🔍 Market Research</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Business Idea/Product</label>
+                            <textarea id="research-idea" placeholder="Describe your business idea, product, or service...">AI-powered fitness tracking app for busy professionals</textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Target Market</label>
+                                <input type="text" id="research-market" value="Busy professionals aged 25-45" placeholder="e.g., Young professionals, Parents, etc.">
+                            </div>
+                            <div class="form-group">
+                                <label>Budget Range</label>
+                                <select id="research-budget">
+                                    <option value="5000-15000">$5,000 - $15,000</option>
+                                    <option value="15000-50000">$15,000 - $50,000</option>
+                                    <option value="50000-100000">$50,000 - $100,000</option>
+                                    <option value="100000+">$100,000+</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="conductMarketResearch()">Start Market Research</button>
+                        <button class="btn btn-secondary" onclick="getResearchResults()">Get Research Results</button>
+
+                        <div class="response-container" id="research-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Research Results:</strong>
+                                <span id="research-status"></span>
+                            </div>
+                            <div class="response-content" id="research-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Interview Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🗣️ Customer Interview</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="sample-data">
+                            <h4>📌 Sample Research ID</h4>
+                            <p><strong>latest</strong> - Use this to start an interview based on the most recent research</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Research ID</label>
+                            <input type="text" id="interview-research-id" value="latest" placeholder="Enter research ID or 'latest'">
+                        </div>
+                        <button class="btn" onclick="startInterview()">Start Interview</button>
+                        <button class="btn btn-secondary" onclick="simulateInterview()">Simulate Complete Interview</button>
+
+                        <div class="response-container" id="interview-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Interview Progress:</strong>
+                                <span id="interview-status"></span>
+                            </div>
+                            <div class="response-content" id="interview-response"></div>
+                        </div>
+
+                        <div id="interview-questions" style="display: none;">
+                            <div class="form-group">
+                                <label>Current Question</label>
+                                <div id="current-question" style="background: #f0f9ff; padding: 15px; border-radius: 6px; border-left: 4px solid #0284c7; margin-bottom: 10px;"></div>
+                                <textarea id="interview-answer" placeholder="Type your answer here..." rows="3"></textarea>
+                            </div>
+                            <button class="btn" onclick="submitAnswer()">Submit Answer</button>
+                            <button class="btn btn-secondary" onclick="completeInterview()">Complete Interview</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GTM Report Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>📋 Go-to-Market Report</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Research ID</label>
+                                <input type="text" id="report-research-id" value="latest" placeholder="Enter research ID">
+                            </div>
+                            <div class="form-group">
+                                <label>Interview ID</label>
+                                <input type="text" id="report-interview-id" value="latest" placeholder="Enter interview ID">
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="report-detailed" checked>
+                            <label for="report-detailed">Generate Detailed Report</label>
+                        </div>
+                        <button class="btn" onclick="generateGTMReport()">Generate Report</button>
+                        <button class="btn btn-secondary" onclick="previewReport()">Preview Report</button>
+                        <button class="btn btn-success" onclick="checkReportHealth()">Service Health</button>
+
+                        <div class="response-container" id="report-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Report Status:</strong>
+                                <span id="report-status"></span>
+                            </div>
+                            <div class="response-content" id="report-response"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 2 - Executor -->
+        <div class="module-content" id="module2">
+            <div class="module-header">
+                <h2>📤 Module 2 - Executor</h2>
+                <p>Landing Page Generation, E-commerce Setup, and Creative Assets</p>
+            </div>
+
+            <div class="module-sections">
+                <!-- Landing Page Generation Section -->
+                <div class="section active">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🌐 Landing Page Generation</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="sample-data">
+                            <h4>📌 Sample Report ID</h4>
+                            <p><strong>123e4567-e89b-12d3-a456-426614174000</strong> - Fitness App GTM Report</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>GTM Report ID</label>
+                                <input type="text" id="landing-report-id" value="123e4567-e89b-12d3-a456-426614174000" placeholder="Enter GTM report UUID">
+                            </div>
+                            <div class="form-group">
+                                <label>Page Type</label>
+                                <select id="landing-page-type">
+                                    <option value="landing_page">Landing Page</option>
+                                    <option value="sales_page">Sales Page</option>
+                                    <option value="product_page">Product Page</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="landing-brand-assets">
+                            <label for="landing-brand-assets">Include Brand Assets</label>
+                        </div>
+                        <button class="btn" onclick="generateLandingPage()">Generate Landing Page</button>
+                        <button class="btn btn-secondary" onclick="getLandingPages()">View Generated Pages</button>
+                        <button class="btn btn-success" onclick="checkLandingHealth()">Service Health</button>
+
+                        <div class="response-container" id="landing-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Landing Page Results:</strong>
+                                <span id="landing-status"></span>
+                            </div>
+                            <div class="response-content" id="landing-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shopify Integration Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🛍️ Shopify Integration</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Store Name</label>
+                            <input type="text" id="shopify-store" value="nexspark-test" placeholder="Enter Shopify store name">
+                        </div>
+                        <div class="form-group">
+                            <label>Product Name</label>
+                            <input type="text" id="shopify-product" value="AI Fitness Tracker" placeholder="Enter product name">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Price</label>
+                                <input type="number" id="shopify-price" value="99.99" placeholder="Product price">
+                            </div>
+                            <div class="form-group">
+                                <label>Inventory</label>
+                                <input type="number" id="shopify-inventory" value="100" placeholder="Stock quantity">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="createShopifyProduct()">Create Product</button>
+                        <button class="btn btn-secondary" onclick="getShopifyProducts()">View Products</button>
+                        <button class="btn btn-warning" onclick="setupShopifyStore()">Setup Store</button>
+                        <button class="btn btn-success" onclick="checkShopifyHealth()">Service Health</button>
+
+                        <div class="response-container" id="shopify-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Shopify Results:</strong>
+                                <span id="shopify-status"></span>
+                            </div>
+                            <div class="response-content" id="shopify-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Creative Generation Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🎨 Creative Generation</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Upload Product Image</label>
+                            <input type="file" id="creative-image" accept="image/*">
+                            <small>Upload a product image to generate video creative</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Creative Prompt</label>
+                            <textarea id="creative-prompt" placeholder="Describe the creative concept...">Modern fitness app showcase with dynamic animations</textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Duration (seconds)</label>
+                                <select id="creative-duration">
+                                    <option value="3">3 seconds</option>
+                                    <option value="5" selected>5 seconds</option>
+                                    <option value="10">10 seconds</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Aspect Ratio</label>
+                                <select id="creative-ratio">
+                                    <option value="16:9">16:9 (Landscape)</option>
+                                    <option value="9:16" selected>9:16 (Portrait)</option>
+                                    <option value="1:1">1:1 (Square)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="generateCreative()">Generate Video Creative</button>
+                        <button class="btn btn-secondary" onclick="getCreatives()">View Creatives</button>
+                        <button class="btn btn-secondary" onclick="checkCreativeStatus()">Check Status</button>
+
+                        <div class="response-container" id="creative-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Creative Results:</strong>
+                                <span id="creative-status"></span>
+                            </div>
+                            <div class="response-content" id="creative-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain Management Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🌐 Domain Management</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Domain Name</label>
+                                <input type="text" id="domain-name" value="nexspark-test.com" placeholder="Enter domain name">
+                            </div>
+                            <div class="form-group">
+                                <label>Domain Provider</label>
+                                <select id="domain-provider">
+                                    <option value="dnsimple">DNSimple</option>
+                                    <option value="namesilo">NameSilo</option>
+                                    <option value="mock" selected>Mock Provider</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="checkDomainAvailability()">Check Availability</button>
+                        <button class="btn btn-secondary" onclick="purchaseDomain()">Purchase Domain</button>
+                        <button class="btn btn-warning" onclick="configureDNS()">Configure DNS</button>
+
+                        <div class="response-container" id="domain-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Domain Results:</strong>
+                                <span id="domain-status"></span>
+                            </div>
+                            <div class="response-content" id="domain-response"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 3 - Advertiser -->
+        <div class="module-content" id="module3">
+            <div class="module-header">
+                <h2>📢 Module 3 - Advertiser</h2>
+                <p>Campaign Management, OAuth Authentication, and Advertising Platform Integration</p>
+            </div>
+
+            <div class="module-sections">
+                <!-- Campaign Management Section -->
+                <div class="section active">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🎯 Campaign Management</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="sample-data">
+                            <h4>📌 Sample Campaign ID</h4>
+                            <p><strong>c767d5d1-521c-42a4-b660-67671077a29a</strong> - Test Meta Campaign</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Campaign Name</label>
+                                <input type="text" id="campaign-name" value="Fitness App Launch Campaign" placeholder="Enter campaign name">
+                            </div>
+                            <div class="form-group">
+                                <label>Platform</label>
+                                <select id="campaign-platform">
+                                    <option value="meta">Meta (Facebook/Instagram)</option>
+                                    <option value="google">Google Ads</option>
+                                    <option value="both">Both Platforms</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Daily Budget ($)</label>
+                                <input type="number" id="campaign-budget" value="50" placeholder="Daily budget">
+                            </div>
+                            <div class="form-group">
+                                <label>Target Audience</label>
+                                <input type="text" id="campaign-audience" value="Fitness enthusiasts, 25-45" placeholder="Describe target audience">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="createCampaign()">Create Campaign</button>
+                        <button class="btn btn-secondary" onclick="getCampaigns()">View Campaigns</button>
+                        <button class="btn btn-warning" onclick="getCampaignPerformance()">Campaign Performance</button>
+
+                        <div class="response-container" id="campaign-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Campaign Results:</strong>
+                                <span id="campaign-status"></span>
+                            </div>
+                            <div class="response-content" id="campaign-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OAuth Authentication Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🔐 OAuth Authentication</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label>Current OAuth Status</label>
+                            <div id="oauth-status" style="background: #f0f9ff; padding: 12px; border-radius: 6px; border-left: 4px solid #0284c7;">
+                                Click "Check Status" to verify authentication status
+                            </div>
+                        </div>
+                        <button class="btn" onclick="checkOAuthStatus()">Check OAuth Status</button>
+                        <button class="btn btn-secondary" onclick="connectMeta()">Connect Meta Business</button>
+                        <button class="btn btn-secondary" onclick="connectGoogle()">Connect Google Ads</button>
+
+                        <div class="response-container" id="oauth-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>OAuth Results:</strong>
+                                <span id="oauth-status-indicator"></span>
+                            </div>
+                            <div class="response-content" id="oauth-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta Pixel Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>📊 Meta Pixel Integration</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Website URL</label>
+                                <input type="text" id="pixel-website" value="https://nexspark-test.com" placeholder="Enter website URL">
+                            </div>
+                            <div class="form-group">
+                                <label>Pixel Name</label>
+                                <input type="text" id="pixel-name" value="NexSpark Fitness App" placeholder="Enter pixel name">
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="pixel-auto-install" checked>
+                            <label for="pixel-auto-install">Auto-install pixel code</label>
+                        </div>
+                        <button class="btn" onclick="installMetaPixel()">Install Meta Pixel</button>
+                        <button class="btn btn-secondary" onclick="verifyPixel()">Verify Pixel</button>
+
+                        <div class="response-container" id="pixel-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Pixel Results:</strong>
+                                <span id="pixel-status"></span>
+                            </div>
+                            <div class="response-content" id="pixel-response"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 4 - Analyzer -->
+        <div class="module-content" id="module4">
+            <div class="module-header">
+                <h2>📊 Module 4 - Analyzer</h2>
+                <p>Performance Tracking, Campaign Optimization, Dashboards, and Automated Reports</p>
+            </div>
+
+            <div class="module-sections">
+                <!-- Performance Analytics Section -->
+                <div class="section active">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>📈 Performance Analytics</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="sample-data">
+                            <h4>📌 Sample Campaign ID</h4>
+                            <p><strong>c767d5d1-521c-42a4-b660-67671077a29a</strong> - Test Campaign (Meta)</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Campaign ID</label>
+                                <input type="text" id="perf-campaign-id" value="c767d5d1-521c-42a4-b660-67671077a29a" placeholder="Enter campaign UUID">
+                            </div>
+                            <div class="form-group">
+                                <label>Data Source</label>
+                                <select id="perf-data-source">
+                                    <option value="auto">Auto (Intelligent Selection)</option>
+                                    <option value="gomarble_mcp">GoMarble MCP</option>
+                                    <option value="direct_api">Direct API</option>
+                                    <option value="mock">Mock Data</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="perf-include-history">
+                            <label for="perf-include-history">Include Historical Data</label>
+                        </div>
+                        <button class="btn" onclick="getCampaignPerformanceData()">Get Performance Data</button>
+                        <button class="btn btn-secondary" onclick="getMultiCampaignPerformance()">Multi-Campaign Performance</button>
+
+                        <div class="response-container" id="perf-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Performance Results:</strong>
+                                <span id="perf-status"></span>
+                            </div>
+                            <div class="response-content" id="perf-response"></div>
+                        </div>
+
+                        <div class="metrics-grid" id="perf-metrics" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Campaign Optimization Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>⚡ Campaign Optimization</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-row">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="opt-auto-execute">
+                                <label for="opt-auto-execute">Auto Execute</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="opt-dry-run" checked>
+                                <label for="opt-dry-run">Dry Run Only</label>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="runCampaignOptimization()">Run Optimization</button>
+                        <button class="btn btn-secondary" onclick="getOptimizationRules()">View Rules</button>
+                        <button class="btn btn-success" onclick="runBulkOptimization()">Bulk Optimization</button>
+
+                        <div class="response-container" id="opt-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Optimization Results:</strong>
+                                <span id="opt-status"></span>
+                            </div>
+                            <div class="response-content" id="opt-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Analytics Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>📊 Dashboard Analytics</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="sample-data">
+                            <h4>📌 Sample User ID</h4>
+                            <p><strong>123e4567-e89b-12d3-a456-426614174000</strong> - Test User</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>User ID</label>
+                            <input type="text" id="dash-user-id" value="123e4567-e89b-12d3-a456-426614174000" placeholder="Enter user UUID">
+                        </div>
+                        <button class="btn" onclick="getDashboardData()">Get Dashboard Data</button>
+                        <button class="btn btn-secondary" onclick="getDashboardSummary()">Get Summary</button>
+                        <button class="btn btn-warning" onclick="updateDashboardConfig()">Update Config</button>
+
+                        <div class="response-container" id="dash-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Dashboard Results:</strong>
+                                <span id="dash-status"></span>
+                            </div>
+                            <div class="response-content" id="dash-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Health Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>🏥 System Health</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="health-include-history">
+                            <label for="health-include-history">Include Service History</label>
+                        </div>
+                        <button class="btn" onclick="getSystemHealth()">Get System Health</button>
+                        <button class="btn btn-secondary" onclick="triggerHealthCheck()">Manual Health Check</button>
+                        <button class="btn btn-warning" onclick="getHealthAlerts()">View Alerts</button>
+
+                        <div class="response-container" id="health-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Health Results:</strong>
+                                <span id="health-status"></span>
+                            </div>
+                            <div class="response-content" id="health-response"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Generation Section -->
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <h3>📋 Reports Generation</h3>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Report Type</label>
+                                <select id="report-type">
+                                    <option value="weekly_performance">Weekly Performance</option>
+                                    <option value="monthly_summary">Monthly Summary</option>
+                                    <option value="custom">Custom Report</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Format</label>
+                                <select id="report-format">
+                                    <option value="json">JSON</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="html">HTML</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="generateAnalyzerReport()">Generate Report</button>
+                        <button class="btn btn-secondary" onclick="getReportHistory()">Report History</button>
+
+                        <div class="response-container" id="analyzer-report-response-container" style="display: none;">
+                            <div class="response-header">
+                                <strong>Report Results:</strong>
+                                <span id="analyzer-report-status"></span>
+                            </div>
+                            <div class="response-content" id="analyzer-report-response"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentInterviewId = null;
+        let currentQuestionIndex = 0;
+
+        // Module switching
+        function switchModule(moduleId) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.module-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(moduleId).classList.add('active');
+        }
+
+        // Section toggling
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('active');
+        }
+
+        // Utility functions
+        function formatResponse(data) {
+            return JSON.stringify(data, null, 2);
+        }
+
+        function updateStatus(containerId, statusId, responseId, response, isError = false) {
+            document.getElementById(containerId).style.display = 'block';
+            document.getElementById(statusId).textContent = isError ? 'Error' : 'Success';
+            document.getElementById(statusId).className = isError ? 'status-error' : 'status-success';
+            document.getElementById(responseId).textContent = formatResponse(response);
+        }
+
+        function setLoading(button, isLoading) {
+            if (isLoading) {
+                button.classList.add('loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+
+        // MODULE 1 - STRATEGIST FUNCTIONS
+        async function conductMarketResearch() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    business_idea: document.getElementById('research-idea').value,
+                    target_market: document.getElementById('research-market').value,
+                    budget: document.getElementById('research-budget').value,
+                    research_depth: 'comprehensive'
+                };
+
+                const response = await fetch(`${API_BASE}/api/strategist/research`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('research-response-container', 'research-status', 'research-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('research-response-container', 'research-status', 'research-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getResearchResults() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/strategist/research/latest`);
+                const data = await response.json();
+                updateStatus('research-response-container', 'research-status', 'research-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('research-response-container', 'research-status', 'research-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function startInterview() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const researchId = document.getElementById('interview-research-id').value;
+
+                const response = await fetch(`${API_BASE}/api/strategist/interview/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ research_id: researchId })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.data) {
+                    currentInterviewId = data.data.interview_id;
+                    currentQuestionIndex = 0;
+                    showInterviewQuestion(data.data.questions[0]);
+                }
+
+                updateStatus('interview-response-container', 'interview-status', 'interview-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('interview-response-container', 'interview-status', 'interview-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        function showInterviewQuestion(question) {
+            document.getElementById('current-question').textContent = question;
+            document.getElementById('interview-questions').style.display = 'block';
+            document.getElementById('interview-answer').value = '';
+        }
+
+        async function submitAnswer() {
+            if (!currentInterviewId) {
+                alert('Please start an interview first');
+                return;
+            }
+
+            const answer = document.getElementById('interview-answer').value;
+            if (!answer.trim()) {
+                alert('Please provide an answer');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/strategist/interview/${currentInterviewId}/respond`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ response: answer })
+                });
+
+                const data = await response.json();
+
+                if (data.data && data.data.next_question) {
+                    currentQuestionIndex++;
+                    showInterviewQuestion(data.data.next_question);
+                } else {
+                    document.getElementById('interview-questions').style.display = 'none';
+                    alert('Interview completed!');
+                }
+
+                updateStatus('interview-response-container', 'interview-status', 'interview-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('interview-response-container', 'interview-status', 'interview-response', { error: error.message }, true);
+            }
+        }
+
+        async function simulateInterview() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                // Start interview
+                const researchId = document.getElementById('interview-research-id').value;
+                const startResponse = await fetch(`${API_BASE}/api/strategist/interview/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ research_id: researchId })
+                });
+
+                const startData = await startResponse.json();
+                if (!startResponse.ok) {
+                    updateStatus('interview-response-container', 'interview-status', 'interview-response', startData, true);
+                    setLoading(btn, false);
+                    return;
+                }
+
+                currentInterviewId = startData.data.interview_id;
+
+                // Simulate answers for each question
+                const sampleAnswers = [
+                    "I struggle to find time for fitness with my busy work schedule. I need something quick and effective.",
+                    "I'd want an app that can give me personalized 15-20 minute workouts I can do anywhere.",
+                    "The main problem is that most fitness apps require too much time or equipment I don't have.",
+                    "I'd pay around $9.99/month for an app that actually understands my schedule constraints.",
+                    "The app should track my progress and adapt to my available time each day."
+                ];
+
+                for (let i = 0; i < sampleAnswers.length; i++) {
+                    await fetch(`${API_BASE}/api/strategist/interview/${currentInterviewId}/respond`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ response: sampleAnswers[i] })
+                    });
+                }
+
+                // Complete the interview
+                const completeResponse = await fetch(`${API_BASE}/api/strategist/interview/${currentInterviewId}/complete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const completeData = await completeResponse.json();
+                updateStatus('interview-response-container', 'interview-status', 'interview-response', completeData, !completeResponse.ok);
+            } catch (error) {
+                updateStatus('interview-response-container', 'interview-status', 'interview-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function completeInterview() {
+            if (!currentInterviewId) {
+                alert('No active interview to complete');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/strategist/interview/${currentInterviewId}/complete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                document.getElementById('interview-questions').style.display = 'none';
+                updateStatus('interview-response-container', 'interview-status', 'interview-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('interview-response-container', 'interview-status', 'interview-response', { error: error.message }, true);
+            }
+        }
+
+        async function generateGTMReport() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    research_id: document.getElementById('report-research-id').value,
+                    interview_id: document.getElementById('report-interview-id').value,
+                    detailed: document.getElementById('report-detailed').checked
+                };
+
+                const response = await fetch(`${API_BASE}/api/strategist/reports/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('report-response-container', 'report-status', 'report-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('report-response-container', 'report-status', 'report-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function previewReport() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    research_id: document.getElementById('report-research-id').value,
+                    interview_id: document.getElementById('report-interview-id').value
+                };
+
+                const response = await fetch(`${API_BASE}/api/strategist/reports/preview`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('report-response-container', 'report-status', 'report-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('report-response-container', 'report-status', 'report-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function checkReportHealth() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/strategist/reports/health`);
+                const data = await response.json();
+                updateStatus('report-response-container', 'report-status', 'report-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('report-response-container', 'report-status', 'report-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        // MODULE 2 - EXECUTOR FUNCTIONS
+        async function generateLandingPage() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    report_id: document.getElementById('landing-report-id').value,
+                    page_type: document.getElementById('landing-page-type').value,
+                    include_brand_assets: document.getElementById('landing-brand-assets').checked
+                };
+
+                const response = await fetch(`${API_BASE}/api/executor/landing-pages/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('landing-response-container', 'landing-status', 'landing-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('landing-response-container', 'landing-status', 'landing-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getLandingPages() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/executor/landing-pages?limit=10`);
+                const data = await response.json();
+                updateStatus('landing-response-container', 'landing-status', 'landing-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('landing-response-container', 'landing-status', 'landing-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function checkLandingHealth() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/executor/landing-pages/health`);
+                const data = await response.json();
+                updateStatus('landing-response-container', 'landing-status', 'landing-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('landing-response-container', 'landing-status', 'landing-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function createShopifyProduct() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    store_name: document.getElementById('shopify-store').value,
+                    product_data: {
+                        name: document.getElementById('shopify-product').value,
+                        price: parseFloat(document.getElementById('shopify-price').value),
+                        inventory: parseInt(document.getElementById('shopify-inventory').value)
+                    }
+                };
+
+                const response = await fetch(`${API_BASE}/api/executor/shopify/products`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('shopify-response-container', 'shopify-status', 'shopify-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('shopify-response-container', 'shopify-status', 'shopify-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getShopifyProducts() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const storeName = document.getElementById('shopify-store').value;
+                const response = await fetch(`${API_BASE}/api/executor/shopify/products/${storeName}`);
+                const data = await response.json();
+                updateStatus('shopify-response-container', 'shopify-status', 'shopify-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('shopify-response-container', 'shopify-status', 'shopify-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function setupShopifyStore() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    store_name: document.getElementById('shopify-store').value,
+                    configuration: {
+                        theme: 'modern',
+                        payment_methods: ['stripe', 'paypal'],
+                        shipping_zones: ['domestic', 'international']
+                    }
+                };
+
+                const response = await fetch(`${API_BASE}/api/executor/shopify/setup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('shopify-response-container', 'shopify-status', 'shopify-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('shopify-response-container', 'shopify-status', 'shopify-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function checkShopifyHealth() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/executor/shopify/health`);
+                const data = await response.json();
+                updateStatus('shopify-response-container', 'shopify-status', 'shopify-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('shopify-response-container', 'shopify-status', 'shopify-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function generateCreative() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const fileInput = document.getElementById('creative-image');
+                const formData = new FormData();
+
+                if (fileInput.files[0]) {
+                    formData.append('image', fileInput.files[0]);
+                }
+                formData.append('prompt', document.getElementById('creative-prompt').value);
+                formData.append('duration', document.getElementById('creative-duration').value);
+                formData.append('aspect_ratio', document.getElementById('creative-ratio').value);
+                formData.append('research_id', '123e4567-e89b-12d3-a456-426614174000');
+
+                const response = await fetch(`${API_BASE}/api/executor/creative/generate`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                updateStatus('creative-response-container', 'creative-status', 'creative-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('creative-response-container', 'creative-status', 'creative-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getCreatives() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/executor/creative?limit=10`);
+                const data = await response.json();
+                updateStatus('creative-response-container', 'creative-status', 'creative-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('creative-response-container', 'creative-status', 'creative-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function checkCreativeStatus() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                // Use the latest creative ID from previous responses or a sample ID
+                const creativeId = 'sample-creative-id';
+                const response = await fetch(`${API_BASE}/api/executor/creative/${creativeId}/status`);
+                const data = await response.json();
+                updateStatus('creative-response-container', 'creative-status', 'creative-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('creative-response-container', 'creative-status', 'creative-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function checkDomainAvailability() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const domainName = document.getElementById('domain-name').value;
+                const response = await fetch(`${API_BASE}/api/executor/domains/check/${domainName}`);
+                const data = await response.json();
+                updateStatus('domain-response-container', 'domain-status', 'domain-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('domain-response-container', 'domain-status', 'domain-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function purchaseDomain() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    domain_name: document.getElementById('domain-name').value,
+                    provider: document.getElementById('domain-provider').value
+                };
+
+                const response = await fetch(`${API_BASE}/api/executor/domains/purchase`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('domain-response-container', 'domain-status', 'domain-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('domain-response-container', 'domain-status', 'domain-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function configureDNS() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    domain_name: document.getElementById('domain-name').value,
+                    dns_records: [
+                        { type: 'A', name: '@', value: '192.0.2.1' },
+                        { type: 'CNAME', name: 'www', value: 'example.com' }
+                    ]
+                };
+
+                const response = await fetch(`${API_BASE}/api/executor/domains/dns`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('domain-response-container', 'domain-status', 'domain-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('domain-response-container', 'domain-status', 'domain-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        // MODULE 3 - ADVERTISER FUNCTIONS
+        async function createCampaign() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    user_id: '123e4567-e89b-12d3-a456-426614174000',
+                    research_id: '123e4567-e89b-12d3-a456-426614174001',
+                    campaign_name: document.getElementById('campaign-name').value,
+                    platform: document.getElementById('campaign-platform').value,
+                    budget_daily: parseFloat(document.getElementById('campaign-budget').value),
+                    target_audience: document.getElementById('campaign-audience').value,
+                    creative_ids: ['sample-creative-1', 'sample-creative-2']
+                };
+
+                const response = await fetch(`${API_BASE}/api/advertiser/campaigns/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('campaign-response-container', 'campaign-status', 'campaign-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('campaign-response-container', 'campaign-status', 'campaign-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getCampaigns() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/advertiser/campaigns?user_id=123e4567-e89b-12d3-a456-426614174000&limit=10`);
+                const data = await response.json();
+                updateStatus('campaign-response-container', 'campaign-status', 'campaign-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('campaign-response-container', 'campaign-status', 'campaign-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getCampaignPerformance() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignId = 'c767d5d1-521c-42a4-b660-67671077a29a';
+                const response = await fetch(`${API_BASE}/api/advertiser/campaigns/${campaignId}/performance`);
+                const data = await response.json();
+                updateStatus('campaign-response-container', 'campaign-status', 'campaign-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('campaign-response-container', 'campaign-status', 'campaign-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function checkOAuthStatus() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/advertiser/auth/status`);
+                const data = await response.json();
+
+                // Update the status display
+                const statusDiv = document.getElementById('oauth-status');
+                if (response.ok && data.data) {
+                    const { meta, google } = data.data;
+                    statusDiv.innerHTML = `
+                        <div style="margin-bottom: 8px;">
+                            <span class="status-indicator ${meta.connected ? 'status-healthy' : 'status-critical'}"></span>
+                            Meta Business: ${meta.connected ? 'Connected' : 'Not Connected'}
+                        </div>
+                        <div>
+                            <span class="status-indicator ${google.connected ? 'status-healthy' : 'status-critical'}"></span>
+                            Google Ads: ${google.connected ? 'Connected' : 'Not Connected'}
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = '<span class="status-indicator status-critical"></span> Authentication status unavailable';
+                }
+
+                updateStatus('oauth-response-container', 'oauth-status-indicator', 'oauth-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('oauth-response-container', 'oauth-status-indicator', 'oauth-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function connectMeta() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/advertiser/auth/meta/connect`);
+                const data = await response.json();
+
+                if (response.ok && data.data && data.data.authorization_url) {
+                    window.open(data.data.authorization_url, '_blank');
+                    alert('OAuth flow initiated. Please complete the authorization in the new tab.');
+                }
+
+                updateStatus('oauth-response-container', 'oauth-status-indicator', 'oauth-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('oauth-response-container', 'oauth-status-indicator', 'oauth-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function connectGoogle() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/advertiser/auth/google/connect`);
+                const data = await response.json();
+
+                if (response.ok && data.data && data.data.authorization_url) {
+                    window.open(data.data.authorization_url, '_blank');
+                    alert('OAuth flow initiated. Please complete the authorization in the new tab.');
+                }
+
+                updateStatus('oauth-response-container', 'oauth-status-indicator', 'oauth-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('oauth-response-container', 'oauth-status-indicator', 'oauth-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function installMetaPixel() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const requestBody = {
+                    website_url: document.getElementById('pixel-website').value,
+                    pixel_name: document.getElementById('pixel-name').value,
+                    auto_install: document.getElementById('pixel-auto-install').checked
+                };
+
+                const response = await fetch(`${API_BASE}/api/advertiser/pixel/install`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('pixel-response-container', 'pixel-status', 'pixel-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('pixel-response-container', 'pixel-status', 'pixel-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function verifyPixel() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const websiteUrl = document.getElementById('pixel-website').value;
+                const response = await fetch(`${API_BASE}/api/advertiser/pixel/verify?website_url=${encodeURIComponent(websiteUrl)}`);
+                const data = await response.json();
+                updateStatus('pixel-response-container', 'pixel-status', 'pixel-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('pixel-response-container', 'pixel-status', 'pixel-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        // MODULE 4 - ANALYZER FUNCTIONS
+        async function getCampaignPerformanceData() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignId = document.getElementById('perf-campaign-id').value;
+                const dataSource = document.getElementById('perf-data-source').value;
+                const includeHistory = document.getElementById('perf-include-history').checked;
+
+                const params = new URLSearchParams();
+                if (dataSource !== 'auto') params.append('data_source', dataSource);
+                if (includeHistory) params.append('include_history', 'true');
+
+                const response = await fetch(`${API_BASE}/api/analyzer/performance/${campaignId}?${params}`);
+                const data = await response.json();
+
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', data, !response.ok);
+
+                if (response.ok && data.data && data.data.metrics) {
+                    displayPerformanceMetrics(data.data.metrics);
+                }
+            } catch (error) {
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        function displayPerformanceMetrics(metrics) {
+            const metricsGrid = document.getElementById('perf-metrics');
+            metricsGrid.innerHTML = '';
+            metricsGrid.style.display = 'grid';
+
+            const metricCards = [
+                { label: 'Impressions', value: metrics.impressions || 0 },
+                { label: 'Clicks', value: metrics.clicks || 0 },
+                { label: 'Conversions', value: metrics.conversions || 0 },
+                { label: 'Spend', value: '$' + (metrics.spend || 0) },
+                { label: 'Revenue', value: '$' + (metrics.revenue || 0) },
+                { label: 'CTR', value: (metrics.ctr || 0) + '%' },
+                { label: 'CPC', value: '$' + (metrics.cpc || 0) },
+                { label: 'ROAS', value: (metrics.roas || 0) + 'x' }
+            ];
+
+            metricCards.forEach(metric => {
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                card.innerHTML = `
+                    <div class="metric-value">${metric.value}</div>
+                    <div class="metric-label">${metric.label}</div>
+                `;
+                metricsGrid.appendChild(card);
+            });
+        }
+
+        async function getMultiCampaignPerformance() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = '123e4567-e89b-12d3-a456-426614174000';
+                const response = await fetch(`${API_BASE}/api/analyzer/performance?user_id=${userId}&aggregate=true`);
+                const data = await response.json();
+
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('perf-response-container', 'perf-status', 'perf-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function runCampaignOptimization() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignId = document.getElementById('perf-campaign-id').value;
+                const autoExecute = document.getElementById('opt-auto-execute').checked;
+                const dryRun = document.getElementById('opt-dry-run').checked;
+
+                const requestBody = {
+                    auto_execute: autoExecute,
+                    dry_run: dryRun,
+                    max_actions: 5
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/optimize/${campaignId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getOptimizationRules() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/analyzer/optimize/rules`);
+                const data = await response.json();
+
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function runBulkOptimization() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const campaignIds = [
+                    'c767d5d1-521c-42a4-b660-67671077a29a',
+                    'fba308df-0ab9-4fd0-9bf7-97c37e5b996b',
+                    '7ab8a1c0-38c9-4cf2-b401-8ebc87ea485e'
+                ];
+
+                const requestBody = {
+                    campaign_ids: campaignIds,
+                    auto_execute: false,
+                    dry_run: true,
+                    parallel: true
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/optimize/bulk`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('opt-response-container', 'opt-status', 'opt-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getDashboardData() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+                const response = await fetch(`${API_BASE}/api/analyzer/dashboard/${userId}`);
+                const data = await response.json();
+
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getDashboardSummary() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+                const response = await fetch(`${API_BASE}/api/analyzer/dashboard/${userId}/summary`);
+                const data = await response.json();
+
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function updateDashboardConfig() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+
+                const configUpdate = {
+                    layout: 'grid',
+                    theme: 'dark',
+                    auto_refresh: true,
+                    refresh_interval: 5,
+                    goal_revenue: 15000,
+                    notification_preferences: {
+                        email: true,
+                        push: true,
+                        sms: false
+                    }
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/dashboard/${userId}/config`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(configUpdate)
+                });
+
+                const data = await response.json();
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('dash-response-container', 'dash-status', 'dash-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getSystemHealth() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const includeHistory = document.getElementById('health-include-history').checked;
+
+                const params = new URLSearchParams();
+                if (includeHistory) params.append('include_history', 'true');
+
+                const response = await fetch(`${API_BASE}/api/analyzer/health/system?${params}`);
+                const data = await response.json();
+
+                updateStatus('health-response-container', 'health-status', 'health-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('health-response-container', 'health-status', 'health-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function triggerHealthCheck() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/analyzer/health/check`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                updateStatus('health-response-container', 'health-status', 'health-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('health-response-container', 'health-status', 'health-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getHealthAlerts() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/analyzer/health/alerts?hours=24&limit=50`);
+                const data = await response.json();
+
+                updateStatus('health-response-container', 'health-status', 'health-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('health-response-container', 'health-status', 'health-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function generateAnalyzerReport() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+                const reportType = document.getElementById('report-type').value;
+                const format = document.getElementById('report-format').value;
+
+                const today = new Date();
+                const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+                const requestBody = {
+                    user_id: userId,
+                    report_type: reportType,
+                    start_date: weekAgo.toISOString().split('T')[0] + 'T00:00:00Z',
+                    end_date: today.toISOString().split('T')[0] + 'T23:59:59Z',
+                    include_pdf: format === 'pdf',
+                    send_email: false
+                };
+
+                const response = await fetch(`${API_BASE}/api/analyzer/reports/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                updateStatus('analyzer-report-response-container', 'analyzer-report-status', 'analyzer-report-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('analyzer-report-response-container', 'analyzer-report-status', 'analyzer-report-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        async function getReportHistory() {
+            const btn = event.target;
+            setLoading(btn, true);
+
+            try {
+                const userId = document.getElementById('dash-user-id').value;
+                const response = await fetch(`${API_BASE}/api/analyzer/reports/history/${userId}?limit=20`);
+                const data = await response.json();
+
+                updateStatus('analyzer-report-response-container', 'analyzer-report-status', 'analyzer-report-response', data, !response.ok);
+            } catch (error) {
+                updateStatus('analyzer-report-response-container', 'analyzer-report-status', 'analyzer-report-response', { error: error.message }, true);
+            }
+
+            setLoading(btn, false);
+        }
+
+        // Initialize the interface
+        document.addEventListener('DOMContentLoaded', function() {
+            // Activate first section in each module
+            document.querySelectorAll('.module-content').forEach(module => {
+                const firstSection = module.querySelector('.section');
+                if (firstSection) {
+                    firstSection.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

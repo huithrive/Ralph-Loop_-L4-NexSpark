@@ -101,6 +101,7 @@ const campaignRoutes = require('./api/advertiser/campaign');
 const advertiserAuthRoutes = require('./api/advertiser/auth');
 const pixelRoutes = require('./api/advertiser/pixel');
 app.use('/api/advertiser/campaigns', campaignRoutes);
+app.use('/api/advertiser/campaign', campaignRoutes); // Support both singular and plural for backward compatibility
 app.use('/api/advertiser/auth', advertiserAuthRoutes);
 app.use('/api/advertiser/pixel', pixelRoutes);
 

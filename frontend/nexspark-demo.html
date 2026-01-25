@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSpark Platform Demo - AI-Powered E-Commerce Launch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .demo-header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .demo-header .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .demo-scenario {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .demo-scenario h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .demo-scenario p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+        }
+
+        .demo-btn.secondary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .demo-btn.secondary:hover {
+            box-shadow: 0 12px 35px rgba(79, 172, 254, 0.4);
+        }
+
+        .demo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .progress-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            margin-top: 20px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background: rgba(255,255,255,0.3);
+            z-index: 0;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            border: 2px solid rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .step-circle.active {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .step-circle.completed {
+            background: #4caf50;
+            border-color: #4caf50;
+        }
+
+        .step-circle.completed::before {
+            content: '✓';
+            font-size: 14px;
+        }
+
+        .step-label {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Module Cards */
+        .modules-container {
+            display: grid;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            overflow: hidden;
+            opacity: 0.6;
+            transition: all 0.5s ease;
+            transform: translateY(20px);
+        }
+
+        .module-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            box-shadow: 0 25px 80px rgba(0,0,0,0.15);
+        }
+
+        .module-header {
+            padding: 30px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .module-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .module-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .module-1 .module-icon { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .module-2 .module-icon { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .module-3 .module-icon { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .module-4 .module-icon { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+        .module-title h3 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .module-description {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .module-content {
+            padding: 30px;
+        }
+
+        .demo-output {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .loading-animation {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 3px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #64748b;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            } 40% {
+                transform: scale(1);
+            }
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #0369a1;
+            font-weight: 600;
+        }
+
+        .result-content {
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .success-indicator {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .demo-footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .demo-footer h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .demo-footer p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .demo-header h1 { font-size: 2.5rem; }
+            .demo-header .subtitle { font-size: 1.1rem; }
+            .demo-controls { flex-direction: column; align-items: center; }
+            .progress-steps { flex-direction: column; gap: 20px; }
+            .progress-step::after { display: none; }
+            .module-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="demo-header">
+            <h1>🚀 NexSpark Platform</h1>
+            <p class="subtitle">Complete AI-Powered E-Commerce Launch Platform</p>
+
+            <div class="demo-scenario">
+                <h3>🎯 Demo Scenario: HydroSmart Bottle Launch</h3>
+                <p>Watch as FitLife Technologies uses NexSpark to launch their new smart water bottle from concept to profitable ad campaigns in minutes. We'll conduct market research, validate the product through customer interviews, create a complete go-to-market strategy, build landing pages, set up e-commerce, launch advertising campaigns, and optimize performance—all powered by AI.</p>
+            </div>
+
+            <div class="demo-controls">
+                <button class="demo-btn" onclick="startFullDemo()">
+                    🎬 Start Complete Demo
+                </button>
+                <button class="demo-btn secondary" onclick="resetDemo()">
+                    🔄 Reset Demo
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <h2>Demo Progress</h2>
+                <div class="progress-steps">
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-1">1</div>
+                        <div class="step-label">Market Research</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-2">2</div>
+                        <div class="step-label">Customer Interview</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-3">3</div>
+                        <div class="step-label">GTM Strategy</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-4">4</div>
+                        <div class="step-label">Landing Page</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-5">5</div>
+                        <div class="step-label">E-Commerce</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-6">6</div>
+                        <div class="step-label">Ad Campaigns</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step-7">7</div>
+                        <div class="step-label">Performance</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modules -->
+        <div class="modules-container">
+            <!-- Module 1: Strategist -->
+            <div class="module-card module-1" id="module-1">
+                <div class="module-header">
+                    <div class="module-title">
+                        <div class="module-icon">🧠</div>
+                        <div>
+                            <h3>Module 1 - Strategist</h3>
+                            <p class="module-description">AI-powered market research and go-to-market strategy development</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div id="strategist-status">Ready to begin market research...</div>
+                    <div class="demo-output" id="strategist-output"></div>
+                </div>
+            </div>
+
+            <!-- Module 2: Executor -->
+            <div class="module-card module-2" id="module-2">
+                <div class="module-header">
+                    <div class="module-title">
+                        <div class="module-icon">📤</div>
+                        <div>
+                            <h3>Module 2 - Executor</h3>
+                            <p class="module-description">Landing page generation, e-commerce setup, and creative assets</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div id="executor-status">Waiting for strategy completion...</div>
+                    <div class="demo-output" id="executor-output"></div>
+                </div>
+            </div>
+
+            <!-- Module 3: Advertiser -->
+            <div class="module-card module-3" id="module-3">
+                <div class="module-header">
+                    <div class="module-title">
+                        <div class="module-icon">📢</div>
+                        <div>
+                            <h3>Module 3 - Advertiser</h3>
+                            <p class="module-description">Multi-platform advertising campaign management and optimization</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div id="advertiser-status">Waiting for assets and setup...</div>
+                    <div class="demo-output" id="advertiser-output"></div>
+                </div>
+            </div>
+
+            <!-- Module 4: Analyzer -->
+            <div class="module-card module-4" id="module-4">
+                <div class="module-header">
+                    <div class="module-title">
+                        <div class="module-icon">📊</div>
+                        <div>
+                            <h3>Module 4 - Analyzer</h3>
+                            <p class="module-description">Real-time performance tracking, optimization, and automated reporting</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div id="analyzer-status">Waiting for campaign launch...</div>
+                    <div class="demo-output" id="analyzer-output"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Footer -->
+        <div class="demo-footer">
+            <h3>🎉 Complete E-Commerce Launch in Minutes</h3>
+            <p>From market research to profitable campaigns, NexSpark's AI-powered platform automates the entire e-commerce launch process. Watch as complex workflows that typically take weeks are completed in minutes with intelligent automation.</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentStep = 0;
+        let demoData = {};
+
+        // Demo scenario data
+        const DEMO_SCENARIO = {
+            company: "FitLife Technologies",
+            product: "HydroSmart Bottle",
+            description: "Smart water bottle with hydration tracking, temperature control, and mobile app integration",
+            targetMarket: "Fitness enthusiasts and health-conscious professionals aged 25-45",
+            budget: "15000-50000",
+            userId: "123e4567-e89b-12d3-a456-426614174000"
+        };
+
+        function updateProgress(stepNum) {
+            // Reset all steps
+            for (let i = 1; i <= 7; i++) {
+                const step = document.getElementById(`step-${i}`);
+                step.classList.remove('active', 'completed');
+                if (i < stepNum) {
+                    step.classList.add('completed');
+                    step.textContent = '';
+                } else if (i === stepNum) {
+                    step.classList.add('active');
+                    step.textContent = i;
+                } else {
+                    step.textContent = i;
+                }
+            }
+        }
+
+        function activateModule(moduleNum) {
+            // Deactivate all modules
+            document.querySelectorAll('.module-card').forEach(module => {
+                module.classList.remove('active');
+            });
+
+            // Activate current module
+            document.getElementById(`module-${moduleNum}`).classList.add('active');
+        }
+
+        function showLoading(outputId) {
+            const output = document.getElementById(outputId);
+            output.innerHTML = `
+                <div class="loading-animation">
+                    <span>Processing</span>
+                    <div class="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showSuccess(outputId, content) {
+            const output = document.getElementById(outputId);
+            output.innerHTML = `
+                <div class="result-card">
+                    <div class="result-header">
+                        <span>✅</span>
+                        <span class="success-indicator">Completed Successfully</span>
+                    </div>
+                    <div class="result-content">${content}</div>
+                </div>
+            `;
+        }
+
+        async function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function startFullDemo() {
+            document.querySelector('.demo-btn').disabled = true;
+            currentStep = 1;
+
+            // Step 1: Market Research
+            await runMarketResearch();
+            await delay(2000);
+
+            // Step 2: Customer Interview
+            await runCustomerInterview();
+            await delay(2000);
+
+            // Step 3: Generate GTM Report
+            await generateGTMReport();
+            await delay(2000);
+
+            // Step 4: Landing Page Generation
+            await generateLandingPage();
+            await delay(2000);
+
+            // Step 5: E-commerce Setup
+            await setupEcommerce();
+            await delay(2000);
+
+            // Step 6: Launch Campaigns
+            await launchCampaigns();
+            await delay(2000);
+
+            // Step 7: Performance Analytics
+            await showPerformance();
+
+            document.querySelector('.demo-btn').disabled = false;
+        }
+
+        async function runMarketResearch() {
+            currentStep = 1;
+            updateProgress(1);
+            activateModule(1);
+
+            document.getElementById('strategist-status').textContent = 'Conducting AI-powered market research...';
+            showLoading('strategist-output');
+
+            try {
+                const requestBody = {
+                    business_idea: `${DEMO_SCENARIO.product}: ${DEMO_SCENARIO.description}`,
+                    target_market: DEMO_SCENARIO.targetMarket,
+                    budget: DEMO_SCENARIO.budget,
+                    research_depth: 'comprehensive'
+                };
+
+                const response = await fetch(`${API_BASE}/api/strategist/research`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.data) {
+                    demoData.researchId = data.data.research_id;
+                    const market = data.data.market_analysis;
+
+                    const content = `
+                        <strong>Market Analysis Complete</strong><br>
+                        • Market Size: ${market.market_size_estimate}<br>
+                        • Competition Level: ${market.competition_level}<br>
+                        • Key Opportunities: ${market.opportunities?.slice(0, 2).join(', ')}<br>
+                        • Recommended Positioning: Health & wellness technology leader
+                    `;
+
+                    showSuccess('strategist-output', content);
+                    document.getElementById('strategist-status').innerHTML = '<span class="success-indicator">✅ Market research completed</span>';
+                } else {
+                    throw new Error('Research failed');
+                }
+            } catch (error) {
+                console.log('Using demo data for research');
+                demoData.researchId = 'demo-research-id';
+
+                const content = `
+                    <strong>Market Analysis Complete</strong><br>
+                    • Market Size: $2.8B (Smart water bottle market)<br>
+                    • Competition Level: Moderate with innovation opportunities<br>
+                    • Key Opportunities: Health tracking integration, subscription services<br>
+                    • Recommended Positioning: Premium smart hydration solution
+                `;
+
+                showSuccess('strategist-output', content);
+                document.getElementById('strategist-status').innerHTML = '<span class="success-indicator">✅ Market research completed</span>';
+            }
+        }
+
+        async function runCustomerInterview() {
+            currentStep = 2;
+            updateProgress(2);
+
+            document.getElementById('strategist-status').textContent = 'Running AI customer interviews...';
+            showLoading('strategist-output');
+
+            // Simulate interview process
+            await delay(3000);
+
+            const content = `
+                <strong>Customer Interview Insights</strong><br>
+                • Key Pain Point: "I forget to drink water and want better hydration tracking"<br>
+                • Price Sensitivity: Willing to pay $89-$129 for smart features<br>
+                • Must-Have Features: App integration, battery life, easy cleaning<br>
+                • Purchase Triggers: Health benefits, convenience, technology integration<br>
+                • Target Audience Validation: ✅ Confirmed fit for fitness enthusiasts
+            `;
+
+            showSuccess('strategist-output', content);
+            document.getElementById('strategist-status').innerHTML = '<span class="success-indicator">✅ Customer interviews completed</span>';
+        }
+
+        async function generateGTMReport() {
+            currentStep = 3;
+            updateProgress(3);
+
+            document.getElementById('strategist-status').textContent = 'Generating comprehensive GTM strategy...';
+            showLoading('strategist-output');
+
+            try {
+                const requestBody = {
+                    research_id: demoData.researchId || 'demo-research-id',
+                    interview_id: 'demo-interview-id',
+                    detailed: true
+                };
+
+                const response = await fetch(`${API_BASE}/api/strategist/reports/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.data) {
+                    demoData.reportId = data.data.report_id;
+
+                    const content = `
+                        <strong>Go-to-Market Strategy Ready</strong><br>
+                        • Launch Strategy: Direct-to-consumer with influencer partnerships<br>
+                        • Pricing: $99 retail with early bird $79 pricing<br>
+                        • Marketing Channels: Instagram, TikTok, Google Ads, fitness blogs<br>
+                        • Revenue Projection: $250K in first 6 months<br>
+                        • Key Success Metrics: 15% conversion rate, 4.2x ROAS target
+                    `;
+
+                    showSuccess('strategist-output', content);
+                } else {
+                    throw new Error('Report generation failed');
+                }
+            } catch (error) {
+                console.log('Using demo data for GTM report');
+                demoData.reportId = 'demo-report-id';
+
+                const content = `
+                    <strong>Go-to-Market Strategy Ready</strong><br>
+                    • Launch Strategy: Direct-to-consumer with influencer partnerships<br>
+                    • Pricing: $99 retail with early bird $79 pricing<br>
+                    • Marketing Channels: Instagram, TikTok, Google Ads, fitness blogs<br>
+                    • Revenue Projection: $250K in first 6 months<br>
+                    • Key Success Metrics: 15% conversion rate, 4.2x ROAS target
+                `;
+
+                showSuccess('strategist-output', content);
+            }
+
+            document.getElementById('strategist-status').innerHTML = '<span class="success-indicator">✅ GTM strategy completed</span>';
+        }
+
+        async function generateLandingPage() {
+            currentStep = 4;
+            updateProgress(4);
+            activateModule(2);
+
+            document.getElementById('executor-status').textContent = 'Generating high-converting landing page...';
+            showLoading('executor-output');
+
+            try {
+                const requestBody = {
+                    report_id: demoData.reportId || 'demo-report-id',
+                    page_type: 'landing_page',
+                    include_brand_assets: true
+                };
+
+                const response = await fetch(`${API_BASE}/api/executor/landing-pages/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.data) {
+                    const content = `
+                        <strong>Landing Page Generated</strong><br>
+                        • Page Type: High-converting product landing page<br>
+                        • Key Elements: Hero section, benefits, social proof, CTA<br>
+                        • Mobile Optimized: ✅ Responsive design<br>
+                        • Conversion Rate: Expected 12-18% based on industry benchmarks<br>
+                        • URL: <a href="#">hydrosmart-bottle.com</a>
+                    `;
+
+                    showSuccess('executor-output', content);
+                } else {
+                    throw new Error('Landing page generation failed');
+                }
+            } catch (error) {
+                const content = `
+                    <strong>Landing Page Generated</strong><br>
+                    • Page Type: High-converting product landing page<br>
+                    • Key Elements: Hero section, benefits, social proof, CTA<br>
+                    • Mobile Optimized: ✅ Responsive design<br>
+                    • Conversion Rate: Expected 12-18% based on industry benchmarks<br>
+                    • URL: <a href="#">hydrosmart-bottle.com</a>
+                `;
+
+                showSuccess('executor-output', content);
+            }
+
+            document.getElementById('executor-status').innerHTML = '<span class="success-indicator">✅ Landing page created</span>';
+        }
+
+        async function setupEcommerce() {
+            currentStep = 5;
+            updateProgress(5);
+
+            document.getElementById('executor-status').textContent = 'Setting up Shopify store and payment processing...';
+            showLoading('executor-output');
+
+            await delay(2500);
+
+            const content = `
+                <strong>E-Commerce Store Ready</strong><br>
+                • Shopify Store: fitlife-hydrosmart.myshopify.com<br>
+                • Payment Processing: Stripe + PayPal integration<br>
+                • Inventory: 500 units ready for launch<br>
+                • Shipping: 2-day delivery setup with tracking<br>
+                • Theme: Custom mobile-first design optimized for conversions
+            `;
+
+            showSuccess('executor-output', content);
+            document.getElementById('executor-status').innerHTML = '<span class="success-indicator">✅ E-commerce setup completed</span>';
+        }
+
+        async function launchCampaigns() {
+            currentStep = 6;
+            updateProgress(6);
+            activateModule(3);
+
+            document.getElementById('advertiser-status').textContent = 'Creating and launching ad campaigns...';
+            showLoading('advertiser-output');
+
+            try {
+                const requestBody = {
+                    user_id: DEMO_SCENARIO.userId,
+                    research_id: demoData.reportId || 'demo-report-id',
+                    campaign_name: `${DEMO_SCENARIO.product} Launch Campaign`,
+                    platform: 'both',
+                    budget_daily: 150,
+                    target_audience: DEMO_SCENARIO.targetMarket,
+                    creative_ids: ['demo-creative-1']
+                };
+
+                const response = await fetch(`${API_BASE}/api/advertiser/campaigns/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.data) {
+                    demoData.campaignId = data.data.campaign_id;
+
+                    const content = `
+                        <strong>Ad Campaigns Launched</strong><br>
+                        • Meta Ads: $100/day targeting fitness enthusiasts<br>
+                        • Google Ads: $50/day for search keywords<br>
+                        • Audience Size: 2.3M potential customers<br>
+                        • Creative Assets: 5 video ads + 10 image variations<br>
+                        • Campaign ID: ${data.data.campaign_id}
+                    `;
+
+                    showSuccess('advertiser-output', content);
+                } else {
+                    throw new Error('Campaign creation failed');
+                }
+            } catch (error) {
+                demoData.campaignId = 'demo-campaign-id';
+
+                const content = `
+                    <strong>Ad Campaigns Launched</strong><br>
+                    • Meta Ads: $100/day targeting fitness enthusiasts<br>
+                    • Google Ads: $50/day for search keywords<br>
+                    • Audience Size: 2.3M potential customers<br>
+                    • Creative Assets: 5 video ads + 10 image variations<br>
+                    • Status: ✅ Active and optimizing
+                `;
+
+                showSuccess('advertiser-output', content);
+            }
+
+            document.getElementById('advertiser-status').innerHTML = '<span class="success-indicator">✅ Campaigns launched</span>';
+        }
+
+        async function showPerformance() {
+            currentStep = 7;
+            updateProgress(7);
+            activateModule(4);
+
+            document.getElementById('analyzer-status').textContent = 'Analyzing performance and optimizing campaigns...';
+            showLoading('analyzer-output');
+
+            await delay(3000);
+
+            // Show comprehensive performance metrics
+            const metricsHTML = `
+                <div class="result-card">
+                    <div class="result-header">
+                        <span>📊</span>
+                        <span class="success-indicator">Live Performance Dashboard</span>
+                    </div>
+                    <div class="result-content">
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value">42,347</div>
+                                <div class="metric-label">Impressions</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">1,892</div>
+                                <div class="metric-label">Clicks</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">287</div>
+                                <div class="metric-label">Conversions</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">4.47%</div>
+                                <div class="metric-label">CTR</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">15.2%</div>
+                                <div class="metric-label">Conversion Rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">4.8x</div>
+                                <div class="metric-label">ROAS</div>
+                            </div>
+                        </div>
+                        <br>
+                        <strong>AI Optimizations Applied:</strong><br>
+                        • Increased budget on best-performing ad creative (+25%)<br>
+                        • Expanded targeting to similar fitness enthusiast segments<br>
+                        • Adjusted bidding strategy for peak conversion hours<br>
+                        • A/B testing new landing page variant
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('analyzer-output').innerHTML = metricsHTML;
+            document.getElementById('analyzer-status').innerHTML = '<span class="success-indicator">✅ Performance tracking active</span>';
+
+            // Final success state
+            updateProgress(8); // Completion
+        }
+
+        function resetDemo() {
+            currentStep = 0;
+            demoData = {};
+
+            // Reset progress
+            for (let i = 1; i <= 7; i++) {
+                const step = document.getElementById(`step-${i}`);
+                step.classList.remove('active', 'completed');
+                step.textContent = i;
+            }
+
+            // Reset modules
+            document.querySelectorAll('.module-card').forEach(module => {
+                module.classList.remove('active');
+            });
+
+            // Reset content
+            document.getElementById('strategist-status').textContent = 'Ready to begin market research...';
+            document.getElementById('executor-status').textContent = 'Waiting for strategy completion...';
+            document.getElementById('advertiser-status').textContent = 'Waiting for assets and setup...';
+            document.getElementById('analyzer-status').textContent = 'Waiting for campaign launch...';
+
+            document.querySelectorAll('.demo-output').forEach(output => {
+                output.innerHTML = '';
+            });
+
+            document.querySelector('.demo-btn').disabled = false;
+        }
+
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            resetDemo();
+        });
+    </script>
+</body>
+</html>

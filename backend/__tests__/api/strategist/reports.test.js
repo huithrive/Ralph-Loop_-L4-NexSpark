@@ -209,7 +209,7 @@ describe('Reports API', () => {
 
   describe('POST /api/strategist/reports/preview', () => {
     const validRequest = {
-      researchId: '123e4567-e89b-12d3-a456-426614174000'
+      researchId: '123e4567-e89b-42d3-a456-426614174000'
     };
 
     const mockPreview = {
@@ -284,7 +284,7 @@ describe('Reports API', () => {
 
   describe('POST /api/strategist/reports/validate-inputs', () => {
     const validRequest = {
-      researchId: '123e4567-e89b-12d3-a456-426614174000'
+      researchId: '123e4567-e89b-42d3-a456-426614174000'
     };
 
     test('should validate inputs successfully', async () => {
@@ -383,7 +383,7 @@ describe('Reports API', () => {
   });
 
   describe('GET /api/strategist/reports/data-synthesis/:researchId', () => {
-    const researchId = '123e4567-e89b-12d3-a456-426614174000';
+    const researchId = '123e4567-e89b-42d3-a456-426614174000';
 
     const mockContext = {
       business: {
