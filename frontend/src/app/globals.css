@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+:root {
+  /* Primary Colors */
+  --primary-gold: #FF9C00;
+  --primary-blue: #99CCFF;
+  --primary-purple: #CC99CC;
+
+  /* Background Colors */
+  --bg-primary: #000000;
+  --bg-surface: rgba(20, 20, 25, 0.9);
+  --bg-card: rgba(30, 30, 35, 0.8);
+  --bg-modal: rgba(0, 0, 0, 0.95);
+
+  /* Text Colors */
+  --text-primary: #99CCFF;
+  --text-secondary: #FFFFFF;
+  --text-muted: rgba(153, 204, 255, 0.7);
+
+  /* Functional Colors */
+  --success: #00CC66;
+  --warning: #FF9C00;
+  --error: #CC3333;
+  --info: #99CCFF;
+
+  /* Borders & Accents */
+  --border-gold: #FF9C00;
+  --border-blue: #99CCFF;
+  --border-subtle: rgba(153, 204, 255, 0.2);
+}
+
+/* Base Styling */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(20, 20, 25, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-gold);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 156, 0, 0.8);
+}
+
+/* Animations */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px currentColor; }
+  50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(-10px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Utility Classes */
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-glow { animation: glow 2s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-slide-in { animation: slide-in 0.3s ease-out; }
+.animate-fade-in { animation: fade-in 0.3s ease-out; }
+
+/* Focus Styles */
+.focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 156, 0, 0.3);
+}
+
+/* Glow Effects */
+.shadow-glow-gold {
+  box-shadow: 0 0 20px rgba(255, 156, 0, 0.3);
+}
+
+.shadow-glow-blue {
+  box-shadow: 0 0 20px rgba(153, 204, 255, 0.3);
+}
+
+.shadow-glow-purple {
+  box-shadow: 0 0 20px rgba(204, 153, 204, 0.3);
+}
