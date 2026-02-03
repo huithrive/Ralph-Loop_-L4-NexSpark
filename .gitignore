@@ -8,7 +8,6 @@ build/
 out/
 *.log
 .goose/
-IMPLEMENTATION_PLAN.md
 coverage/
 .DS_Store
 .vscode/
