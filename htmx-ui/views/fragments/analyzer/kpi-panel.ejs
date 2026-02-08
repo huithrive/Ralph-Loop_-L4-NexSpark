@@ -1,0 +1,5 @@
+<div class="grid-4 animate-fade-in">
+  <% Object.values(kpis).forEach(function(kpi) { %>
+    <%- include('../../partials/_kpi-card', { kpi }) %>
+  <% }); %>
+</div>

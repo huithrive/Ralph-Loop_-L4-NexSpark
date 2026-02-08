@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/_head') %>
+</head>
+<body hx-boost="true">
+  <div class="app-shell">
+    <%- include('partials/_sidebar', { currentPage }) %>
+    <%- include('partials/_header', { headerTitle, breadcrumb }) %>
+    <main class="main-content" id="main-content">
+      <%- body %>
+    </main>
+  </div>
+  <%- include('partials/_toast') %>
+  <script src="/js/htmx-helpers.js"></script>
+</body>
+</html>

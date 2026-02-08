@@ -1,0 +1,19 @@
+<div class="animate-fade-in">
+  <div class="grid-3 mb-4">
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">Pixel ID</div>
+      <div class="text-mono text-white font-bold"><%= pixel.pixelId %></div>
+    </div>
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">Status</div>
+      <div class="flex items-center gap-2">
+        <span class="status-dot" style="width: 6px; height: 6px;"></span>
+        <span class="text-success font-bold"><%= pixel.status %></span>
+      </div>
+    </div>
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">Events (24h)</div>
+      <div class="text-gold font-bold text-lg"><%= pixel.eventsLast24h.toLocaleString() %></div>
+    </div>
+  </div>
+</div>

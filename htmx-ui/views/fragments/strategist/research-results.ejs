@@ -1,0 +1,92 @@
+<div class="animate-fade-in">
+  <div class="card mb-6">
+    <div class="card-header">
+      <h3 class="card-title">Research Results: <%= result.productName %></h3>
+      <span class="badge badge-success">Complete</span>
+    </div>
+
+    <div class="grid-3 mb-6">
+      <div class="kpi-card">
+        <div class="kpi-label">Market Size</div>
+        <div class="kpi-value" style="font-size: 1.5rem;"><%= result.marketSize %></div>
+        <div class="text-muted text-sm"><%= result.growthRate %></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Competitors Analyzed</div>
+        <div class="kpi-value" style="font-size: 1.5rem;"><%= result.competitors.length %></div>
+        <div class="text-muted text-sm">Top players identified</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Recommended Channels</div>
+        <div class="kpi-value" style="font-size: 1.5rem;"><%= result.channels.length %></div>
+        <div class="text-muted text-sm">Prioritized by impact</div>
+      </div>
+    </div>
+
+    <h4 class="card-title mb-4">Competitor Analysis</h4>
+    <div class="table-wrap mb-6">
+      <table>
+        <thead>
+          <tr>
+            <th>Competitor</th>
+            <th>Strength</th>
+            <th>Weakness</th>
+            <th>Market Share</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% result.competitors.forEach(function(c) { %>
+            <tr>
+              <td class="font-bold text-white"><%= c.name %></td>
+              <td><%= c.strength %></td>
+              <td><%= c.weakness %></td>
+              <td class="text-gold font-bold"><%= c.share %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 class="card-title mb-4">Recommended Channels</h4>
+    <div class="mb-6">
+      <% result.channels.forEach(function(ch) { %>
+        <div class="flex items-center gap-4 mb-3" style="padding: 10px 0; border-bottom: 1px solid rgba(153,204,255,0.06);">
+          <span class="badge badge-<%= ch.priority === 'High' ? 'success' : ch.priority === 'Medium' ? 'warning' : 'info' %>"><%= ch.priority %></span>
+          <span class="font-bold text-white" style="min-width: 180px;"><%= ch.name %></span>
+          <span class="text-muted text-sm"><%= ch.reason %></span>
+        </div>
+      <% }); %>
+    </div>
+
+    <h4 class="card-title mb-4">Target Personas</h4>
+    <div class="grid-2 mb-6">
+      <% result.personas.forEach(function(p) { %>
+        <div class="card">
+          <div class="text-gold font-bold text-lg mb-2"><%= p.name %></div>
+          <div class="text-muted text-sm">Age: <%= p.age %> | Income: <%= p.income %></div>
+          <div class="text-sm mt-2"><%= p.traits %></div>
+        </div>
+      <% }); %>
+    </div>
+
+    <h4 class="card-title mb-4">Customer Pain Points</h4>
+    <div class="flex gap-2" style="flex-wrap: wrap;">
+      <% result.painPoints.forEach(function(pt) { %>
+        <span class="badge badge-purple"><%= pt %></span>
+      <% }); %>
+    </div>
+  </div>
+
+  <div class="flex gap-3">
+    <a class="btn btn-primary"
+       href="/strategist/interview"
+       hx-get="/strategist/interview"
+       hx-target="#main-content"
+       hx-push-url="true">Start Interview →</a>
+    <a class="btn btn-secondary"
+       href="/strategist/report"
+       hx-get="/strategist/report"
+       hx-target="#main-content"
+       hx-push-url="true">View Report</a>
+  </div>
+</div>

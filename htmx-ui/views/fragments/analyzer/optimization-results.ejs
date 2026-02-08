@@ -1,0 +1,16 @@
+<div class="animate-fade-in">
+  <% optimizations.forEach(function(opt) { %>
+    <div class="card mb-4">
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center gap-3">
+          <span class="badge badge-<%= opt.priority === 'high' ? 'success' : opt.priority === 'medium' ? 'warning' : 'info' %>"><%= opt.priority %> priority</span>
+          <span class="badge badge-neutral"><%= opt.type %></span>
+        </div>
+        <span class="text-gold font-bold text-sm"><%= opt.impact %></span>
+      </div>
+      <h4 class="text-white font-bold text-lg mb-2"><%= opt.title %></h4>
+      <p class="text-muted text-sm mb-4"><%= opt.description %></p>
+      <button class="btn btn-sm btn-primary" onclick="showToast('Optimization applied!', 'success')"><%= opt.action %></button>
+    </div>
+  <% }); %>
+</div>

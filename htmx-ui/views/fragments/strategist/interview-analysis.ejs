@@ -1,0 +1,51 @@
+<div class="animate-fade-in" id="question-container">
+  <div class="card mb-6">
+    <div class="card-header">
+      <h3 class="card-title">Interview Analysis Complete</h3>
+      <span class="badge badge-success">Score: <%= analysis.confidenceScore %>%</span>
+    </div>
+
+    <div class="grid-3 mb-6">
+      <div>
+        <h4 class="text-success font-bold uppercase text-sm mb-3">Strengths</h4>
+        <% analysis.strengths.forEach(function(s) { %>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-success">✓</span>
+            <span class="text-sm"><%= s %></span>
+          </div>
+        <% }); %>
+      </div>
+      <div>
+        <h4 class="text-gold font-bold uppercase text-sm mb-3">Opportunities</h4>
+        <% analysis.opportunities.forEach(function(o) { %>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-gold">◆</span>
+            <span class="text-sm"><%= o %></span>
+          </div>
+        <% }); %>
+      </div>
+      <div>
+        <h4 class="text-blue font-bold uppercase text-sm mb-3">Recommendations</h4>
+        <% analysis.recommendations.forEach(function(r) { %>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-blue">→</span>
+            <span class="text-sm"><%= r %></span>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <div class="flex gap-3">
+      <a class="btn btn-primary"
+         href="/strategist/report"
+         hx-get="/strategist/report"
+         hx-target="#main-content"
+         hx-push-url="true">Generate GTM Report →</a>
+      <a class="btn btn-secondary"
+         href="/strategist"
+         hx-get="/strategist"
+         hx-target="#main-content"
+         hx-push-url="true">Back to Research</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="grid-3 animate-fade-in">
+  <% connections.forEach(function(conn) { %>
+    <div class="card connection-card">
+      <div class="connection-icon"><%= conn.icon %></div>
+      <div class="connection-info">
+        <div class="connection-name"><%= conn.platform %></div>
+        <div class="connection-account"><%= conn.accountName %></div>
+        <div class="text-muted text-xs mt-2">Last sync: <%= conn.lastSync %></div>
+      </div>
+      <div>
+        <div class="connection-status text-success">
+          <span class="status-dot" style="width: 6px; height: 6px;"></span>
+          <%= conn.status %>
+        </div>
+      </div>
+    </div>
+  <% }); %>
+</div>

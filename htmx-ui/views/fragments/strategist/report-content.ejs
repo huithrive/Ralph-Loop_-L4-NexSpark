@@ -1,0 +1,16 @@
+<div class="animate-fade-in">
+  <% report.sections.forEach(function(section, i) { %>
+    <details class="mb-4" <%= i === 0 ? 'open' : '' %>>
+      <summary class="collapsible-header">
+        <div class="flex items-center gap-3">
+          <span class="text-gold font-bold text-mono text-sm"><%= String(i + 1).padStart(2, '0') %></span>
+          <span class="section-title"><%= section.title %></span>
+        </div>
+        <span class="toggle-icon">▼</span>
+      </summary>
+      <div class="collapsible-body">
+        <p><%= section.content %></p>
+      </div>
+    </details>
+  <% }); %>
+</div>

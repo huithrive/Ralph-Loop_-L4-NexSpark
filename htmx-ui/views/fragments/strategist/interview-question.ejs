@@ -1,0 +1,29 @@
+<div class="question-card animate-fade-in" id="question-container">
+  <% if (previousResponse) { %>
+    <div class="lcars-accent mb-6" style="padding: 12px 20px; background: rgba(0,204,102,0.05); border-radius: var(--radius-lg);">
+      <div class="text-success text-xs font-bold uppercase tracking-wide mb-1">Previous Response Saved ✓</div>
+      <div class="text-sm text-muted"><%= previousResponse.substring(0, 120) %>...</div>
+    </div>
+  <% } %>
+
+  <div class="question-number">Question <%= step + 1 %> of <%= total %></div>
+  <div class="question-text"><%= question.question %></div>
+  <div class="question-hint"><%= question.hint %></div>
+
+  <form hx-post="/fragments/strategist/interview-question"
+        hx-target="#question-container"
+        hx-swap="outerHTML"
+        hx-indicator="#interview-spinner">
+    <input type="hidden" name="step" value="<%= step + 1 %>">
+    <div class="form-group">
+      <textarea name="response" class="form-textarea" rows="4" placeholder="Type your response here..."></textarea>
+    </div>
+    <div class="flex gap-3">
+      <% if (step + 1 >= total) { %>
+        <button type="submit" class="btn btn-success">Finish & Analyze</button>
+      <% } else { %>
+        <button type="submit" class="btn btn-primary">Next Question →</button>
+      <% } %>
+    </div>
+  </form>
+</div>

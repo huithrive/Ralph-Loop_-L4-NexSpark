@@ -1,0 +1,26 @@
+<header class="header">
+  <div class="header-left">
+    <button id="mobile-nav-toggle" class="btn-ghost btn-sm" style="display:none;">☰</button>
+    <div>
+      <div class="header-title"><%= headerTitle || 'Dashboard' %></div>
+      <% if (breadcrumb && breadcrumb.length) { %>
+        <div class="breadcrumb">
+          <% breadcrumb.forEach(function(item, i) { %>
+            <% if (i > 0) { %><span class="sep">/</span><% } %>
+            <% if (item.url) { %>
+              <a href="<%= item.url %>"><%= item.label %></a>
+            <% } else { %>
+              <span><%= item.label %></span>
+            <% } %>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-indicator">
+      <span class="status-dot"></span>
+      All Systems Online
+    </div>
+  </div>
+</header>

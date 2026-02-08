@@ -1,0 +1,113 @@
+<div class="animate-fade-in">
+  <div class="page-header">
+    <h1 class="page-title"><%= campaign.name %></h1>
+    <p class="page-subtitle">Deep-dive performance analysis</p>
+  </div>
+
+  <div class="grid-4 mb-6">
+    <div class="kpi-card">
+      <div class="kpi-label">Spend</div>
+      <div class="kpi-value" style="font-size: 1.5rem;"><%= campaign.spent %></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">ROAS</div>
+      <div class="kpi-value" style="font-size: 1.5rem;"><%= campaign.roas %></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CPA</div>
+      <div class="kpi-value" style="font-size: 1.5rem;"><%= campaign.cpa %></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Conversions</div>
+      <div class="kpi-value" style="font-size: 1.5rem;"><%= campaign.conversions %></div>
+    </div>
+  </div>
+
+  <div class="chart-container mb-6">
+    <div class="card-header">
+      <h3 class="card-title">Performance Over Time</h3>
+    </div>
+    <div style="height: 300px;">
+      <canvas data-chart='<%- JSON.stringify({
+        labels: chartData.labels,
+        datasets: [
+          { label: "Revenue", data: chartData.revenue, color: "gold" },
+          { label: "Spend", data: chartData.spend, color: "blue" }
+        ]
+      }) %>'></canvas>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Campaign Details</h3>
+      </div>
+      <div class="card-body">
+        <div class="grid-2" style="row-gap: 16px;">
+          <div>
+            <div class="text-muted text-xs uppercase tracking-wide mb-1">Platform</div>
+            <div class="text-white font-bold"><%= campaign.platform %></div>
+          </div>
+          <div>
+            <div class="text-muted text-xs uppercase tracking-wide mb-1">Objective</div>
+            <div class="text-white font-bold"><%= campaign.objective %></div>
+          </div>
+          <div>
+            <div class="text-muted text-xs uppercase tracking-wide mb-1">Budget</div>
+            <div class="text-gold font-bold"><%= campaign.budget %></div>
+          </div>
+          <div>
+            <div class="text-muted text-xs uppercase tracking-wide mb-1">Start Date</div>
+            <div class="text-white"><%= campaign.startDate %></div>
+          </div>
+          <div>
+            <div class="text-muted text-xs uppercase tracking-wide mb-1">Impressions</div>
+            <div class="text-white"><%= campaign.impressions %></div>
+          </div>
+          <div>
+            <div class="text-muted text-xs uppercase tracking-wide mb-1">Clicks</div>
+            <div class="text-white"><%= campaign.clicks %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Performance Metrics</h3>
+      </div>
+      <div class="card-body">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm">CTR</span>
+              <span class="text-gold font-bold text-sm"><%= campaign.ctr %></span>
+            </div>
+            <div class="progress-bar" style="height: 6px;">
+              <div class="progress-fill" style="width: <%= parseFloat(campaign.ctr) * 10 %>%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm">ROAS vs Target (3.0x)</span>
+              <span class="text-gold font-bold text-sm"><%= campaign.roas %></span>
+            </div>
+            <div class="progress-bar" style="height: 6px;">
+              <div class="progress-fill" style="width: <%= Math.min((parseFloat(campaign.roas) / 5) * 100, 100) %>%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm">Budget Utilization</span>
+              <span class="text-gold font-bold text-sm">78%</span>
+            </div>
+            <div class="progress-bar" style="height: 6px;">
+              <div class="progress-fill" style="width: 78%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

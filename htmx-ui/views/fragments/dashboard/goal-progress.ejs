@@ -1,0 +1,9 @@
+<div class="card animate-fade-in">
+  <div class="progress-label">
+    <span class="label"><%= goal.label %></span>
+    <span class="value">$<%= goal.current.toLocaleString() %> / $<%= goal.target.toLocaleString() %></span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" style="width: <%= Math.round((goal.current / goal.target) * 100) %>%"></div>
+  </div>
+</div>

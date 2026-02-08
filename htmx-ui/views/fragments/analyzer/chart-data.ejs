@@ -1,0 +1,14 @@
+<div class="chart-container animate-fade-in">
+  <div class="card-header">
+    <h3 class="card-title">Revenue vs Spend</h3>
+  </div>
+  <div style="height: 280px;">
+    <canvas data-chart='<%- JSON.stringify({
+      labels: chartData.labels,
+      datasets: [
+        { label: "Revenue", data: chartData.revenue, color: "gold" },
+        { label: "Spend", data: chartData.spend, color: "blue" }
+      ]
+    }) %>'></canvas>
+  </div>
+</div>

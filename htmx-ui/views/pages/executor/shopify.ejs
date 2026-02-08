@@ -1,0 +1,60 @@
+<div class="animate-fade-in">
+  <div class="page-header">
+    <h1 class="page-title">Shopify Store</h1>
+    <p class="page-subtitle">Manage your Shopify store connection and products</p>
+  </div>
+
+  <div class="card mb-6">
+    <div class="card-header">
+      <h3 class="card-title">Store Connection</h3>
+      <span class="badge badge-success">Connected</span>
+    </div>
+    <div class="grid-3">
+      <div>
+        <div class="text-muted text-xs uppercase tracking-wide mb-1">Store Name</div>
+        <div class="text-white font-bold"><%= shopify.storeName %></div>
+      </div>
+      <div>
+        <div class="text-muted text-xs uppercase tracking-wide mb-1">Store URL</div>
+        <div class="text-mono text-sm"><%= shopify.storeUrl %></div>
+      </div>
+      <div>
+        <div class="text-muted text-xs uppercase tracking-wide mb-1">Products</div>
+        <div class="text-gold font-bold text-lg"><%= shopify.products.length %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="shopify-products">
+    <div class="card-header">
+      <h3 class="card-title">Products</h3>
+      <button class="btn btn-sm btn-primary">Add Product</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Inventory</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% shopify.products.forEach(function(p) { %>
+            <tr>
+              <td style="font-size: 1.5rem; text-align: center; width: 50px;"><%= p.image %></td>
+              <td class="font-bold text-white"><%= p.name %></td>
+              <td class="text-gold font-bold"><%= p.price %></td>
+              <td>
+                <span class="badge badge-<%= p.status === 'active' ? 'success' : 'neutral' %>"><%= p.status %></span>
+              </td>
+              <td><%= p.inventory %> units</td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
