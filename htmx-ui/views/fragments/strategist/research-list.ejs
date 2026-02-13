@@ -1,0 +1,28 @@
+<div class="table-wrap animate-fade-in">
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>URL</th>
+        <th>Date</th>
+        <th>Market Size</th>
+        <th>Competitors</th>
+        <th>Channels</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% research.forEach(function(r) { %>
+        <tr>
+          <td class="font-bold text-white"><%= r.name %></td>
+          <td class="text-mono text-sm"><%= r.url %></td>
+          <td class="text-muted"><%= r.date %></td>
+          <td class="text-gold font-bold"><%= r.marketSize %></td>
+          <td><%= r.competitors %></td>
+          <td><%= r.channels %></td>
+          <td><span class="badge badge-success"><%= r.status %></span></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>

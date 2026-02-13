@@ -1,0 +1,100 @@
+<div class="animate-fade-in">
+  <div class="page-header flex justify-between items-center">
+    <div>
+      <h1 class="page-title">Campaigns</h1>
+      <p class="page-subtitle">Create and manage your ad campaigns</p>
+    </div>
+    <button class="btn btn-primary" onclick="document.getElementById('wizard-section').style.display='block'">New Campaign</button>
+  </div>
+
+  <div id="wizard-section" style="display: none;" class="card mb-6">
+    <div class="card-header">
+      <h3 class="card-title">Campaign Wizard</h3>
+      <button class="btn btn-ghost btn-sm" onclick="this.closest('#wizard-section').style.display='none'">✕ Close</button>
+    </div>
+
+    <div class="wizard-steps mb-6">
+      <% wizardSteps.forEach(function(s, i) { %>
+        <div class="wizard-step <%= i === 0 ? 'active' : '' %>" id="wiz-step-<%= i %>">
+          <span class="step-num"><%= i + 1 %></span>
+          <span><%= s %></span>
+        </div>
+      <% }); %>
+    </div>
+
+    <div id="wizard-body">
+      <form hx-post="/fragments/advertiser/campaign-step"
+            hx-target="#wizard-body"
+            hx-swap="innerHTML"
+            hx-indicator="#wizard-spinner">
+        <input type="hidden" name="step" value="0">
+        <div class="grid-2 mb-4">
+          <div class="form-group">
+            <label class="form-label">Platform</label>
+            <select name="platform" class="form-select">
+              <option value="meta">Meta (Facebook/Instagram)</option>
+              <option value="google">Google Ads</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Campaign Objective</label>
+            <select name="objective" class="form-select">
+              <option value="conversions">Conversions</option>
+              <option value="traffic">Traffic</option>
+              <option value="awareness">Brand Awareness</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Campaign Name</label>
+          <input type="text" name="name" class="form-input" placeholder="e.g., Spring Sale — Meta">
+        </div>
+        <button type="submit" class="btn btn-primary">Next: Audience →</button>
+      </form>
+    </div>
+
+    <div id="wizard-spinner" class="htmx-indicator">
+      <%- include('../../partials/_loading', { loadingText: 'Loading step...' }) %>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Active Campaigns</h3>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Campaign</th>
+            <th>Platform</th>
+            <th>Status</th>
+            <th>Budget</th>
+            <th>Spent</th>
+            <th>Impressions</th>
+            <th>CTR</th>
+            <th>Conversions</th>
+            <th>ROAS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% campaigns.forEach(function(c) { %>
+            <tr>
+              <td class="font-bold text-white"><%= c.name %></td>
+              <td><span class="badge badge-info"><%= c.platform %></span></td>
+              <td>
+                <span class="badge badge-<%= c.status === 'active' ? 'success' : c.status === 'paused' ? 'warning' : 'neutral' %>"><%= c.status %></span>
+              </td>
+              <td><%= c.budget %></td>
+              <td><%= c.spent %></td>
+              <td><%= c.impressions %></td>
+              <td><%= c.ctr %></td>
+              <td class="text-gold font-bold"><%= c.conversions %></td>
+              <td class="text-success font-bold"><%= c.roas %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

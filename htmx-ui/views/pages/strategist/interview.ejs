@@ -1,0 +1,39 @@
+<div class="animate-fade-in">
+  <div class="page-header">
+    <h1 class="page-title">Voice Interview</h1>
+    <p class="page-subtitle">Answer 4 questions to refine your go-to-market strategy</p>
+  </div>
+
+  <div class="wizard-steps mb-6">
+    <% questions.forEach(function(q, i) { %>
+      <div class="wizard-step <%= i === 0 ? 'active' : '' %>" id="step-indicator-<%= i %>">
+        <span class="step-num"><%= i + 1 %></span>
+        <span>Question <%= i + 1 %></span>
+      </div>
+    <% }); %>
+  </div>
+
+  <div id="interview-flow">
+    <div class="question-card" id="question-container">
+      <div class="question-number">Question 1 of <%= questions.length %></div>
+      <div class="question-text"><%= questions[0].question %></div>
+      <div class="question-hint"><%= questions[0].hint %></div>
+      <form hx-post="/fragments/strategist/interview-question"
+            hx-target="#question-container"
+            hx-swap="outerHTML"
+            hx-indicator="#interview-spinner">
+        <input type="hidden" name="step" value="1">
+        <div class="form-group">
+          <textarea name="response" class="form-textarea" rows="4" placeholder="Type your response here..."></textarea>
+        </div>
+        <div class="flex gap-3">
+          <button type="submit" class="btn btn-primary">Next Question →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="interview-spinner" class="htmx-indicator">
+    <%- include('../../partials/_loading', { loadingText: 'Processing response...' }) %>
+  </div>
+</div>

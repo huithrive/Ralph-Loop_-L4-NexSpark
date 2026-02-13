@@ -1,0 +1,81 @@
+<div class="animate-fade-in">
+  <div class="page-header">
+    <h1 class="page-title">Mission Control</h1>
+    <p class="page-subtitle">Your AI Growth OS at a glance</p>
+  </div>
+
+  <div id="kpi-summary" hx-get="/fragments/dashboard/summary-cards" hx-trigger="load" hx-swap="innerHTML">
+    <div class="grid-4">
+      <% Object.values(dashboard.kpis).forEach(function(kpi) { %>
+        <%- include('../partials/_kpi-card', { kpi }) %>
+      <% }); %>
+    </div>
+  </div>
+
+  <div style="margin-top: 24px;" id="goal-section" hx-get="/fragments/dashboard/goal-progress" hx-trigger="load" hx-swap="innerHTML">
+    <div class="card">
+      <div class="progress-label">
+        <span class="label"><%= dashboard.goal.label %></span>
+        <span class="value">$<%= dashboard.goal.current.toLocaleString() %> / $<%= dashboard.goal.target.toLocaleString() %></span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: <%= Math.round((dashboard.goal.current / dashboard.goal.target) * 100) %>%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top: 24px;">
+    <div class="chart-container">
+      <div class="card-header">
+        <h3 class="card-title">Revenue vs Spend (30 Days)</h3>
+      </div>
+      <div style="height: 280px;">
+        <canvas data-chart='<%- JSON.stringify({
+          labels: dashboard.chartData.labels,
+          datasets: [
+            { label: "Revenue", data: dashboard.chartData.revenue, color: "gold" },
+            { label: "Spend", data: dashboard.chartData.spend, color: "blue" }
+          ]
+        }) %>'></canvas>
+      </div>
+    </div>
+
+    <div class="card" id="activity-section" hx-get="/fragments/dashboard/activity-feed" hx-trigger="load" hx-swap="innerHTML">
+      <div class="card-header">
+        <h3 class="card-title">Activity Feed</h3>
+      </div>
+      <% dashboard.activityFeed.forEach(function(item) { %>
+        <div class="activity-item">
+          <span class="activity-dot <%= item.type %>"></span>
+          <span class="activity-text"><%= item.text %></span>
+          <span class="activity-time"><%= item.time %></span>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <div style="margin-top: 24px;" id="module-section" hx-get="/fragments/dashboard/module-status" hx-trigger="load" hx-swap="innerHTML">
+    <h2 class="card-title mb-4">Module Status</h2>
+    <div class="grid-4">
+      <% dashboard.moduleStatus.forEach(function(mod) { %>
+        <div class="card module-card card-clickable"
+             hx-get="/<%= mod.id === 'strategist' ? 'strategist' : mod.id %>"
+             hx-target="#main-content"
+             hx-push-url="true">
+          <div class="module-icon"><%= mod.icon %></div>
+          <div class="module-name"><%= mod.name %></div>
+          <div class="module-desc"><%= mod.description %></div>
+          <div class="module-progress" style="margin-top: 12px;">
+            <div class="progress-label">
+              <span class="label text-xs"><%= mod.status %></span>
+              <span class="value text-xs"><%= mod.progress %>%</span>
+            </div>
+            <div class="progress-bar" style="height: 6px;">
+              <div class="progress-fill" style="width: <%= mod.progress %>%"></div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="card animate-fade-in mb-6">
+  <div class="card-header">
+    <h3 class="card-title">Page Generated</h3>
+    <span class="badge badge-success">Ready</span>
+  </div>
+  <div class="grid-3 mb-4">
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">Name</div>
+      <div class="text-white font-bold"><%= page.name %></div>
+    </div>
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">URL</div>
+      <div class="text-mono text-sm"><%= page.url %></div>
+    </div>
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">Status</div>
+      <span class="badge badge-<%= page.status === 'live' ? 'success' : 'neutral' %>"><%= page.status %></span>
+    </div>
+  </div>
+
+  <div style="background: var(--bg-card); border-radius: var(--radius-lg); padding: 32px; text-align: center; margin-bottom: 16px;">
+    <div style="font-size: 3rem; margin-bottom: 12px;">🌐</div>
+    <div class="text-white font-bold text-lg">Landing Page Preview</div>
+    <div class="text-muted text-sm">Your page has been generated and is ready for review</div>
+  </div>
+
+  <div class="flex gap-3">
+    <button class="btn btn-primary btn-sm" onclick="showToast('Page published!', 'success')">Publish</button>
+    <button class="btn btn-secondary btn-sm">Edit</button>
+  </div>
+</div>

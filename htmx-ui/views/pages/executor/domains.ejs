@@ -1,0 +1,30 @@
+<div class="animate-fade-in">
+  <div class="page-header">
+    <h1 class="page-title">Domain Setup</h1>
+    <p class="page-subtitle">Search and register domains for your brand</p>
+  </div>
+
+  <div class="card mb-6">
+    <div class="card-header">
+      <h3 class="card-title">Domain Search</h3>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Search Domain Name</label>
+      <input type="text"
+             name="q"
+             class="form-input"
+             placeholder="e.g., greenhydro"
+             hx-get="/fragments/executor/domain-search-results"
+             hx-trigger="keyup changed delay:500ms"
+             hx-target="#domain-results"
+             hx-indicator="#domain-spinner">
+      <div class="form-hint">Type a name and we'll check availability across popular TLDs</div>
+    </div>
+  </div>
+
+  <div id="domain-spinner" class="htmx-indicator">
+    <%- include('../../partials/_loading', { loadingText: 'Searching domains...' }) %>
+  </div>
+
+  <div id="domain-results"></div>
+</div>

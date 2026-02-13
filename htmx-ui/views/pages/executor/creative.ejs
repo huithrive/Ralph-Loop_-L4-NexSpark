@@ -1,0 +1,70 @@
+<div class="animate-fade-in">
+  <div class="page-header">
+    <h1 class="page-title">Creative Studio</h1>
+    <p class="page-subtitle">Generate images and videos for your ad campaigns</p>
+  </div>
+
+  <div class="card mb-6">
+    <div class="card-header">
+      <h3 class="card-title">Generate Creative</h3>
+    </div>
+    <form hx-post="/fragments/executor/creative-status"
+          hx-target="#creative-output"
+          hx-indicator="#creative-spinner">
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label">Creative Name</label>
+          <input type="text" name="name" class="form-input" placeholder="e.g., Summer-Ad-01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select name="type" class="form-select">
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Style</label>
+          <select name="style" class="form-select">
+            <option value="cinematic">Cinematic</option>
+            <option value="3d">3D Render</option>
+            <option value="anime">Anime</option>
+            <option value="photo">Photo-realistic</option>
+            <option value="ugc">UGC Style</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prompt / Description</label>
+        <textarea name="prompt" class="form-textarea" rows="3" placeholder="Describe the creative you want to generate..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Generate Creative</button>
+    </form>
+  </div>
+
+  <div id="creative-spinner" class="htmx-indicator">
+    <%- include('../../partials/_loading', { loadingText: 'Generating creative...' }) %>
+  </div>
+
+  <div id="creative-output"></div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Creative Library</h3>
+    </div>
+    <div class="gallery-grid">
+      <% creatives.forEach(function(cr) { %>
+        <div class="gallery-item">
+          <div class="gallery-thumb"><%= cr.thumbnail %></div>
+          <div class="gallery-info">
+            <div class="gallery-name"><%= cr.name %></div>
+            <div class="gallery-meta">
+              <span class="badge badge-<%= cr.status === 'complete' ? 'success' : cr.status === 'processing' ? 'warning' : 'neutral' %>" style="font-size: 0.65rem;"><%= cr.status %></span>
+              <span><%= cr.style %><%= cr.duration ? ' · ' + cr.duration : '' %></span>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>

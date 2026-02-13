@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/_head') %>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo">
+          <span class="logo-text">NexSpark</span>
+          <span class="logo-sub">AI Growth OS</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          All Systems Online
+        </div>
+      </div>
+    </header>
+
+    <div class="split-layout">
+      <aside class="chat-panel" id="chat-panel">
+        <div class="chat-messages" id="chat-messages"
+             hx-get="/api/chat/welcome"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+        </div>
+        <div class="chat-msg agent htmx-indicator" id="chat-typing">
+          <div class="chat-typing">
+            <div class="typing-dots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <form id="chat-form"
+                hx-post="/api/chat"
+                hx-target="#chat-messages"
+                hx-swap="beforeend scroll:#chat-messages:bottom"
+                hx-indicator="#chat-typing">
+            <div class="chat-input-row">
+              <textarea id="chat-input"
+                        name="message"
+                        class="chat-textarea"
+                        placeholder="Type a command or ask a question..."
+                        rows="1"></textarea>
+              <button type="submit" class="chat-send-btn" title="Send">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </div>
+          </form>
+          <div class="chat-hints">
+            Try: <code>/dashboard</code> <code>/research</code> <code>/campaigns</code> <code>/report</code>
+          </div>
+        </div>
+      </aside>
+
+      <section class="canvas-panel" id="canvas-panel">
+        <div class="canvas-tabs" id="canvas-tabs"></div>
+        <div class="canvas-body" id="main-content">
+          <%- body %>
+        </div>
+      </section>
+    </div>
+  </div>
+  <%- include('partials/_toast') %>
+  <script src="/js/htmx-helpers.js"></script>
+  <script src="/js/chat.js"></script>
+</body>
+</html>

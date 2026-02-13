@@ -1,0 +1,157 @@
+<div class="animate-fade-in">
+  <% if (step === 0) { %>
+    <form hx-post="/fragments/advertiser/campaign-step"
+          hx-target="#wizard-body"
+          hx-swap="innerHTML"
+          hx-indicator="#wizard-spinner">
+      <input type="hidden" name="step" value="1">
+      <div class="grid-2 mb-4">
+        <div class="form-group">
+          <label class="form-label">Platform</label>
+          <select name="platform" class="form-select">
+            <option value="meta">Meta (Facebook/Instagram)</option>
+            <option value="google">Google Ads</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Campaign Objective</label>
+          <select name="objective" class="form-select">
+            <option value="conversions">Conversions</option>
+            <option value="traffic">Traffic</option>
+            <option value="awareness">Brand Awareness</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Campaign Name</label>
+        <input type="text" name="name" class="form-input" placeholder="e.g., Spring Sale — Meta">
+      </div>
+      <button type="submit" class="btn btn-primary">Next: Audience →</button>
+    </form>
+
+  <% } else if (step === 1) { %>
+    <form hx-post="/fragments/advertiser/campaign-step"
+          hx-target="#wizard-body"
+          hx-swap="innerHTML"
+          hx-indicator="#wizard-spinner">
+      <input type="hidden" name="step" value="2">
+      <h4 class="card-title mb-4">Audience & Targeting</h4>
+      <div class="grid-2 mb-4">
+        <div class="form-group">
+          <label class="form-label">Age Range</label>
+          <div class="flex gap-2 items-center">
+            <input type="number" name="age_min" class="form-input" value="25" style="width: 80px;">
+            <span class="text-muted">to</span>
+            <input type="number" name="age_max" class="form-input" value="40" style="width: 80px;">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <input type="text" name="location" class="form-input" value="United States">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Interests</label>
+        <input type="text" name="interests" class="form-input" value="Sustainability, Fitness, Outdoor Activities">
+        <div class="form-hint">Comma-separated interest keywords</div>
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="btn btn-primary">Next: Budget →</button>
+      </div>
+    </form>
+
+  <% } else if (step === 2) { %>
+    <form hx-post="/fragments/advertiser/campaign-step"
+          hx-target="#wizard-body"
+          hx-swap="innerHTML"
+          hx-indicator="#wizard-spinner">
+      <input type="hidden" name="step" value="3">
+      <h4 class="card-title mb-4">Budget & Schedule</h4>
+      <div class="grid-2 mb-4">
+        <div class="form-group">
+          <label class="form-label">Daily Budget</label>
+          <input type="text" name="budget" class="form-input" value="$50.00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duration</label>
+          <select name="duration" class="form-select">
+            <option value="ongoing">Ongoing</option>
+            <option value="7">7 days</option>
+            <option value="14">14 days</option>
+            <option value="30">30 days</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Start Date</label>
+        <input type="date" name="start_date" class="form-input">
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="btn btn-primary">Next: Creative →</button>
+      </div>
+    </form>
+
+  <% } else if (step === 3) { %>
+    <form hx-post="/fragments/advertiser/campaign-step"
+          hx-target="#wizard-body"
+          hx-swap="innerHTML"
+          hx-indicator="#wizard-spinner">
+      <input type="hidden" name="step" value="4">
+      <h4 class="card-title mb-4">Creative & Copy</h4>
+      <div class="form-group">
+        <label class="form-label">Select Creative</label>
+        <select name="creative" class="form-select">
+          <option value="cr-001">Hero-Video-01 (Cinematic, 15s)</option>
+          <option value="cr-002">Product-Spin-01 (3D, 10s)</option>
+          <option value="cr-003">Lifestyle-Story-01 (Photo)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Primary Text</label>
+        <textarea name="primary_text" class="form-textarea" rows="3">Stop buying single-use plastic bottles. GreenHydro bottles are made from 100% recycled ocean plastic and keep your drinks cold 30% longer. 🌊</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Headline</label>
+        <input type="text" name="headline" class="form-input" value="Save the Ocean, One Sip at a Time">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Call to Action</label>
+        <select name="cta" class="form-select">
+          <option value="shop_now">Shop Now</option>
+          <option value="learn_more">Learn More</option>
+          <option value="sign_up">Sign Up</option>
+        </select>
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="btn btn-primary">Next: Review →</button>
+      </div>
+    </form>
+
+  <% } else { %>
+    <h4 class="card-title mb-4">Review & Launch</h4>
+    <div class="lcars-bracket mb-6">
+      <div class="grid-2 mb-4">
+        <div>
+          <div class="text-muted text-xs uppercase tracking-wide mb-1">Platform</div>
+          <div class="text-white font-bold">Meta (Facebook/Instagram)</div>
+        </div>
+        <div>
+          <div class="text-muted text-xs uppercase tracking-wide mb-1">Objective</div>
+          <div class="text-white font-bold">Conversions</div>
+        </div>
+        <div>
+          <div class="text-muted text-xs uppercase tracking-wide mb-1">Daily Budget</div>
+          <div class="text-gold font-bold">$50.00</div>
+        </div>
+        <div>
+          <div class="text-muted text-xs uppercase tracking-wide mb-1">Audience</div>
+          <div class="text-white">Ages 25-40, US, Eco + Fitness</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button class="btn btn-success" onclick="showToast('Campaign launched!', 'success'); document.getElementById('wizard-section').style.display='none';">Launch Campaign</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('wizard-section').style.display='none';">Cancel</button>
+    </div>
+  <% } %>
+</div>

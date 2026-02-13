@@ -1,0 +1,14 @@
+<div class="gallery-grid animate-fade-in">
+  <% creatives.forEach(function(cr) { %>
+    <div class="gallery-item">
+      <div class="gallery-thumb"><%= cr.thumbnail %></div>
+      <div class="gallery-info">
+        <div class="gallery-name"><%= cr.name %></div>
+        <div class="gallery-meta">
+          <span class="badge badge-<%= cr.status === 'complete' ? 'success' : cr.status === 'processing' ? 'warning' : 'neutral' %>" style="font-size: 0.65rem;"><%= cr.status %></span>
+          <span><%= cr.style %><%= cr.duration ? ' · ' + cr.duration : '' %></span>
+        </div>
+      </div>
+    </div>
+  <% }); %>
+</div>

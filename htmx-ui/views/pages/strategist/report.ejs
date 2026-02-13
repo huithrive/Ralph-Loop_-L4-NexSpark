@@ -1,0 +1,36 @@
+<div class="animate-fade-in">
+  <div class="page-header flex justify-between items-center">
+    <div>
+      <h1 class="page-title">GTM Report</h1>
+      <p class="page-subtitle">Go-to-market strategy based on research and interview data</p>
+    </div>
+    <a class="btn btn-primary"
+       href="/executor"
+       hx-get="/executor"
+       hx-target="#main-content"
+       hx-push-url="true">Start Building →</a>
+  </div>
+
+  <div class="lcars-bracket" style="margin-bottom: 24px;">
+    <div class="text-gold font-bold uppercase tracking-wide text-sm mb-2">Product</div>
+    <div class="text-white text-xl font-bold">Eco-Friendly Water Bottles — GreenHydro</div>
+    <div class="text-muted text-sm mt-2">Generated from research + 4-question interview analysis</div>
+  </div>
+
+  <div id="report-sections">
+    <% report.sections.forEach(function(section, i) { %>
+      <details class="mb-4" <%= i === 0 ? 'open' : '' %>>
+        <summary class="collapsible-header">
+          <div class="flex items-center gap-3">
+            <span class="text-gold font-bold text-mono text-sm"><%= String(i + 1).padStart(2, '0') %></span>
+            <span class="section-title"><%= section.title %></span>
+          </div>
+          <span class="toggle-icon">▼</span>
+        </summary>
+        <div class="collapsible-body">
+          <p><%= section.content %></p>
+        </div>
+      </details>
+    <% }); %>
+  </div>
+</div>

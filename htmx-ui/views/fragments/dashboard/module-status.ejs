@@ -1,0 +1,22 @@
+<h2 class="card-title mb-4">Module Status</h2>
+<div class="grid-4 animate-fade-in">
+  <% modules.forEach(function(mod) { %>
+    <div class="card module-card card-clickable"
+         hx-get="/<%= mod.id %>"
+         hx-target="#main-content"
+         hx-push-url="true">
+      <div class="module-icon"><%= mod.icon %></div>
+      <div class="module-name"><%= mod.name %></div>
+      <div class="module-desc"><%= mod.description %></div>
+      <div class="module-progress" style="margin-top: 12px;">
+        <div class="progress-label">
+          <span class="label text-xs"><%= mod.status %></span>
+          <span class="value text-xs"><%= mod.progress %>%</span>
+        </div>
+        <div class="progress-bar" style="height: 6px;">
+          <div class="progress-fill" style="width: <%= mod.progress %>%"></div>
+        </div>
+      </div>
+    </div>
+  <% }); %>
+</div>

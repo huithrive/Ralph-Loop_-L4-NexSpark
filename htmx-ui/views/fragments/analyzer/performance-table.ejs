@@ -1,0 +1,32 @@
+<div class="table-wrap animate-fade-in">
+  <table>
+    <thead>
+      <tr>
+        <th>Campaign</th>
+        <th>Spend</th>
+        <th>Revenue</th>
+        <th>ROAS</th>
+        <th>CPA</th>
+        <th>CTR</th>
+        <th>Conversions</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% rows.forEach(function(row) { %>
+        <tr>
+          <td class="font-bold text-white"><%= row.campaign %></td>
+          <td><%= row.spend %></td>
+          <td class="text-gold font-bold"><%= row.revenue %></td>
+          <td class="text-success font-bold"><%= row.roas %></td>
+          <td><%= row.cpa %></td>
+          <td><%= row.ctr %></td>
+          <td><%= row.conversions %></td>
+          <td>
+            <span class="badge badge-<%= row.status === 'active' ? 'success' : 'warning' %>"><%= row.status %></span>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>

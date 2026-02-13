@@ -1,0 +1,39 @@
+<div class="animate-fade-in">
+  <div class="page-header">
+    <h1 class="page-title">AI Optimizations</h1>
+    <p class="page-subtitle">Data-driven recommendations to improve campaign performance</p>
+  </div>
+
+  <div class="card mb-6">
+    <div class="card-header">
+      <h3 class="card-title">Run Analysis</h3>
+    </div>
+    <p class="text-muted text-sm mb-4">Analyze your active campaigns and get AI-powered recommendations for improvement.</p>
+    <form hx-post="/fragments/analyzer/optimization-results"
+          hx-target="#optimization-output"
+          hx-indicator="#opt-spinner">
+      <button type="submit" class="btn btn-primary">Analyze & Recommend</button>
+    </form>
+  </div>
+
+  <div id="opt-spinner" class="htmx-indicator">
+    <%- include('../../partials/_loading', { loadingText: 'Analyzing campaign data...' }) %>
+  </div>
+
+  <div id="optimization-output">
+    <% optimizations.forEach(function(opt) { %>
+      <div class="card mb-4">
+        <div class="flex justify-between items-center mb-4">
+          <div class="flex items-center gap-3">
+            <span class="badge badge-<%= opt.priority === 'high' ? 'success' : opt.priority === 'medium' ? 'warning' : 'info' %>"><%= opt.priority %> priority</span>
+            <span class="badge badge-neutral"><%= opt.type %></span>
+          </div>
+          <span class="text-gold font-bold text-sm"><%= opt.impact %></span>
+        </div>
+        <h4 class="text-white font-bold text-lg mb-2"><%= opt.title %></h4>
+        <p class="text-muted text-sm mb-4"><%= opt.description %></p>
+        <button class="btn btn-sm btn-primary" onclick="showToast('Optimization applied!', 'success')"><%= opt.action %></button>
+      </div>
+    <% }); %>
+  </div>
+</div>

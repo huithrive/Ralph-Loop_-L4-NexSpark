@@ -1,0 +1,31 @@
+<div class="card animate-fade-in mb-6">
+  <div class="card-header">
+    <h3 class="card-title">Creative Submitted</h3>
+    <span class="badge badge-warning">Processing</span>
+  </div>
+  <div class="grid-3 mb-4">
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">Name</div>
+      <div class="text-white font-bold"><%= creative.name %></div>
+    </div>
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">Type</div>
+      <div><%= creative.type %> · <%= creative.style %></div>
+    </div>
+    <div>
+      <div class="text-muted text-xs uppercase tracking-wide mb-1">Status</div>
+      <div id="creative-poll-status"
+           hx-get="/fragments/executor/creative-list"
+           hx-trigger="every 5s"
+           hx-target="#creative-poll-status"
+           hx-swap="innerHTML">
+        <span class="badge badge-warning"><%= creative.status %></span>
+        <div class="text-muted text-xs mt-1">Auto-refreshing...</div>
+      </div>
+    </div>
+  </div>
+  <div class="progress-bar" style="height: 8px;">
+    <div class="progress-fill" style="width: 35%"></div>
+  </div>
+  <div class="text-muted text-xs mt-2">Estimated completion: ~2 minutes</div>
+</div>

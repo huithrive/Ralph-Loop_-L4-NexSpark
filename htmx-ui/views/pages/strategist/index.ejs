@@ -1,0 +1,87 @@
+<div class="animate-fade-in">
+  <div class="page-header flex justify-between items-center">
+    <div>
+      <h1 class="page-title">Research Engine</h1>
+      <p class="page-subtitle">Analyze markets, competitors, and audiences with AI</p>
+    </div>
+    <div class="flex gap-3">
+      <a class="btn btn-secondary btn-sm"
+         href="/strategist/interview"
+         hx-get="/strategist/interview"
+         hx-target="#main-content"
+         hx-push-url="true">Interview</a>
+      <a class="btn btn-secondary btn-sm"
+         href="/strategist/report"
+         hx-get="/strategist/report"
+         hx-target="#main-content"
+         hx-push-url="true">GTM Report</a>
+    </div>
+  </div>
+
+  <div class="card mb-6">
+    <div class="card-header">
+      <h3 class="card-title">New Research</h3>
+    </div>
+    <form hx-post="/fragments/strategist/research-results"
+          hx-target="#research-output"
+          hx-indicator="#research-spinner">
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Website URL</label>
+          <input type="url" name="url" class="form-input" placeholder="https://example.com" value="https://greenhydro.example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Product Name</label>
+          <input type="text" name="name" class="form-input" placeholder="Product or brand name" value="Eco-Friendly Water Bottles">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Product Description</label>
+        <textarea name="description" class="form-textarea" rows="3" placeholder="Brief description of the product or service...">Premium reusable water bottles made from 100% recycled ocean plastic with triple-wall vacuum insulation.</textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Start Research</button>
+    </form>
+  </div>
+
+  <div id="research-spinner" class="htmx-indicator">
+    <%- include('../../partials/_loading', { loadingText: 'Analyzing market data...' }) %>
+  </div>
+
+  <div id="research-output"></div>
+
+  <div class="card" style="margin-top: 24px;">
+    <div class="card-header">
+      <h3 class="card-title">Recent Research</h3>
+    </div>
+    <div id="research-list">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>URL</th>
+              <th>Date</th>
+              <th>Market Size</th>
+              <th>Competitors</th>
+              <th>Channels</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recentResearch.forEach(function(r) { %>
+              <tr>
+                <td class="font-bold text-white"><%= r.name %></td>
+                <td class="text-mono text-sm"><%= r.url %></td>
+                <td class="text-muted"><%= r.date %></td>
+                <td class="text-gold font-bold"><%= r.marketSize %></td>
+                <td><%= r.competitors %></td>
+                <td><%= r.channels %></td>
+                <td><span class="badge badge-success"><%= r.status %></span></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="animate-fade-in">
+  <div class="page-header">
+    <h1 class="page-title">Advertiser</h1>
+    <p class="page-subtitle">Connect platforms, set up tracking, and launch campaigns</p>
+  </div>
+
+  <div class="grid-3">
+    <div class="card card-clickable"
+         hx-get="/advertiser/connections"
+         hx-target="#main-content"
+         hx-push-url="true">
+      <div class="module-icon">🔌</div>
+      <div class="module-name">Connections</div>
+      <div class="module-desc">Manage Meta, Google, and Shopify account connections</div>
+      <div style="margin-top: 12px;">
+        <span class="badge badge-success">3 connected</span>
+      </div>
+    </div>
+
+    <div class="card card-clickable"
+         hx-get="/advertiser/campaigns"
+         hx-target="#main-content"
+         hx-push-url="true">
+      <div class="module-icon">📣</div>
+      <div class="module-name">Campaigns</div>
+      <div class="module-desc">Create and manage ad campaigns across platforms</div>
+      <div style="margin-top: 12px;">
+        <span class="badge badge-success">2 active</span>
+        <span class="badge badge-neutral" style="margin-left: 4px;">1 paused</span>
+      </div>
+    </div>
+
+    <div class="card card-clickable"
+         hx-get="/advertiser/pixel"
+         hx-target="#main-content"
+         hx-push-url="true">
+      <div class="module-icon">📡</div>
+      <div class="module-name">Meta Pixel</div>
+      <div class="module-desc">Install and verify Meta Pixel tracking on your store</div>
+      <div style="margin-top: 12px;">
+        <span class="badge badge-success">Healthy</span>
+      </div>
+    </div>
+  </div>
+</div>

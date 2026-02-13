@@ -1,0 +1,51 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div>
+      <div class="logo-text">NexSpark</div>
+      <div class="logo-sub">AI Growth OS</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>"
+       href="/"
+       hx-get="/"
+       hx-target="#main-content"
+       hx-push-url="true">
+      <span class="nav-icon">🏠</span> Dashboard
+    </a>
+
+    <div class="nav-section-label">Modules</div>
+    <a class="nav-item <%= currentPage === 'strategist' ? 'active' : '' %>"
+       href="/strategist"
+       hx-get="/strategist"
+       hx-target="#main-content"
+       hx-push-url="true">
+      <span class="nav-icon">🎯</span> Strategist
+    </a>
+    <a class="nav-item <%= currentPage === 'executor' ? 'active' : '' %>"
+       href="/executor"
+       hx-get="/executor"
+       hx-target="#main-content"
+       hx-push-url="true">
+      <span class="nav-icon">⚡</span> Executor
+    </a>
+    <a class="nav-item <%= currentPage === 'advertiser' ? 'active' : '' %>"
+       href="/advertiser"
+       hx-get="/advertiser"
+       hx-target="#main-content"
+       hx-push-url="true">
+      <span class="nav-icon">📢</span> Advertiser
+    </a>
+    <a class="nav-item <%= currentPage === 'analyzer' ? 'active' : '' %>"
+       href="/analyzer"
+       hx-get="/analyzer"
+       hx-target="#main-content"
+       hx-push-url="true">
+      <span class="nav-icon">📊</span> Analyzer
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    NexSpark v1.0 — Demo
+  </div>
+</aside>

@@ -1,0 +1,32 @@
+<% if (!query) { %>
+  <%- include('../../partials/_empty', { emptyIcon: '🔗', emptyTitle: 'Search for a domain', emptyDesc: 'Type a brand name above to check availability.' }) %>
+<% } else if (results.length === 0) { %>
+  <%- include('../../partials/_empty', { emptyIcon: '🔍', emptyTitle: 'No domains found', emptyDesc: 'Try a different search term.' }) %>
+<% } else { %>
+  <div class="card animate-fade-in">
+    <div class="card-header">
+      <h3 class="card-title">Results for "<%= query %>"</h3>
+      <span class="text-muted text-sm"><%= results.length %> results</span>
+    </div>
+    <% results.forEach(function(d) { %>
+      <div class="domain-row">
+        <div class="flex items-center gap-3">
+          <span class="domain-name"><%= d.domain %></span>
+          <% if (d.available) { %>
+            <span class="badge badge-success">Available</span>
+          <% } else { %>
+            <span class="badge badge-error">Taken</span>
+          <% } %>
+        </div>
+        <div class="flex items-center gap-3">
+          <% if (d.available) { %>
+            <span class="domain-price"><%= d.price %></span>
+            <button class="btn btn-sm btn-primary" onclick="showToast('Domain registration started!', 'success')">Register</button>
+          <% } else { %>
+            <span class="domain-unavailable">Not available</span>
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+<% } %>
