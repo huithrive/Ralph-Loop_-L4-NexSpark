@@ -1,0 +1,73 @@
+<%
+  var role = typeof msg.role !== 'undefined' ? msg.role : 'agent';
+  var type = typeof msg.type !== 'undefined' ? msg.type : 'text';
+%>
+
+<% if (type === 'divider') { %>
+  <div class="chat-divider">
+    <span class="chat-divider-text"><%= msg.text || '' %></span>
+  </div>
+<% } else if (type === 'text') { %>
+  <div class="chat-msg <%= role %>">
+    <% if (msg.showLabel) { %>
+      <div class="chat-msg-label"><%= role === 'agent' ? 'NexSpark' : 'You' %></div>
+    <% } %>
+    <% if (role === 'agent') { %>
+      <div class="chat-bubble"><%- msg.text %></div>
+    <% } else { %>
+      <div class="chat-bubble"><%= msg.text %></div>
+    <% } %>
+  </div>
+<% } else if (type === 'choices') { %>
+  <div class="chat-msg agent">
+    <div class="chat-choices">
+      <% msg.choices.forEach(function(choice) { %>
+        <button class="chat-choice-btn"
+                data-command="<%= choice.command %>">
+          <% if (choice.icon) { %><span><%= choice.icon %></span><% } %>
+          <%= choice.label %>
+        </button>
+      <% }); %>
+    </div>
+  </div>
+<% } else if (type === 'kpi-inline') { %>
+  <div class="chat-msg agent">
+    <div class="chat-kpi-row">
+      <% msg.kpis.forEach(function(kpi) { %>
+        <div class="chat-kpi-card">
+          <div class="kpi-label"><%= kpi.label %></div>
+          <div class="kpi-value"><%= kpi.value %></div>
+          <% if (kpi.change) { %>
+            <div class="kpi-change <%= kpi.trend || 'up' %>"><%= kpi.change %></div>
+          <% } %>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+<% } else if (type === 'artifact-link') { %>
+  <div class="chat-msg agent">
+    <div class="chat-artifact"
+         data-artifact-id="<%= msg.artifact.id %>"
+         data-artifact-title="<%= msg.artifact.title %>"
+         data-artifact-icon="<%= msg.artifact.icon %>"
+         data-artifact-route="<%= msg.artifact.route %>">
+      <span class="chat-artifact-icon"><%= msg.artifact.icon %></span>
+      <div class="chat-artifact-info">
+        <div class="chat-artifact-title"><%= msg.artifact.title %></div>
+        <div class="chat-artifact-desc"><%= msg.artifact.description %></div>
+      </div>
+      <span class="chat-artifact-arrow">&rarr;</span>
+    </div>
+  </div>
+<% } else if (type === 'progress') { %>
+  <div class="chat-msg agent">
+    <div class="chat-progress">
+      <% msg.steps.forEach(function(step) { %>
+        <div class="chat-progress-step <%= step.done ? 'done' : 'pending' %>">
+          <span class="step-icon"><%= step.done ? '\u2713' : '\u25CF' %></span>
+          <span class="step-text"><%= step.text %></span>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+<% } %>

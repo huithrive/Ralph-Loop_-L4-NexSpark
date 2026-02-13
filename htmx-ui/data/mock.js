@@ -260,6 +260,341 @@ const mock = {
     wizardSteps: ['Platform & Objective', 'Audience & Targeting', 'Budget & Schedule', 'Creative & Copy', 'Review & Launch'],
   },
 
+  chat: {
+    welcomeMessages: [
+      { role: 'agent', type: 'text', showLabel: true, text: 'Welcome to <strong>NexSpark AI Growth OS</strong>. I\'m your AI growth strategist. I can help you research markets, build campaigns, analyze performance, and more.' },
+      { role: 'agent', type: 'text', text: 'What would you like to work on today?' },
+      {
+        role: 'agent', type: 'choices',
+        choices: [
+          { label: 'View Dashboard', icon: '🏠', command: '/dashboard' },
+          { label: 'Run Research', icon: '🎯', command: '/research' },
+          { label: 'See Campaigns', icon: '📢', command: '/campaigns' },
+          { label: 'View Report', icon: '📋', command: '/report' },
+        ],
+      },
+    ],
+    proactiveMessages: [
+      {
+        messages: [
+          { role: 'agent', type: 'divider', text: 'Proactive Insight' },
+          { role: 'agent', type: 'text', showLabel: true, text: 'I noticed your <strong>Summer Launch — Meta</strong> campaign ROAS jumped to 3.8x. This is 27% above your target. Consider scaling the daily budget to capture more conversions.' },
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'View Optimizations', icon: '🔧', command: '/optimize' },
+            { label: 'See Performance', icon: '📊', command: '/performance' },
+          ]},
+        ],
+      },
+      {
+        messages: [
+          { role: 'agent', type: 'divider', text: 'Creative Alert' },
+          { role: 'agent', type: 'text', showLabel: true, text: 'Your <strong>Eco-Impact-Ad-01</strong> creative just finished processing. It\'s ready for review in the Creative Studio.' },
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Open Creative Studio', icon: '🎨', command: '/creative' },
+          ]},
+        ],
+      },
+      {
+        messages: [
+          { role: 'agent', type: 'divider', text: 'Performance Update' },
+          { role: 'agent', type: 'text', showLabel: true, text: 'Weekly summary: You\'ve spent <strong>$2,440</strong> and generated <strong>$7,820</strong> in revenue this period. Overall ROAS is 3.2x — exceeding your 3.0x target.' },
+          { role: 'agent', type: 'kpi-inline', kpis: [
+            { label: 'Revenue', value: '$7,820', change: '+$1,380', trend: 'up' },
+            { label: 'ROAS', value: '3.2x', change: '+0.4x', trend: 'up' },
+          ]},
+        ],
+      },
+    ],
+    flows: {
+      dashboard: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'Loading your dashboard with the latest KPIs and module status.' },
+          { role: 'agent', type: 'kpi-inline', kpis: [
+            { label: 'Revenue', value: '$4,280', change: '+18.3%', trend: 'up' },
+            { label: 'ROAS', value: '3.2x', change: '+0.4x', trend: 'up' },
+            { label: 'CPA', value: '$12.40', change: '-$2.10', trend: 'down' },
+          ]},
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'dashboard', title: 'Dashboard', icon: '🏠', description: 'KPIs, goals, activity feed', route: '/canvas/dashboard' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Run Research', icon: '🎯', command: '/research' },
+            { label: 'See Campaigns', icon: '📢', command: '/campaigns' },
+          ]},
+        ],
+      },
+      research: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'Starting market research analysis for <strong>Eco-Friendly Water Bottles</strong>...' },
+          { role: 'agent', type: 'progress', steps: [
+            { text: 'Analyzing market size & trends', done: true },
+            { text: 'Identifying competitors', done: true },
+            { text: 'Mapping advertising channels', done: true },
+            { text: 'Building customer personas', done: true },
+            { text: 'Compiling research report', done: true },
+          ]},
+          { role: 'agent', type: 'text', text: 'Research complete. Found a <strong>$2.4B market</strong> growing at 8.2% CAGR with 12 competitors. The eco-premium segment is growing at 14.5% annually.' },
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'research', title: 'Market Research', icon: '🎯', description: 'Competitors, channels, personas', route: '/canvas/strategist/research' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'View GTM Report', icon: '📋', command: '/report' },
+            { label: 'Start Interview', icon: '🎙️', command: '/interview' },
+            { label: 'View Dashboard', icon: '🏠', command: '/dashboard' },
+          ]},
+        ],
+      },
+      report: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'Here\'s your Go-To-Market report for <strong>GreenHydro</strong>. It covers market analysis, target audience, competitive landscape, and the 90-day action plan.' },
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'report', title: 'GTM Report', icon: '📋', description: '7 sections — executive summary to KPIs', route: '/canvas/strategist/report' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Build Landing Page', icon: '⚡', command: '/landing-page' },
+            { label: 'Launch Campaigns', icon: '📢', command: '/campaigns' },
+          ]},
+        ],
+      },
+      'landing-page': {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'You have <strong>3 landing pages</strong> — 2 are live and converting. The Eco Impact page leads with a 4.4% conversion rate.' },
+          { role: 'agent', type: 'kpi-inline', kpis: [
+            { label: 'Hero Launch', value: '3.7%', change: '142 conv' },
+            { label: 'Eco Impact', value: '4.4%', change: '98 conv' },
+          ]},
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'landing-pages', title: 'Landing Pages', icon: '⚡', description: 'View, create, and manage pages', route: '/canvas/executor/landing-pages' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Generate Creatives', icon: '🎨', command: '/creative' },
+            { label: 'Setup Shopify', icon: '🛍️', command: '/shopify' },
+          ]},
+        ],
+      },
+      campaigns: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'You have <strong>3 campaigns</strong> across Meta and Google. 2 are active, 1 is paused.' },
+          { role: 'agent', type: 'kpi-inline', kpis: [
+            { label: 'Active', value: '2' },
+            { label: 'Total Spend', value: '$2,440' },
+            { label: 'Avg ROAS', value: '3.2x', change: '+0.4x', trend: 'up' },
+          ]},
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'campaigns', title: 'Campaigns', icon: '📢', description: 'Manage and create campaigns', route: '/canvas/advertiser/campaigns' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'View Performance', icon: '📊', command: '/performance' },
+            { label: 'Optimize', icon: '🔧', command: '/optimize' },
+          ]},
+        ],
+      },
+      performance: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'Here\'s your campaign performance breakdown. <strong>Summer Launch — Meta</strong> is your top performer at 3.8x ROAS.' },
+          { role: 'agent', type: 'kpi-inline', kpis: [
+            { label: 'Total Revenue', value: '$7,820', change: '+$1,380', trend: 'up' },
+            { label: 'Avg CPA', value: '$14.53', change: '-$1.80', trend: 'down' },
+          ]},
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'performance', title: 'Campaign Performance', icon: '📊', description: 'Charts, tables, trends', route: '/canvas/analyzer/performance' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Run Optimizations', icon: '🔧', command: '/optimize' },
+            { label: 'View Campaigns', icon: '📢', command: '/campaigns' },
+          ]},
+        ],
+      },
+      optimize: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'I\'ve identified <strong>4 optimization opportunities</strong> that could add an estimated $2,900/mo in revenue.' },
+          { role: 'agent', type: 'progress', steps: [
+            { text: 'Increase Summer Launch budget ($50→$75/day) — +$1,200/mo', done: false },
+            { text: 'Refresh Google Shopping creatives — +$400/mo', done: false },
+            { text: 'Expand Meta lookalike to 2% — +$800/mo', done: false },
+            { text: 'Resume retargeting with new creative — +$500/mo', done: false },
+          ]},
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'optimize', title: 'Optimizations', icon: '🔧', description: 'Review and apply recommendations', route: '/canvas/analyzer/optimize' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'View Performance', icon: '📊', command: '/performance' },
+            { label: 'Generate Creatives', icon: '🎨', command: '/creative' },
+          ]},
+        ],
+      },
+      creative: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'Your Creative Studio has <strong>5 assets</strong> — 3 complete, 1 processing, 1 queued. Open the studio to generate new creatives or review existing ones.' },
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'creative', title: 'Creative Studio', icon: '🎨', description: 'Videos, images, ad creatives', route: '/canvas/executor/creative' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Build Landing Page', icon: '⚡', command: '/landing-page' },
+            { label: 'View Campaigns', icon: '📢', command: '/campaigns' },
+          ]},
+        ],
+      },
+      shopify: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'Your Shopify store <strong>GreenHydro Official</strong> is connected with 8 products live. Inventory is healthy across all SKUs.' },
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'shopify', title: 'Shopify Store', icon: '🛍️', description: 'Products, inventory, sync status', route: '/canvas/executor/shopify' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Build Landing Page', icon: '⚡', command: '/landing-page' },
+            { label: 'Setup Domains', icon: '🌐', command: '/domains' },
+          ]},
+        ],
+      },
+      interview: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'The Voice Interview helps me understand your business deeply. I\'ll ask 4 questions about your customers, differentiators, budget, and success metrics.' },
+          { role: 'agent', type: 'progress', steps: [
+            { text: 'Ideal customer profile', done: false },
+            { text: 'Competitive differentiators', done: false },
+            { text: 'Budget & timeline', done: false },
+            { text: 'Success metrics', done: false },
+          ]},
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'interview', title: 'Voice Interview', icon: '🎙️', description: 'Interactive Q&A session', route: '/canvas/strategist/interview' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'View Research', icon: '🎯', command: '/research' },
+            { label: 'View Report', icon: '📋', command: '/report' },
+          ]},
+        ],
+      },
+      connections: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'All <strong>3 platform connections</strong> are healthy — Meta Business, Google Ads, and Shopify are syncing normally.' },
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'connections', title: 'Connections', icon: '🔗', description: 'Platform integrations status', route: '/canvas/advertiser/connections' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Setup Pixel', icon: '📍', command: '/pixel' },
+            { label: 'Launch Campaigns', icon: '📢', command: '/campaigns' },
+          ]},
+        ],
+      },
+      pixel: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'Your Meta Pixel is <strong>healthy</strong> and firing 3,412 events in the last 24 hours. All 5 standard events (PageView through Purchase) are active.' },
+          { role: 'agent', type: 'kpi-inline', kpis: [
+            { label: 'Events/24h', value: '3,412' },
+            { label: 'Status', value: 'Healthy' },
+          ]},
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'pixel', title: 'Meta Pixel', icon: '📍', description: 'Event tracking and diagnostics', route: '/canvas/advertiser/pixel' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'View Connections', icon: '🔗', command: '/connections' },
+            { label: 'View Campaigns', icon: '📢', command: '/campaigns' },
+          ]},
+        ],
+      },
+      domains: {
+        messages: [
+          { role: 'agent', type: 'text', showLabel: true, text: 'Search and register domains for your brand. Currently exploring options for <strong>GreenHydro</strong>.' },
+          { role: 'agent', type: 'artifact-link', artifact: { id: 'domains', title: 'Domain Setup', icon: '🌐', description: 'Search and register domains', route: '/canvas/executor/domains' }},
+          { role: 'agent', type: 'choices', choices: [
+            { label: 'Setup Shopify', icon: '🛍️', command: '/shopify' },
+            { label: 'Build Landing Page', icon: '⚡', command: '/landing-page' },
+          ]},
+        ],
+      },
+    },
+    nlKeywords: {
+      dashboard: ['dashboard', 'home', 'overview', 'kpi', 'summary', 'status'],
+      research: ['research', 'market', 'analyze market', 'competitors', 'personas'],
+      report: ['report', 'gtm', 'go to market', 'strategy', 'plan'],
+      'landing-page': ['landing', 'landing page', 'pages', 'lp'],
+      campaigns: ['campaign', 'campaigns', 'ads', 'advertising', 'ad campaigns'],
+      performance: ['performance', 'analytics', 'metrics', 'results', 'data'],
+      optimize: ['optimize', 'optimization', 'improve', 'recommendations', 'suggestions'],
+      creative: ['creative', 'creatives', 'studio', 'design', 'images', 'videos', 'assets'],
+      shopify: ['shopify', 'store', 'products', 'inventory', 'ecommerce'],
+      interview: ['interview', 'questions', 'voice', 'qa', 'discovery'],
+      connections: ['connections', 'connect', 'integrations', 'platforms'],
+      pixel: ['pixel', 'meta pixel', 'tracking', 'events', 'facebook pixel'],
+      domains: ['domain', 'domains', 'dns', 'url', 'website'],
+    },
+  },
+
+  builder: {
+    questions: [
+      { id: 1, key: 'headline', text: 'What headline should grab your visitors\' attention?', hint: 'e.g. "The Last Water Bottle You\'ll Ever Need"', placeholder: 'Type your headline...' },
+      { id: 2, key: 'cta', text: 'What should your call-to-action button say?', hint: 'e.g. "Shop Now", "Get 20% Off", "Start Free Trial"', placeholder: 'Type your CTA text...' },
+      { id: 3, key: 'sellingPoints', text: 'List 3-4 key selling points (comma-separated).', hint: 'e.g. "100% recycled ocean plastic, 30hr cold retention, Lifetime warranty"', placeholder: 'Feature 1, Feature 2, Feature 3...' },
+    ],
+    templates: [
+      { id: 'hero-bold', name: 'Hero Bold', description: 'Full-screen hero with bold headline, social proof bar, and prominent CTA.', tags: ['High Impact', 'Best for DTC'], recommended: true },
+      { id: 'product-showcase', name: 'Product Showcase', description: 'Product-centered layout with feature grid and comparison table.', tags: ['Product Focus', 'E-commerce'], recommended: false },
+      { id: 'story-scroll', name: 'Story Scroll', description: 'Narrative-driven long page with sequential sections and parallax feel.', tags: ['Brand Story', 'Engagement'], recommended: false },
+      { id: 'minimal-cta', name: 'Minimal CTA', description: 'Clean, minimal design focused on a single conversion action.', tags: ['Simple', 'Fast Load'], recommended: false },
+    ],
+    generatedPage: {
+      hero: {
+        badge: 'Eco-Friendly Collection',
+        headline: 'The Last Water Bottle You\'ll Ever Need',
+        subheadline: 'Made from 100% recycled ocean plastic. Keeps drinks cold for 30 hours. Built to last a lifetime.',
+        ctaText: 'Shop Now — 20% Off',
+        subtext: 'Free shipping on orders over $35',
+      },
+      features: [
+        { icon: '♻️', title: '100% Recycled Ocean Plastic', description: 'Every bottle removes 3 lbs of plastic from the ocean.' },
+        { icon: '❄️', title: '30-Hour Cold Retention', description: 'Triple-wall vacuum insulation outperforms every competitor.' },
+        { icon: '🪶', title: '20% Lighter Than Competitors', description: 'Aerospace-grade materials keep weight down without sacrificing durability.' },
+        { icon: '🛡️', title: 'Lifetime Warranty', description: 'If it ever breaks, we replace it. No questions asked.' },
+      ],
+      socialProof: {
+        rating: 4.9,
+        reviewCount: 2847,
+        testimonials: [
+          { name: 'Sarah K.', text: 'Best water bottle I\'ve ever owned. Still ice cold after a full day at the beach.', stars: 5 },
+          { name: 'Mike R.', text: 'Love that it\'s made from recycled ocean plastic. Feels premium and the weight is perfect.', stars: 5 },
+          { name: 'Jenna L.', text: 'Bought 3 more for my family. The lifetime warranty sealed the deal for me.', stars: 5 },
+        ],
+      },
+      pricing: {
+        discountBadge: 'LAUNCH SPECIAL',
+        originalPrice: '$48.00',
+        salePrice: '$38.00',
+        variants: ['Ocean Blue', 'Coral Pink', 'Forest Green', 'Midnight Black'],
+        ctaText: 'Add to Cart',
+      },
+      trustFooter: [
+        { icon: '✓', text: '30-Day Money-Back Guarantee' },
+        { icon: '🚚', text: 'Free Shipping Over $35' },
+        { icon: '🔒', text: 'Secure Checkout' },
+      ],
+    },
+    refinements: {
+      'bigger headline': { section: 'hero', field: 'headlineSize', value: 'large', ack: 'Made the headline larger and bolder.' },
+      'larger headline': { section: 'hero', field: 'headlineSize', value: 'large', ack: 'Increased the headline size.' },
+      'blue cta': { section: 'hero', field: 'ctaColor', value: 'blue', ack: 'Changed the CTA button to blue.' },
+      'green cta': { section: 'hero', field: 'ctaColor', value: 'green', ack: 'Changed the CTA button to green.' },
+      'red cta': { section: 'hero', field: 'ctaColor', value: 'red', ack: 'Changed the CTA button to red.' },
+      'add pricing': { section: 'pricing', field: 'visible', value: true, ack: 'Added the pricing section.' },
+      'remove pricing': { section: 'pricing', field: 'visible', value: false, ack: 'Removed the pricing section.' },
+      'more testimonials': { section: 'socialProof', field: 'expanded', value: true, ack: 'Expanded the testimonials section.' },
+      'dark mode': { section: 'hero', field: 'theme', value: 'dark', ack: 'Switched to dark theme.' },
+      'light mode': { section: 'hero', field: 'theme', value: 'light', ack: 'Switched to light theme.' },
+    },
+  },
+
+  creativeGen: {
+    questions: [
+      { id: 1, key: 'type', text: 'What type of creative do you need?', hint: 'Image for static ads, Video for dynamic content', placeholder: 'image or video' },
+      { id: 2, key: 'style', text: 'What visual style should it have?', hint: 'e.g. cinematic, 3D render, anime, photo-realistic, UGC', placeholder: 'Type a style...' },
+      { id: 3, key: 'prompt', text: 'Describe the scene or concept for your creative.', hint: 'e.g. "A person hiking with our water bottle at golden hour, ocean cliffs in background"', placeholder: 'Describe your creative...' },
+    ],
+    styles: [
+      { id: 'cinematic', name: 'Cinematic', description: 'High-contrast, dramatic lighting' },
+      { id: '3d', name: '3D Render', description: 'Clean product visualization' },
+      { id: 'anime', name: 'Anime', description: 'Stylized illustration' },
+      { id: 'photo', name: 'Photo-realistic', description: 'Natural photography look' },
+      { id: 'ugc', name: 'UGC Style', description: 'Authentic user-generated feel' },
+    ],
+    generatedCreative: {
+      name: 'Ad-Creative-Gen-01',
+      type: 'image',
+      style: 'cinematic',
+      status: 'complete',
+      resolution: '1080x1080',
+      format: 'PNG',
+      fileSize: '2.4 MB',
+      prompt: 'A person hiking with our water bottle at golden hour, ocean cliffs in background',
+      variations: [
+        { id: 'var-1', label: 'Original', thumbnail: '🖼️', selected: true },
+        { id: 'var-2', label: 'Variation A', thumbnail: '🖼️', selected: false },
+        { id: 'var-3', label: 'Variation B', thumbnail: '🖼️', selected: false },
+        { id: 'var-4', label: 'Variation C', thumbnail: '🖼️', selected: false },
+      ],
+      scores: {
+        engagement: 87,
+        brandFit: 92,
+        clarity: 85,
+      },
+    },
+  },
+
   analyzer: {
     kpis: {
       totalSpend: { label: 'Total Spend', value: '$2,440', change: '+$420', trend: 'up' },

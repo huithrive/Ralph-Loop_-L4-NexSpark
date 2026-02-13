@@ -3,13 +3,14 @@ const path = require('path');
 const mock = require('./data/mock');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(require('./routes/guided'));
 
 function isHtmx(req) {
   return req.headers['hx-request'] === 'true';
@@ -37,6 +38,218 @@ function render(res, req, page, locals) {
 function delay(ms) {
   return new Promise(function (resolve) { setTimeout(resolve, ms); });
 }
+
+/* ──────────────────────────────────────────────
+   Command Parser
+   ────────────────────────────────────────────── */
+
+function parseCommand(input) {
+  var text = (input || '').trim().toLowerCase();
+
+  if (text.startsWith('/')) {
+    var cmd = text.slice(1).split(/\s+/)[0];
+    if (mock.chat.flows[cmd]) return cmd;
+  }
+
+  var keywords = mock.chat.nlKeywords;
+  var keys = Object.keys(keywords);
+  for (var i = 0; i < keys.length; i++) {
+    var flow = keys[i];
+    var words = keywords[flow];
+    for (var j = 0; j < words.length; j++) {
+      if (text.indexOf(words[j]) !== -1) return flow;
+    }
+  }
+
+  return null;
+}
+
+/* ──────────────────────────────────────────────
+   Chat API
+   ────────────────────────────────────────────── */
+
+app.get('/api/chat/welcome', function (req, res) {
+  res.render('fragments/chat/welcome', { messages: mock.chat.welcomeMessages });
+});
+
+app.post('/api/chat', async function (req, res) {
+  var message = (req.body.message || '').trim();
+  if (!message) return res.send('');
+
+  var userMsg = { role: 'user', type: 'text', showLabel: true, text: message };
+  var command = parseCommand(message);
+
+  var html = '';
+  var msgHtml = await renderAsync(res, 'fragments/chat/message', { msg: userMsg });
+  html += msgHtml;
+
+  if (command && mock.chat.flows[command]) {
+    var flow = mock.chat.flows[command];
+    for (var i = 0; i < flow.messages.length; i++) {
+      html += await renderAsync(res, 'fragments/chat/message', { msg: flow.messages[i] });
+    }
+  } else {
+    var fallback = { role: 'agent', type: 'text', showLabel: true, text: 'I didn\'t recognize that command. Try a slash command like <code>/research</code>, <code>/dashboard</code>, or <code>/campaigns</code>. You can also describe what you need in plain language.' };
+    html += await renderAsync(res, 'fragments/chat/message', { msg: fallback });
+    html += await renderAsync(res, 'fragments/chat/message', {
+      msg: {
+        role: 'agent', type: 'choices',
+        choices: [
+          { label: 'View Dashboard', icon: '🏠', command: '/dashboard' },
+          { label: 'Run Research', icon: '🎯', command: '/research' },
+          { label: 'See Campaigns', icon: '📢', command: '/campaigns' },
+        ],
+      },
+    });
+  }
+
+  res.send(html);
+});
+
+app.get('/api/chat/proactive', async function (req, res) {
+  var index = parseInt(req.query.index || 0, 10);
+  var msgs = mock.chat.proactiveMessages;
+  if (!msgs.length) return res.send('');
+  var entry = msgs[index % msgs.length];
+  var html = '';
+  for (var i = 0; i < entry.messages.length; i++) {
+    html += await renderAsync(res, 'fragments/chat/message', { msg: entry.messages[i] });
+  }
+  res.send(html);
+});
+
+function renderAsync(res, template, data) {
+  return new Promise(function (resolve) {
+    res.app.render(template, data, function (err, html) {
+      if (err) console.error('Template render error:', template, err.message);
+      resolve(err ? '' : html);
+    });
+  });
+}
+
+/* ──────────────────────────────────────────────
+   Canvas Routes
+   ────────────────────────────────────────────── */
+
+app.get('/canvas/dashboard', function (req, res) {
+  res.render('pages/dashboard', {
+    currentPage: 'dashboard',
+    headerTitle: 'Dashboard',
+    breadcrumb: [{ label: 'Dashboard' }],
+    dashboard: mock.dashboard,
+  });
+});
+
+app.get('/canvas/strategist/research', function (req, res) {
+  res.render('pages/strategist/index', {
+    currentPage: 'strategist',
+    headerTitle: 'Strategist',
+    breadcrumb: [{ label: 'Strategist' }],
+    recentResearch: mock.strategist.recentResearch,
+  });
+});
+
+app.get('/canvas/strategist/report', function (req, res) {
+  res.render('pages/strategist/report', {
+    currentPage: 'strategist',
+    headerTitle: 'GTM Report',
+    breadcrumb: [{ label: 'GTM Report' }],
+    report: mock.strategist.gtmReport,
+  });
+});
+
+app.get('/canvas/strategist/interview', function (req, res) {
+  res.render('pages/strategist/interview', {
+    currentPage: 'strategist',
+    headerTitle: 'Voice Interview',
+    breadcrumb: [{ label: 'Interview' }],
+    questions: mock.strategist.interviewQuestions,
+    currentQuestion: 0,
+  });
+});
+
+app.get('/canvas/executor/landing-pages', function (req, res) {
+  res.render('pages/executor/landing-pages', {
+    currentPage: 'executor',
+    headerTitle: 'Landing Pages',
+    breadcrumb: [{ label: 'Landing Pages' }],
+    pages: mock.executor.landingPages,
+  });
+});
+
+app.get('/canvas/executor/shopify', function (req, res) {
+  res.render('pages/executor/shopify', {
+    currentPage: 'executor',
+    headerTitle: 'Shopify Store',
+    breadcrumb: [{ label: 'Shopify' }],
+    shopify: mock.executor.shopify,
+  });
+});
+
+app.get('/canvas/executor/domains', function (req, res) {
+  res.render('pages/executor/domains', {
+    currentPage: 'executor',
+    headerTitle: 'Domain Setup',
+    breadcrumb: [{ label: 'Domains' }],
+  });
+});
+
+app.get('/canvas/executor/creative', function (req, res) {
+  res.render('pages/executor/creative', {
+    currentPage: 'executor',
+    headerTitle: 'Creative Studio',
+    breadcrumb: [{ label: 'Creative Studio' }],
+    creatives: mock.executor.creatives,
+  });
+});
+
+app.get('/canvas/advertiser/campaigns', function (req, res) {
+  res.render('pages/advertiser/campaigns', {
+    currentPage: 'advertiser',
+    headerTitle: 'Campaigns',
+    breadcrumb: [{ label: 'Campaigns' }],
+    campaigns: mock.advertiser.campaigns,
+    wizardSteps: mock.advertiser.wizardSteps,
+  });
+});
+
+app.get('/canvas/advertiser/connections', function (req, res) {
+  res.render('pages/advertiser/connections', {
+    currentPage: 'advertiser',
+    headerTitle: 'Connections',
+    breadcrumb: [{ label: 'Connections' }],
+    connections: mock.advertiser.connections,
+  });
+});
+
+app.get('/canvas/advertiser/pixel', function (req, res) {
+  res.render('pages/advertiser/pixel', {
+    currentPage: 'advertiser',
+    headerTitle: 'Meta Pixel',
+    breadcrumb: [{ label: 'Meta Pixel' }],
+    pixel: mock.advertiser.pixel,
+  });
+});
+
+app.get('/canvas/analyzer/performance', function (req, res) {
+  var campaign = mock.advertiser.campaigns[0];
+  res.render('pages/analyzer/performance', {
+    currentPage: 'analyzer',
+    headerTitle: 'Campaign Performance',
+    breadcrumb: [{ label: 'Performance' }],
+    campaign: campaign,
+    chartData: mock.analyzer.chartData,
+  });
+});
+
+app.get('/canvas/analyzer/optimize', function (req, res) {
+  res.render('pages/analyzer/optimize', {
+    currentPage: 'analyzer',
+    headerTitle: 'Optimizations',
+    breadcrumb: [{ label: 'Optimize' }],
+    optimizations: mock.analyzer.optimizations,
+  });
+});
 
 /* ──────────────────────────────────────────────
    Dashboard

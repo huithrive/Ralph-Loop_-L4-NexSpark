@@ -1,0 +1,11 @@
+<div class="chat-msg agent">
+  <div class="onboarding-choices">
+    <% choices.forEach(function(c) { %>
+      <button class="onboarding-choice-btn"
+              data-onboarding-action="<%= c.action %>">
+        <% if (c.icon) { %><span><%= c.icon %></span><% } %>
+        <%= c.label %>
+      </button>
+    <% }); %>
+  </div>
+</div>

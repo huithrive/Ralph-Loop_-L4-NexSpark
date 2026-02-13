@@ -1,0 +1,93 @@
+<%
+  var h = page.hero;
+  var feats = page.features;
+  var sp = page.socialProof;
+  var pr = page.pricing;
+  var tf = page.trustFooter;
+  var m = typeof mods !== 'undefined' ? mods : {};
+  var headlineSizeClass = m.headlineSize === 'large' ? ' lp-headline-lg' : '';
+  var ctaColorClass = m.ctaColor ? ' lp-cta-' + m.ctaColor : '';
+  var themeClass = m.theme === 'light' ? ' lp-theme-light' : '';
+  var hidePricing = m.visible === false;
+%>
+
+<div class="lp-preview<%= themeClass %>">
+  <div class="builder-edit-banner">
+    <span class="builder-edit-badge">PREVIEW MODE</span>
+    <span class="builder-edit-hint">Type changes in chat to refine this page</span>
+  </div>
+
+  <!-- Hero -->
+  <section class="lp-hero">
+    <span class="lp-badge"><%= h.badge %></span>
+    <h1 class="lp-headline<%= headlineSizeClass %>"><%= h.headline %></h1>
+    <p class="lp-subheadline"><%= h.subheadline %></p>
+    <button class="lp-cta-btn<%= ctaColorClass %>"><%= h.ctaText %></button>
+    <p class="lp-subtext"><%= h.subtext %></p>
+  </section>
+
+  <!-- Features -->
+  <section class="lp-features">
+    <h2 class="lp-section-title">Why Choose Us</h2>
+    <div class="lp-features-grid">
+      <% feats.forEach(function(f) { %>
+        <div class="lp-feature-card">
+          <span class="lp-feature-icon"><%= f.icon %></span>
+          <h3 class="lp-feature-title"><%= f.title %></h3>
+          <p class="lp-feature-desc"><%= f.description %></p>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- Social Proof -->
+  <section class="lp-social-proof">
+    <div class="lp-rating-bar">
+      <span class="lp-stars">
+        <% for (var i = 0; i < 5; i++) { %>★<% } %>
+      </span>
+      <span class="lp-rating-num"><%= sp.rating %> / 5</span>
+      <span class="lp-review-count">(<%= sp.reviewCount.toLocaleString() %> reviews)</span>
+    </div>
+    <div class="lp-testimonials">
+      <% sp.testimonials.forEach(function(t) { %>
+        <div class="lp-testimonial-card">
+          <div class="lp-testimonial-stars">
+            <% for (var j = 0; j < t.stars; j++) { %>★<% } %>
+          </div>
+          <p class="lp-testimonial-text">"<%= t.text %>"</p>
+          <div class="lp-testimonial-name">— <%= t.name %></div>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <% if (!hidePricing) { %>
+  <section class="lp-pricing">
+    <div class="lp-pricing-card">
+      <span class="lp-discount-badge"><%= pr.discountBadge %></span>
+      <div class="lp-price-row">
+        <span class="lp-original-price"><%= pr.originalPrice %></span>
+        <span class="lp-sale-price"><%= pr.salePrice %></span>
+      </div>
+      <div class="lp-variants">
+        <% pr.variants.forEach(function(v) { %>
+          <span class="lp-variant-badge"><%= v %></span>
+        <% }); %>
+      </div>
+      <button class="lp-cta-btn<%= ctaColorClass %>"><%= pr.ctaText %></button>
+    </div>
+  </section>
+  <% } %>
+
+  <!-- Trust Footer -->
+  <section class="lp-trust-footer">
+    <% tf.forEach(function(item) { %>
+      <div class="lp-trust-item">
+        <span class="lp-trust-icon"><%= item.icon %></span>
+        <span><%= item.text %></span>
+      </div>
+    <% }); %>
+  </section>
+</div>

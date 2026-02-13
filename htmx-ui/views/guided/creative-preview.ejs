@@ -1,0 +1,70 @@
+<div class="creative-preview">
+  <div class="builder-edit-banner">
+    <span class="builder-edit-badge">GENERATED</span>
+    <span class="builder-edit-hint">Your AI-generated creative is ready</span>
+  </div>
+
+  <div class="creative-preview-body">
+    <div class="creative-meta-row">
+      <div class="creative-meta-item">
+        <span class="creative-meta-label">Type</span>
+        <span class="creative-meta-value"><%= creative.type %></span>
+      </div>
+      <div class="creative-meta-item">
+        <span class="creative-meta-label">Style</span>
+        <span class="creative-meta-value"><%= creative.style %></span>
+      </div>
+      <div class="creative-meta-item">
+        <span class="creative-meta-label">Resolution</span>
+        <span class="creative-meta-value"><%= creative.resolution %></span>
+      </div>
+      <div class="creative-meta-item">
+        <span class="creative-meta-label">Size</span>
+        <span class="creative-meta-value"><%= creative.fileSize %></span>
+      </div>
+    </div>
+
+    <div class="creative-prompt-card">
+      <div class="creative-prompt-label">Prompt</div>
+      <div class="creative-prompt-text"><%= creative.prompt %></div>
+    </div>
+
+    <h3 class="creative-section-title">Variations</h3>
+    <div class="creative-variations-grid">
+      <% creative.variations.forEach(function(v) { %>
+        <div class="creative-variation-card<%= v.selected ? ' selected' : '' %>">
+          <div class="creative-variation-thumb"><%= v.thumbnail %></div>
+          <div class="creative-variation-label"><%= v.label %></div>
+          <% if (v.selected) { %>
+            <span class="creative-variation-check">&#10003;</span>
+          <% } %>
+        </div>
+      <% }); %>
+    </div>
+
+    <h3 class="creative-section-title">Quality Scores</h3>
+    <div class="creative-scores">
+      <div class="creative-score-item">
+        <div class="creative-score-label">Engagement</div>
+        <div class="creative-score-bar">
+          <div class="creative-score-fill" style="width: <%= creative.scores.engagement %>%"></div>
+        </div>
+        <div class="creative-score-num"><%= creative.scores.engagement %></div>
+      </div>
+      <div class="creative-score-item">
+        <div class="creative-score-label">Brand Fit</div>
+        <div class="creative-score-bar">
+          <div class="creative-score-fill brand-fit" style="width: <%= creative.scores.brandFit %>%"></div>
+        </div>
+        <div class="creative-score-num"><%= creative.scores.brandFit %></div>
+      </div>
+      <div class="creative-score-item">
+        <div class="creative-score-label">Clarity</div>
+        <div class="creative-score-bar">
+          <div class="creative-score-fill clarity" style="width: <%= creative.scores.clarity %>%"></div>
+        </div>
+        <div class="creative-score-num"><%= creative.scores.clarity %></div>
+      </div>
+    </div>
+  </div>
+</div>
