@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alexandar CGO - Week 1 Demo | Bloom Beverages</title>
+  <link rel="stylesheet" href="/css/auxora.css">
+  <style>
+    .demo-container {
+      min-height: 100vh;
+      background: var(--bg-primary);
+    }
+
+    .demo-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .demo-header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .demo-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .demo-logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-coral) 0%, var(--primary-coral-glow) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+
+    .demo-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .demo-logo-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .demo-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .demo-user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .demo-user-info {
+      text-align: right;
+    }
+
+    .demo-user-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .demo-user-company {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .demo-main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .demo-intro {
+      margin-bottom: 40px;
+    }
+
+    .demo-intro h1 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .demo-intro p {
+      color: var(--text-muted);
+      font-size: 1.0625rem;
+      max-width: 700px;
+    }
+
+    .week-summary {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .summary-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .summary-card.exceeded {
+      border-color: var(--success);
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.05) 0%, var(--bg-surface) 100%);
+    }
+
+    .summary-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .summary-value {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .summary-target {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .summary-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    .summary-badge.exceeded {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .summary-badge.under_budget {
+      background: var(--info-light);
+      color: var(--info);
+    }
+
+    .summary-badge.on_target {
+      background: var(--bg-muted);
+      color: var(--text-muted);
+    }
+
+    .timeline-section h2 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .timeline-section h2::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-default);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border-default);
+    }
+
+    .day-card {
+      position: relative;
+      margin-bottom: 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .day-card:hover {
+      border-color: var(--primary-coral);
+      box-shadow: 0 4px 20px rgba(196, 112, 74, 0.1);
+    }
+
+    .day-card::before {
+      content: '';
+      position: absolute;
+      left: -26px;
+      top: 24px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary-coral);
+      border: 3px solid var(--bg-primary);
+    }
+
+    .day-card.completed::before {
+      background: var(--success);
+    }
+
+    .day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .day-header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .day-number {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--bg-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .day-number-num {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .day-number-label {
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .day-info h3 {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .day-info p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .day-metrics {
+      display: flex;
+      gap: 24px;
+    }
+
+    .day-metric {
+      text-align: right;
+    }
+
+    .day-metric-value {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .day-metric-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .day-briefing {
+      padding: 20px 24px;
+      background: linear-gradient(180deg, rgba(196, 112, 74, 0.03) 0%, transparent 100%);
+    }
+
+    .briefing-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .briefing-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-coral) 0%, var(--primary-coral-glow) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .briefing-content {
+      flex: 1;
+    }
+
+    .briefing-greeting {
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .briefing-overnight {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .overnight-item {
+      text-align: center;
+    }
+
+    .overnight-value {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .overnight-label {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .overnight-value.positive {
+      color: var(--success);
+    }
+
+    .day-activities {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-default);
+    }
+
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-muted);
+      border-radius: 10px;
+    }
+
+    .activity-time {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      width: 70px;
+      flex-shrink: 0;
+    }
+
+    .activity-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .activity-icon.research { background: var(--info-light); }
+    .activity-icon.insight { background: #F3E8FF; }
+    .activity-icon.interview { background: #FEF3C7; }
+    .activity-icon.strategy { background: var(--success-light); }
+    .activity-icon.approval_request { background: rgba(196, 112, 74, 0.1); }
+    .activity-icon.build { background: #DBEAFE; }
+    .activity-icon.creative { background: #FCE7F3; }
+    .activity-icon.integration { background: #E0E7FF; }
+    .activity-icon.campaign { background: #CCFBF1; }
+    .activity-icon.launch { background: var(--success-light); }
+    .activity-icon.report { background: #F5F5F5; }
+    .activity-icon.analysis { background: #FEF9C3; }
+    .activity-icon.optimization { background: #D1FAE5; }
+    .activity-icon.monitoring { background: #E0E7FF; }
+    .activity-icon.alert { background: var(--warning-light); }
+    .activity-icon.planning { background: #EDE9FE; }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      margin-bottom: 2px;
+    }
+
+    .activity-title.milestone {
+      color: var(--primary-coral);
+    }
+
+    .activity-desc {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .activity-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-left: 8px;
+    }
+
+    .activity-badge.approved {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .activity-badge.autonomous {
+      background: var(--info-light);
+      color: var(--info);
+    }
+
+    .day-endofday {
+      padding: 16px 24px;
+      background: var(--bg-muted);
+      border-top: 1px solid var(--border-default);
+    }
+
+    .endofday-label {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .endofday-text {
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .insights-section {
+      margin-top: 48px;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .insight-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .insight-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .insight-type.winner {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .insight-type.opportunity {
+      background: rgba(196, 112, 74, 0.1);
+      color: var(--primary-coral);
+    }
+
+    .insight-type.learning {
+      background: var(--info-light);
+      color: var(--info);
+    }
+
+    .insight-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .insight-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .week-summary {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .day-metrics {
+        display: none;
+      }
+
+      .briefing-overnight {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <header class="demo-header">
+      <div class="demo-header-left">
+        <div class="demo-logo">
+          <div class="demo-logo-icon">A</div>
+          <div>
+            <div class="demo-logo-text">Alexandar</div>
+            <div class="demo-logo-sub">Chief Growth Officer</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-user">
+        <div class="demo-user-info">
+          <div class="demo-user-name"><%= demo.user.name %></div>
+          <div class="demo-user-company"><%= demo.user.company %></div>
+        </div>
+        <div class="demo-user-avatar"><%= demo.user.avatar %></div>
+      </div>
+    </header>
+
+    <main class="demo-main">
+      <div class="demo-intro">
+        <h1>Week 1: <%= demo.user.company %></h1>
+        <p>Alexandar's first week as your AI Chief Growth Officer. From market research to live campaigns - here's everything that happened.</p>
+      </div>
+
+      <!-- Week Summary -->
+      <div class="week-summary">
+        <% demo.weekSummary.highlights.forEach(function(h) { %>
+          <div class="summary-card <%= h.status === 'exceeded' ? 'exceeded' : '' %>">
+            <div class="summary-label"><%= h.metric %></div>
+            <div class="summary-value"><%= h.value %></div>
+            <div class="summary-target">Target: <%= h.target %></div>
+            <span class="summary-badge <%= h.status %>">
+              <%= h.status === 'exceeded' ? 'Exceeded' : h.status === 'under_budget' ? 'Under Budget' : 'On Target' %>
+            </span>
+          </div>
+        <% }); %>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline-section">
+        <h2>Daily Timeline</h2>
+        <div class="timeline">
+          <% demo.timeline.days.forEach(function(day) { %>
+            <div class="day-card <%= day.status %>">
+              <div class="day-header">
+                <div class="day-header-left">
+                  <div class="day-number">
+                    <span class="day-number-num"><%= day.day %></span>
+                    <span class="day-number-label">Day</span>
+                  </div>
+                  <div class="day-info">
+                    <h3><%= day.dayName %> - <%= day.theme %></h3>
+                    <p><%= day.date %></p>
+                  </div>
+                </div>
+                <% if (day.metrics) { %>
+                  <div class="day-metrics">
+                    <% if (day.metrics.roas) { %>
+                      <div class="day-metric">
+                        <div class="day-metric-value"><%= day.metrics.roas %></div>
+                        <div class="day-metric-label">ROAS</div>
+                      </div>
+                    <% } %>
+                    <% if (day.metrics.revenue) { %>
+                      <div class="day-metric">
+                        <div class="day-metric-value"><%= day.metrics.revenue %></div>
+                        <div class="day-metric-label">Revenue</div>
+                      </div>
+                    <% } %>
+                    <div class="day-metric">
+                      <div class="day-metric-value"><%= day.metrics.tasksCompleted %>/<%= day.metrics.tasksTotal %></div>
+                      <div class="day-metric-label">Tasks</div>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+
+              <!-- Briefing -->
+              <div class="day-briefing">
+                <div class="briefing-row">
+                  <div class="briefing-avatar">A</div>
+                  <div class="briefing-content">
+                    <div class="briefing-greeting"><%= day.briefing.greeting %></div>
+
+                    <% if (day.briefing.overnight && day.briefing.overnight.spend) { %>
+                      <div class="briefing-overnight">
+                        <div class="overnight-item">
+                          <div class="overnight-value"><%= day.briefing.overnight.spend %></div>
+                          <div class="overnight-label">Spend</div>
+                        </div>
+                        <div class="overnight-item">
+                          <div class="overnight-value"><%= day.briefing.overnight.conversions %></div>
+                          <div class="overnight-label">Orders</div>
+                        </div>
+                        <div class="overnight-item">
+                          <div class="overnight-value"><%= day.briefing.overnight.revenue %></div>
+                          <div class="overnight-label">Revenue</div>
+                        </div>
+                        <div class="overnight-item">
+                          <div class="overnight-value positive"><%= day.briefing.overnight.roas %></div>
+                          <div class="overnight-label">ROAS</div>
+                        </div>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activities -->
+              <div class="day-activities">
+                <div class="activity-list">
+                  <% day.activities.slice(0, 4).forEach(function(activity) { %>
+                    <div class="activity-item">
+                      <div class="activity-time"><%= activity.time %></div>
+                      <div class="activity-icon <%= activity.type %>">
+                        <% if (activity.type === 'research') { %>🔍<% } %>
+                        <% if (activity.type === 'insight') { %>💡<% } %>
+                        <% if (activity.type === 'interview') { %>🎙️<% } %>
+                        <% if (activity.type === 'strategy') { %>📋<% } %>
+                        <% if (activity.type === 'approval_request') { %>✋<% } %>
+                        <% if (activity.type === 'build') { %>⚡<% } %>
+                        <% if (activity.type === 'creative') { %>🎨<% } %>
+                        <% if (activity.type === 'integration') { %>🔗<% } %>
+                        <% if (activity.type === 'campaign') { %>📢<% } %>
+                        <% if (activity.type === 'launch') { %>🚀<% } %>
+                        <% if (activity.type === 'report') { %>📊<% } %>
+                        <% if (activity.type === 'analysis') { %>📈<% } %>
+                        <% if (activity.type === 'optimization') { %>⚙️<% } %>
+                        <% if (activity.type === 'monitoring') { %>👁️<% } %>
+                        <% if (activity.type === 'alert') { %>⚠️<% } %>
+                        <% if (activity.type === 'planning') { %>🗓️<% } %>
+                      </div>
+                      <div class="activity-content">
+                        <div class="activity-title <%= activity.milestone ? 'milestone' : '' %>">
+                          <%= activity.title %>
+                          <% if (activity.status === 'approved') { %>
+                            <span class="activity-badge approved">Approved</span>
+                          <% } %>
+                          <% if (activity.autonomous) { %>
+                            <span class="activity-badge autonomous">Auto</span>
+                          <% } %>
+                        </div>
+                        <div class="activity-desc"><%= activity.description %></div>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              </div>
+
+              <!-- End of Day -->
+              <% if (day.endOfDay) { %>
+                <div class="day-endofday">
+                  <div class="endofday-label">End of Day Summary</div>
+                  <div class="endofday-text"><%= day.endOfDay.summary %></div>
+                </div>
+              <% } %>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+
+      <!-- Insights -->
+      <div class="insights-section">
+        <h2>Week 1 Insights</h2>
+        <div class="insights-grid">
+          <% demo.weekSummary.insights.forEach(function(insight) { %>
+            <div class="insight-card">
+              <span class="insight-type <%= insight.type %>">
+                <% if (insight.type === 'winner') { %>🏆 Winner<% } %>
+                <% if (insight.type === 'opportunity') { %>💡 Opportunity<% } %>
+                <% if (insight.type === 'learning') { %>📚 Learning<% } %>
+              </span>
+              <div class="insight-title"><%= insight.title %></div>
+              <div class="insight-desc"><%= insight.description %></div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

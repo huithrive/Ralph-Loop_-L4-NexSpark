@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auxora.ai - AI Growth Co-Founder Demo</title>
+  <link rel="stylesheet" href="/css/auxora-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+
+    .demo-app {
+      display: flex;
+      height: 100vh;
+      background: #FFFBEB;
+    }
+
+    /* ===== LEFT PANEL - CHAT ===== */
+    .chat-panel {
+      width: 420px;
+      background: white;
+      border-right: 2px solid #FDE68A;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .chat-header {
+      padding: 20px;
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-avatar {
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .chat-info h2 {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .chat-info p {
+      margin: 4px 0 0;
+      font-size: 0.8125rem;
+      opacity: 0.9;
+    }
+
+    .heartbeat-indicator {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.2);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+
+    .heartbeat-dot {
+      width: 8px;
+      height: 8px;
+      background: #22C55E;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      50% { transform: scale(1.2); box-shadow: 0 0 0 8px transparent; }
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 90%;
+      animation: messageIn 0.3s ease-out;
+    }
+
+    @keyframes messageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.auxora { align-self: flex-start; }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .message.auxora .message-avatar {
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: white;
+    }
+
+    .message.user .message-avatar {
+      background: #E7E5E4;
+      color: #57534E;
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .message.user .message-content { align-items: flex-end; }
+
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+
+    .message.auxora .message-bubble {
+      background: #FEF3C7;
+      color: #78350F;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user .message-bubble {
+      background: #F59E0B;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-time {
+      font-size: 0.6875rem;
+      color: #A8A29E;
+      padding: 0 4px;
+    }
+
+    /* Action Buttons in Chat */
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .action-btn {
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: 2px solid #F59E0B;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+      color: #D97706;
+    }
+
+    .action-btn:hover {
+      background: #F59E0B;
+      color: white;
+    }
+
+    .action-btn.primary {
+      background: #F59E0B;
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      background: #D97706;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      padding: 12px 16px;
+      background: #FEF3C7;
+      border-radius: 16px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #D97706;
+      animation: typingBounce 1.4s ease-in-out infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Chat Input */
+    .chat-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid #FDE68A;
+      display: flex;
+      gap: 12px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #FDE68A;
+      border-radius: 24px;
+      font-size: 0.9375rem;
+      outline: none;
+    }
+
+    .chat-input:focus {
+      border-color: #F59E0B;
+    }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #F59E0B;
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== RIGHT PANEL - CONTENT ===== */
+    .content-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Tabs */
+    .content-tabs {
+      display: flex;
+      background: white;
+      border-bottom: 2px solid #FDE68A;
+      padding: 0 24px;
+    }
+
+    .content-tab {
+      padding: 16px 24px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: #78716C;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s ease;
+    }
+
+    .content-tab:hover {
+      color: #D97706;
+    }
+
+    .content-tab.active {
+      color: #D97706;
+      border-bottom-color: #F59E0B;
+      font-weight: 600;
+    }
+
+    .content-tab.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .content-tab .tab-icon {
+      margin-right: 8px;
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(120, 53, 15, 0.1);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      background: #FFFBEB;
+      border-bottom: 1px solid #FDE68A;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-weight: 600;
+      color: #78350F;
+      font-size: 1rem;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border: 2px solid #FDE68A;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #D97706;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: #78716C;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .metric-change {
+      font-size: 0.8125rem;
+      margin-top: 4px;
+    }
+
+    .metric-change.positive { color: #22C55E; }
+    .metric-change.negative { color: #EF4444; }
+
+    /* Progress Steps */
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .progress-steps::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      right: 40px;
+      height: 3px;
+      background: #FDE68A;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #FDE68A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #A8A29E;
+    }
+
+    .progress-step.completed .step-number {
+      background: #22C55E;
+      border-color: #22C55E;
+      color: white;
+    }
+
+    .progress-step.active .step-number {
+      background: #F59E0B;
+      border-color: #F59E0B;
+      color: white;
+      animation: stepPulse 2s infinite;
+    }
+
+    @keyframes stepPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 0 10px transparent; }
+    }
+
+    .step-label {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #78716C;
+    }
+
+    .progress-step.active .step-label,
+    .progress-step.completed .step-label {
+      color: #D97706;
+    }
+
+    /* Input Form */
+    .url-input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .url-input {
+      flex: 1;
+      padding: 16px 20px;
+      border: 2px solid #FDE68A;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+
+    .url-input:focus {
+      outline: none;
+      border-color: #F59E0B;
+    }
+
+    .submit-btn {
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Research Results */
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .research-item {
+      padding: 16px;
+      background: #FFFBEB;
+      border-radius: 12px;
+      border-left: 4px solid #F59E0B;
+    }
+
+    .research-item-label {
+      font-size: 0.75rem;
+      color: #78716C;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .research-item-value {
+      font-weight: 600;
+      color: #78350F;
+    }
+
+    /* Voice Call Overlay */
+    .voice-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .voice-overlay.active {
+      display: flex;
+    }
+
+    .voice-modal {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      width: 90%;
+      max-width: 480px;
+    }
+
+    .voice-avatar {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      border-radius: 50%;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: voicePulse 1.5s infinite;
+    }
+
+    @keyframes voicePulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 0 20px transparent; }
+    }
+
+    .voice-waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 60px;
+      margin: 24px 0;
+    }
+
+    .voice-bar {
+      width: 6px;
+      background: #F59E0B;
+      border-radius: 3px;
+      animation: voiceBar 0.5s ease-in-out infinite alternate;
+    }
+
+    .voice-bar:nth-child(1) { animation-delay: 0s; height: 20px; }
+    .voice-bar:nth-child(2) { animation-delay: 0.1s; height: 35px; }
+    .voice-bar:nth-child(3) { animation-delay: 0.2s; height: 50px; }
+    .voice-bar:nth-child(4) { animation-delay: 0.3s; height: 35px; }
+    .voice-bar:nth-child(5) { animation-delay: 0.4s; height: 45px; }
+    .voice-bar:nth-child(6) { animation-delay: 0.3s; height: 30px; }
+    .voice-bar:nth-child(7) { animation-delay: 0.2s; height: 40px; }
+    .voice-bar:nth-child(8) { animation-delay: 0.1s; height: 25px; }
+
+    @keyframes voiceBar {
+      0% { transform: scaleY(0.5); }
+      100% { transform: scaleY(1); }
+    }
+
+    /* Payment Modal */
+    .payment-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .payment-overlay.active {
+      display: flex;
+    }
+
+    .payment-modal {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .payment-amount {
+      font-size: 4rem;
+      font-weight: 700;
+      color: #D97706;
+    }
+
+    .payment-features {
+      text-align: left;
+      margin: 24px 0;
+    }
+
+    .payment-feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      color: #57534E;
+    }
+
+    .payment-feature::before {
+      content: '✓';
+      color: #22C55E;
+      font-weight: 600;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      height: 250px;
+      position: relative;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #FDE68A;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 24px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -32px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border: 3px solid #F59E0B;
+      border-radius: 50%;
+    }
+
+    .timeline-item.completed::before {
+      background: #22C55E;
+      border-color: #22C55E;
+    }
+
+    /* Alert Banner */
+    .alert-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .alert-banner.warning {
+      background: #FEF9C3;
+      border-left: 4px solid #EAB308;
+    }
+
+    .alert-banner.success {
+      background: #DCFCE7;
+      border-left: 4px solid #22C55E;
+    }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #78716C;
+      background: #FFFBEB;
+      border-bottom: 2px solid #FDE68A;
+    }
+
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #FDE68A;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge.success { background: #DCFCE7; color: #166534; }
+    .badge.warning { background: #FEF9C3; color: #854D0E; }
+    .badge.primary { background: #FEF3C7; color: #92400E; }
+  </style>
+</head>
+<body>
+  <div class="demo-app">
+    <!-- ===== LEFT: CHAT PANEL ===== -->
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="chat-avatar">A</div>
+        <div class="chat-info">
+          <h2>Auxora</h2>
+          <p>Your AI Growth Co-Founder</p>
+        </div>
+        <div class="heartbeat-indicator">
+          <span class="heartbeat-dot"></span>
+          <span>Active</span>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <!-- Messages will be injected here -->
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" placeholder="Type a message..." id="chat-input">
+        <button class="send-btn" onclick="handleUserInput()">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== RIGHT: CONTENT PANEL ===== -->
+    <div class="content-panel">
+      <!-- Tabs -->
+      <div class="content-tabs">
+        <button class="content-tab active" data-tab="onboarding">
+          <span class="tab-icon">1</span> Onboarding
+        </button>
+        <button class="content-tab locked" data-tab="execution">
+          <span class="tab-icon">2</span> Execution
+        </button>
+        <button class="content-tab locked" data-tab="openclaw">
+          <span class="tab-icon">3</span> OpenClaw
+        </button>
+        <button class="content-tab locked" data-tab="results">
+          <span class="tab-icon">4</span> Results
+        </button>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content-area">
+        <!-- ONBOARDING SECTION -->
+        <div class="content-section active" id="section-onboarding">
+          <!-- Progress Steps -->
+          <div class="progress-steps">
+            <div class="progress-step active" id="step-1">
+              <div class="step-number">1</div>
+              <span class="step-label">Enter URL</span>
+            </div>
+            <div class="progress-step" id="step-2">
+              <div class="step-number">2</div>
+              <span class="step-label">Research</span>
+            </div>
+            <div class="progress-step" id="step-3">
+              <div class="step-number">3</div>
+              <span class="step-label">Interview</span>
+            </div>
+            <div class="progress-step" id="step-4">
+              <div class="step-number">4</div>
+              <span class="step-label">GTM Report</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Content -->
+          <div id="onboarding-content">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Enter Your Website</span>
+              </div>
+              <div class="card-body">
+                <p style="color: #57534E; margin-bottom: 16px;">Let's start by analyzing your business. Enter your website URL below.</p>
+                <div class="url-input-group">
+                  <input type="url" class="url-input" id="website-url" placeholder="https://yourwebsite.com" value="https://yamabushifarms.com">
+                  <button class="submit-btn" onclick="startResearch()">Analyze</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXECUTION SECTION -->
+        <div class="content-section" id="section-execution">
+          <div id="execution-content">
+            <!-- Will be populated dynamically -->
+          </div>
+        </div>
+
+        <!-- OPENCLAW SECTION -->
+        <div class="content-section" id="section-openclaw">
+          <div id="openclaw-content">
+            <!-- Will be populated dynamically -->
+          </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div class="content-section" id="section-results">
+          <div id="results-content">
+            <!-- Will be populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice Interview Overlay -->
+  <div class="voice-overlay" id="voice-overlay">
+    <div class="voice-modal">
+      <div class="voice-avatar">
+        <svg width="48" height="48" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/></svg>
+      </div>
+      <h2 style="color: #78350F; margin-bottom: 8px;">Voice Interview</h2>
+      <p style="color: #57534E;" id="voice-question">Tell me about your brand. What makes YamaBushi Farms special?</p>
+      <div class="voice-waveform">
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+      </div>
+      <p style="color: #A8A29E; font-size: 0.875rem;">Question <span id="voice-q-num">1</span> of 8</p>
+      <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
+        <button class="action-btn" onclick="nextVoiceQuestion()">Next Question</button>
+        <button class="action-btn" style="border-color: #E7E5E4; color: #57534E;" onclick="endVoiceCall()">End Call</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Overlay -->
+  <div class="payment-overlay" id="payment-overlay">
+    <div class="payment-modal">
+      <p style="color: #A8A29E; margin-bottom: 8px;" id="payment-label">GTM Strategy Preview</p>
+      <div class="payment-amount">$<span id="payment-amount">1.99</span></div>
+      <div class="payment-features" id="payment-features">
+        <div class="payment-feature">Complete market analysis</div>
+        <div class="payment-feature">Voice interview session</div>
+        <div class="payment-feature">GTM strategy report</div>
+      </div>
+      <button class="submit-btn" style="width: 100%;" onclick="processPayment()">Pay & Continue</button>
+    </div>
+  </div>
+
+  <script>
+    // Demo Data
+    const demoData = <%- JSON.stringify(demo) %>;
+
+    // State
+    let currentStep = 1;
+    let currentTab = 'onboarding';
+    let voiceQuestionIndex = 0;
+    let messageQueue = [];
+    let isProcessing = false;
+
+    // Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+
+    // ===== CONVERSATION FLOW =====
+    const conversationFlow = {
+      welcome: [
+        { sender: 'auxora', text: "Hi there! I'm Auxora, your AI Growth Co-Founder. Ready to help you achieve 3X ROAS in 5 weeks." },
+        { sender: 'auxora', text: "Let's start by understanding your business. Enter your website URL on the right, and I'll analyze your market opportunity.", delay: 800 }
+      ],
+      afterResearch: [
+        { sender: 'auxora', text: "Excellent! I've analyzed yamabushifarms.com. Here's what I found:", delay: 500 },
+        { sender: 'auxora', text: "**Market Opportunity:** $7.2B premium beef market with 8.5% growth rate. Your authentic A5 Japanese Wagyu positioning is strong!", delay: 800 },
+        { sender: 'auxora', text: "To unlock your full GTM strategy, we need a quick payment of $1.99. This includes your voice interview and complete report.", delay: 800, showPayment: 1 }
+      ],
+      afterPayment1: [
+        { sender: 'auxora', text: "Payment confirmed! Now let's capture your brand DNA through a quick voice interview.", delay: 500 },
+        { sender: 'auxora', text: "I'll ask 8 questions about your brand, goals, and audience. Ready to start?", buttons: [
+          { label: "Start Voice Interview", action: "startVoiceInterview", primary: true },
+          { label: "Skip to Text", action: "skipToText" }
+        ]}
+      ],
+      afterInterview: [
+        { sender: 'auxora', text: "Great interview! I've captured your brand DNA:", delay: 500 },
+        { sender: 'auxora', text: "**Brand:** Premium authentic Japanese Wagyu with direct farm sourcing\n**Constraints:** $800/month budget, no marketing experience\n**Priority:** Customer acquisition and brand awareness", delay: 800 },
+        { sender: 'auxora', text: "Generating your personalized GTM Strategy Report now...", delay: 1000, action: "showGTMReport" }
+      ],
+      afterGTMReport: [
+        { sender: 'auxora', text: "Your GTM Strategy Report is ready! I've identified the best channels and audiences for YamaBushi Farms.", delay: 500 },
+        { sender: 'auxora', text: "To launch your campaigns with full execution support (landing pages, ads, 24/7 monitoring), upgrade to Full Service for $20/month.", buttons: [
+          { label: "Upgrade to Full Service ($20)", action: "showPayment2", primary: true },
+          { label: "Download Report Only", action: "downloadReport" }
+        ]}
+      ],
+      afterPayment2: [
+        { sender: 'auxora', text: "You're all set! First, let me show you a comprehensive audit of your current ad accounts.", delay: 500 },
+        { sender: 'auxora', text: "I've analyzed your Meta and Google accounts and prepared a Yamabushi-style GTM Report.", delay: 800, action: "showFullAuditReport" }
+      ],
+      afterAuditReport: [
+        { sender: 'auxora', text: "Now let's build your optimized landing page. First, which product should we feature?", delay: 500 },
+        { sender: 'auxora', text: "This will be the hero product for your ads - every click leads directly to this product page.", buttons: [
+          { label: "Choose Product", action: "selectProduct", primary: true }
+        ]}
+      ],
+      afterProductSelection: [
+        { sender: 'auxora', text: "Great choice! The A5 Ribeye has the highest margin and visual appeal.", delay: 500 },
+        { sender: 'auxora', text: "Now I'll build a dedicated product landing page with checkout built-in.", delay: 800, action: "buildLandingPage" }
+      ],
+      afterLandingPage: [
+        { sender: 'auxora', text: "Your landing page is ready! Now let's create your ad creatives.", delay: 500 },
+        { sender: 'auxora', text: "I'll generate video ads, static images, and ad copy optimized for your audience.", buttons: [
+          { label: "Generate Creatives", action: "generateCreatives", primary: true }
+        ]}
+      ],
+      afterCreatives: [
+        { sender: 'auxora', text: "Creatives ready! You now have 2 videos and 3 static images with optimized ad copy.", delay: 500 },
+        { sender: 'auxora', text: "Let me configure Meta Ads to use these creatives with your landing page.", buttons: [
+          { label: "Configure Meta Ads", action: "configureMetaAds", primary: true }
+        ]}
+      ],
+      afterMetaAdsConfig: [
+        { sender: 'auxora', text: "Meta Ads configured! Your ad → landing page → checkout flow is ready.", delay: 500 },
+        { sender: 'auxora', text: "Let's move to Execution Setup to connect your accounts and launch.", delay: 800, action: "unlockExecution" }
+      ],
+      executionStart: [
+        { sender: 'auxora', text: "Welcome to Execution Setup! Let's connect your advertising channels.", delay: 500 },
+        { sender: 'auxora', text: "Click 'Connect' on each platform to link your accounts. I'll handle the rest.", buttons: [
+          { label: "Connect Meta Business", action: "connectMeta", primary: true },
+          { label: "Skip for Now", action: "skipChannels" }
+        ]}
+      ],
+      afterChannels: [
+        { sender: 'auxora', text: "All channels connected! Now let's set your initial budget.", delay: 500 },
+        { sender: 'auxora', text: "I recommend starting with $200 over 4 weeks for testing. This gives us enough data to find your winning audiences.", buttons: [
+          { label: "Approve $200/4 weeks", action: "approveBudget", primary: true },
+          { label: "Adjust Budget", action: "adjustBudget" }
+        ]}
+      ],
+      afterBudget: [
+        { sender: 'auxora', text: "Budget approved! Here's your testing plan:", delay: 500 },
+        { sender: 'auxora', text: "**3 Audiences:** Foodies-Broad, Wagyu Enthusiasts, High-Income Gifters\n**2 Creatives:** Sizzle Video, Unboxing Experience\n**Timeline:** 4 weeks of structured testing", delay: 800 },
+        { sender: 'auxora', text: "Ready to launch?", buttons: [
+          { label: "Launch Campaigns!", action: "launchCampaigns", primary: true },
+          { label: "Review Plan", action: "reviewPlan" }
+        ]}
+      ],
+      afterLaunch: [
+        { sender: 'auxora', text: "Campaigns are LIVE! OpenClaw monitoring is now active.", delay: 500 },
+        { sender: 'auxora', text: "I'll check your performance every 30 minutes and take autonomous actions within your approved boundaries.", delay: 800, action: "unlockOpenClaw" }
+      ],
+      openclawStart: [
+        { sender: 'auxora', text: "Welcome to OpenClaw - your 24/7 growth optimization engine.", delay: 500 },
+        { sender: 'auxora', text: "I've already taken 3 autonomous actions today:\n• Reallocated $15 to winning audiences\n• Swapped underperforming creative\n• Adjusted bids on Instagram Stories", delay: 800 }
+      ],
+      openclawAlert: [
+        { sender: 'auxora', text: "**ALERT:** ROAS dropped to 0.8 on 'Foodies - Broad' ad set.", delay: 1000 },
+        { sender: 'auxora', text: "Recommended action: Pause this ad set and reallocate budget to 'Wagyu Enthusiasts' (currently 3.1X ROAS).", buttons: [
+          { label: "Approve & Pause", action: "approveAlert", primary: true },
+          { label: "Keep Running", action: "dismissAlert" }
+        ]}
+      ],
+      afterAlert: [
+        { sender: 'auxora', text: "Done! I've paused the underperforming ad set and moved the budget to your winners.", delay: 500 },
+        { sender: 'auxora', text: "Want to see your 5-week results?", buttons: [
+          { label: "Show Results", action: "showResults", primary: true }
+        ]}
+      ],
+      resultsStart: [
+        { sender: 'auxora', text: "Congratulations! Here are your 5-week results:", delay: 500 },
+        { sender: 'auxora', text: "**Peak ROAS: 3.02X** (Target: 3.0X achieved!)\n**Total Revenue: $1,769**\n**Total Spend: $768**\n**24 Purchases** at $32 CPA", delay: 800 },
+        { sender: 'auxora', text: "You went from 0.8X ROAS in Week 1 to 3.02X in Week 5. That's the power of continuous optimization!", delay: 1000 },
+        { sender: 'auxora', text: "Ready to scale to $5K+ monthly revenue? Let's discuss your next steps.", buttons: [
+          { label: "Plan Next Phase", action: "planNext", primary: true },
+          { label: "Download Full Report", action: "downloadFullReport" }
+        ]}
+      ]
+    };
+
+    // ===== MESSAGE FUNCTIONS =====
+    function addMessage(sender, content, buttons = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+
+      const formattedContent = content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+
+      messageDiv.innerHTML = `
+        <div class="message-avatar">${sender === 'auxora' ? 'A' : 'Y'}</div>
+        <div class="message-content">
+          <div class="message-bubble">${formattedContent}</div>
+          ${buttons ? `
+            <div class="action-buttons">
+              ${buttons.map(btn => `
+                <button class="action-btn ${btn.primary ? 'primary' : ''}" onclick="handleAction('${btn.action}')">${btn.label}</button>
+              `).join('')}
+            </div>
+          ` : ''}
+          <div class="message-time">${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</div>
+        </div>
+      `;
+
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'typing-indicator';
+      div.id = 'typing';
+      div.innerHTML = `
+        <div class="message-avatar" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#D97706);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;">A</div>
+        <div class="typing-dots">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      `;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTyping() {
+      const typing = document.getElementById('typing');
+      if (typing) typing.remove();
+    }
+
+    async function playConversation(flowKey) {
+      const messages = conversationFlow[flowKey];
+      if (!messages) return;
+
+      for (const msg of messages) {
+        showTyping();
+        await delay(msg.delay || 1200);
+        hideTyping();
+
+        if (msg.sender === 'auxora') {
+          addMessage('auxora', msg.text, msg.buttons);
+        }
+
+        if (msg.showPayment) {
+          await delay(500);
+          showPayment(msg.showPayment);
+          return; // Wait for payment
+        }
+
+        if (msg.action) {
+          await delay(500);
+          handleAction(msg.action);
+        }
+
+        await delay(300);
+      }
+    }
+
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // ===== ACTION HANDLERS =====
+    function handleAction(action) {
+      switch (action) {
+        case 'startVoiceInterview':
+          document.getElementById('voice-overlay').classList.add('active');
+          voiceQuestionIndex = 0;
+          updateVoiceQuestion();
+          break;
+
+        case 'skipToText':
+          addMessage('user', "I'll do the text version instead");
+          setTimeout(() => playConversation('afterInterview'), 1000);
+          break;
+
+        case 'showGTMReport':
+          updateOnboardingStep(4);
+          showGTMReportContent();
+          setTimeout(() => playConversation('afterGTMReport'), 2000);
+          break;
+
+        case 'showPayment2':
+          showPayment(2);
+          break;
+
+        case 'downloadReport':
+          addMessage('user', "I'll just take the report for now");
+          break;
+
+        case 'showFullAuditReport':
+          showFullAuditReportContent();
+          setTimeout(() => playConversation('afterAuditReport'), 3000);
+          break;
+
+        case 'selectProduct':
+          showProductSelection();
+          break;
+
+        case 'selectProductItem':
+          addMessage('user', "I'll feature the A5 Ribeye");
+          setTimeout(() => playConversation('afterProductSelection'), 1000);
+          break;
+
+        case 'buildLandingPage':
+          showLandingPageBuilder();
+          setTimeout(() => playConversation('afterLandingPage'), 4000);
+          break;
+
+        case 'generateCreatives':
+          addMessage('user', "Generate my ad creatives");
+          showCreativesGeneration();
+          setTimeout(() => playConversation('afterCreatives'), 5000);
+          break;
+
+        case 'configureMetaAds':
+          addMessage('user', "Configure Meta Ads");
+          showMetaAdsConfig();
+          setTimeout(() => playConversation('afterMetaAdsConfig'), 3500);
+          break;
+
+        case 'unlockExecution':
+          unlockTab('execution');
+          switchTab('execution');
+          showExecutionContent();
+          setTimeout(() => playConversation('executionStart'), 500);
+          break;
+
+        case 'connectMeta':
+          addMessage('user', "Connect Meta Business Manager");
+          showChannelConnected();
+          setTimeout(() => playConversation('afterChannels'), 1500);
+          break;
+
+        case 'skipChannels':
+          showChannelConnected();
+          setTimeout(() => playConversation('afterChannels'), 500);
+          break;
+
+        case 'approveBudget':
+          addMessage('user', "Approve $200/4 weeks budget");
+          showBudgetApproved();
+          setTimeout(() => playConversation('afterBudget'), 1000);
+          break;
+
+        case 'launchCampaigns':
+          addMessage('user', "Launch my campaigns!");
+          showLaunchAnimation();
+          setTimeout(() => playConversation('afterLaunch'), 2000);
+          break;
+
+        case 'unlockOpenClaw':
+          unlockTab('openclaw');
+          switchTab('openclaw');
+          showOpenClawContent();
+          setTimeout(() => {
+            playConversation('openclawStart');
+            setTimeout(() => playConversation('openclawAlert'), 3000);
+          }, 500);
+          break;
+
+        case 'approveAlert':
+          addMessage('user', "Approve - pause the underperforming ad set");
+          showAlertResolved();
+          setTimeout(() => playConversation('afterAlert'), 1500);
+          break;
+
+        case 'dismissAlert':
+          addMessage('user', "Keep it running for now");
+          break;
+
+        case 'showResults':
+          unlockTab('results');
+          switchTab('results');
+          showResultsContent();
+          setTimeout(() => playConversation('resultsStart'), 500);
+          break;
+
+        case 'planNext':
+          addMessage('user', "Let's plan the next phase");
+          addMessage('auxora', "Great choice! With your proven success, I recommend scaling to $1,500/month budget targeting your top audiences. Shall I prepare a detailed scale plan?");
+          break;
+      }
+    }
+
+    // ===== UI FUNCTIONS =====
+    function updateOnboardingStep(step) {
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`step-${i}`);
+        el.classList.remove('active', 'completed');
+        if (i < step) el.classList.add('completed');
+        if (i === step) el.classList.add('active');
+      }
+      currentStep = step;
+    }
+
+    function unlockTab(tabName) {
+      const tab = document.querySelector(`[data-tab="${tabName}"]`);
+      if (tab) tab.classList.remove('locked');
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(`section-${tabName}`).classList.add('active');
+
+      currentTab = tabName;
+    }
+
+    // Tab click handlers
+    document.querySelectorAll('.content-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (!tab.classList.contains('locked')) {
+          switchTab(tab.dataset.tab);
+        }
+      });
+    });
+
+    // ===== CONTENT GENERATORS =====
+    function startResearch() {
+      addMessage('user', "Analyze https://yamabushifarms.com");
+      updateOnboardingStep(2);
+
+      document.getElementById('onboarding-content').innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Analyzing Website...</span>
+          </div>
+          <div class="card-body" style="text-align: center; padding: 40px;">
+            <div style="width: 60px; height: 60px; border: 4px solid #FDE68A; border-top-color: #F59E0B; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+            <p style="color: #57534E;">AI is analyzing your website and market...</p>
+          </div>
+        </div>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      `;
+
+      setTimeout(() => {
+        showResearchResults();
+        playConversation('afterResearch');
+      }, 2000);
+    }
+
+    function showResearchResults() {
+      document.getElementById('onboarding-content').innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Research Complete</span>
+            <span class="badge success">Analyzed</span>
+          </div>
+          <div class="card-body">
+            <div class="research-grid">
+              <div class="research-item">
+                <div class="research-item-label">Market Size</div>
+                <div class="research-item-value">$7.2B Premium Beef Market</div>
+              </div>
+              <div class="research-item">
+                <div class="research-item-label">Growth Rate</div>
+                <div class="research-item-value">8.5% CAGR</div>
+              </div>
+              <div class="research-item">
+                <div class="research-item-label">Target Audience</div>
+                <div class="research-item-value">Affluent Foodies, 35-55</div>
+              </div>
+              <div class="research-item">
+                <div class="research-item-label">Competitors</div>
+                <div class="research-item-value">Snake River, Holy Grail, Crowd Cow</div>
+              </div>
+              <div class="research-item">
+                <div class="research-item-label">Recommended Channels</div>
+                <div class="research-item-value">Meta Ads, Google Ads</div>
+              </div>
+              <div class="research-item">
+                <div class="research-item-label">Projected ROAS</div>
+                <div class="research-item-value">2.5-3.5X achievable</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showPayment(gate) {
+      const overlay = document.getElementById('payment-overlay');
+      const amount = gate === 1 ? '1.99' : '20';
+      const label = gate === 1 ? 'GTM Strategy Preview' : 'Full Service Launch';
+      const features = gate === 1
+        ? ['Complete market analysis', 'Voice interview session', 'GTM strategy report']
+        : ['Campaign setup & launch', 'Creative development', 'OpenClaw 24/7 monitoring', 'Daily performance reports'];
+
+      document.getElementById('payment-amount').textContent = amount;
+      document.getElementById('payment-label').textContent = label;
+      document.getElementById('payment-features').innerHTML = features.map(f => `<div class="payment-feature">${f}</div>`).join('');
+
+      overlay.classList.add('active');
+      overlay.dataset.gate = gate;
+    }
+
+    function processPayment() {
+      const overlay = document.getElementById('payment-overlay');
+      const gate = parseInt(overlay.dataset.gate);
+
+      overlay.querySelector('.submit-btn').textContent = 'Processing...';
+
+      setTimeout(() => {
+        overlay.classList.remove('active');
+        overlay.querySelector('.submit-btn').textContent = 'Pay & Continue';
+
+        addMessage('user', gate === 1 ? "Paid $1.99" : "Paid $20 for Full Service");
+
+        if (gate === 1) {
+          updateOnboardingStep(3);
+          playConversation('afterPayment1');
+        } else {
+          playConversation('afterPayment2');
+        }
+      }, 1500);
+    }
+
+    // Voice Interview
+    const voiceQuestions = [
+      "Tell me about your brand. What makes YamaBushi Farms special?",
+      "What marketing channels have you tried before?",
+      "What are your revenue goals for the next quarter?",
+      "Tell me about any past advertising performance data.",
+      "What's your monthly marketing budget?",
+      "Describe your ideal customer.",
+      "Who are your main competitors?",
+      "What's your #1 growth priority right now?"
+    ];
+
+    function updateVoiceQuestion() {
+      document.getElementById('voice-question').textContent = voiceQuestions[voiceQuestionIndex];
+      document.getElementById('voice-q-num').textContent = voiceQuestionIndex + 1;
+    }
+
+    function nextVoiceQuestion() {
+      voiceQuestionIndex++;
+      if (voiceQuestionIndex >= voiceQuestions.length) {
+        endVoiceCall();
+      } else {
+        updateVoiceQuestion();
+      }
+    }
+
+    function endVoiceCall() {
+      document.getElementById('voice-overlay').classList.remove('active');
+      addMessage('user', "Interview completed");
+      playConversation('afterInterview');
+    }
+
+    function showGTMReportContent() {
+      document.getElementById('onboarding-content').innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">GTM Strategy Report: YamaBushi Farms</span>
+            <span class="badge success">Generated</span>
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom: 24px;">
+              <h3 style="color: #78350F; margin-bottom: 8px;">Executive Summary</h3>
+              <p style="color: #57534E;">YamaBushi Farms has strong product differentiation in the $7.2B premium beef market. Launch Meta Ads campaign targeting affluent food enthusiasts with video-first creative. 3X ROAS achievable within 5 weeks.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+              <div style="background: #FFFBEB; padding: 16px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">$800</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Monthly Budget</div>
+              </div>
+              <div style="background: #FFFBEB; padding: 16px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">70/30</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Meta/Google Split</div>
+              </div>
+              <div style="background: #FFFBEB; padding: 16px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">3.0X</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Target ROAS</div>
+              </div>
+            </div>
+
+            <h3 style="color: #78350F; margin-bottom: 12px;">90-Day Action Plan</h3>
+            <div class="timeline">
+              <div class="timeline-item"><strong>Week 1-2:</strong> Launch 3 audience tests with video creative</div>
+              <div class="timeline-item"><strong>Week 3-4:</strong> Analyze, pause losers, scale winners</div>
+              <div class="timeline-item"><strong>Week 5-8:</strong> Introduce retargeting, expand to Google</div>
+              <div class="timeline-item"><strong>Week 9-12:</strong> Scale winning combinations to target ROAS</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ===== NEW: FULL AUDIT REPORT (Yamabushi-style) =====
+    function showFullAuditReportContent() {
+      document.getElementById('onboarding-content').innerHTML = `
+        <!-- Report Header -->
+        <div class="card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; margin-bottom: 24px;">
+          <div class="card-body" style="padding: 32px;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+              <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px;">🥩</div>
+              <div>
+                <h2 style="margin: 0; font-size: 1.75rem;">YamaBushi Farms</h2>
+                <p style="margin: 4px 0 0; opacity: 0.9;">Go-To-Market Strategy Report</p>
+              </div>
+            </div>
+            <p style="opacity: 0.9; font-style: italic;">"Authentic Japanese Wagyu, Direct from Kyushu to Your Table"</p>
+            <p style="opacity: 0.7; font-size: 0.875rem; margin-top: 12px;">Prepared by Auxora.ai | January 2026</p>
+          </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="card" style="background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%); border-left: 4px solid #F59E0B;">
+          <div class="card-header">
+            <span class="card-title">Executive Summary</span>
+            <span class="badge primary">Section 1</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size: 1rem; color: #57534E; margin-bottom: 20px;">
+              <strong>YamaBushi Farms</strong> is positioned to capture the premium segment of the $7.2B US beef market. With authentic A5 Japanese Wagyu direct from Kyushu, you have strong product differentiation. We recommend a Meta Ads-first strategy targeting affluent food enthusiasts with video-first creative. 3X ROAS achievable within 5 weeks.
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+              <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div style="font-size: 1.75rem; font-weight: 800; color: #D97706;">$7.2B</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Premium Beef Market</div>
+              </div>
+              <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div style="font-size: 1.75rem; font-weight: 800; color: #D97706;">8.5%</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Annual Growth</div>
+              </div>
+              <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div style="font-size: 1.75rem; font-weight: 800; color: #D97706;">$800</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Monthly Budget</div>
+              </div>
+              <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div style="font-size: 1.75rem; font-weight: 800; color: #D97706;">3.0X</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Target ROAS</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Account Audit -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Meta & Google Account Audit</span>
+            <span class="badge warning">Section 2</span>
+          </div>
+          <div class="card-body">
+            <div style="background: #FEF9C3; border: 2px solid #EAB308; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+              <h4 style="color: #854D0E; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">⚠️ Key Finding</h4>
+              <p style="font-size: 1rem; font-weight: 600; color: #78350F;">"Your previous campaigns lacked proper audience segmentation. We found 78% of spend went to broad audiences with 0.4X ROAS. Let's fix this."</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <!-- Meta Audit -->
+              <div style="background: #F8FAFC; padding: 20px; border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                  <div style="width: 40px; height: 40px; background: #1877F2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">f</div>
+                  <h4 style="margin: 0; color: #78350F;">Meta Ads Audit</h4>
+                </div>
+                <table style="width: 100%; font-size: 0.875rem;">
+                  <tr><td style="padding: 8px 0; color: #78716C;">Previous Spend</td><td style="padding: 8px 0; font-weight: 600; text-align: right;">$1,240</td></tr>
+                  <tr><td style="padding: 8px 0; color: #78716C;">ROAS Achieved</td><td style="padding: 8px 0; font-weight: 600; text-align: right; color: #EF4444;">0.42X</td></tr>
+                  <tr><td style="padding: 8px 0; color: #78716C;">Best Audience</td><td style="padding: 8px 0; font-weight: 600; text-align: right;">Foodies 35-54</td></tr>
+                  <tr><td style="padding: 8px 0; color: #78716C;">Worst Audience</td><td style="padding: 8px 0; font-weight: 600; text-align: right;">Broad Interest</td></tr>
+                </table>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #E7E5E4;">
+                  <div style="font-size: 0.75rem; color: #78716C; margin-bottom: 4px;">Issues Found</div>
+                  <ul style="margin: 0; padding-left: 16px; font-size: 0.875rem; color: #57534E;">
+                    <li>No conversion tracking installed</li>
+                    <li>Single ad creative for all audiences</li>
+                    <li>No retargeting pixel</li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Google Audit -->
+              <div style="background: #F8FAFC; padding: 20px; border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                  <div style="width: 40px; height: 40px; background: #4285F4; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">G</div>
+                  <h4 style="margin: 0; color: #78350F;">Google Ads Audit</h4>
+                </div>
+                <table style="width: 100%; font-size: 0.875rem;">
+                  <tr><td style="padding: 8px 0; color: #78716C;">Previous Spend</td><td style="padding: 8px 0; font-weight: 600; text-align: right;">$560</td></tr>
+                  <tr><td style="padding: 8px 0; color: #78716C;">ROAS Achieved</td><td style="padding: 8px 0; font-weight: 600; text-align: right; color: #EAB308;">0.81X</td></tr>
+                  <tr><td style="padding: 8px 0; color: #78716C;">Best Keywords</td><td style="padding: 8px 0; font-weight: 600; text-align: right;">Wagyu delivery</td></tr>
+                  <tr><td style="padding: 8px 0; color: #78716C;">Worst Keywords</td><td style="padding: 8px 0; font-weight: 600; text-align: right;">Beef online</td></tr>
+                </table>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #E7E5E4;">
+                  <div style="font-size: 0.75rem; color: #78716C; margin-bottom: 4px;">Issues Found</div>
+                  <ul style="margin: 0; padding-left: 16px; font-size: 0.875rem; color: #57534E;">
+                    <li>Competing with generic beef terms</li>
+                    <li>No negative keywords set</li>
+                    <li>Landing page mismatch</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Competitor Analysis -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Competitor Landscape</span>
+            <span class="badge primary">Section 3</span>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+              <div style="background: #FEE2E2; border-radius: 12px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                  <span style="font-size: 1.5rem;">🏆</span>
+                  <div>
+                    <h5 style="margin: 0; color: #78350F;">Snake River Farms</h5>
+                    <span style="font-size: 0.7rem; background: #DC2626; color: white; padding: 2px 8px; border-radius: 10px;">MARKET LEADER</span>
+                  </div>
+                </div>
+                <div style="font-size: 0.875rem; color: #57534E;">
+                  <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>Ad Spend</span><strong>$45K/mo</strong></div>
+                  <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>Est. ROAS</span><strong>2.8X</strong></div>
+                </div>
+              </div>
+              <div style="background: #FEF9C3; border-radius: 12px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                  <span style="font-size: 1.5rem;">🥈</span>
+                  <div>
+                    <h5 style="margin: 0; color: #78350F;">Holy Grail Steak</h5>
+                    <span style="font-size: 0.7rem; background: #B45309; color: white; padding: 2px 8px; border-radius: 10px;">MAJOR PLAYER</span>
+                  </div>
+                </div>
+                <div style="font-size: 0.875rem; color: #57534E;">
+                  <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>Ad Spend</span><strong>$28K/mo</strong></div>
+                  <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>Est. ROAS</span><strong>2.4X</strong></div>
+                </div>
+              </div>
+              <div style="background: #DCFCE7; border-radius: 12px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                  <span style="font-size: 1.5rem;">🎯</span>
+                  <div>
+                    <h5 style="margin: 0; color: #78350F;">YamaBushi (You)</h5>
+                    <span style="font-size: 0.7rem; background: #166534; color: white; padding: 2px 8px; border-radius: 10px;">OPPORTUNITY</span>
+                  </div>
+                </div>
+                <div style="font-size: 0.875rem; color: #57534E;">
+                  <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>Differentiator</span><strong>Authentic A5</strong></div>
+                  <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>Target ROAS</span><strong>3.0X</strong></div>
+                </div>
+              </div>
+            </div>
+            <div style="background: #EEF2FF; border-left: 3px solid #6366F1; padding: 16px; margin-top: 20px; border-radius: 0 12px 12px 0;">
+              <p style="font-style: italic; color: #4338CA; margin: 0;">"Competitors sell Wagyu-style beef. You sell authentic Japanese A5 direct from Kyushu. Own this positioning."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ICP Profiles -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Ideal Customer Profiles</span>
+            <span class="badge primary">Section 4</span>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+              <div style="background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%); border: 2px solid #F59E0B; border-radius: 16px; padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                  <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">👨‍🍳</div>
+                  <div>
+                    <h5 style="margin: 0; color: #78350F;">The Gourmet Chef</h5>
+                    <span style="font-size: 0.75rem; color: #78716C;">PRIMARY</span>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                  <div style="background: white; padding: 8px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 700; color: #D97706;">$180K+</div>
+                    <div style="font-size: 0.7rem; color: #78716C;">Income</div>
+                  </div>
+                  <div style="background: white; padding: 8px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 700; color: #D97706;">35-55</div>
+                    <div style="font-size: 0.7rem; color: #78716C;">Age</div>
+                  </div>
+                </div>
+                <ul style="font-size: 0.8rem; color: #57534E; margin: 0; padding-left: 16px;">
+                  <li>Cooks at home 4+ times/week</li>
+                  <li>Watches food content online</li>
+                  <li>Values authenticity over price</li>
+                </ul>
+              </div>
+              <div style="background: #F8FAFC; border: 2px solid #E7E5E4; border-radius: 16px; padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                  <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">🎁</div>
+                  <div>
+                    <h5 style="margin: 0; color: #78350F;">The Luxury Gifter</h5>
+                    <span style="font-size: 0.75rem; color: #78716C;">SECONDARY</span>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                  <div style="background: white; padding: 8px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 700; color: #D97706;">$120K+</div>
+                    <div style="font-size: 0.7rem; color: #78716C;">Income</div>
+                  </div>
+                  <div style="background: white; padding: 8px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 700; color: #D97706;">40-65</div>
+                    <div style="font-size: 0.7rem; color: #78716C;">Age</div>
+                  </div>
+                </div>
+                <ul style="font-size: 0.8rem; color: #57534E; margin: 0; padding-left: 16px;">
+                  <li>Buys premium gifts for special occasions</li>
+                  <li>Corporate gift buyer</li>
+                  <li>Values presentation & packaging</li>
+                </ul>
+              </div>
+              <div style="background: #F8FAFC; border: 2px solid #E7E5E4; border-radius: 16px; padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                  <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">🍖</div>
+                  <div>
+                    <h5 style="margin: 0; color: #78350F;">The Wagyu Enthusiast</h5>
+                    <span style="font-size: 0.75rem; color: #78716C;">TERTIARY</span>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                  <div style="background: white; padding: 8px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 700; color: #D97706;">$100K+</div>
+                    <div style="font-size: 0.7rem; color: #78716C;">Income</div>
+                  </div>
+                  <div style="background: white; padding: 8px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 700; color: #D97706;">28-45</div>
+                    <div style="font-size: 0.7rem; color: #78716C;">Age</div>
+                  </div>
+                </div>
+                <ul style="font-size: 0.8rem; color: #57534E; margin: 0; padding-left: 16px;">
+                  <li>Already knows Wagyu grades</li>
+                  <li>Searches for authentic sources</li>
+                  <li>High repeat purchase rate</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget Strategy -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">90-Day Budget Strategy</span>
+            <span class="badge primary">Section 5</span>
+          </div>
+          <div class="card-body">
+            <div style="background: linear-gradient(135deg, #DCFCE7 0%, #BBF7D0 100%); border-radius: 16px; padding: 24px; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                  <div style="font-size: 2.5rem; font-weight: 800; color: #166534;">$800</div>
+                  <div style="font-size: 0.875rem; color: #166534;">Monthly Budget</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 1.5rem; font-weight: 700; color: #166534;">70/30</div>
+                  <div style="font-size: 0.875rem; color: #166534;">Meta/Google Split</div>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                <div style="background: white; padding: 16px; border-radius: 12px; text-align: center;">
+                  <div style="font-size: 1.25rem; font-weight: 700; color: #D97706;">$560</div>
+                  <div style="font-size: 0.75rem; color: #78716C;">Meta Ads</div>
+                  <div style="font-size: 0.7rem; background: #F59E0B; color: white; padding: 2px 8px; border-radius: 10px; margin-top: 4px;">70%</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 12px; text-align: center;">
+                  <div style="font-size: 1.25rem; font-weight: 700; color: #D97706;">$240</div>
+                  <div style="font-size: 0.75rem; color: #78716C;">Google Ads</div>
+                  <div style="font-size: 0.7rem; background: #F59E0B; color: white; padding: 2px 8px; border-radius: 10px; margin-top: 4px;">30%</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 12px; text-align: center;">
+                  <div style="font-size: 1.25rem; font-weight: 700; color: #22C55E;">$2,400</div>
+                  <div style="font-size: 0.75rem; color: #78716C;">Expected Revenue</div>
+                  <div style="font-size: 0.7rem; background: #22C55E; color: white; padding: 2px 8px; border-radius: 10px; margin-top: 4px;">3.0X ROAS</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 12px; text-align: center;">
+                  <div style="font-size: 1.25rem; font-weight: 700; color: #D97706;">$1,600</div>
+                  <div style="font-size: 0.75rem; color: #78716C;">Profit (est.)</div>
+                  <div style="font-size: 0.7rem; background: #D97706; color: white; padding: 2px 8px; border-radius: 10px; margin-top: 4px;">After Ads</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ===== NEW: PRODUCT SELECTION =====
+    function showProductSelection() {
+      document.getElementById('onboarding-content').innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Select Hero Product</span>
+            <span class="badge primary">Choose One</span>
+          </div>
+          <div class="card-body">
+            <p style="color: #57534E; margin-bottom: 20px;">Choose the product to feature in your ads. This will be your landing page hero product with direct checkout.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+              <!-- A5 Ribeye - Recommended -->
+              <div onclick="handleAction('selectProductItem')" style="cursor: pointer; background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%); border: 3px solid #F59E0B; border-radius: 16px; padding: 20px; transition: all 0.2s; position: relative;">
+                <div style="position: absolute; top: -10px; right: 16px; background: #F59E0B; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">RECOMMENDED</div>
+                <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #8B4513, #D97706); border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center;">
+                  <span style="font-size: 4rem;">🥩</span>
+                </div>
+                <h4 style="margin: 0 0 4px; color: #78350F; font-size: 1.125rem;">A5 Ribeye</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <span style="font-size: 1.5rem; font-weight: 700; color: #D97706;">$189</span>
+                  <span style="font-size: 0.75rem; color: #78716C;">12 oz</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.75rem;">
+                  <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                    <div style="font-weight: 600; color: #22C55E;">65%</div>
+                    <div style="color: #78716C;">Margin</div>
+                  </div>
+                  <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                    <div style="font-weight: 600; color: #D97706;">Best</div>
+                    <div style="color: #78716C;">Visual</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- A5 Striploin -->
+              <div onclick="handleAction('selectProductItem')" style="cursor: pointer; background: #F8FAFC; border: 2px solid #E7E5E4; border-radius: 16px; padding: 20px; transition: all 0.2s;">
+                <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #7C3AED, #A855F7); border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center;">
+                  <span style="font-size: 4rem;">🥩</span>
+                </div>
+                <h4 style="margin: 0 0 4px; color: #78350F; font-size: 1.125rem;">A5 Striploin</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <span style="font-size: 1.5rem; font-weight: 700; color: #D97706;">$165</span>
+                  <span style="font-size: 0.75rem; color: #78716C;">12 oz</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.75rem;">
+                  <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                    <div style="font-weight: 600; color: #22C55E;">58%</div>
+                    <div style="color: #78716C;">Margin</div>
+                  </div>
+                  <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                    <div style="font-weight: 600; color: #78716C;">Good</div>
+                    <div style="color: #78716C;">Visual</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- A5 Filet -->
+              <div onclick="handleAction('selectProductItem')" style="cursor: pointer; background: #F8FAFC; border: 2px solid #E7E5E4; border-radius: 16px; padding: 20px; transition: all 0.2s;">
+                <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #DC2626, #F87171); border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center;">
+                  <span style="font-size: 4rem;">🥩</span>
+                </div>
+                <h4 style="margin: 0 0 4px; color: #78350F; font-size: 1.125rem;">A5 Filet Mignon</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <span style="font-size: 1.5rem; font-weight: 700; color: #D97706;">$210</span>
+                  <span style="font-size: 0.75rem; color: #78716C;">8 oz</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.75rem;">
+                  <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                    <div style="font-weight: 600; color: #22C55E;">62%</div>
+                    <div style="color: #78716C;">Margin</div>
+                  </div>
+                  <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                    <div style="font-weight: 600; color: #78716C;">Niche</div>
+                    <div style="color: #78716C;">Appeal</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 16px; background: #EBF5FF; border-radius: 12px; border-left: 4px solid #1877F2;">
+              <p style="margin: 0; font-size: 0.875rem; color: #1E40AF;"><strong>AI Recommendation:</strong> The A5 Ribeye has the best combination of margin (65%), visual appeal for ads, and market demand. It's your best performer for cold traffic.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ===== NEW: CREATIVES GENERATION =====
+    function showCreativesGeneration() {
+      document.getElementById('onboarding-content').innerHTML = `
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <span class="card-title">Ad Creative Generation</span>
+            <span class="badge warning" id="creative-status">Generating...</span>
+          </div>
+          <div class="card-body">
+            <!-- Progress -->
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                <div style="flex: 1; background: #DCFCE7; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 8px;" id="creative-step-1">
+                  <span style="font-size: 1.25rem;">✓</span>
+                  <span style="font-weight: 600; color: #166534;">Video 1: Sizzle</span>
+                </div>
+                <div style="flex: 1; background: #FEF9C3; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 8px;" id="creative-step-2">
+                  <div style="width: 18px; height: 18px; border: 2px solid #EAB308; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite;"></div>
+                  <span style="font-weight: 600; color: #854D0E;">Video 2: Unboxing</span>
+                </div>
+                <div style="flex: 1; background: #F8FAFC; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 8px; opacity: 0.5;" id="creative-step-3">
+                  <span>○</span>
+                  <span style="font-weight: 600;">Static Images</span>
+                </div>
+                <div style="flex: 1; background: #F8FAFC; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 8px; opacity: 0.5;" id="creative-step-4">
+                  <span>○</span>
+                  <span style="font-weight: 600;">Ad Copy</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+              <!-- Left: Video Creatives -->
+              <div>
+                <h4 style="color: #78350F; margin-bottom: 16px;">Video Creatives</h4>
+
+                <!-- Video 1: Sizzle -->
+                <div style="background: #F8FAFC; border-radius: 12px; overflow: hidden; margin-bottom: 16px;">
+                  <div style="aspect-ratio: 9/16; max-height: 280px; background: linear-gradient(135deg, #1F2937 0%, #374151 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                    <div style="font-size: 4rem; margin-bottom: 8px;">🔥</div>
+                    <div style="color: white; font-weight: 600;">Sizzle Video</div>
+                    <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem;">15 seconds</div>
+                    <div style="position: absolute; bottom: 16px; display: flex; gap: 8px;">
+                      <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">▶</div>
+                    </div>
+                    <div style="position: absolute; top: 12px; right: 12px; background: #22C55E; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">READY</div>
+                  </div>
+                  <div style="padding: 12px;">
+                    <div style="font-size: 0.875rem; font-weight: 600; color: #78350F;">A5 Ribeye Sizzling on Cast Iron</div>
+                    <div style="font-size: 0.75rem; color: #78716C;">Perfect for Feed & Reels</div>
+                  </div>
+                </div>
+
+                <!-- Video 2: Unboxing -->
+                <div style="background: #F8FAFC; border-radius: 12px; overflow: hidden;">
+                  <div style="aspect-ratio: 9/16; max-height: 280px; background: linear-gradient(135deg, #78350F 0%, #92400E 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                    <div style="font-size: 4rem; margin-bottom: 8px;">📦</div>
+                    <div style="color: white; font-weight: 600;">Unboxing Video</div>
+                    <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem;">30 seconds</div>
+                    <div style="position: absolute; bottom: 16px; display: flex; gap: 8px;">
+                      <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">▶</div>
+                    </div>
+                    <div style="position: absolute; top: 12px; right: 12px; background: #EAB308; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;" id="video2-status">GENERATING...</div>
+                  </div>
+                  <div style="padding: 12px;">
+                    <div style="font-size: 0.875rem; font-weight: 600; color: #78350F;">Premium Packaging Reveal</div>
+                    <div style="font-size: 0.75rem; color: #78716C;">Perfect for Stories</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Static Images & Copy -->
+              <div>
+                <h4 style="color: #78350F; margin-bottom: 16px;">Static Images</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;" id="static-images">
+                  <div style="aspect-ratio: 1; background: linear-gradient(135deg, #D97706, #F59E0B); border-radius: 8px; display: flex; align-items: center; justify-content: center; opacity: 0.3;">
+                    <span style="font-size: 2rem;">🥩</span>
+                  </div>
+                  <div style="aspect-ratio: 1; background: linear-gradient(135deg, #78350F, #92400E); border-radius: 8px; display: flex; align-items: center; justify-content: center; opacity: 0.3;">
+                    <span style="font-size: 2rem;">🍽️</span>
+                  </div>
+                  <div style="aspect-ratio: 1; background: linear-gradient(135deg, #1F2937, #374151); border-radius: 8px; display: flex; align-items: center; justify-content: center; opacity: 0.3;">
+                    <span style="font-size: 2rem;">🎁</span>
+                  </div>
+                </div>
+
+                <h4 style="color: #78350F; margin-bottom: 16px;">Ad Copy Variants</h4>
+                <div id="ad-copy-section" style="opacity: 0.3;">
+                  <div style="background: white; border: 2px solid #FDE68A; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                    <div style="font-size: 0.7rem; color: #78716C; margin-bottom: 4px;">PRIMARY HEADLINE</div>
+                    <div style="font-weight: 600; color: #78350F; margin-bottom: 8px;">Authentic A5 Japanese Wagyu</div>
+                    <div style="font-size: 0.875rem; color: #57534E;">Direct from Kyushu farms. Melt-in-your-mouth perfection, delivered to your door.</div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #FDE68A;">
+                      <span style="background: #DCFCE7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">CTA: Shop Now</span>
+                    </div>
+                  </div>
+
+                  <div style="background: white; border: 2px solid #E7E5E4; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                    <div style="font-size: 0.7rem; color: #78716C; margin-bottom: 4px;">VARIANT B - URGENCY</div>
+                    <div style="font-weight: 600; color: #78350F; margin-bottom: 8px;">Limited Supply: Real A5 Wagyu</div>
+                    <div style="font-size: 0.875rem; color: #57534E;">Only 50 cuts available this month. The world's finest beef, now accessible.</div>
+                  </div>
+
+                  <div style="background: white; border: 2px solid #E7E5E4; border-radius: 12px; padding: 16px;">
+                    <div style="font-size: 0.7rem; color: #78716C; margin-bottom: 4px;">VARIANT C - GIFT</div>
+                    <div style="font-weight: 600; color: #78350F; margin-bottom: 8px;">The Gift They'll Never Forget</div>
+                    <div style="font-size: 0.875rem; color: #57534E;">A5 Wagyu in premium gift packaging. Delivered fresh. Unforgettable.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Animate progress
+      setTimeout(() => {
+        document.getElementById('creative-step-2').style.background = '#DCFCE7';
+        document.getElementById('creative-step-2').innerHTML = '<span style="font-size: 1.25rem;">✓</span><span style="font-weight: 600; color: #166534;">Video 2: Unboxing</span>';
+        document.getElementById('video2-status').style.background = '#22C55E';
+        document.getElementById('video2-status').textContent = 'READY';
+      }, 1500);
+
+      setTimeout(() => {
+        document.getElementById('creative-step-3').style.background = '#DCFCE7';
+        document.getElementById('creative-step-3').style.opacity = '1';
+        document.getElementById('creative-step-3').innerHTML = '<span style="font-size: 1.25rem;">✓</span><span style="font-weight: 600; color: #166534;">Static Images</span>';
+        document.getElementById('static-images').querySelectorAll('div').forEach(el => el.style.opacity = '1');
+      }, 2500);
+
+      setTimeout(() => {
+        document.getElementById('creative-step-4').style.background = '#DCFCE7';
+        document.getElementById('creative-step-4').style.opacity = '1';
+        document.getElementById('creative-step-4').innerHTML = '<span style="font-size: 1.25rem;">✓</span><span style="font-weight: 600; color: #166534;">Ad Copy</span>';
+        document.getElementById('ad-copy-section').style.opacity = '1';
+        document.getElementById('creative-status').textContent = 'Complete';
+        document.getElementById('creative-status').className = 'badge success';
+      }, 3500);
+    }
+
+    // ===== NEW: LANDING PAGE BUILDER =====
+    function showLandingPageBuilder() {
+      document.getElementById('onboarding-content').innerHTML = `
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <span class="card-title">Product Landing Page: A5 Ribeye</span>
+            <span class="badge warning" id="lp-badge">Building...</span>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; gap: 24px;">
+              <!-- Left: Builder Controls -->
+              <div style="width: 280px; flex-shrink: 0;">
+                <div style="background: #FFFBEB; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                  <div style="font-size: 0.75rem; color: #78716C; margin-bottom: 4px;">FEATURED PRODUCT</div>
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #D97706, #F59E0B); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🥩</div>
+                    <div>
+                      <div style="font-weight: 600; color: #78350F;">A5 Ribeye</div>
+                      <div style="font-size: 0.875rem; color: #D97706; font-weight: 700;">$189</div>
+                    </div>
+                  </div>
+                </div>
+
+                <h4 style="color: #78350F; margin-bottom: 12px; font-size: 0.875rem;">Page Sections</h4>
+                <div id="lp-sections">
+                  <div style="background: #DCFCE7; border: 2px solid #22C55E; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 0.875rem;">
+                    <span>✓</span>
+                    <span style="font-weight: 500;">Hero + Product Image</span>
+                  </div>
+                  <div style="background: #DCFCE7; border: 2px solid #22C55E; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 0.875rem;">
+                    <span>✓</span>
+                    <span style="font-weight: 500;">Product Details</span>
+                  </div>
+                  <div style="background: #DCFCE7; border: 2px solid #22C55E; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 0.875rem;">
+                    <span>✓</span>
+                    <span style="font-weight: 500;">Why Authentic A5</span>
+                  </div>
+                  <div style="background: #FEF9C3; border: 2px solid #EAB308; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 0.875rem;" id="lp-section-4">
+                    <div style="width: 14px; height: 14px; border: 2px solid #EAB308; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite;"></div>
+                    <span style="font-weight: 500;">Reviews & Social Proof</span>
+                  </div>
+                  <div style="background: #F8FAFC; border: 2px dashed #E7E5E4; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 0.875rem; opacity: 0.5;" id="lp-section-5">
+                    <span>○</span>
+                    <span style="font-weight: 500;">Quick Checkout</span>
+                  </div>
+                  <div style="background: #F8FAFC; border: 2px dashed #E7E5E4; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 0.875rem; opacity: 0.5;" id="lp-section-6">
+                    <span>○</span>
+                    <span style="font-weight: 500;">Trust & Guarantees</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Live Preview -->
+              <div style="flex: 1; background: #F8FAFC; border-radius: 12px; overflow: hidden; border: 2px solid #E7E5E4;">
+                <div style="background: #1F2937; color: white; padding: 8px 16px; display: flex; align-items: center; gap: 8px;">
+                  <div style="display: flex; gap: 6px;">
+                    <div style="width: 12px; height: 12px; background: #EF4444; border-radius: 50%;"></div>
+                    <div style="width: 12px; height: 12px; background: #EAB308; border-radius: 50%;"></div>
+                    <div style="width: 12px; height: 12px; background: #22C55E; border-radius: 50%;"></div>
+                  </div>
+                  <div style="flex: 1; background: #374151; border-radius: 4px; padding: 4px 12px; font-size: 0.75rem;">yamabushifarms.com/products/a5-ribeye</div>
+                </div>
+                <div style="height: 420px; overflow-y: auto; background: white;">
+                  <!-- Hero with Product -->
+                  <div style="background: linear-gradient(135deg, #1F2937 0%, #374151 100%); color: white; padding: 24px;">
+                    <div style="display: flex; gap: 24px; align-items: center;">
+                      <div style="width: 180px; height: 180px; background: linear-gradient(135deg, #D97706, #F59E0B); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <span style="font-size: 5rem;">🥩</span>
+                      </div>
+                      <div>
+                        <div style="font-size: 0.7rem; letter-spacing: 0.1em; opacity: 0.7; margin-bottom: 4px;">AUTHENTIC JAPANESE A5 WAGYU</div>
+                        <h1 style="font-size: 1.5rem; margin: 0 0 8px;">A5 Ribeye Steak</h1>
+                        <div style="font-size: 2rem; font-weight: 700; color: #F59E0B; margin-bottom: 8px;">$189</div>
+                        <p style="opacity: 0.9; font-size: 0.875rem; margin-bottom: 12px;">12 oz | Direct from Kyushu, Japan</p>
+                        <button style="background: #F59E0B; color: white; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; cursor: pointer;">Add to Cart</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Product Details -->
+                  <div style="padding: 20px; border-bottom: 1px solid #E7E5E4;">
+                    <h3 style="font-size: 1rem; color: #78350F; margin-bottom: 12px;">Why Our A5 Ribeye?</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                      <div style="text-align: center; padding: 12px; background: #FFFBEB; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 4px;">🏆</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #78350F;">BMS 10-12</div>
+                        <div style="font-size: 0.7rem; color: #78716C;">Highest Grade</div>
+                      </div>
+                      <div style="text-align: center; padding: 12px; background: #FFFBEB; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 4px;">✈️</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #78350F;">Direct Import</div>
+                        <div style="font-size: 0.7rem; color: #78716C;">Kyushu Farms</div>
+                      </div>
+                      <div style="text-align: center; padding: 12px; background: #FFFBEB; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 4px;">❄️</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #78350F;">Flash Frozen</div>
+                        <div style="font-size: 0.7rem; color: #78716C;">Peak Quality</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Reviews -->
+                  <div style="padding: 20px; background: #FFFBEB;">
+                    <h3 style="font-size: 1rem; color: #78350F; margin-bottom: 12px;">What Customers Say</h3>
+                    <div style="background: white; padding: 12px; border-radius: 8px; font-size: 0.875rem;">
+                      <div style="color: #F59E0B; margin-bottom: 4px;">★★★★★</div>
+                      <p style="color: #57534E; margin: 0 0 8px; font-style: italic;">"Best wagyu I've ever had. The marbling was incredible."</p>
+                      <div style="font-size: 0.75rem; color: #78716C;">— Michael R., NYC</div>
+                    </div>
+                  </div>
+
+                  <!-- Checkout -->
+                  <div style="padding: 20px; background: linear-gradient(135deg, #F59E0B, #D97706); color: white; text-align: center;">
+                    <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">Ready to Experience A5?</div>
+                    <button style="background: white; color: #D97706; border: none; padding: 14px 40px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer;">Order Now - $189</button>
+                    <div style="font-size: 0.75rem; margin-top: 8px; opacity: 0.9;">Free shipping on orders over $300</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress indicator -->
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #FEF9C3; border-radius: 12px;" id="lp-progress">
+          <div style="width: 24px; height: 24px; border: 3px solid #EAB308; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <span style="color: #854D0E; font-weight: 600;">Building product landing page for A5 Ribeye...</span>
+        </div>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      `;
+
+      // Simulate build completion
+      setTimeout(() => {
+        document.getElementById('lp-section-4').style.background = '#DCFCE7';
+        document.getElementById('lp-section-4').style.borderColor = '#22C55E';
+        document.getElementById('lp-section-4').innerHTML = '<span>✓</span><span style="font-weight: 500;">Reviews & Social Proof</span>';
+      }, 1000);
+
+      setTimeout(() => {
+        document.getElementById('lp-section-5').style.background = '#DCFCE7';
+        document.getElementById('lp-section-5').style.borderColor = '#22C55E';
+        document.getElementById('lp-section-5').style.border = '2px solid #22C55E';
+        document.getElementById('lp-section-5').style.opacity = '1';
+        document.getElementById('lp-section-5').innerHTML = '<span>✓</span><span style="font-weight: 500;">Quick Checkout</span>';
+      }, 2000);
+
+      setTimeout(() => {
+        document.getElementById('lp-section-6').style.background = '#DCFCE7';
+        document.getElementById('lp-section-6').style.borderColor = '#22C55E';
+        document.getElementById('lp-section-6').style.border = '2px solid #22C55E';
+        document.getElementById('lp-section-6').style.opacity = '1';
+        document.getElementById('lp-section-6').innerHTML = '<span>✓</span><span style="font-weight: 500;">Trust & Guarantees</span>';
+        document.getElementById('lp-badge').textContent = 'Complete';
+        document.getElementById('lp-badge').className = 'badge success';
+        document.getElementById('lp-progress').style.background = '#DCFCE7';
+        document.getElementById('lp-progress').innerHTML = '<span style="font-size: 1.25rem;">✓</span><span style="color: #166534; font-weight: 600;">Product landing page ready: yamabushifarms.com/products/a5-ribeye</span>';
+      }, 3000);
+    }
+
+    // ===== NEW: META ADS CONFIG =====
+    function showMetaAdsConfig() {
+      document.getElementById('onboarding-content').innerHTML = `
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <span class="card-title">Meta Ads Configuration</span>
+            <span class="badge warning">Configuring...</span>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; gap: 24px;">
+              <!-- Left: Ad Flow Diagram -->
+              <div style="flex: 1;">
+                <h4 style="color: #78350F; margin-bottom: 20px;">Customer Journey Flow</h4>
+
+                <!-- Flow Steps -->
+                <div style="position: relative;">
+                  <!-- Step 1: Ad -->
+                  <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #1877F2, #0D6EFD); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.5rem;">f</div>
+                    <div style="flex: 1; background: #EBF5FF; border: 2px solid #1877F2; border-radius: 12px; padding: 16px;">
+                      <h5 style="margin: 0 0 4px; color: #1877F2;">Meta Ad (Feed/Stories)</h5>
+                      <p style="margin: 0; font-size: 0.875rem; color: #57534E;">User sees sizzle video of Wagyu being cooked</p>
+                    </div>
+                  </div>
+
+                  <!-- Arrow -->
+                  <div style="display: flex; justify-content: center; margin: -8px 0;">
+                    <div style="width: 2px; height: 24px; background: #F59E0B;"></div>
+                  </div>
+                  <div style="display: flex; justify-content: center; margin-bottom: 8px;">
+                    <div style="font-size: 1.5rem; color: #F59E0B;">↓</div>
+                  </div>
+
+                  <!-- Step 2: Landing Page -->
+                  <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #F59E0B, #D97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.5rem;">🏠</div>
+                    <div style="flex: 1; background: #FFFBEB; border: 2px solid #F59E0B; border-radius: 12px; padding: 16px;">
+                      <h5 style="margin: 0 0 4px; color: #D97706;">Landing Page (Product Page)</h5>
+                      <p style="margin: 0; font-size: 0.875rem; color: #57534E;">yamabushifarms.com/shop - See products, social proof</p>
+                    </div>
+                  </div>
+
+                  <!-- Arrow -->
+                  <div style="display: flex; justify-content: center; margin: -8px 0;">
+                    <div style="width: 2px; height: 24px; background: #22C55E;"></div>
+                  </div>
+                  <div style="display: flex; justify-content: center; margin-bottom: 8px;">
+                    <div style="font-size: 1.5rem; color: #22C55E;">↓</div>
+                  </div>
+
+                  <!-- Step 3: Checkout -->
+                  <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #22C55E, #16A34A); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.5rem;">💳</div>
+                    <div style="flex: 1; background: #DCFCE7; border: 2px solid #22C55E; border-radius: 12px; padding: 16px;">
+                      <h5 style="margin: 0 0 4px; color: #166534;">Checkout (Built-in)</h5>
+                      <p style="margin: 0; font-size: 0.875rem; color: #57534E;">Quick checkout right on the product page</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Campaign Setup -->
+              <div style="width: 320px; flex-shrink: 0;">
+                <h4 style="color: #78350F; margin-bottom: 20px;">Campaign Settings</h4>
+
+                <div style="background: #F8FAFC; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                  <div style="font-size: 0.75rem; color: #78716C; margin-bottom: 4px;">Campaign Objective</div>
+                  <div style="font-weight: 600; color: #78350F;">Conversions - Purchase</div>
+                </div>
+
+                <div style="background: #F8FAFC; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                  <div style="font-size: 0.75rem; color: #78716C; margin-bottom: 8px;">Audiences (3 Ad Sets)</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <span style="background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Foodies 35-54</span>
+                    <span style="background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Wagyu Enthusiasts</span>
+                    <span style="background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">High-Income Gifters</span>
+                  </div>
+                </div>
+
+                <div style="background: #F8FAFC; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                  <div style="font-size: 0.75rem; color: #78716C; margin-bottom: 8px;">Creatives (2 per audience)</div>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 1.25rem;">🎬</span>
+                      <span style="font-size: 0.875rem; color: #57534E;">Sizzle Video (15s)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 1.25rem;">📦</span>
+                      <span style="font-size: 0.875rem; color: #57534E;">Unboxing Experience</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="background: #F8FAFC; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                  <div style="font-size: 0.75rem; color: #78716C; margin-bottom: 4px;">Placements</div>
+                  <div style="font-weight: 600; color: #78350F;">Feed, Stories, Reels</div>
+                </div>
+
+                <div style="background: #DCFCE7; border: 2px solid #22C55E; border-radius: 12px; padding: 16px;">
+                  <div style="font-size: 0.75rem; color: #166534; margin-bottom: 4px;">Destination URL</div>
+                  <div style="font-weight: 600; color: #166534; font-size: 0.875rem;">yamabushifarms.com/shop</div>
+                  <div style="font-size: 0.75rem; color: #166534; margin-top: 4px;">→ Direct to product page with checkout</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #FEF9C3; border-radius: 12px;" id="meta-progress">
+          <div style="width: 24px; height: 24px; border: 3px solid #EAB308; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <span style="color: #854D0E; font-weight: 600;">Configuring Meta Ads campaigns...</span>
+        </div>
+      `;
+
+      // Simulate completion
+      setTimeout(() => {
+        document.querySelector('.card-header .badge').textContent = 'Ready';
+        document.querySelector('.card-header .badge').className = 'badge success';
+        document.getElementById('meta-progress').style.background = '#DCFCE7';
+        document.getElementById('meta-progress').innerHTML = '<span style="font-size: 1.25rem;">✓</span><span style="color: #166534; font-weight: 600;">Meta Ads configured! 3 ad sets × 2 creatives = 6 ads ready to launch</span>';
+      }, 2500);
+    }
+
+    function showExecutionContent() {
+      document.getElementById('execution-content').innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Channel Connections</span>
+            <span class="badge warning" id="channel-status">0/4 Connected</span>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;" id="channels-grid">
+              <div class="channel-card" style="padding: 16px; border: 2px dashed #FDE68A; border-radius: 12px; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; background: #1877F2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">f</div>
+                <div style="flex: 1;"><div style="font-weight: 600;">Meta Business</div><div style="font-size: 0.75rem; color: #78716C;">Not connected</div></div>
+              </div>
+              <div class="channel-card" style="padding: 16px; border: 2px dashed #FDE68A; border-radius: 12px; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; background: #4285F4; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">G</div>
+                <div style="flex: 1;"><div style="font-weight: 600;">Google Ads</div><div style="font-size: 0.75rem; color: #78716C;">Not connected</div></div>
+              </div>
+              <div class="channel-card" style="padding: 16px; border: 2px dashed #FDE68A; border-radius: 12px; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; background: #F9AB00; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">A</div>
+                <div style="flex: 1;"><div style="font-weight: 600;">Google Analytics</div><div style="font-size: 0.75rem; color: #78716C;">Not connected</div></div>
+              </div>
+              <div class="channel-card" style="padding: 16px; border: 2px dashed #FDE68A; border-radius: 12px; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 48px; height: 48px; background: #96BF48; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">S</div>
+                <div style="flex: 1;"><div style="font-weight: 600;">Shopify</div><div style="font-size: 0.75rem; color: #78716C;">Not connected</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showChannelConnected() {
+      document.getElementById('channels-grid').innerHTML = `
+        <div style="padding: 16px; border: 2px solid #22C55E; border-radius: 12px; display: flex; align-items: center; gap: 12px; background: #DCFCE7;">
+          <div style="width: 48px; height: 48px; background: #1877F2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">f</div>
+          <div style="flex: 1;"><div style="font-weight: 600;">Meta Business</div><div style="font-size: 0.75rem; color: #166534;">Connected ✓</div></div>
+        </div>
+        <div style="padding: 16px; border: 2px solid #22C55E; border-radius: 12px; display: flex; align-items: center; gap: 12px; background: #DCFCE7;">
+          <div style="width: 48px; height: 48px; background: #4285F4; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">G</div>
+          <div style="flex: 1;"><div style="font-weight: 600;">Google Ads</div><div style="font-size: 0.75rem; color: #166534;">Connected ✓</div></div>
+        </div>
+        <div style="padding: 16px; border: 2px solid #22C55E; border-radius: 12px; display: flex; align-items: center; gap: 12px; background: #DCFCE7;">
+          <div style="width: 48px; height: 48px; background: #F9AB00; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">A</div>
+          <div style="flex: 1;"><div style="font-weight: 600;">Google Analytics</div><div style="font-size: 0.75rem; color: #166534;">Connected ✓</div></div>
+        </div>
+        <div style="padding: 16px; border: 2px solid #22C55E; border-radius: 12px; display: flex; align-items: center; gap: 12px; background: #DCFCE7;">
+          <div style="width: 48px; height: 48px; background: #96BF48; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">S</div>
+          <div style="flex: 1;"><div style="font-weight: 600;">Shopify</div><div style="font-size: 0.75rem; color: #166534;">Connected ✓</div></div>
+        </div>
+      `;
+      document.getElementById('channel-status').textContent = '4/4 Connected';
+      document.getElementById('channel-status').className = 'badge success';
+    }
+
+    function showBudgetApproved() {
+      const executionContent = document.getElementById('execution-content');
+      executionContent.innerHTML += `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Budget & Testing Plan</span>
+            <span class="badge success">Approved</span>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+              <div style="text-align: center; padding: 16px; background: #FFFBEB; border-radius: 12px;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">$200</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Total Budget</div>
+              </div>
+              <div style="text-align: center; padding: 16px; background: #FFFBEB; border-radius: 12px;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">4</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Weeks</div>
+              </div>
+              <div style="text-align: center; padding: 16px; background: #FFFBEB; border-radius: 12px;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">3</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Audiences</div>
+              </div>
+              <div style="text-align: center; padding: 16px; background: #FFFBEB; border-radius: 12px;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">2</div>
+                <div style="font-size: 0.75rem; color: #78716C;">Creatives</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showLaunchAnimation() {
+      const executionContent = document.getElementById('execution-content');
+      executionContent.innerHTML += `
+        <div class="card" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; text-align: center;">
+          <div class="card-body" style="padding: 40px;">
+            <div style="font-size: 3rem; margin-bottom: 16px;">🚀</div>
+            <h2 style="margin-bottom: 8px;">Campaigns Launching!</h2>
+            <p style="opacity: 0.9;">OpenClaw monitoring activating...</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function showOpenClawContent() {
+      document.getElementById('openclaw-content').innerHTML = `
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value">2.49X</div>
+            <div class="metric-label">Today's ROAS</div>
+            <div class="metric-change positive">+18.5%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">$28.45</div>
+            <div class="metric-label">Spend Today</div>
+            <div class="metric-change">On pace</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">$71.00</div>
+            <div class="metric-label">Revenue Today</div>
+            <div class="metric-change positive">+32%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">3</div>
+            <div class="metric-label">Actions Today</div>
+            <div class="metric-change">Autonomous</div>
+          </div>
+        </div>
+
+        <div class="card" id="alert-card">
+          <div class="card-header">
+            <span class="card-title">Active Alerts</span>
+            <span class="badge warning">1 pending</span>
+          </div>
+          <div class="card-body">
+            <div class="alert-banner warning">
+              <div>⚠️</div>
+              <div>
+                <strong>ROAS dropped to 0.8</strong> on "Foodies - Broad" ad set<br>
+                <span style="font-size: 0.875rem; color: #78716C;">Recommended: Pause and reallocate to winning audiences</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Autonomous Actions Today</span>
+          </div>
+          <div class="card-body">
+            <div class="timeline">
+              <div class="timeline-item completed">
+                <strong>09:35 AM</strong> - Reallocated $15 from "Foodies - Broad" to "Wagyu Enthusiasts"
+              </div>
+              <div class="timeline-item completed">
+                <strong>08:15 AM</strong> - Swapped "Farm Story" carousel with "Sizzle Video" (CTR improved 2.1%)
+              </div>
+              <div class="timeline-item completed">
+                <strong>07:00 AM</strong> - Increased bid 10% on Instagram Stories (ROAS 2.5X)
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showAlertResolved() {
+      document.getElementById('alert-card').innerHTML = `
+        <div class="card-header">
+          <span class="card-title">Active Alerts</span>
+          <span class="badge success">All clear</span>
+        </div>
+        <div class="card-body">
+          <div class="alert-banner success">
+            <div>✓</div>
+            <div>
+              <strong>Alert resolved</strong><br>
+              <span style="font-size: 0.875rem; color: #78716C;">Ad set paused, budget reallocated to winning audiences</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showResultsContent() {
+      document.getElementById('results-content').innerHTML = `
+        <div class="card" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; text-align: center; margin-bottom: 24px;">
+          <div class="card-body" style="padding: 40px;">
+            <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 8px;">TARGET ACHIEVED</div>
+            <div style="font-size: 4rem; font-weight: 700;">3.02X</div>
+            <div style="font-size: 1.25rem; opacity: 0.9;">Peak ROAS in 5 Weeks</div>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value">$768</div>
+            <div class="metric-label">Total Spend</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">$1,769</div>
+            <div class="metric-label">Total Revenue</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">24</div>
+            <div class="metric-label">Purchases</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">$32</div>
+            <div class="metric-label">CPA</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">5-Week Journey</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="resultsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">OpenClaw Impact</span>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center;">
+              <div><div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">18</div><div style="font-size: 0.75rem; color: #78716C;">Autonomous Actions</div></div>
+              <div><div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">7</div><div style="font-size: 0.75rem; color: #78716C;">Alerts Handled</div></div>
+              <div><div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">24/7</div><div style="font-size: 0.75rem; color: #78716C;">Monitoring</div></div>
+              <div><div style="font-size: 1.5rem; font-weight: 700; color: #D97706;">46%</div><div style="font-size: 0.75rem; color: #78716C;">CPA Reduction</div></div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Draw chart
+      setTimeout(() => {
+        const ctx = document.getElementById('resultsChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+            datasets: [{
+              label: 'ROAS',
+              data: [0.80, 1.50, 1.99, 1.99, 3.02],
+              borderColor: '#F59E0B',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              fill: true,
+              tension: 0.4
+            }, {
+              label: 'Target',
+              data: [3, 3, 3, 3, 3],
+              borderColor: '#22C55E',
+              borderDash: [5, 5],
+              pointRadius: 0,
+              fill: false
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { beginAtZero: true, max: 4 } }
+          }
+        });
+      }, 100);
+    }
+
+    // ===== USER INPUT =====
+    function handleUserInput() {
+      const value = chatInput.value.trim();
+      if (!value) return;
+
+      addMessage('user', value);
+      chatInput.value = '';
+
+      // Simple response
+      setTimeout(() => {
+        addMessage('auxora', "Thanks for your input! I've noted that down. Let me continue with the next step.");
+      }, 1000);
+    }
+
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleUserInput();
+    });
+
+    // ===== INIT =====
+    window.addEventListener('load', () => {
+      playConversation('welcome');
+    });
+  </script>
+</body>
+</html>

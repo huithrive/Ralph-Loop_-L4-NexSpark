@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Execution Setup - Auxora.ai</title>
+  <link rel="stylesheet" href="/css/auxora-theme.css">
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <style>
+    .execution-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50px;
+      right: 50px;
+      height: 2px;
+      background: var(--auxora-primary-200);
+      z-index: 0;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      background: white;
+      border: 3px solid var(--auxora-primary-200);
+      color: var(--auxora-primary-400);
+    }
+
+    .step.completed .step-number {
+      background: var(--auxora-success);
+      border-color: var(--auxora-success);
+      color: white;
+    }
+
+    .step.active .step-number {
+      background: var(--auxora-primary-500);
+      border-color: var(--auxora-primary-500);
+      color: white;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 0 10px transparent; }
+    }
+
+    .step-label {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--auxora-neutral-500);
+    }
+
+    .step.completed .step-label,
+    .step.active .step-label {
+      color: var(--auxora-primary-700);
+    }
+
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .channel-card {
+      background: white;
+      border: 2px solid var(--auxora-primary-100);
+      border-radius: var(--auxora-radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: var(--auxora-transition);
+    }
+
+    .channel-card.connected {
+      border-color: var(--auxora-success);
+      background: var(--auxora-success-light);
+    }
+
+    .channel-card.pending {
+      border-style: dashed;
+    }
+
+    .channel-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--auxora-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .channel-icon.meta { background: #1877F2; color: white; }
+    .channel-icon.google { background: #4285F4; color: white; }
+    .channel-icon.analytics { background: #F9AB00; color: white; }
+    .channel-icon.shopify { background: #96BF48; color: white; }
+    .channel-icon.tiktok { background: #000; color: white; }
+
+    .budget-slider-container {
+      background: white;
+      border-radius: var(--auxora-radius-lg);
+      padding: 2rem;
+      box-shadow: var(--auxora-shadow);
+    }
+
+    .budget-display {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .budget-amount {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--auxora-primary-700);
+    }
+
+    .budget-period {
+      font-size: 1.25rem;
+      color: var(--auxora-neutral-500);
+    }
+
+    .budget-slider {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--auxora-primary-100);
+      appearance: none;
+      outline: none;
+    }
+
+    .budget-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--auxora-primary-500);
+      cursor: pointer;
+      box-shadow: var(--auxora-shadow);
+    }
+
+    .projections-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .projection-card {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: var(--auxora-radius);
+      background: var(--auxora-primary-50);
+    }
+
+    .projection-card.recommended {
+      background: var(--auxora-gradient-warm);
+      color: white;
+    }
+
+    .projection-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .projection-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .audience-card {
+      background: white;
+      border: 2px solid var(--auxora-primary-100);
+      border-radius: var(--auxora-radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .audience-card.approved {
+      border-color: var(--auxora-success);
+    }
+
+    .creative-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .creative-card {
+      background: var(--auxora-neutral-100);
+      border-radius: var(--auxora-radius);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .creative-thumbnail {
+      height: 150px;
+      background: linear-gradient(135deg, var(--auxora-primary-200), var(--auxora-secondary-200));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--auxora-primary-700);
+      font-size: 3rem;
+    }
+
+    .creative-info {
+      padding: 1rem;
+    }
+
+    .creative-status {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--auxora-primary-100);
+    }
+
+    .checklist-item:last-child {
+      border-bottom: none;
+    }
+
+    .checklist-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checklist-icon.completed {
+      background: var(--auxora-success);
+      color: white;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: var(--auxora-radius-lg);
+      box-shadow: var(--auxora-shadow);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 1.25rem 1.5rem;
+      background: var(--auxora-primary-50);
+      border-bottom: 1px solid var(--auxora-primary-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--auxora-primary-800);
+    }
+
+    .section-content {
+      padding: 1.5rem;
+    }
+  </style>
+</head>
+<body class="auxora-app">
+  <div class="execution-container">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div>
+        <a href="/auxora" style="color: var(--auxora-primary-600); text-decoration: none; font-size: 0.875rem;">
+          &larr; Back to Dashboard
+        </a>
+        <h1 class="auxora-heading-1" style="margin-top: 0.5rem;">Execution Setup</h1>
+        <p class="auxora-text">Configure your campaign infrastructure</p>
+      </div>
+      <div class="auxora-heartbeat">
+        <span class="auxora-heartbeat-pulse"></span>
+        <span>OpenClaw Active</span>
+      </div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+      <div class="step completed">
+        <div class="step-number">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <span class="step-label">Connect Channels</span>
+      </div>
+      <div class="step completed">
+        <div class="step-number">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <span class="step-label">Budget Setup</span>
+      </div>
+      <div class="step completed">
+        <div class="step-number">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <span class="step-label">Testing Plan</span>
+      </div>
+      <div class="step completed">
+        <div class="step-number">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <span class="step-label">Creatives</span>
+      </div>
+      <div class="step active">
+        <div class="step-number">5</div>
+        <span class="step-label">Pre-Launch</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Channel Connections -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">1. Channel Connections</span>
+        <span class="auxora-badge auxora-badge-success">4/5 Connected</span>
+      </div>
+      <div class="section-content">
+        <div class="channel-grid">
+          <% demo.execution.channelConnect.channels.forEach(function(channel) { %>
+          <div class="channel-card <%= channel.status %>">
+            <div class="channel-icon <%= channel.id %>">
+              <% if (channel.id === 'meta') { %>f
+              <% } else if (channel.id === 'google') { %>G
+              <% } else if (channel.id === 'ga4') { %>A
+              <% } else if (channel.id === 'shopify') { %>S
+              <% } else { %>T
+              <% } %>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; color: var(--auxora-primary-800);"><%= channel.name %></div>
+              <% if (channel.status === 'connected') { %>
+              <div class="auxora-text-sm" style="color: var(--auxora-success);">Connected</div>
+              <% } else { %>
+              <div class="auxora-text-sm"><%= channel.message %></div>
+              <% } %>
+            </div>
+            <% if (channel.status === 'connected') { %>
+            <svg width="24" height="24" fill="var(--auxora-success)" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            <% } else { %>
+            <button class="auxora-btn auxora-btn-secondary auxora-btn-sm">Connect</button>
+            <% } %>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Budget Simulation -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">2. Budget Simulation</span>
+        <span class="auxora-badge auxora-badge-primary">Low Risk</span>
+      </div>
+      <div class="section-content">
+        <div class="budget-slider-container" style="background: var(--auxora-primary-50); box-shadow: none;">
+          <div class="budget-display">
+            <div class="budget-amount">$<span id="budget-value"><%= demo.execution.budgetSimulation.initialBudget %></span></div>
+            <div class="budget-period">/ <%= demo.execution.budgetSimulation.period %></div>
+          </div>
+
+          <input type="range" class="budget-slider" id="budget-slider" min="100" max="1000" step="50" value="<%= demo.execution.budgetSimulation.initialBudget %>">
+
+          <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+            <span class="auxora-text-sm">$100</span>
+            <span class="auxora-text-sm">$1,000</span>
+          </div>
+
+          <div class="projections-grid">
+            <div class="projection-card">
+              <div class="projection-label">Conservative</div>
+              <div class="projection-value"><%= demo.execution.budgetSimulation.projections.conservative.roas %>X ROAS</div>
+              <div class="auxora-text-sm">$<%= demo.execution.budgetSimulation.projections.conservative.revenue %> revenue</div>
+            </div>
+            <div class="projection-card recommended">
+              <div class="projection-label">Expected</div>
+              <div class="projection-value"><%= demo.execution.budgetSimulation.projections.moderate.roas %>X ROAS</div>
+              <div class="auxora-text-sm">$<%= demo.execution.budgetSimulation.projections.moderate.revenue %> revenue</div>
+            </div>
+            <div class="projection-card">
+              <div class="projection-label">Optimistic</div>
+              <div class="projection-value"><%= demo.execution.budgetSimulation.projections.optimistic.roas %>X ROAS</div>
+              <div class="auxora-text-sm">$<%= demo.execution.budgetSimulation.projections.optimistic.revenue %> revenue</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 2rem;">
+            <div class="auxora-label">Weekly Allocation</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+              <% demo.execution.budgetSimulation.weeklyAllocation.forEach(function(week) { %>
+              <div style="text-align: center; padding: 1rem; background: white; border-radius: var(--auxora-radius);">
+                <div style="font-weight: 600; color: var(--auxora-primary-700);">Week <%= week.week %></div>
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--auxora-primary-800);">$<%= week.amount %></div>
+                <div class="auxora-text-xs"><%= week.focus %></div>
+              </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Testing Plan -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">3. Testing Plan</span>
+        <span class="auxora-badge auxora-badge-success">Approved</span>
+      </div>
+      <div class="section-content">
+        <h4 class="auxora-heading-3" style="margin-bottom: 1rem;">Audiences to Test</h4>
+        <% demo.execution.testingPlan.audiences.forEach(function(audience) { %>
+        <div class="audience-card <%= audience.status === 'approved' ? 'approved' : '' %>">
+          <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+              <div style="font-weight: 600; color: var(--auxora-primary-800);"><%= audience.name %></div>
+              <div class="auxora-text-sm" style="margin-top: 0.25rem;"><%= audience.targeting %></div>
+            </div>
+            <span class="auxora-badge <%= audience.status === 'approved' ? 'auxora-badge-success' : 'auxora-badge-warning' %>">
+              <%= audience.status === 'approved' ? 'Approved' : 'Pending' %>
+            </span>
+          </div>
+          <div style="display: flex; gap: 2rem; margin-top: 1rem;">
+            <div>
+              <span class="auxora-text-xs">Audience Size</span>
+              <div style="font-weight: 600;"><%= audience.size %></div>
+            </div>
+            <div>
+              <span class="auxora-text-xs">Budget</span>
+              <div style="font-weight: 600;">$<%= audience.budget %></div>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+
+        <h4 class="auxora-heading-3" style="margin: 2rem 0 1rem;">Testing Timeline</h4>
+        <div class="auxora-timeline">
+          <% demo.execution.testingPlan.timeline.forEach(function(phase) { %>
+          <div class="auxora-timeline-item">
+            <div style="font-weight: 600; color: var(--auxora-primary-800);"><%= phase.phase %> (Days <%= phase.days %>)</div>
+            <div class="auxora-text-sm"><%= phase.action %></div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Creative Development -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">4. Creative Development</span>
+        <span class="auxora-badge auxora-badge-primary"><%= demo.execution.testingPlan.creatives.length %> Creatives</span>
+      </div>
+      <div class="section-content">
+        <div class="creative-grid">
+          <% demo.execution.testingPlan.creatives.forEach(function(creative) { %>
+          <div class="creative-card">
+            <div class="creative-thumbnail">
+              <% if (creative.type === 'video') { %>
+              <svg width="48" height="48" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/></svg>
+              <% } else { %>
+              <svg width="48" height="48" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
+              <% } %>
+            </div>
+            <span class="creative-status auxora-badge <%= creative.status === 'approved' ? 'auxora-badge-success' : 'auxora-badge-warning' %>">
+              <%= creative.status === 'approved' ? 'Approved' : 'Pending' %>
+            </span>
+            <div class="creative-info">
+              <div style="font-weight: 600;"><%= creative.name %></div>
+              <div class="auxora-text-sm">
+                <%= creative.type === 'video' ? creative.duration + ' video' : creative.slides + ' slides' %>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Pre-Launch Checklist -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">5. Pre-Launch Checklist</span>
+        <span class="auxora-badge auxora-badge-success">All Clear</span>
+      </div>
+      <div class="section-content">
+        <% demo.execution.preLaunchChecklist.forEach(function(item) { %>
+        <div class="checklist-item">
+          <div class="checklist-icon completed">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          </div>
+          <span><%= item.task %></span>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <!-- Launch Button -->
+    <div style="text-align: center; margin-top: 2rem;">
+      <button class="auxora-btn auxora-btn-primary auxora-btn-lg" onclick="launchCampaign()">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+        Launch Campaign
+      </button>
+      <p class="auxora-text-sm" style="margin-top: 0.5rem; color: var(--auxora-neutral-500);">
+        OpenClaw will begin monitoring immediately after launch
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Budget slider interaction
+    document.getElementById('budget-slider').addEventListener('input', function(e) {
+      document.getElementById('budget-value').textContent = e.target.value;
+    });
+
+    function launchCampaign() {
+      var btn = event.target.closest('button');
+      btn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">&#10227;</span> Launching...';
+      btn.disabled = true;
+
+      setTimeout(function() {
+        btn.innerHTML = '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Campaign Live!';
+        btn.style.background = 'var(--auxora-success)';
+
+        setTimeout(function() {
+          window.location.href = '/auxora';
+        }, 1500);
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

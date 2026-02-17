@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alexandar CGO - Interactive Demo</title>
+  <link rel="stylesheet" href="/css/auxora.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0B141A;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .demo-app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .demo-sidebar {
+      width: 320px;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-coral) 0%, var(--primary-coral-glow) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .sidebar-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sidebar-logo-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-muted);
+      border-radius: 12px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FFB5A7 0%, #FCD5CE 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #9D4C3C;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+    }
+
+    .user-company {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    .day-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .day-nav-title {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      padding: 0 8px;
+    }
+
+    .day-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+
+    .day-btn:hover {
+      background: var(--bg-muted);
+    }
+
+    .day-btn.active {
+      background: rgba(196, 112, 74, 0.1);
+    }
+
+    .day-btn-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .day-btn.active .day-btn-num {
+      background: var(--primary-coral);
+      color: white;
+    }
+
+    .day-btn.completed .day-btn-num {
+      background: var(--success);
+      color: white;
+    }
+
+    .day-btn-info {
+      flex: 1;
+    }
+
+    .day-btn-title {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .day-btn.active .day-btn-title {
+      color: var(--primary-coral);
+    }
+
+    .day-btn-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .channel-badge {
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .channel-badge.slack {
+      background: #4A154B;
+      color: white;
+    }
+
+    .channel-badge.whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    /* Chat Area */
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0B141A;
+    }
+
+    .chat-area.slack {
+      background: #1A1D21;
+    }
+
+    .chat-area.whatsapp {
+      background: #0B141A;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .chat-header {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .chat-header-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-coral) 0%, var(--primary-coral-glow) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+
+    .chat-header-info {
+      flex: 1;
+    }
+
+    .chat-header-name {
+      font-weight: 600;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .chat-header-status {
+      font-size: 0.8125rem;
+      color: rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #25D366;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .date-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0;
+    }
+
+    .date-divider span {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 85%;
+      animation: messageIn 0.3s ease-out;
+    }
+
+    @keyframes messageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.alexandar {
+      align-self: flex-start;
+    }
+
+    .message.sarah {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .message.alexandar .message-avatar {
+      background: linear-gradient(135deg, var(--primary-coral) 0%, var(--primary-coral-glow) 100%);
+      color: white;
+    }
+
+    .message.sarah .message-avatar {
+      background: linear-gradient(135deg, #FFB5A7 0%, #FCD5CE 100%);
+      color: #9D4C3C;
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .message.sarah .message-content {
+      align-items: flex-end;
+    }
+
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      max-width: 100%;
+    }
+
+    .message.alexandar .message-bubble {
+      background: #202C33;
+      color: white;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.sarah .message-bubble {
+      background: #005C4B;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .slack .message.alexandar .message-bubble {
+      background: #222529;
+    }
+
+    .slack .message.sarah .message-bubble {
+      background: #1264A3;
+    }
+
+    .message-time {
+      font-size: 0.6875rem;
+      color: rgba(255,255,255,0.4);
+      padding: 0 4px;
+    }
+
+    /* Card Messages */
+    .message-card {
+      background: #202C33;
+      border-radius: 12px;
+      overflow: hidden;
+      min-width: 300px;
+      max-width: 400px;
+    }
+
+    .slack .message-card {
+      background: #222529;
+    }
+
+    .card-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-icon {
+      font-size: 1.25rem;
+    }
+
+    .card-title {
+      font-weight: 600;
+      color: white;
+      font-size: 0.9375rem;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-text {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.875rem;
+      margin-bottom: 12px;
+    }
+
+    .card-data {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .card-data-item {
+      text-align: center;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    .card-data-value {
+      font-weight: 600;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .card-data-value.positive {
+      color: #25D366;
+    }
+
+    .card-data-label {
+      font-size: 0.6875rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+
+    /* Approval Card */
+    .approval-card {
+      background: linear-gradient(135deg, rgba(196, 112, 74, 0.2) 0%, rgba(196, 112, 74, 0.1) 100%);
+      border: 1px solid rgba(196, 112, 74, 0.3);
+    }
+
+    .approval-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .approval-btn {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .approval-btn.primary {
+      background: var(--primary-coral);
+      color: white;
+    }
+
+    .approval-btn.primary:hover {
+      background: var(--primary-coral-hover);
+    }
+
+    .approval-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    /* Alert Card */
+    .alert-card {
+      border-left: 4px solid;
+    }
+
+    .alert-card.success {
+      border-color: #25D366;
+      background: rgba(37, 211, 102, 0.1);
+    }
+
+    .alert-card.warning {
+      border-color: #F59E0B;
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .alert-card.opportunity {
+      border-color: var(--primary-coral);
+      background: rgba(196, 112, 74, 0.1);
+    }
+
+    /* Milestone Card */
+    .milestone-card {
+      background: linear-gradient(135deg, var(--primary-coral) 0%, var(--primary-coral-glow) 100%);
+      text-align: center;
+      padding: 24px;
+    }
+
+    .milestone-card .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    /* Briefing Card */
+    .briefing-card .card-body {
+      padding: 0;
+    }
+
+    .briefing-greeting {
+      padding: 16px;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    .briefing-overnight {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.1);
+      margin-top: 12px;
+    }
+
+    .briefing-overnight-item {
+      background: #202C33;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .slack .briefing-overnight-item {
+      background: #222529;
+    }
+
+    .briefing-agenda {
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .agenda-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .agenda-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #25D366;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.625rem;
+    }
+
+    /* List Message */
+    .message-list {
+      background: #202C33;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .slack .message-list {
+      background: #222529;
+    }
+
+    .message-list-item {
+      padding: 8px 0;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.9375rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .message-list-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      animation: typingBounce 1.4s ease-in-out infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Controls */
+    .demo-controls {
+      padding: 16px 24px;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .control-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .control-btn.primary {
+      background: var(--primary-coral);
+      color: white;
+    }
+
+    .control-btn.primary:hover {
+      background: var(--primary-coral-hover);
+    }
+
+    .control-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .control-btn.secondary:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .progress-info {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.875rem;
+    }
+
+    .speed-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .speed-control label {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.8125rem;
+    }
+
+    .speed-select {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-app">
+    <!-- Sidebar -->
+    <aside class="demo-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">A</div>
+          <div>
+            <div class="sidebar-logo-text">Alexandar</div>
+            <div class="sidebar-logo-sub">Chief Growth Officer</div>
+          </div>
+        </div>
+        <div class="user-card">
+          <div class="user-avatar">SC</div>
+          <div class="user-info">
+            <div class="user-name">Sarah Chen</div>
+            <div class="user-company">Bloom Beverages</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-nav">
+        <div class="day-nav-title">Week 1 Timeline</div>
+        <% Object.keys(conversations).forEach(function(key, index) { %>
+          <% var conv = conversations[key]; %>
+          <button class="day-btn <%= index === 0 ? 'active' : '' %>" data-day="<%= key %>">
+            <div class="day-btn-num"><%= index + 1 %></div>
+            <div class="day-btn-info">
+              <div class="day-btn-title"><%= conv.theme %></div>
+              <div class="day-btn-sub"><%= conv.date %></div>
+            </div>
+            <span class="channel-badge <%= conv.channel %>"><%= conv.channel %></span>
+          </button>
+        <% }); %>
+      </div>
+    </aside>
+
+    <!-- Chat Area -->
+    <main class="chat-area whatsapp" id="chat-area">
+      <div class="chat-header">
+        <div class="chat-header-avatar">A</div>
+        <div class="chat-header-info">
+          <div class="chat-header-name">Alexandar</div>
+          <div class="chat-header-status">
+            <span class="status-dot"></span>
+            <span id="status-text">Online</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <div class="date-divider"><span id="date-display">Monday, Feb 10</span></div>
+        <!-- Messages will be injected here -->
+      </div>
+
+      <div class="demo-controls">
+        <div class="speed-control">
+          <label>Speed:</label>
+          <select class="speed-select" id="speed-select">
+            <option value="0.5">0.5x</option>
+            <option value="1" selected>1x</option>
+            <option value="2">2x</option>
+            <option value="5">5x (Fast)</option>
+          </select>
+        </div>
+        <div class="progress-info" id="progress-info">Message 0 of 0</div>
+        <div style="display: flex; gap: 12px;">
+          <button class="control-btn secondary" id="restart-btn">↻ Restart</button>
+          <button class="control-btn primary" id="play-btn">▶ Play Demo</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const conversations = <%- JSON.stringify(conversations) %>;
+
+    let currentDay = 'day1';
+    let currentMessageIndex = 0;
+    let isPlaying = false;
+    let timeoutId = null;
+    let speed = 1;
+
+    const chatMessages = document.getElementById('chat-messages');
+    const playBtn = document.getElementById('play-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const speedSelect = document.getElementById('speed-select');
+    const progressInfo = document.getElementById('progress-info');
+    const dateDisplay = document.getElementById('date-display');
+    const chatArea = document.getElementById('chat-area');
+    const statusText = document.getElementById('status-text');
+
+    // Day navigation
+    document.querySelectorAll('.day-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentDay = btn.dataset.day;
+        loadDay(currentDay);
+      });
+    });
+
+    function loadDay(day) {
+      const conv = conversations[day];
+      currentMessageIndex = 0;
+      isPlaying = false;
+      clearTimeout(timeoutId);
+
+      // Update UI
+      chatArea.className = 'chat-area ' + conv.channel;
+      dateDisplay.textContent = conv.date;
+      chatMessages.innerHTML = '<div class="date-divider"><span>' + conv.date + '</span></div>';
+      playBtn.textContent = '▶ Play Demo';
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const conv = conversations[currentDay];
+      progressInfo.textContent = 'Message ' + currentMessageIndex + ' of ' + conv.messages.length;
+    }
+
+    function renderMessage(msg) {
+      const div = document.createElement('div');
+
+      if (msg.type === 'text') {
+        div.className = 'message ' + msg.sender;
+        div.innerHTML = `
+          <div class="message-avatar">${msg.sender === 'alexandar' ? 'A' : 'SC'}</div>
+          <div class="message-content">
+            <div class="message-bubble">${msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'action') {
+        div.className = 'message sarah';
+        div.innerHTML = `
+          <div class="message-avatar">SC</div>
+          <div class="message-content">
+            <div class="message-bubble">✅ ${msg.content}</div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'card' || msg.type === 'briefing' || msg.type === 'approval' || msg.type === 'alert' || msg.type === 'milestone') {
+        div.className = 'message alexandar';
+        let cardClass = 'message-card';
+        if (msg.type === 'approval') cardClass += ' approval-card';
+        if (msg.type === 'alert') cardClass += ' alert-card ' + msg.alertType;
+        if (msg.type === 'milestone') cardClass += ' milestone-card';
+
+        let cardContent = '';
+
+        if (msg.type === 'briefing') {
+          cardContent = `
+            <div class="briefing-greeting">${msg.content}</div>
+            ${msg.overnight ? `
+              <div class="briefing-overnight">
+                <div class="briefing-overnight-item">
+                  <div class="card-data-value">${msg.overnight.spend}</div>
+                  <div class="card-data-label">Spend</div>
+                </div>
+                <div class="briefing-overnight-item">
+                  <div class="card-data-value">${msg.overnight.orders}</div>
+                  <div class="card-data-label">Orders</div>
+                </div>
+                <div class="briefing-overnight-item">
+                  <div class="card-data-value positive">${msg.overnight.roas}</div>
+                  <div class="card-data-label">ROAS</div>
+                </div>
+              </div>
+            ` : ''}
+            ${msg.agenda ? `
+              <div class="briefing-agenda">
+                ${msg.agenda.map(item => `
+                  <div class="agenda-item">
+                    <span class="agenda-check">✓</span>
+                    ${item}
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          `;
+        } else if (msg.data) {
+          const dataItems = Object.entries(msg.data).map(([key, val]) => {
+            if (typeof val === 'object') return '';
+            const isPositive = key.toLowerCase().includes('roas') || key.toLowerCase().includes('revenue');
+            return `
+              <div class="card-data-item">
+                <div class="card-data-value ${isPositive ? 'positive' : ''}">${val}</div>
+                <div class="card-data-label">${key.replace(/([A-Z])/g, ' $1').trim()}</div>
+              </div>
+            `;
+          }).join('');
+
+          cardContent = `
+            <div class="card-text">${msg.content}</div>
+            <div class="card-data">${dataItems}</div>
+            ${msg.actions ? `
+              <div class="approval-actions">
+                ${msg.actions.map((a, i) => `
+                  <button class="approval-btn ${i === 0 ? 'primary' : 'secondary'}">${a}</button>
+                `).join('')}
+              </div>
+            ` : ''}
+          `;
+        } else {
+          cardContent = `<div class="card-text">${msg.content}</div>`;
+        }
+
+        div.innerHTML = `
+          <div class="message-avatar">A</div>
+          <div class="message-content">
+            <div class="${cardClass}">
+              <div class="card-header">
+                <span class="card-icon">${msg.title.split(' ')[0]}</span>
+                <span class="card-title">${msg.title.split(' ').slice(1).join(' ')}</span>
+              </div>
+              <div class="card-body">${cardContent}</div>
+            </div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'notification') {
+        div.className = 'message alexandar';
+        div.innerHTML = `
+          <div class="message-avatar">A</div>
+          <div class="message-content">
+            <div class="message-card">
+              <div class="card-header">
+                <span class="card-icon">${msg.notificationType === 'auto' ? '⚙️' : '📢'}</span>
+                <span class="card-title">${msg.title}</span>
+              </div>
+              <div class="card-body">
+                <div class="card-text">${msg.content}</div>
+              </div>
+            </div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'list') {
+        div.className = 'message alexandar';
+        div.innerHTML = `
+          <div class="message-avatar">A</div>
+          <div class="message-content">
+            <div class="message-list">
+              ${msg.items.map(item => `<div class="message-list-item">${item}</div>`).join('')}
+            </div>
+            <div class="message-time">${msg.time || ''}</div>
+          </div>
+        `;
+      }
+
+      return div;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'typing-indicator';
+      div.id = 'typing';
+      div.innerHTML = `
+        <div class="message-avatar" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C4704A,#E8956F);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;">A</div>
+        <div class="typing-dots">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      `;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTyping() {
+      const typing = document.getElementById('typing');
+      if (typing) typing.remove();
+    }
+
+    async function playNext() {
+      const conv = conversations[currentDay];
+      if (currentMessageIndex >= conv.messages.length) {
+        isPlaying = false;
+        playBtn.textContent = '✓ Complete';
+
+        // Mark day as completed
+        const dayBtns = document.querySelectorAll('.day-btn');
+        dayBtns.forEach(btn => {
+          if (btn.dataset.day === currentDay) {
+            btn.classList.add('completed');
+          }
+        });
+        return;
+      }
+
+      const msg = conv.messages[currentMessageIndex];
+
+      // Show typing for Alexandar messages
+      if (msg.sender === 'alexandar') {
+        statusText.textContent = 'typing...';
+        showTyping();
+        await new Promise(r => setTimeout(r, (800 + Math.random() * 400) / speed));
+        hideTyping();
+        statusText.textContent = 'Online';
+      }
+
+      const element = renderMessage(msg);
+      chatMessages.appendChild(element);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      currentMessageIndex++;
+      updateProgress();
+
+      // Calculate delay to next message
+      let delay = 1500;
+      if (msg.waitForUser) {
+        delay = 2500; // Longer pause for "user" messages
+      }
+
+      if (isPlaying && currentMessageIndex < conv.messages.length) {
+        timeoutId = setTimeout(playNext, delay / speed);
+      } else if (currentMessageIndex >= conv.messages.length) {
+        playBtn.textContent = '✓ Complete';
+      }
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        isPlaying = false;
+        clearTimeout(timeoutId);
+        playBtn.textContent = '▶ Resume';
+      } else {
+        isPlaying = true;
+        playBtn.textContent = '⏸ Pause';
+        playNext();
+      }
+    });
+
+    restartBtn.addEventListener('click', () => {
+      loadDay(currentDay);
+    });
+
+    speedSelect.addEventListener('change', (e) => {
+      speed = parseFloat(e.target.value);
+    });
+
+    // Initialize
+    loadDay('day1');
+  </script>
+</body>
+</html>

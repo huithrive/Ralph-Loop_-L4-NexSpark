@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding - Auxora.ai</title>
+  <link rel="stylesheet" href="/css/auxora-theme.css">
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <style>
+    .onboarding-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .hero-section {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--auxora-gradient-hero);
+      border-radius: var(--auxora-radius-xl);
+      margin-bottom: 2rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--auxora-primary-100);
+      color: var(--auxora-primary-700);
+      border-radius: var(--auxora-radius-full);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--auxora-primary-900);
+      margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--auxora-neutral-600);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .url-input-container {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .url-input-container input {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      font-size: 1rem;
+      border: 2px solid var(--auxora-primary-300);
+      border-radius: var(--auxora-radius-lg);
+    }
+
+    .url-input-container input:focus {
+      outline: none;
+      border-color: var(--auxora-primary-500);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+    }
+
+    .value-props {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .value-prop {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      text-align: left;
+    }
+
+    .value-prop-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--auxora-success-light);
+      color: var(--auxora-success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-card {
+      background: white;
+      border-radius: var(--auxora-radius-lg);
+      box-shadow: var(--auxora-shadow);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .step-header {
+      padding: 1.5rem;
+      background: var(--auxora-primary-50);
+      border-bottom: 1px solid var(--auxora-primary-100);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--auxora-gradient-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .step-number.completed {
+      background: var(--auxora-success);
+    }
+
+    .step-content {
+      padding: 1.5rem;
+    }
+
+    .research-preview {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .research-item {
+      padding: 1rem;
+      background: var(--auxora-primary-50);
+      border-radius: var(--auxora-radius);
+    }
+
+    .research-item-label {
+      font-size: 0.75rem;
+      color: var(--auxora-neutral-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .interview-questions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .interview-question {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--auxora-primary-50);
+      border-radius: var(--auxora-radius);
+    }
+
+    .interview-question.active {
+      background: var(--auxora-gradient-warm);
+      color: white;
+    }
+
+    .question-number {
+      width: 28px;
+      height: 28px;
+      background: white;
+      color: var(--auxora-primary-700);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .gtm-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .gtm-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--auxora-primary-50);
+      border-radius: var(--auxora-radius);
+      cursor: pointer;
+      transition: var(--auxora-transition);
+    }
+
+    .gtm-section:hover {
+      background: var(--auxora-primary-100);
+    }
+
+    .gtm-section-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--auxora-gradient-primary);
+      color: white;
+      border-radius: var(--auxora-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body class="auxora-app">
+  <div class="onboarding-container">
+    <!-- Step 1: Landing / URL Input -->
+    <div class="hero-section" id="step-landing">
+      <div class="hero-badge">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838l-2.727 1.17 1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/></svg>
+        AI Growth Co-Founder
+      </div>
+      <h1 class="hero-title"><%= demo.onboarding.landing.headline %></h1>
+      <p class="hero-subtitle"><%= demo.onboarding.landing.subheadline %></p>
+
+      <div class="url-input-container">
+        <input type="url" id="website-url" placeholder="Enter your website URL" value="<%= demo.client.website %>">
+        <button class="auxora-btn auxora-btn-primary auxora-btn-lg" onclick="startResearch()">
+          Get Free Preview
+        </button>
+      </div>
+
+      <div class="value-props">
+        <% demo.onboarding.landing.valueProps.forEach(function(prop) { %>
+        <div class="value-prop">
+          <div class="value-prop-icon">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          </div>
+          <span class="auxora-text-sm"><%= prop %></span>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <!-- Step 2: Deep Research -->
+    <div class="step-card" id="step-research">
+      <div class="step-header">
+        <div class="step-number completed">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <div>
+          <div style="font-weight: 600; color: var(--auxora-primary-800);">Deep Research</div>
+          <div class="auxora-text-sm">AI-powered market analysis</div>
+        </div>
+        <span class="auxora-badge auxora-badge-success" style="margin-left: auto;">Completed</span>
+      </div>
+      <div class="step-content">
+        <div class="research-preview">
+          <div class="research-item">
+            <div class="research-item-label">Market Size</div>
+            <div style="font-weight: 600;"><%= demo.onboarding.research.preview.marketSize %></div>
+          </div>
+          <div class="research-item">
+            <div class="research-item-label">Target Audience</div>
+            <div style="font-weight: 600;"><%= demo.onboarding.research.preview.targetAudience %></div>
+          </div>
+          <div class="research-item">
+            <div class="research-item-label">Competitors</div>
+            <div style="font-weight: 600;"><%= demo.onboarding.research.preview.competitors.join(', ') %></div>
+          </div>
+          <div class="research-item">
+            <div class="research-item-label">Recommended Channels</div>
+            <div style="font-weight: 600;"><%= demo.onboarding.research.preview.channels.join(', ') %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Payment Gate 1 -->
+    <div class="step-card" id="step-payment1">
+      <div class="step-header">
+        <div class="step-number completed">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <div>
+          <div style="font-weight: 600; color: var(--auxora-primary-800);">Strategy Preview</div>
+          <div class="auxora-text-sm">$<%= demo.onboarding.paymentGate1.amount %> one-time</div>
+        </div>
+        <span class="auxora-badge auxora-badge-success" style="margin-left: auto;">Paid</span>
+      </div>
+      <div class="step-content">
+        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--auxora-success-light); border-radius: var(--auxora-radius);">
+          <svg width="24" height="24" fill="var(--auxora-success)" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <div>
+            <div style="font-weight: 600; color: var(--auxora-success);">Payment Complete</div>
+            <div class="auxora-text-sm">Unlocked: <%= demo.onboarding.paymentGate1.features.join(', ') %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Voice Interview -->
+    <div class="step-card" id="step-interview">
+      <div class="step-header">
+        <div class="step-number completed">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <div>
+          <div style="font-weight: 600; color: var(--auxora-primary-800);">Voice Interview</div>
+          <div class="auxora-text-sm"><%= demo.onboarding.voiceInterview.duration %></div>
+        </div>
+        <button class="auxora-btn auxora-btn-secondary auxora-btn-sm" style="margin-left: auto;" onclick="showVoiceDemo()">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+          Replay Demo
+        </button>
+      </div>
+      <div class="step-content">
+        <div class="interview-questions">
+          <% demo.onboarding.voiceInterview.questions.slice(0, 4).forEach(function(q, i) { %>
+          <div class="interview-question">
+            <div class="question-number"><%= q.id %></div>
+            <span class="auxora-text-sm"><%= q.text %></span>
+          </div>
+          <% }); %>
+          <div style="text-align: center; padding: 0.5rem; color: var(--auxora-neutral-400);">
+            + <%= demo.onboarding.voiceInterview.questions.length - 4 %> more questions
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--auxora-primary-50); border-radius: var(--auxora-radius);">
+          <div style="font-weight: 600; color: var(--auxora-primary-800); margin-bottom: 0.5rem;">Interview Analysis</div>
+          <div class="auxora-text-sm"><strong>Brand:</strong> <%= demo.onboarding.voiceInterview.analysis.brandPositioning %></div>
+          <div class="auxora-text-sm"><strong>Constraints:</strong> <%= demo.onboarding.voiceInterview.analysis.resourceConstraints %></div>
+          <div class="auxora-text-sm"><strong>Priorities:</strong> <%= demo.onboarding.voiceInterview.analysis.growthPriorities.join(', ') %></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: GTM Report -->
+    <div class="step-card" id="step-gtm">
+      <div class="step-header">
+        <div class="step-number completed">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <div>
+          <div style="font-weight: 600; color: var(--auxora-primary-800);">GTM Strategy Report</div>
+          <div class="auxora-text-sm">Complete go-to-market plan</div>
+        </div>
+        <span class="auxora-badge auxora-badge-success" style="margin-left: auto;">Generated</span>
+      </div>
+      <div class="step-content">
+        <div class="gtm-sections">
+          <div class="gtm-section">
+            <div class="gtm-section-icon">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+            </div>
+            <div>
+              <div style="font-weight: 600;">Executive Summary</div>
+              <div class="auxora-text-sm"><%= demo.onboarding.gtmReport.sections.executiveSummary.opportunity %></div>
+            </div>
+          </div>
+          <div class="gtm-section">
+            <div class="gtm-section-icon">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+            </div>
+            <div>
+              <div style="font-weight: 600;">Market Analysis</div>
+              <div class="auxora-text-sm"><%= demo.onboarding.gtmReport.sections.marketAnalysis.marketSize %> market</div>
+            </div>
+          </div>
+          <div class="gtm-section">
+            <div class="gtm-section-icon">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+            </div>
+            <div>
+              <div style="font-weight: 600;">Target Audience</div>
+              <div class="auxora-text-sm"><%= demo.onboarding.gtmReport.sections.targetAudience.primary.name %> (<%= demo.onboarding.gtmReport.sections.targetAudience.primary.age %>)</div>
+            </div>
+          </div>
+          <div class="gtm-section">
+            <div class="gtm-section-icon">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clip-rule="evenodd"/></svg>
+            </div>
+            <div>
+              <div style="font-weight: 600;">Channel Strategy</div>
+              <div class="auxora-text-sm"><%= demo.onboarding.gtmReport.sections.channelStrategy.primary.channel %> (<%= demo.onboarding.gtmReport.sections.channelStrategy.primary.allocation %>%)</div>
+            </div>
+          </div>
+          <div class="gtm-section">
+            <div class="gtm-section-icon">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+            </div>
+            <div>
+              <div style="font-weight: 600;">90-Day Action Plan</div>
+              <div class="auxora-text-sm">Week-by-week execution roadmap</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="auxora-btn auxora-btn-secondary auxora-w-full" style="margin-top: 1.5rem;">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+          Download Full Report (PDF)
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 6: Payment Gate 2 -->
+    <div class="step-card" id="step-payment2">
+      <div class="step-header">
+        <div class="step-number completed">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        </div>
+        <div>
+          <div style="font-weight: 600; color: var(--auxora-primary-800);">Full Service Launch</div>
+          <div class="auxora-text-sm">$<%= demo.onboarding.paymentGate2.amount %>/month</div>
+        </div>
+        <span class="auxora-badge auxora-badge-success" style="margin-left: auto;">Paid</span>
+      </div>
+      <div class="step-content">
+        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--auxora-success-light); border-radius: var(--auxora-radius);">
+          <svg width="24" height="24" fill="var(--auxora-success)" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <div>
+            <div style="font-weight: 600; color: var(--auxora-success);">Full Service Activated</div>
+            <div class="auxora-text-sm">Unlocked: <%= demo.onboarding.paymentGate2.features.join(', ') %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Continue Button -->
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="/auxora/execution" class="auxora-btn auxora-btn-primary auxora-btn-lg">
+        Continue to Execution Setup
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Voice Interview Demo Overlay -->
+  <div class="auxora-voice-overlay" id="voice-overlay" style="display: none;">
+    <div class="auxora-voice-modal">
+      <div class="auxora-voice-avatar">
+        <svg width="40" height="40" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/></svg>
+      </div>
+      <h3 class="auxora-heading-3">Voice Interview</h3>
+      <p class="auxora-text" id="voice-question"><%= demo.onboarding.voiceInterview.questions[0].text %></p>
+      <div class="auxora-voice-waveform">
+        <div class="auxora-voice-bar"></div>
+        <div class="auxora-voice-bar"></div>
+        <div class="auxora-voice-bar"></div>
+        <div class="auxora-voice-bar"></div>
+        <div class="auxora-voice-bar"></div>
+        <div class="auxora-voice-bar"></div>
+        <div class="auxora-voice-bar"></div>
+        <div class="auxora-voice-bar"></div>
+      </div>
+      <div class="auxora-text-sm" style="color: var(--auxora-neutral-500);">
+        Question <span id="voice-q-num">1</span> of <%= demo.onboarding.voiceInterview.questions.length %>
+      </div>
+      <div style="margin-top: 1.5rem;">
+        <button class="auxora-btn auxora-btn-primary" onclick="nextQuestion()">Next Question</button>
+        <button class="auxora-btn auxora-btn-ghost" onclick="closeVoice()">End Demo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var questions = <%- JSON.stringify(demo.onboarding.voiceInterview.questions) %>;
+    var currentQ = 0;
+
+    function showVoiceDemo() {
+      currentQ = 0;
+      updateQuestion();
+      document.getElementById('voice-overlay').style.display = 'flex';
+    }
+
+    function closeVoice() {
+      document.getElementById('voice-overlay').style.display = 'none';
+    }
+
+    function nextQuestion() {
+      currentQ++;
+      if (currentQ >= questions.length) {
+        closeVoice();
+        return;
+      }
+      updateQuestion();
+    }
+
+    function updateQuestion() {
+      document.getElementById('voice-question').textContent = questions[currentQ].text;
+      document.getElementById('voice-q-num').textContent = currentQ + 1;
+    }
+
+    function startResearch() {
+      var btn = event.target;
+      btn.innerHTML = 'Analyzing...';
+      btn.disabled = true;
+      setTimeout(function() {
+        btn.innerHTML = 'Research Complete!';
+        btn.style.background = 'var(--auxora-success)';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

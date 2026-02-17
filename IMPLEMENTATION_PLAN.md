@@ -2,13 +2,48 @@
 
 - [x] **Fix critical database schema and interview logic bugs** - Added missing updated_at column to interview_sessions table, fixed JSONB parsing issues in all models, corrected interview question numbering logic, fixed test environment setup. **UPDATED: Fixed additional JSONB serialization issues in ResearchResult model, corrected foreign key constraint violations in test cleanup, resolved test isolation issues. Reduced test failures from 28 to 21. Current status: 226/247 tests passing (91.5% pass rate).** Acceptance: Interview flow works correctly (Q1 → Q2 → Q3 → Q4), database schema matches code expectations, tests pass.
 
-# NexSpark Implementation Plan - Module 1 (Strategist)
+---
+
+# Auxora.ai Implementation Plan
+## AI Growth Co-Founder in OpenClaw Mode
+
+---
+
+## Executive Overview
+
+**Auxora.ai** is an AI-powered growth co-founder that operates in **OpenClaw mode** - a paradigm shift from reactive chatbot to proactive digital colleague. Unlike traditional AI assistants that exist only in isolated "nows," Auxora maintains continuous presence through:
+
+- **Heartbeat Mechanism**: Proactive monitoring every ~30 minutes
+- **Persistent Memory**: SOUL.md, USER.md, MEMORY.md architecture
+- **Autonomous Actions**: Pre-authorized budget and campaign management
+- **Threshold-Based Alerts**: Intelligent interruptions when metrics matter
+
+### The 4 Roles of Auxora.ai
+
+| Role | Module | Description |
+|------|--------|-------------|
+| **Strategist** | Phase 1-5 | Deep research, voice interview, GTM report generation |
+| **Executor** | Phase 6 | Landing pages, Shopify setup, domain, creative generation |
+| **Advertiser** | Phase 7 | Pixel installation, campaign creation, ad deployment |
+| **OpenClaw Optimizer** | Phase 8 | Heartbeat monitoring, autonomous optimization, daily reports |
+
+### Demo Focus Areas (Investor Priority)
+- **B) Execution Setup**: Budget simulation, testing plan approval, creative development ⭐
+- **C) OpenClaw Monitoring**: Daily reports, threshold alerts, autonomous actions ⭐
+
+### Brand Identity
+- **Theme**: Warm Auxora (amber/orange)
+- **Voice**: Professional but approachable digital colleague
+- **Interaction**: Proactive, contextual, continuous presence
+
+---
+
+# Module 1 (Strategist)
 
 ## Overview
 
-This plan outlines the implementation of the Strategist module, NexSpark's AI-powered growth strategy engine. The module consists of three core components: Deep Research Engine, Voice Interview Agent, and GTM Report Generator.
+This plan outlines the implementation of the Strategist module, Auxora.ai's AI-powered growth strategy engine. The module consists of three core components: Deep Research Engine, Voice Interview Agent, and GTM Report Generator.
 
-**Estimated Timeline:** 4-6 weeks  
 **Tech Stack:** Node.js + Express, PostgreSQL, Claude API (claude-sonnet-4-20250514), Jest
 
 ---
@@ -170,10 +205,104 @@ CREATE TABLE gtm_reports (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- OpenClaw Optimizer Tables (Phase 8)
+
+CREATE TABLE openclaw_heartbeats (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    client_id UUID NOT NULL,
+    status VARCHAR(20) NOT NULL, -- 'OK', 'ALERT', 'ERROR'
+    checklist_results JSONB,
+    alerts_generated INTEGER DEFAULT 0,
+    actions_taken INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE openclaw_alerts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    client_id UUID NOT NULL,
+    severity VARCHAR(20) NOT NULL, -- 'critical', 'warning', 'info'
+    alert_type VARCHAR(50) NOT NULL, -- 'roas_drop', 'budget_exhausted', 'creative_fatigue', etc.
+    message TEXT NOT NULL,
+    metric_name VARCHAR(50),
+    metric_value DECIMAL(10,2),
+    threshold_value DECIMAL(10,2),
+    acknowledged BOOLEAN DEFAULT FALSE,
+    acknowledged_at TIMESTAMP,
+    auto_action_taken BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE openclaw_actions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    client_id UUID NOT NULL,
+    action_type VARCHAR(50) NOT NULL, -- 'pause_ad', 'increase_budget', 'swap_creative', etc.
+    target_entity VARCHAR(100), -- e.g., 'ad_set:12345'
+    before_state JSONB,
+    after_state JSONB,
+    rationale TEXT,
+    autonomous BOOLEAN DEFAULT FALSE, -- true if taken without approval
+    approval_required BOOLEAN DEFAULT FALSE,
+    approved BOOLEAN,
+    approved_by VARCHAR(100),
+    approved_at TIMESTAMP,
+    executed BOOLEAN DEFAULT FALSE,
+    executed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE openclaw_permissions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    client_id UUID NOT NULL UNIQUE,
+    budget_reallocation_limit DECIMAL(5,2) DEFAULT 0.20, -- max 20% shift
+    auto_pause_roas_threshold DECIMAL(4,2) DEFAULT 0.50,
+    auto_scale_roas_threshold DECIMAL(4,2) DEFAULT 2.00,
+    creative_swap_ctr_threshold DECIMAL(4,2) DEFAULT 0.50,
+    daily_action_limit INTEGER DEFAULT 10,
+    require_approval_above DECIMAL(10,2) DEFAULT 100.00, -- require approval for changes > $100
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE openclaw_conversations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    client_id UUID NOT NULL,
+    conversation_type VARCHAR(50) NOT NULL, -- 'daily_checkin', 'alert', 'action_taken', 'weekly_report'
+    trigger_source VARCHAR(50), -- 'heartbeat', 'threshold', 'schedule', 'manual'
+    message_content TEXT NOT NULL,
+    delivered BOOLEAN DEFAULT FALSE,
+    delivered_at TIMESTAMP,
+    read BOOLEAN DEFAULT FALSE,
+    read_at TIMESTAMP,
+    response TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE openclaw_reports (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    client_id UUID NOT NULL,
+    report_type VARCHAR(20) NOT NULL, -- 'daily', 'weekly', 'custom'
+    date_range_start DATE NOT NULL,
+    date_range_end DATE NOT NULL,
+    report_data JSONB NOT NULL,
+    pdf_url VARCHAR(2048),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX idx_research_url ON research_results(website_url);
 CREATE INDEX idx_research_created ON research_results(created_at);
 CREATE INDEX idx_sessions_research ON interview_sessions(research_id);
 CREATE INDEX idx_reports_research ON gtm_reports(research_id);
+
+-- OpenClaw indexes
+CREATE INDEX idx_heartbeats_client ON openclaw_heartbeats(client_id);
+CREATE INDEX idx_heartbeats_created ON openclaw_heartbeats(created_at);
+CREATE INDEX idx_alerts_client ON openclaw_alerts(client_id);
+CREATE INDEX idx_alerts_acknowledged ON openclaw_alerts(acknowledged);
+CREATE INDEX idx_actions_client ON openclaw_actions(client_id);
+CREATE INDEX idx_actions_approval ON openclaw_actions(approval_required, approved);
+CREATE INDEX idx_conversations_client ON openclaw_conversations(client_id);
+CREATE INDEX idx_conversations_delivered ON openclaw_conversations(delivered);
+CREATE INDEX idx_reports_client ON openclaw_reports(client_id);
 ```
 
 ---
@@ -188,17 +317,39 @@ backend/
 ├── .env.example
 ├── config/
 │   ├── database.js
-│   └── interviewQuestions.js
+│   ├── interviewQuestions.js
+│   └── openclawConfig.js          # OpenClaw thresholds and settings
 ├── api/
-│   └── strategist/
-│       ├── research.js
-│       ├── interview.js
-│       └── report.js
+│   ├── strategist/
+│   │   ├── research.js
+│   │   ├── interview.js
+│   │   └── report.js
+│   ├── executor/
+│   │   ├── landing-pages.js
+│   │   ├── shopify.js
+│   │   ├── domain.js
+│   │   └── creative.js
+│   ├── advertiser/
+│   │   ├── pixel.js
+│   │   └── campaign.js
+│   └── openclaw/                   # OpenClaw Optimizer endpoints
+│       ├── heartbeat.js
+│       ├── alerts.js
+│       ├── actions.js
+│       ├── permissions.js
+│       ├── conversations.js
+│       └── reports.js
 ├── models/
 │   ├── ResearchResult.js
 │   ├── InterviewSession.js
 │   ├── InterviewResponse.js
-│   └── GTMReport.js
+│   ├── GTMReport.js
+│   ├── OpenClawHeartbeat.js        # Heartbeat records
+│   ├── OpenClawAlert.js            # Alerts
+│   ├── OpenClawAction.js           # Autonomous actions
+│   ├── OpenClawPermission.js       # Action boundaries
+│   ├── OpenClawConversation.js     # Proactive messages
+│   └── OpenClawReport.js           # Daily/weekly reports
 ├── services/
 │   ├── claudeService.js
 │   ├── researchService.js
@@ -207,16 +358,24 @@ backend/
 │   ├── interviewAnalysisService.js
 │   ├── dataSynthesisService.js
 │   ├── reportGenerationService.js
-│   └── healthService.js
+│   ├── healthService.js
+│   ├── heartbeatService.js         # Core heartbeat mechanism
+│   ├── memoryService.js            # Persistent memory (SOUL/USER/MEMORY)
+│   ├── autonomousActionService.js  # Pre-authorized actions
+│   ├── alertService.js             # Threshold-based alerts
+│   ├── conversationTriggerService.js # Proactive conversations
+│   └── openclawReportService.js    # Daily/weekly reports
 ├── prompts/
 │   ├── researchPrompts.js
-│   └── reportPrompts.js
+│   ├── reportPrompts.js
+│   └── openclawPrompts.js          # Conversation templates
 ├── parsers/
 │   └── researchParser.js
 ├── validators/
 │   └── researchValidator.js
 ├── schemas/
-│   └── reportSections.js
+│   ├── reportSections.js
+│   └── openclawSchemas.js          # Alert/action schemas
 ├── middleware/
 │   ├── errorHandler.js
 │   └── validateRequest.js
@@ -225,7 +384,8 @@ backend/
 │   ├── responseFormatter.js
 │   └── logger.js
 ├── migrations/
-│   └── 001_initial_schema.sql
+│   ├── 001_initial_schema.sql
+│   └── 002_openclaw_schema.sql     # OpenClaw tables
 ├── scripts/
 │   ├── cleanup.js
 │   └── migrate.js
@@ -235,11 +395,54 @@ backend/
     ├── research.test.js
     ├── interview.test.js
     ├── report.test.js
+    ├── openclaw/
+    │   ├── heartbeat.test.js
+    │   ├── alerts.test.js
+    │   ├── actions.test.js
+    │   └── conversations.test.js
     └── integration/
         └── fullWorkflow.test.js
+
+data/
+├── auxora/                          # OpenClaw Memory Architecture
+│   ├── SOUL.md                      # Auxora personality & tone
+│   ├── HEARTBEAT.md                 # Heartbeat checklist
+│   └── clients/
+│       └── {client_id}/
+│           ├── USER.md              # Client preferences
+│           ├── MEMORY.md            # Long-term facts
+│           ├── PERMISSIONS.md       # Action boundaries
+│           └── memory/
+│               └── YYYY-MM-DD.md    # Daily logs
+
+htmx-ui/
+├── server.js
+├── routes/
+│   ├── guided.js
+│   └── auxora.js                    # Unified demo routes
+├── views/
+│   ├── guided/
+│   ├── vibe/
+│   ├── sakura/
+│   └── auxora/                      # Unified demo views
+│       ├── demo.ejs                 # Main demo entry
+│       ├── onboarding.ejs           # Onboarding journey
+│       ├── execution.ejs            # Execution setup
+│       ├── openclaw.ejs             # OpenClaw monitoring
+│       └── results.ejs              # Results showcase
+├── data/
+│   ├── mock.js
+│   ├── vibe-demo.js
+│   ├── sakura-demo.js
+│   └── auxora-demo.js               # Unified demo data
+└── public/
+    └── css/
+        └── auxora-theme.css         # Warm amber/orange theme
+
 docs/
 ├── API.md
-└── MAINTENANCE.md
+├── MAINTENANCE.md
+└── OPENCLAW.md                      # OpenClaw architecture docs
 ```
 
 ---
@@ -253,6 +456,32 @@ docs/
 | Report Generation | <30s for complete 7-section report |
 | Error Rate | <1% for valid requests |
 | Documentation | 100% endpoint coverage |
+| **OpenClaw Heartbeat** | <2s response time |
+| **Alert Detection** | <5s for threshold breach detection |
+| **Autonomous Action** | <10s for action execution |
+| **Demo Flow** | Complete E2E demo in <5 minutes |
+
+### OpenClaw Mode Success Criteria
+
+| Metric | Target |
+|--------|--------|
+| Heartbeat Reliability | 99.9% uptime |
+| Alert Accuracy | >95% true positive rate |
+| Autonomous Action Success | >90% successful executions |
+| Memory Retrieval | <500ms for context assembly |
+| Daily Report Delivery | 9am local time (±5 minutes) |
+| Weekly Sync Generation | <30s for full report |
+
+### Investor Demo Success Criteria
+
+| Section | Target |
+|---------|--------|
+| Onboarding Flow | Smooth URL → Research → Interview → GTM Report |
+| Execution Setup | Clear budget simulation, approval workflow |
+| OpenClaw Monitoring | Live heartbeat, alerts, autonomous actions |
+| Results Showcase | 5-week transformation timeline visible |
+| Overall Demo Time | Complete walkthrough in 5-7 minutes |
+| Theme Consistency | Warm Auxora (amber/orange) throughout |
 
 ---
 
@@ -334,9 +563,127 @@ docs/
 - [ ] Test full campaign workflow
 - [ ] **If both fail after 3 iterations:** Create demo with mock campaign data
 
-## Phase 8: Module 4 - Analyzer (High Priority)
+## Phase 8: Module 4 - OpenClaw Optimizer (Critical Priority) ⭐
 
-### 8.1 Performance Tracking (GoMarble MCP Primary)
+**The OpenClaw paradigm transforms Auxora from a reactive chatbot into a proactive digital colleague.**
+
+### Core OpenClaw Principles
+1. **Continuous Presence**: Auxora runs 24/7 with heartbeat rhythm, not just when prompted
+2. **Proactive Action**: Monitors and acts without being asked
+3. **Memory-Rich**: Accumulates understanding over time (SOUL.md, USER.md, MEMORY.md)
+4. **Autonomous Execution**: Takes pre-authorized actions within defined bounds
+5. **Contextual Interruption**: Only alerts when something actually matters
+
+---
+
+### 8.1 Heartbeat Mechanism (Core OpenClaw Feature)
+**The heartbeat is the "rhythm of life" that makes Auxora feel like a colleague, not a tool.**
+
+- [ ] **Create heartbeat service** - Build `backend/services/heartbeatService.js`:
+  - Runs every 30 minutes (configurable via HEARTBEAT_INTERVAL)
+  - Checks predefined checklist in HEARTBEAT.md
+  - Monitors: active campaigns, budget utilization, threshold breaches, anomalies
+  - Returns `HEARTBEAT_OK` (silent) or `ALERT` (proactive message)
+- [ ] **Implement heartbeat checklist** - Create `data/HEARTBEAT.md`:
+  - Check campaign performance vs. targets
+  - Monitor spend rate vs. daily budget
+  - Detect anomalies (CTR drop > 20%, CPA spike > 50%)
+  - Review creative fatigue signals
+  - Check for approval-required actions
+- [ ] **Build heartbeat endpoints**:
+  - `GET /api/openclaw/heartbeat/status` - Current heartbeat state
+  - `POST /api/openclaw/heartbeat/trigger` - Manual heartbeat check
+  - `GET /api/openclaw/heartbeat/history` - Heartbeat log with timestamps
+- [ ] **Create heartbeat scheduler** - Using node-cron or Bull queue:
+  - Schedule heartbeat every 30 minutes
+  - Handle missed heartbeats gracefully
+  - Log all heartbeat results
+- [ ] **Implement dormant vs. active states**:
+  - Silent when nothing needs attention
+  - Proactive message when action required
+  - Escalation for critical issues (budget exhausted, ROAS < 0.5)
+
+### 8.2 Persistent Memory Architecture (OpenClaw Soul)
+**Memory is what transforms isolated conversations into continuous relationship.**
+
+- [ ] **Create SOUL.md system** - Build `data/auxora/SOUL.md`:
+  - Personality: Professional, proactive, growth-focused
+  - Tone: Warm, confident, data-driven
+  - Interaction style: Brief updates, detailed when asked
+  - Core mission: Achieve client's revenue goals
+- [ ] **Create USER.md system** - Build `data/auxora/clients/{client_id}/USER.md`:
+  - Client preferences (communication frequency, detail level)
+  - Business context (brand voice, industry, competitors)
+  - Historical learnings (what worked, what didn't)
+  - Timezone and availability
+- [ ] **Create MEMORY.md system** - Build `data/auxora/clients/{client_id}/MEMORY.md`:
+  - Long-term curated facts about the client
+  - Key decisions and rationales
+  - Performance milestones
+  - Strategic pivots
+- [ ] **Implement daily logs** - Create `data/auxora/clients/{client_id}/memory/YYYY-MM-DD.md`:
+  - Raw conversation history organized by date
+  - Heartbeat results
+  - Actions taken
+  - Metrics snapshots
+- [ ] **Build memory service** - Create `backend/services/memoryService.js`:
+  - `saveToMemory(clientId, type, content)` - Store in appropriate file
+  - `retrieveMemory(clientId, query)` - Semantic search across history
+  - `compactMemory(clientId)` - Summarize old logs
+  - `getContext(clientId)` - Assemble full context for LLM
+
+### 8.3 Autonomous Action System (Pre-Authorized Bounds)
+**Auxora acts within pre-authorized boundaries without waiting for approval.**
+
+- [ ] **Define action boundaries** - Create `data/auxora/clients/{client_id}/PERMISSIONS.md`:
+  - Budget reallocation limit (e.g., max 20% shift between ad sets)
+  - Auto-pause threshold (ROAS < 0.5 for 48 hours)
+  - Auto-scale threshold (ROAS > 2.0 with budget headroom)
+  - Creative swap rules (CTR < 0.5% after 1000 impressions)
+- [ ] **Build autonomous action service** - Create `backend/services/autonomousActionService.js`:
+  - `canTakeAction(clientId, action)` - Check against permissions
+  - `executeAction(clientId, action)` - Execute with logging
+  - `requestApproval(clientId, action)` - Queue for human approval
+  - `getActionHistory(clientId)` - Audit trail
+- [ ] **Implement common autonomous actions**:
+  - Pause underperforming ads (ROAS < threshold)
+  - Increase budget on winners (ROAS > threshold with headroom)
+  - Swap creative with fallback when fatigue detected
+  - Adjust bid strategy based on performance trends
+- [ ] **Create approval queue** - For actions exceeding boundaries:
+  - `POST /api/openclaw/approvals/queue` - Add action to queue
+  - `GET /api/openclaw/approvals/pending` - List pending approvals
+  - `POST /api/openclaw/approvals/:id/approve` - Approve action
+  - `POST /api/openclaw/approvals/:id/reject` - Reject with reason
+- [ ] **Build action notification system**:
+  - Notify client when autonomous action taken
+  - Include before/after state
+  - Explain rationale using memory context
+
+### 8.4 Threshold-Based Alert System
+**Smart interruptions only when something actually matters.**
+
+- [ ] **Define alert thresholds** - Create configurable threshold system:
+  - **Critical** (immediate alert): ROAS < 0.5, budget exhausted, tracking broken
+  - **Warning** (next check-in): ROAS < 1.0, spend rate too fast/slow
+  - **Info** (weekly summary): minor optimizations made, learning phase updates
+- [ ] **Build alert service** - Create `backend/services/alertService.js`:
+  - `checkThresholds(clientId)` - Run all threshold checks
+  - `createAlert(clientId, severity, message)` - Create alert
+  - `acknowledgeAlert(alertId)` - Mark as seen
+  - `getActiveAlerts(clientId)` - List unacknowledged
+- [ ] **Implement alert channels**:
+  - In-app notification (primary)
+  - Email for critical alerts
+  - Webhook for custom integrations
+  - (Future: WhatsApp, Slack, SMS)
+- [ ] **Create alert endpoints**:
+  - `GET /api/openclaw/alerts` - List all alerts
+  - `GET /api/openclaw/alerts/active` - Unacknowledged only
+  - `POST /api/openclaw/alerts/:id/acknowledge` - Mark as seen
+  - `PUT /api/openclaw/alerts/settings` - Configure thresholds
+
+### 8.5 Performance Tracking (GoMarble MCP Primary)
 - [ ] **PRIMARY:** Configure GoMarble MCP for analytics (if not already done)
 - [ ] **PRIMARY:** Create GoMarble analytics service for Meta/Google Ads data
 - [ ] **PRIMARY:** Implement performance data fetching via GoMarble MCP
@@ -350,41 +697,276 @@ docs/
 - [ ] Test accuracy
 - [ ] **If all fail after 3 iterations:** Create demo with mock performance data
 
-### 8.2 Dashboard & Real-Time Updates
+### 8.6 Dashboard & Real-Time Updates
 - [ ] Set up WebSocket server
 - [ ] Create dashboard data service
 - [ ] Build dashboard endpoints
 - [ ] Implement real-time updates (every 5 minutes)
+- [ ] **OpenClaw indicators on dashboard**:
+  - Heartbeat status (last check, next check)
+  - Active alerts count
+  - Autonomous actions taken today
+  - Memory context summary
 - [ ] Test WebSocket connections
 - [ ] **If fails after 3 iterations:** Create demo with static dashboard data
 
-### 8.3 Automated Optimization
-- [ ] Create optimizer service
-- [ ] Build trigger detection logic (CTR < 1%, CPA > target, etc.)
-- [ ] Implement optimization actions (pause ads, adjust budgets)
-- [ ] Add notification system
-- [ ] Test automation triggers
-- [ ] **If fails after 3 iterations:** Create demo with mock optimization suggestions
+### 8.7 Daily & Weekly Reporting (YamaBushi Style)
+**Reports styled after the YamaBushi Weekly Sync format for detailed, actionable insights.**
 
-### 8.4 Reporting
-- [ ] Create report generation service
-- [ ] Build weekly report logic
-- [ ] Implement PDF generation
-- [ ] Add email delivery
-- [ ] Test report accuracy
-- [ ] **If fails after 3 iterations:** Create demo with mock report data
+- [ ] **Create daily check-in service** - Proactive daily summary:
+  - Yesterday's performance vs. targets
+  - Budget utilization and pacing
+  - Top/bottom performers
+  - Recommended actions for today
+- [ ] **Build weekly sync report** - YamaBushi format:
+  - **Week Overview**: Summary stats, key wins, concerns
+  - **Channel Performance**: Meta, Google, GA4 breakdowns
+  - **Audience Insights**: Top/bottom audiences with recommendations
+  - **Creative Performance**: Top/bottom creatives with fatigue signals
+  - **Budget Optimization**: Spend efficiency, reallocation suggestions
+  - **Next Week Plan**: Prioritized action items
+- [ ] **Implement report generation** - Create `backend/services/reportService.js`:
+  - `generateDailyReport(clientId)` - Daily summary
+  - `generateWeeklyReport(clientId)` - Full weekly sync
+  - `generateCustomReport(clientId, dateRange, metrics)` - Custom reports
+- [ ] **Add report delivery**:
+  - In-app viewer (primary)
+  - PDF export
+  - Email delivery (optional)
+  - Scheduled delivery (every morning, every Monday)
+- [ ] **Create report endpoints**:
+  - `POST /api/openclaw/reports/daily` - Generate daily report
+  - `POST /api/openclaw/reports/weekly` - Generate weekly report
+  - `GET /api/openclaw/reports/:id` - View report
+  - `GET /api/openclaw/reports/:id/pdf` - Download PDF
+
+### 8.8 Proactive Conversation System
+**Auxora initiates conversations, not just responds to them.**
+
+- [ ] **Build conversation trigger service** - Create `backend/services/conversationTriggerService.js`:
+  - Morning check-in (9am): "Good morning! Here's your daily snapshot..."
+  - Threshold breach: "Hey, I noticed your ROAS dropped to 0.8. Here's what I recommend..."
+  - Milestone celebration: "Great news! You hit $10K revenue this week!"
+  - Weekly wrap-up (Friday 5pm): "Here's your week in review..."
+- [ ] **Create conversation templates**:
+  - Daily check-in template
+  - Alert notification template
+  - Action taken template
+  - Approval request template
+  - Celebration template
+- [ ] **Implement conversation scheduling**:
+  - Configure check-in times per client
+  - Respect client timezone
+  - Allow snooze/pause
+- [ ] **Build conversation endpoints**:
+  - `GET /api/openclaw/conversations/pending` - Messages awaiting delivery
+  - `POST /api/openclaw/conversations/send` - Deliver conversation
+  - `GET /api/openclaw/conversations/history` - Conversation log
 
 ## Phase 9: Integration & Testing (Critical)
 
 - [ ] End-to-end flow testing (all 4 modules)
 - [ ] Integration between Strategist → Executor
 - [ ] Integration between Executor → Advertiser
-- [ ] Integration between Advertiser → Analyzer
+- [ ] Integration between Advertiser → OpenClaw Optimizer
 - [ ] Full user journey test
 - [ ] **Prototype Storyboard:** Ensure complete user journey works end-to-end (even with demos/mocks)
 - [ ] Load testing
 - [ ] Security audit
 - [ ] Documentation
+
+---
+
+## Phase 9.5: Unified Investor Demo (Critical Priority) ⭐
+
+**Goal:** Build comprehensive E2E demo combining Alexandar, Sakura, and Vibe demos to showcase Auxora.ai as next-gen AI growth co-founder for investors.
+
+### Demo Target Persona
+- D2C brand owner with NO growth experience (complete beginner)
+- Wants to launch and scale without hiring expensive marketing team
+- Budget: $200/4 weeks initial testing
+- Goal: 3X ROAS, 10X revenue in 5 weeks
+
+### 9.5.1 Demo Theme & Branding
+- [ ] **Apply Auxora warm theme** - Amber/orange color palette:
+  - Primary: #F59E0B (amber-500)
+  - Secondary: #D97706 (amber-600)
+  - Accent: #FBBF24 (amber-400)
+  - Background: #FFFBEB (amber-50)
+  - Text: #78350F (amber-900)
+- [ ] **Create unified navigation** - Single demo flow combining all elements
+- [ ] **Design consistent UI components** - Cards, buttons, charts in Auxora theme
+
+### 9.5.2 Onboarding Journey Demo (Module 1: Strategist)
+- [ ] **Landing page entry** - URL: `/auxora/demo`
+  - Hero with value proposition
+  - "Enter your website URL" input
+  - "Get Free GTM Preview" CTA
+- [ ] **Deep research preview** - Show AI analyzing website:
+  - Website screenshot
+  - Market analysis loading animation
+  - Preview of key insights (teaser)
+- [ ] **Payment Gate 1** - $1.99 Strategy Preview:
+  - Display price clearly
+  - Show what's included (GTM preview)
+  - **Demo mode**: Auto-complete payment, show "Paid" badge
+- [ ] **Voice interview simulation** - Quick voice demo:
+  - Voice call overlay with waveform
+  - Show 8 interview questions
+  - Simulate voice responses
+  - Display transcript in real-time
+  - **Demo mode**: 30-second simulation per question
+- [ ] **GTM Report generation** - Full report display:
+  - Executive Summary
+  - Market Analysis
+  - Target Audience Profile
+  - Channel Strategy
+  - 90-Day Action Plan
+
+### 9.5.3 Execution Setup Demo (Module 2: Executor) ⭐ HIGH PRIORITY
+**This section needs the most polish for investor demo.**
+
+- [ ] **Channel connection wizard** - Step-by-step connection:
+  - Meta Business Manager connect (OAuth simulation)
+  - Google Ads connect (OAuth simulation)
+  - Google Analytics 4 connect
+  - Shopify store connect
+  - TikTok Ads (optional)
+  - **Demo mode**: Show connected status badges
+- [ ] **Budget simulation interface** - Interactive budget planner:
+  - Slider: $200/4 weeks initial test
+  - Show projected outcomes based on industry benchmarks
+  - Daily budget allocation visualization
+  - Expected ROAS range
+  - Risk/reward visualization
+- [ ] **Testing plan approval** - Pre-launch checklist:
+  - Audience segments to test (3-5 audiences)
+  - Creative variations (2-3 per audience)
+  - Budget split visualization (pie chart)
+  - Timeline (Week 1-4 testing phases)
+  - **Approve button**: "Launch Testing Phase"
+- [ ] **Creative development flow**:
+  - Upload product images
+  - AI-generated video preview
+  - Ad copy variations
+  - Creative approval workflow
+  - Thumbnail gallery of all creatives
+- [ ] **Landing page builder preview**:
+  - Show Lovable-generated landing page
+  - Preview mobile/desktop views
+  - Domain connection status
+  - SSL certificate status
+- [ ] **Payment Gate 2** - $20 Full Service:
+  - Show full service pricing
+  - Include: Execution + Advertising + OpenClaw Monitoring
+  - **Demo mode**: Auto-complete payment
+
+### 9.5.4 OpenClaw Monitoring Demo (Module 4: Optimizer) ⭐ HIGH PRIORITY
+**This section needs the most polish for investor demo.**
+
+- [ ] **OpenClaw dashboard** - Real-time monitoring view:
+  - Heartbeat status indicator (green pulse)
+  - Last check: "2 minutes ago"
+  - Next check: "in 28 minutes"
+  - Active alerts count
+  - Autonomous actions today
+- [ ] **Daily report simulation** - Morning check-in:
+  - "Good morning! Here's your daily snapshot..."
+  - Yesterday's key metrics (ROAS, Spend, Revenue)
+  - Top performer highlight
+  - Recommended actions
+  - Chat-style conversation UI
+- [ ] **Threshold alert simulation** - Live alert demo:
+  - Alert: "ROAS dropped to 0.8 - below 1.0 threshold"
+  - Recommended action: "Pause Ad Set 'Cold - Lifestyle'"
+  - One-click approve/reject
+  - Auto-action option: "Enable auto-pause for this rule"
+- [ ] **Autonomous action demo** - Show action taken:
+  - "I paused 'Cold - Lifestyle' ad set (ROAS 0.6)"
+  - "I reallocated $15 to 'Warm - Retargeting' (ROAS 2.3)"
+  - Before/after visualization
+  - Undo option
+- [ ] **Weekly sync report** - YamaBushi-style:
+  - Week overview with key metrics
+  - Performance charts (ROAS trend, Purchases trend)
+  - Top/bottom audiences table
+  - Top/bottom creatives table
+  - Budget optimization recommendations
+  - Next week action items
+- [ ] **5-week transformation timeline**:
+  - Week 1: Learning phase, data collection
+  - Week 2: Initial optimizations, winners identified
+  - Week 3: Scaling winners, pausing losers
+  - Week 4: Budget optimization, ROAS improvement
+  - Week 5: Full optimization, target metrics achieved
+  - Animated progression with metrics at each stage
+
+### 9.5.5 Results Showcase
+- [ ] **Before/After comparison**:
+  - Initial state: No ads, $0 revenue
+  - Final state: 3X ROAS, scaled revenue
+  - 5-week timeline animation
+- [ ] **Key metrics display**:
+  - Total Spend: $1,200
+  - Total Revenue: $3,600+
+  - Final ROAS: 3.0X
+  - Customer Acquisition Cost
+  - Time to Results: 5 weeks
+- [ ] **Testimonial integration** - Client success stories
+- [ ] **CTA**: "Start Your Growth Journey"
+
+### 9.5.6 Demo Data Integration
+- [ ] **Combine demo datasets**:
+  - Use Alexandar workflow structure
+  - Incorporate Sakura GTM report data
+  - Use Vibe/YamaBushi performance metrics
+- [ ] **Create unified demo data file** - `htmx-ui/data/auxora-demo.js`:
+  - Client profile (sample D2C CPG brand)
+  - Onboarding flow data
+  - Execution setup data
+  - 5 weeks of performance data
+  - Conversation templates
+  - Alert scenarios
+- [ ] **Demo navigation state machine**:
+  - Track progress through demo
+  - Enable skip/jump to sections
+  - Save demo progress
+
+### 9.5.7 Voice Interview Demo Implementation
+- [ ] **Voice call overlay component**:
+  - Animated waveform visualization
+  - Question display
+  - "Speaking..." indicator
+  - Timer (simulated call duration)
+- [ ] **Interview questions sequence** (8 questions):
+  1. Brand identity and positioning
+  2. Current marketing channels
+  3. Revenue goals and metrics
+  4. Past performance data
+  5. Budget constraints
+  6. Target audience description
+  7. Competitive landscape
+  8. Growth priorities
+- [ ] **Voice simulation**:
+  - Text-to-speech preview (optional)
+  - Transcript appearing as "spoken"
+  - Response capture simulation
+- [ ] **Interview summary generation** - Post-interview analysis
+
+### 9.5.8 Payment Gate Demo
+- [ ] **Payment UI components**:
+  - Price display ($1.99 / $20)
+  - Credit card form (demo mode)
+  - Processing animation
+  - Success confirmation
+- [ ] **Demo mode behavior**:
+  - Show payment form
+  - Auto-complete after 2 seconds
+  - Display "Paid" badge
+  - Continue to next step automatically
+- [ ] **Payment gate locations**:
+  - Gate 1: After research, before voice interview ($1.99)
+  - Gate 2: After GTM report, before full service ($20)
 
 ## Phase 10: UI/UX Design Document & Frontend Development (High Priority)
 
@@ -893,10 +1475,35 @@ GOOGLE_ADS_REFRESH_TOKEN=xxx
 
 ---
 
-*Plan created: January 2025*  
-*Module: NexSpark Strategist (Module 1)*  
-*Updated: January 2025 - Added Modules 2-4 (Executor, Advertiser, Analyzer)*  
-*Updated: January 2025 - Added GoMarble MCP integration strategy and blocker management*  
-*Updated: January 2025 - Added Phase 10: UI/UX Design Document & Frontend Development*  
-*Updated: January 2025 - Added Phase 11: UI/UX Evaluator Agent (Product Manager Observer)*  
-*Updated: January 2025 - Added Phase 12: Credential Management Agent*
+---
+
+## Revision History
+
+| Date | Changes |
+|------|---------|
+| January 2025 | Initial plan created - Module 1 (Strategist) |
+| January 2025 | Added Modules 2-4 (Executor, Advertiser, Analyzer) |
+| January 2025 | Added GoMarble MCP integration strategy and blocker management |
+| January 2025 | Added Phase 10: UI/UX Design Document & Frontend Development |
+| January 2025 | Added Phase 11: UI/UX Evaluator Agent (Product Manager Observer) |
+| January 2025 | Added Phase 12: Credential Management Agent |
+| **February 2025** | **Major Revision: OpenClaw Mode Architecture** |
+| | - Rebranded as Auxora.ai - AI Growth Co-Founder |
+| | - Transformed Phase 8 (Analyzer) into OpenClaw Optimizer |
+| | - Added Heartbeat Mechanism (proactive monitoring every 30 min) |
+| | - Added Persistent Memory Architecture (SOUL.md, USER.md, MEMORY.md) |
+| | - Added Autonomous Action System with pre-authorized bounds |
+| | - Added Threshold-Based Alert System |
+| | - Added Proactive Conversation System |
+| | - Added YamaBushi-style Daily/Weekly Reporting |
+| | - Added Phase 9.5: Unified Investor Demo |
+| | - Defined 4 Roles: Strategist, Executor, Advertiser, OpenClaw Optimizer |
+| | - Demo Focus: Execution Setup (B) and OpenClaw Monitoring (C) |
+| | - Brand: Warm Auxora theme (amber/orange) |
+| | - Updated database schema with OpenClaw tables |
+| | - Updated file structure with OpenClaw services and endpoints |
+
+---
+
+*Product: Auxora.ai - AI Growth Co-Founder in OpenClaw Mode*
+*Architecture: Heartbeat + Memory + Autonomous Actions + Proactive Conversations*

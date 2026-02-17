@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Business - AI Revenue Platform Demo</title>
+  <link rel="stylesheet" href="/css/auxora.css">
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --vibe-purple: #7C3AED;
+      --vibe-purple-light: #A78BFA;
+      --vibe-green: #10B981;
+      --vibe-orange: #F59E0B;
+      --vibe-red: #EF4444;
+      --vibe-blue: #3B82F6;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0B0E14;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: white;
+    }
+
+    .demo-container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar Navigation */
+    .demo-nav {
+      width: 280px;
+      background: #12161F;
+      border-right: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .nav-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--vibe-purple) 0%, var(--vibe-purple-light) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .nav-logo-text {
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+
+    .nav-logo-sub {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .nav-sections {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .nav-section {
+      margin-bottom: 24px;
+    }
+
+    .nav-section-title {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+      padding: 0 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.875rem;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: rgba(124, 58, 237, 0.2);
+      color: var(--vibe-purple-light);
+    }
+
+    .nav-item.completed {
+      color: var(--vibe-green);
+    }
+
+    .nav-item-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .nav-item.active .nav-item-icon {
+      background: var(--vibe-purple);
+      color: white;
+    }
+
+    .nav-item.completed .nav-item-icon {
+      background: var(--vibe-green);
+      color: white;
+    }
+
+    .nav-item-badge {
+      margin-left: auto;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .nav-item-badge.new {
+      background: var(--vibe-purple);
+    }
+
+    /* Main Content */
+    .demo-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .demo-header {
+      padding: 16px 24px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .demo-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .demo-subtitle {
+      font-size: 0.8125rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .demo-content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Chat Panel */
+    .chat-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0F1318;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 85%;
+      animation: messageIn 0.3s ease-out;
+    }
+
+    @keyframes messageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.ai { align-self: flex-start; }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .message.ai .message-avatar {
+      background: linear-gradient(135deg, var(--vibe-purple) 0%, var(--vibe-purple-light) 100%);
+    }
+
+    .message.user .message-avatar {
+      background: linear-gradient(135deg, var(--vibe-green) 0%, #34D399 100%);
+    }
+
+    .message-content { display: flex; flex-direction: column; gap: 4px; }
+    .message.user .message-content { align-items: flex-end; }
+
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      background: #1A1F2E;
+      color: white;
+    }
+
+    .message.ai .message-bubble { border-bottom-left-radius: 4px; }
+    .message.user .message-bubble {
+      background: var(--vibe-purple);
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-time {
+      font-size: 0.6875rem;
+      color: rgba(255,255,255,0.4);
+      padding: 0 4px;
+    }
+
+    /* Cards */
+    .message-card {
+      background: #1A1F2E;
+      border-radius: 12px;
+      overflow: hidden;
+      min-width: 340px;
+      max-width: 480px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .card-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .card-icon { font-size: 1.25rem; }
+    .card-title { font-weight: 600; font-size: 0.9375rem; }
+
+    .card-body { padding: 16px; }
+    .card-text { color: rgba(255,255,255,0.8); font-size: 0.875rem; margin-bottom: 12px; }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .metrics-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .metrics-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .metric-item {
+      text-align: center;
+      padding: 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+    }
+
+    .metric-value {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: white;
+    }
+
+    .metric-value.positive { color: var(--vibe-green); }
+    .metric-value.negative { color: var(--vibe-red); }
+    .metric-value.highlight { color: var(--vibe-purple-light); }
+
+    .metric-label {
+      font-size: 0.6875rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .metric-change {
+      font-size: 0.75rem;
+      margin-top: 2px;
+    }
+
+    .metric-change.up { color: var(--vibe-green); }
+    .metric-change.down { color: var(--vibe-red); }
+
+    /* Insights List */
+    .insights-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .insight-item {
+      padding: 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border-left: 3px solid var(--vibe-purple);
+    }
+
+    .insight-item.positive { border-color: var(--vibe-green); }
+    .insight-item.warning { border-color: var(--vibe-orange); }
+    .insight-item.breakthrough { border-color: var(--vibe-purple); background: rgba(124, 58, 237, 0.1); }
+
+    .insight-finding { font-weight: 600; font-size: 0.875rem; margin-bottom: 4px; }
+    .insight-detail { font-size: 0.8125rem; color: rgba(255,255,255,0.6); margin-bottom: 6px; }
+    .insight-action { font-size: 0.8125rem; color: var(--vibe-purple-light); }
+
+    /* Checklist */
+    .checklist-items { display: flex; flex-direction: column; gap: 8px; }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      font-size: 0.875rem;
+    }
+
+    .checklist-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .checklist-icon.done { background: var(--vibe-green); }
+    .checklist-icon.pending { background: rgba(255,255,255,0.2); }
+
+    /* Approval Card */
+    .approval-card {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(124, 58, 237, 0.1) 100%);
+      border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    .approval-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .approval-btn {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .approval-btn.primary {
+      background: var(--vibe-purple);
+      color: white;
+    }
+
+    .approval-btn.primary:hover { background: #6D28D9; }
+
+    .approval-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    /* Alert Card */
+    .alert-card { border-left: 4px solid; }
+    .alert-card.success { border-color: var(--vibe-green); background: rgba(16, 185, 129, 0.1); }
+    .alert-card.warning { border-color: var(--vibe-orange); background: rgba(245, 158, 11, 0.1); }
+
+    /* Milestone Card */
+    .milestone-card {
+      background: linear-gradient(135deg, var(--vibe-purple) 0%, var(--vibe-purple-light) 100%);
+      text-align: center;
+    }
+
+    .milestone-card .card-header { border: none; justify-content: center; background: transparent; }
+    .milestone-card .card-title { font-size: 1.25rem; }
+    .milestone-card .card-body { padding: 16px 24px 24px; }
+
+    /* Analytics Panel */
+    .analytics-panel {
+      width: 400px;
+      background: #12161F;
+      border-left: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .analytics-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .analytics-title {
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+
+    .analytics-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .analytics-tab {
+      padding: 12px 16px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .analytics-tab.active {
+      color: var(--vibe-purple-light);
+      border-color: var(--vibe-purple);
+    }
+
+    .analytics-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    /* Weekly Chart */
+    .weekly-chart {
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .chart-title {
+      font-size: 0.8125rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 12px;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 120px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-bar-fill {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.5s ease;
+    }
+
+    .chart-bar-fill.roas { background: linear-gradient(180deg, var(--vibe-purple), var(--vibe-purple-light)); }
+    .chart-bar-fill.purchases { background: linear-gradient(180deg, var(--vibe-green), #34D399); }
+
+    .chart-bar-label {
+      font-size: 0.625rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Audience Table */
+    .audience-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+
+    .audience-table th {
+      text-align: left;
+      padding: 10px 8px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .audience-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .audience-table tr:last-child td { border-bottom: none; }
+
+    .audience-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .audience-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .audience-dot.winner { background: var(--vibe-green); }
+    .audience-dot.testing { background: var(--vibe-orange); }
+    .audience-dot.paused { background: var(--vibe-red); }
+
+    /* Controls */
+    .demo-controls {
+      padding: 16px 24px;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .control-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .control-btn.primary {
+      background: var(--vibe-purple);
+      color: white;
+    }
+
+    .control-btn.primary:hover { background: #6D28D9; }
+
+    .control-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .progress-info {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8125rem;
+    }
+
+    .speed-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .speed-control label {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8125rem;
+    }
+
+    .speed-select {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+    }
+
+    /* Voice Call UI */
+    .voice-call-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .voice-call-overlay.active { display: flex; }
+
+    .voice-call-modal {
+      background: #1A1F2E;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .voice-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--vibe-purple) 0%, var(--vibe-purple-light) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 20px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(124, 58, 237, 0); }
+    }
+
+    .voice-status { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
+    .voice-duration { color: rgba(255,255,255,0.5); margin-bottom: 24px; }
+
+    .voice-waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 40px;
+      margin-bottom: 24px;
+    }
+
+    .voice-bar {
+      width: 4px;
+      background: var(--vibe-purple);
+      border-radius: 2px;
+      animation: wave 0.8s ease-in-out infinite;
+    }
+
+    .voice-bar:nth-child(1) { animation-delay: 0s; }
+    .voice-bar:nth-child(2) { animation-delay: 0.1s; }
+    .voice-bar:nth-child(3) { animation-delay: 0.2s; }
+    .voice-bar:nth-child(4) { animation-delay: 0.3s; }
+    .voice-bar:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes wave {
+      0%, 100% { height: 10px; }
+      50% { height: 30px; }
+    }
+
+    .voice-end-btn {
+      background: var(--vibe-red);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      animation: typingBounce 1.4s ease-in-out infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Date divider */
+    .date-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0;
+    }
+
+    .date-divider span {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <!-- Navigation Sidebar -->
+    <nav class="demo-nav">
+      <div class="nav-header">
+        <div class="nav-logo">
+          <div class="nav-logo-icon">V</div>
+          <div>
+            <div class="nav-logo-text">Vibe Business</div>
+            <div class="nav-logo-sub">AI Revenue Platform</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-sections">
+        <!-- Onboarding -->
+        <div class="nav-section">
+          <div class="nav-section-title">Onboarding</div>
+          <button class="nav-item completed" data-section="research">
+            <span class="nav-item-icon">1</span>
+            <span>URL Research</span>
+          </button>
+          <button class="nav-item completed" data-section="interview">
+            <span class="nav-item-icon">2</span>
+            <span>Voice Interview</span>
+          </button>
+          <button class="nav-item completed" data-section="report">
+            <span class="nav-item-icon">3</span>
+            <span>GTM Report</span>
+          </button>
+        </div>
+
+        <!-- Execution -->
+        <div class="nav-section">
+          <div class="nav-section-title">Execution</div>
+          <button class="nav-item active" data-section="preLaunch">
+            <span class="nav-item-icon">4</span>
+            <span>Pre-Launch Setup</span>
+          </button>
+          <button class="nav-item" data-section="week1">
+            <span class="nav-item-icon">5</span>
+            <span>Week 1 Sync</span>
+            <span class="nav-item-badge">ROAS 0.36x</span>
+          </button>
+          <button class="nav-item" data-section="week4">
+            <span class="nav-item-icon">6</span>
+            <span>Week 4 Sync</span>
+            <span class="nav-item-badge new">1.37x</span>
+          </button>
+          <button class="nav-item" data-section="alert">
+            <span class="nav-item-icon">7</span>
+            <span>BFCM Alert</span>
+          </button>
+        </div>
+
+        <!-- Tools -->
+        <div class="nav-section">
+          <div class="nav-section-title">Tools</div>
+          <button class="nav-item" onclick="showVoiceCall()">
+            <span class="nav-item-icon">🎙️</span>
+            <span>Voice Call</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="demo-main">
+      <div class="demo-header">
+        <div>
+          <div class="demo-title" id="section-title">Pre-Launch Setup</div>
+          <div class="demo-subtitle" id="section-date">Monday, Oct 7</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--vibe-green),#34D399);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;">LC</div>
+            <div>
+              <div style="font-size:0.875rem;font-weight:500;"><%= client.name %></div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);"><%= client.company %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-content">
+        <!-- Chat Panel -->
+        <div class="chat-panel">
+          <div class="chat-messages" id="chat-messages">
+            <div class="date-divider"><span id="date-display">Monday, Oct 7</span></div>
+          </div>
+
+          <div class="demo-controls">
+            <div class="speed-control">
+              <label>Speed:</label>
+              <select class="speed-select" id="speed-select">
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option>
+                <option value="2">2x</option>
+                <option value="5">5x Fast</option>
+              </select>
+            </div>
+            <div class="progress-info" id="progress-info">Message 0 of 0</div>
+            <div style="display:flex;gap:12px;">
+              <button class="control-btn secondary" id="restart-btn">Restart</button>
+              <button class="control-btn primary" id="play-btn">Play Demo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Panel -->
+        <div class="analytics-panel">
+          <div class="analytics-header">
+            <div class="analytics-title">Performance Dashboard</div>
+          </div>
+
+          <div class="analytics-tabs">
+            <button class="analytics-tab active" data-tab="overview">Overview</button>
+            <button class="analytics-tab" data-tab="audience">Audience</button>
+            <button class="analytics-tab" data-tab="creative">Creative</button>
+          </div>
+
+          <div class="analytics-content" id="analytics-content">
+            <!-- Overview Tab -->
+            <div class="weekly-chart">
+              <div class="chart-title">ROAS by Week</div>
+              <div class="chart-bars" id="roas-chart">
+                <div class="chart-bar">
+                  <div class="chart-bar-fill roas" style="height:27%"></div>
+                  <div class="chart-bar-label">W1</div>
+                </div>
+                <div class="chart-bar">
+                  <div class="chart-bar-fill roas" style="height:52%"></div>
+                  <div class="chart-bar-label">W2</div>
+                </div>
+                <div class="chart-bar">
+                  <div class="chart-bar-fill roas" style="height:48%"></div>
+                  <div class="chart-bar-label">W3</div>
+                </div>
+                <div class="chart-bar">
+                  <div class="chart-bar-fill roas" style="height:100%"></div>
+                  <div class="chart-bar-label">W4</div>
+                </div>
+                <div class="chart-bar">
+                  <div class="chart-bar-fill roas" style="height:43%"></div>
+                  <div class="chart-bar-label">W5</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="weekly-chart">
+              <div class="chart-title">Purchases by Week</div>
+              <div class="chart-bars">
+                <div class="chart-bar">
+                  <div class="chart-bar-fill purchases" style="height:11%"></div>
+                  <div class="chart-bar-label">W1</div>
+                </div>
+                <div class="chart-bar">
+                  <div class="chart-bar-fill purchases" style="height:44%"></div>
+                  <div class="chart-bar-label">W2</div>
+                </div>
+                <div class="chart-bar">
+                  <div class="chart-bar-fill purchases" style="height:33%"></div>
+                  <div class="chart-bar-label">W3</div>
+                </div>
+                <div class="chart-bar">
+                  <div class="chart-bar-fill purchases" style="height:100%"></div>
+                  <div class="chart-bar-label">W4</div>
+                </div>
+                <div class="chart-bar">
+                  <div class="chart-bar-fill purchases" style="height:56%"></div>
+                  <div class="chart-bar-label">W5</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;">
+              <div class="chart-title">5-Week Summary</div>
+              <div class="metrics-grid" style="margin-top:12px;">
+                <div class="metric-item">
+                  <div class="metric-value">$1,200</div>
+                  <div class="metric-label">Total Spend</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-value positive">$945</div>
+                  <div class="metric-label">Revenue</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-value highlight">23</div>
+                  <div class="metric-label">Purchases</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-value positive">1.37x</div>
+                  <div class="metric-label">Peak ROAS</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;">
+              <div class="chart-title">Top Performers</div>
+              <table class="audience-table" style="margin-top:12px;">
+                <tr>
+                  <th>Audience</th>
+                  <th>ROAS</th>
+                  <th>Status</th>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="audience-name">
+                      <span class="audience-dot winner"></span>
+                      Vitamin
+                    </div>
+                  </td>
+                  <td style="color:var(--vibe-green);">1.52x</td>
+                  <td>Winner</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="audience-name">
+                      <span class="audience-dot testing"></span>
+                      Older 45+
+                    </div>
+                  </td>
+                  <td>0.88x</td>
+                  <td>Testing</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="audience-name">
+                      <span class="audience-dot paused"></span>
+                      Supplements
+                    </div>
+                  </td>
+                  <td style="color:var(--vibe-red);">0x</td>
+                  <td>Paused</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Voice Call Overlay -->
+  <div class="voice-call-overlay" id="voice-overlay">
+    <div class="voice-call-modal">
+      <div class="voice-avatar">A</div>
+      <div class="voice-status">Speaking with Alexandar</div>
+      <div class="voice-duration" id="voice-duration">00:00</div>
+      <div class="voice-waveform">
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+      </div>
+      <button class="voice-end-btn" onclick="hideVoiceCall()">End Call</button>
+    </div>
+  </div>
+
+  <script>
+    const conversations = <%- JSON.stringify(conversations) %>;
+    const weeklyData = <%- JSON.stringify(weeklyData) %>;
+
+    // Map section names to conversation keys
+    const sectionMap = {
+      'preLaunch': 'preLaunch',
+      'week1': 'week1',
+      'week4': 'week4',
+      'alert': 'alert',
+    };
+
+    let currentSection = 'preLaunch';
+    let currentMessageIndex = 0;
+    let isPlaying = false;
+    let timeoutId = null;
+    let speed = 1;
+
+    const chatMessages = document.getElementById('chat-messages');
+    const playBtn = document.getElementById('play-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const speedSelect = document.getElementById('speed-select');
+    const progressInfo = document.getElementById('progress-info');
+    const dateDisplay = document.getElementById('date-display');
+    const sectionTitle = document.getElementById('section-title');
+    const sectionDate = document.getElementById('section-date');
+
+    // Navigation
+    document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const section = btn.dataset.section;
+        if (conversations[section]) {
+          document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentSection = section;
+          loadSection(section);
+        }
+      });
+    });
+
+    function loadSection(section) {
+      const conv = conversations[section];
+      if (!conv) return;
+
+      currentMessageIndex = 0;
+      isPlaying = false;
+      clearTimeout(timeoutId);
+
+      sectionTitle.textContent = conv.theme;
+      sectionDate.textContent = conv.date;
+      dateDisplay.textContent = conv.date;
+      chatMessages.innerHTML = '<div class="date-divider"><span>' + conv.date + '</span></div>';
+      playBtn.textContent = 'Play Demo';
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const conv = conversations[currentSection];
+      if (conv) {
+        progressInfo.textContent = 'Message ' + currentMessageIndex + ' of ' + conv.messages.length;
+      }
+    }
+
+    function formatText(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    }
+
+    function renderMessage(msg) {
+      const div = document.createElement('div');
+      const isAI = msg.sender === 'alexandar';
+      const senderClass = isAI ? 'ai' : 'user';
+      const avatar = isAI ? 'A' : 'LC';
+
+      if (msg.type === 'text') {
+        div.className = 'message ' + senderClass;
+        div.innerHTML = `
+          <div class="message-avatar">${avatar}</div>
+          <div class="message-content">
+            <div class="message-bubble">${formatText(msg.content)}</div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'action') {
+        div.className = 'message user';
+        div.innerHTML = `
+          <div class="message-avatar">LC</div>
+          <div class="message-content">
+            <div class="message-bubble">${msg.content}</div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'milestone') {
+        div.className = 'message ai';
+        div.innerHTML = `
+          <div class="message-avatar">A</div>
+          <div class="message-content">
+            <div class="message-card milestone-card">
+              <div class="card-header">
+                <span class="card-title">${msg.title}</span>
+              </div>
+              <div class="card-body">
+                <div style="color:white;font-size:1rem;">${msg.content}</div>
+              </div>
+            </div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'card') {
+        div.className = 'message ai';
+        div.innerHTML = `
+          <div class="message-avatar">A</div>
+          <div class="message-content">
+            ${renderCard(msg)}
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'approval') {
+        div.className = 'message ai';
+        div.innerHTML = `
+          <div class="message-avatar">A</div>
+          <div class="message-content">
+            <div class="message-card approval-card">
+              <div class="card-header">
+                <span class="card-icon">${msg.title.split(' ')[0]}</span>
+                <span class="card-title">${msg.title.split(' ').slice(1).join(' ')}</span>
+              </div>
+              <div class="card-body">
+                <div class="card-text">${msg.content}</div>
+                ${msg.data ? renderApprovalData(msg.data) : ''}
+                <div class="approval-actions">
+                  ${msg.actions.map((a, i) => `
+                    <button class="approval-btn ${i === 0 ? 'primary' : 'secondary'}">${a}</button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'alert') {
+        div.className = 'message ai';
+        div.innerHTML = `
+          <div class="message-avatar">A</div>
+          <div class="message-content">
+            <div class="message-card alert-card ${msg.alertType}">
+              <div class="card-header">
+                <span class="card-icon">${msg.title.split(' ')[0]}</span>
+                <span class="card-title">${msg.title.split(' ').slice(1).join(' ')}</span>
+              </div>
+              <div class="card-body">
+                <div class="card-text">${msg.content}</div>
+                ${msg.data ? renderAlertData(msg.data) : ''}
+              </div>
+            </div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      } else if (msg.type === 'notification') {
+        div.className = 'message ai';
+        const icon = msg.notificationType === 'auto' ? '⚙️' : '📢';
+        div.innerHTML = `
+          <div class="message-avatar">A</div>
+          <div class="message-content">
+            <div class="message-card">
+              <div class="card-header">
+                <span class="card-icon">${icon}</span>
+                <span class="card-title">${msg.title}</span>
+              </div>
+              <div class="card-body">
+                <div class="card-text" style="margin:0;">${msg.content}</div>
+              </div>
+            </div>
+            <div class="message-time">${msg.time}</div>
+          </div>
+        `;
+      }
+
+      return div;
+    }
+
+    function renderCard(msg) {
+      const cardType = msg.cardType;
+      let bodyContent = '';
+
+      if (cardType === 'checklist' && msg.data && msg.data.items) {
+        bodyContent = `
+          <div class="card-text">${msg.content}</div>
+          <div class="checklist-items">
+            ${msg.data.items.map(item => `
+              <div class="checklist-item">
+                <span class="checklist-icon ${item.status}">${item.status === 'done' ? '✓' : '○'}</span>
+                <span>${item.task}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (cardType === 'sync' && msg.data) {
+        bodyContent = `
+          <div style="text-align:center;padding:8px 0;">
+            <div style="font-size:0.875rem;color:rgba(255,255,255,0.6);">${msg.subtitle || ''}</div>
+            <div style="margin-top:16px;display:flex;justify-content:center;gap:32px;">
+              <div>
+                <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">Status</div>
+                <div style="font-size:1.125rem;color:var(--vibe-green);font-weight:600;">${msg.data.status}</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">Confidence</div>
+                <div style="font-size:1.125rem;color:white;font-weight:600;">${msg.data.confidence}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (cardType === 'metrics' && msg.data && msg.data.metrics) {
+        bodyContent = `
+          <table class="audience-table">
+            ${msg.data.metrics.map(m => `
+              <tr>
+                <td>${m.name}</td>
+                <td style="font-weight:500;">${m.actual}</td>
+                <td style="text-align:right;"><span style="color:${m.status.includes('🚀') ? 'var(--vibe-purple-light)' : m.status.includes('✅') ? 'var(--vibe-green)' : 'inherit'}">${m.status}</span></td>
+              </tr>
+            `).join('')}
+          </table>
+        `;
+      } else if (cardType === 'insights' && msg.data && msg.data.learnings) {
+        bodyContent = `
+          <div class="insights-list">
+            ${msg.data.learnings.map(l => `
+              <div class="insight-item ${l.finding.includes('Gold') || l.finding.includes('Winner') || l.finding.includes('Higher') ? 'breakthrough' : 'positive'}">
+                <div class="insight-finding">${l.finding}</div>
+                <div class="insight-detail">${l.detail}</div>
+                <div class="insight-action">→ ${l.action}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (cardType === 'proposal' && msg.data) {
+        bodyContent = `
+          <div class="card-text">${msg.content}</div>
+          <div style="background:rgba(124,58,237,0.1);padding:12px;border-radius:8px;margin-bottom:12px;">
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">Budget Change</div>
+            <div style="font-size:1.125rem;color:var(--vibe-green);font-weight:600;">${msg.data.budgetChange}</div>
+            <div style="font-size:0.8125rem;color:rgba(255,255,255,0.6);margin-top:4px;">${msg.data.rationale}</div>
+          </div>
+          ${msg.data.allocation ? `
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              ${msg.data.allocation.map(a => `
+                <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:6px;font-size:0.8125rem;">
+                  <span>${a.audience}</span>
+                  <span style="color:white;font-weight:500;">${a.budget}</span>
+                  <span style="color:${a.change.includes('+') ? 'var(--vibe-green)' : a.change.includes('-') ? 'var(--vibe-orange)' : 'var(--vibe-purple-light)'}">${a.change}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        `;
+      } else if (cardType === 'campaign' && msg.data) {
+        bodyContent = `
+          <div class="card-text">${msg.content}</div>
+          <div style="margin-bottom:12px;">
+            ${msg.data.campaigns.map(c => `
+              <div style="display:flex;justify-content:space-between;padding:10px 12px;background:rgba(124,58,237,0.1);border-radius:8px;margin-bottom:6px;">
+                <span style="font-weight:500;">${c.name}</span>
+                <span style="color:var(--vibe-purple-light);">${c.budget}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            ${msg.data.adSets.map(a => `
+              <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:6px;font-size:0.8125rem;">
+                <span>${a.name}</span>
+                <span style="color:rgba(255,255,255,0.5);">${a.budget}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (cardType === 'creative' && msg.data && msg.data.creatives) {
+        bodyContent = `
+          <div class="card-text">${msg.content}</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            ${msg.data.creatives.map(c => `
+              <div style="padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                <div style="font-weight:500;margin-bottom:4px;">${c.name}</div>
+                <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">${c.format} • ${c.angle}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (cardType === 'recommendation' && msg.data) {
+        bodyContent = `
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            ${msg.data.immediate ? `
+              <div style="padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                <div style="font-size:0.6875rem;color:var(--vibe-orange);text-transform:uppercase;margin-bottom:4px;">Immediate</div>
+                <div style="font-size:0.875rem;">${msg.data.immediate}</div>
+              </div>
+            ` : ''}
+            ${msg.data.shortTerm ? `
+              <div style="padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                <div style="font-size:0.6875rem;color:var(--vibe-blue);text-transform:uppercase;margin-bottom:4px;">Short Term</div>
+                <div style="font-size:0.875rem;">${msg.data.shortTerm}</div>
+              </div>
+            ` : ''}
+            ${msg.data.test ? `
+              <div style="padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:8px;">
+                <div style="font-size:0.6875rem;color:var(--vibe-purple-light);text-transform:uppercase;margin-bottom:4px;">Test</div>
+                <div style="font-size:0.875rem;">${msg.data.test}</div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      } else {
+        bodyContent = `<div class="card-text">${msg.content || ''}</div>`;
+      }
+
+      return `
+        <div class="message-card">
+          <div class="card-header">
+            <span class="card-icon">${msg.title.split(' ')[0]}</span>
+            <span class="card-title">${msg.title.split(' ').slice(1).join(' ')}</span>
+          </div>
+          <div class="card-body">${bodyContent}</div>
+        </div>
+      `;
+    }
+
+    function renderApprovalData(data) {
+      const items = Object.entries(data).filter(([k, v]) => typeof v !== 'object');
+      if (items.length === 0) return '';
+      return `
+        <div class="metrics-grid" style="margin-bottom:8px;">
+          ${items.map(([key, val]) => `
+            <div class="metric-item">
+              <div class="metric-value">${val}</div>
+              <div class="metric-label">${key.replace(/([A-Z])/g, ' $1').trim()}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderAlertData(data) {
+      return `
+        <div class="metrics-grid" style="margin-top:12px;">
+          ${Object.entries(data).map(([key, val]) => `
+            <div class="metric-item">
+              <div class="metric-value ${key === 'change' && val.includes('+') ? 'negative' : ''}">${val}</div>
+              <div class="metric-label">${key.replace(/([A-Z])/g, ' $1').trim()}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'typing-indicator';
+      div.id = 'typing';
+      div.innerHTML = `
+        <div class="message-avatar" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--vibe-purple),var(--vibe-purple-light));display:flex;align-items:center;justify-content:center;color:white;font-weight:600;">A</div>
+        <div class="typing-dots">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      `;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTyping() {
+      const typing = document.getElementById('typing');
+      if (typing) typing.remove();
+    }
+
+    async function playNext() {
+      const conv = conversations[currentSection];
+      if (!conv || currentMessageIndex >= conv.messages.length) {
+        isPlaying = false;
+        playBtn.textContent = 'Complete';
+        return;
+      }
+
+      const msg = conv.messages[currentMessageIndex];
+
+      if (msg.sender === 'alexandar') {
+        showTyping();
+        await new Promise(r => setTimeout(r, (800 + Math.random() * 400) / speed));
+        hideTyping();
+      }
+
+      const element = renderMessage(msg);
+      chatMessages.appendChild(element);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      currentMessageIndex++;
+      updateProgress();
+
+      let delay = 1500;
+      if (msg.waitForUser) delay = 2500;
+      if (msg.type === 'card' || msg.type === 'approval') delay = 2000;
+
+      if (isPlaying && currentMessageIndex < conv.messages.length) {
+        timeoutId = setTimeout(playNext, delay / speed);
+      } else if (currentMessageIndex >= conv.messages.length) {
+        playBtn.textContent = 'Complete';
+        // Mark section as completed
+        document.querySelector(`.nav-item[data-section="${currentSection}"]`)?.classList.add('completed');
+      }
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        isPlaying = false;
+        clearTimeout(timeoutId);
+        playBtn.textContent = 'Resume';
+      } else {
+        isPlaying = true;
+        playBtn.textContent = 'Pause';
+        playNext();
+      }
+    });
+
+    restartBtn.addEventListener('click', () => {
+      loadSection(currentSection);
+    });
+
+    speedSelect.addEventListener('change', (e) => {
+      speed = parseFloat(e.target.value);
+    });
+
+    // Voice call functions
+    let voiceTimer = null;
+    let voiceSeconds = 0;
+
+    function showVoiceCall() {
+      document.getElementById('voice-overlay').classList.add('active');
+      voiceSeconds = 0;
+      updateVoiceDuration();
+      voiceTimer = setInterval(() => {
+        voiceSeconds++;
+        updateVoiceDuration();
+      }, 1000);
+    }
+
+    function hideVoiceCall() {
+      document.getElementById('voice-overlay').classList.remove('active');
+      clearInterval(voiceTimer);
+    }
+
+    function updateVoiceDuration() {
+      const mins = Math.floor(voiceSeconds / 60).toString().padStart(2, '0');
+      const secs = (voiceSeconds % 60).toString().padStart(2, '0');
+      document.getElementById('voice-duration').textContent = mins + ':' + secs;
+    }
+
+    // Initialize
+    loadSection('preLaunch');
+  </script>
+</body>
+</html>

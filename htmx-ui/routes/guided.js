@@ -1,6 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var mock = require('../data/mock');
+var alexandarDemo = require('../data/alexandar-demo');
+var alexandarConversations = require('../data/alexandar-conversations');
+var sakuraDemo = require('../data/sakura-demo');
+var vibeDemo = require('../data/vibe-demo');
+var auxoraDemo = require('../data/auxora-demo');
 
 function renderAsync(res, template, data) {
   return new Promise(function (resolve) {
@@ -18,6 +23,71 @@ function delay(ms) {
 /* ── Landing Page ── */
 router.get('/', function (req, res) {
   res.render('guided-layout');
+});
+
+/* ── Auxora AI Growth Co-Founder Demo ── */
+router.get('/auxora', function (req, res) {
+  res.render('auxora/demo', { demo: auxoraDemo });
+});
+
+router.get('/auxora/demo', function (req, res) {
+  res.render('auxora/demo', { demo: auxoraDemo });
+});
+
+router.get('/auxora/onboarding', function (req, res) {
+  res.render('auxora/onboarding', { demo: auxoraDemo });
+});
+
+router.get('/auxora/execution', function (req, res) {
+  res.render('auxora/execution', { demo: auxoraDemo });
+});
+
+router.get('/auxora/openclaw', function (req, res) {
+  res.render('auxora/openclaw', { demo: auxoraDemo });
+});
+
+router.get('/auxora/results', function (req, res) {
+  res.render('auxora/results', { demo: auxoraDemo });
+});
+
+/* ── Alexandar CGO Demo ── */
+router.get('/alexandar', function (req, res) {
+  res.render('alexandar/demo', { demo: alexandarDemo });
+});
+
+router.get('/alexandar/day/:day', function (req, res) {
+  var dayNum = parseInt(req.params.day, 10);
+  var day = alexandarDemo.timeline.days.find(function(d) { return d.day === dayNum; });
+  if (!day) {
+    return res.redirect('/alexandar');
+  }
+  res.render('alexandar/day', { demo: alexandarDemo, day: day });
+});
+
+/* ── Alexandar Interactive Demo ── */
+router.get('/alexandar/demo', function (req, res) {
+  res.render('alexandar/interactive', { conversations: alexandarConversations });
+});
+
+/* ── Sakura SourceFlow Interactive Demo ── */
+router.get('/sakura/demo', function (req, res) {
+  res.render('sakura/interactive', {
+    client: sakuraDemo.client,
+    strategy: sakuraDemo.strategy,
+    conversations: sakuraDemo.conversations,
+  });
+});
+
+/* ── Vibe Business Platform Demo ── */
+router.get('/vibe/demo', function (req, res) {
+  res.render('vibe/interactive', {
+    client: vibeDemo.client,
+    onboarding: vibeDemo.onboarding,
+    execution: vibeDemo.execution,
+    weeklyData: vibeDemo.weeklyData,
+    conversations: vibeDemo.conversations,
+    results: vibeDemo.results,
+  });
 });
 
 /* ── Research API ── */
