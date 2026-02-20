@@ -1,4 +1,4 @@
-// NexSpark Voice Interview - Natural Conversation v2
+// Auxora Voice Interview - Natural Conversation v2
 // Implements Voice Activity Detection (VAD), real-time transcription, and editable responses
 
 // Animated Starfield Background (Star Trek Warp Effect)
@@ -97,7 +97,7 @@ const interviewQuestions = [
 
 // Authentication Check
 function checkAuth() {
-  const user = localStorage.getItem('nexspark_user');
+  const user = localStorage.getItem('auxora_user');
   if (!user) {
     console.log('No user found, redirecting to home');
     window.location.href = '/';
@@ -141,7 +141,7 @@ function startInterview() {
   document.getElementById('currentInputSection').classList.remove('hidden');
   
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
       Ready to Listen
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -347,10 +347,10 @@ async function startRecording() {
     interviewState.isRecording = true;
     
     // Update UI
-    document.getElementById('micIcon').className = 'fas fa-circle text-5xl text-nexspark-red animate-pulse';
-    document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-nexspark-red/20 flex items-center justify-center border-4 border-nexspark-red transition-all shadow-lg shadow-nexspark-red/50';
+    document.getElementById('micIcon').className = 'fas fa-circle text-5xl text-auxora-red animate-pulse';
+    document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-auxora-red/20 flex items-center justify-center border-4 border-auxora-red transition-all shadow-lg shadow-auxora-red/50';
     document.getElementById('statusText').innerHTML = `
-      <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
+      <div class="text-auxora-red font-header text-2xl uppercase tracking-wider mb-2">
         Listening...
       </div>
       <div class="text-white/70 font-mono text-sm">
@@ -403,9 +403,9 @@ function stopRecording() {
   
   // Update UI
   document.getElementById('micIcon').className = 'fas fa-microphone text-5xl text-black';
-  document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-nexspark-gold flex items-center justify-center cursor-pointer hover:bg-nexspark-pale transition-all shadow-lg shadow-nexspark-gold/50';
+  document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-auxora-gold flex items-center justify-center cursor-pointer hover:bg-auxora-pale transition-all shadow-lg shadow-auxora-gold/50';
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-blue font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-blue font-header text-2xl uppercase tracking-wider mb-2">
       Processing...
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -424,7 +424,7 @@ function toggleVAD() {
   
   if (interviewState.vadActive) {
     vadToggle.innerHTML = '<i class="fas fa-magic mr-2"></i>Auto-Stop: ON';
-    vadToggle.className = 'px-4 py-2 bg-nexspark-gold/20 text-nexspark-gold border border-nexspark-gold rounded font-mono text-sm hover:bg-nexspark-gold/30 transition-all';
+    vadToggle.className = 'px-4 py-2 bg-auxora-gold/20 text-auxora-gold border border-auxora-gold rounded font-mono text-sm hover:bg-auxora-gold/30 transition-all';
   } else {
     vadToggle.innerHTML = '<i class="fas fa-magic mr-2"></i>Auto-Stop: OFF';
     vadToggle.className = 'px-4 py-2 bg-gray-700/50 text-gray-400 border border-gray-600 rounded font-mono text-sm hover:bg-gray-700 transition-all';
@@ -452,7 +452,7 @@ async function processAudioResponse(audioBlob) {
   
   try {
     document.getElementById('statusText').innerHTML = `
-      <div class="text-nexspark-blue font-header text-2xl uppercase tracking-wider mb-2">
+      <div class="text-auxora-blue font-header text-2xl uppercase tracking-wider mb-2">
         Processing...
       </div>
       <div class="text-white/70 font-mono text-sm">
@@ -490,7 +490,7 @@ async function processAudioResponse(audioBlob) {
   } catch (err) {
     console.error('Error processing audio:', err);
     document.getElementById('statusText').innerHTML = `
-      <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
+      <div class="text-auxora-red font-header text-2xl uppercase tracking-wider mb-2">
         Error
       </div>
       <div class="text-white/70 font-mono text-sm">
@@ -551,7 +551,7 @@ function confirmAndNext() {
       });
       
       document.getElementById('statusText').innerHTML = `
-        <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+        <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
           Ready to Listen
         </div>
         <div class="text-white/70 font-mono text-sm">
@@ -569,8 +569,8 @@ function addToTranscript(speaker, message) {
   const transcriptMessages = document.getElementById('transcriptMessages');
   const messageEl = document.createElement('div');
   messageEl.className = speaker === 'leon' 
-    ? 'p-4 rounded bg-nexspark-blue/10 border border-nexspark-blue/30'
-    : 'p-4 rounded bg-nexspark-gold/10 border border-nexspark-gold/30';
+    ? 'p-4 rounded bg-auxora-blue/10 border border-auxora-blue/30'
+    : 'p-4 rounded bg-auxora-gold/10 border border-auxora-gold/30';
   
   const speakerName = speaker === 'leon' ? 'DIGITAL LEON' : 'YOU';
   const icon = speaker === 'leon' ? '🤖' : '👤';
@@ -597,7 +597,7 @@ function saveInterviewProgress() {
     timestamp: new Date().toISOString()
   };
   
-  localStorage.setItem('nexspark_interview_progress', JSON.stringify(progress));
+  localStorage.setItem('auxora_interview_progress', JSON.stringify(progress));
   console.log('Progress saved:', progress);
 }
 
@@ -610,7 +610,7 @@ function pauseInterview() {
   interviewState.isActive = false;
   
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
       Paused
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -644,10 +644,10 @@ function completeInterview() {
     completedAt: new Date().toISOString()
   };
   
-  localStorage.setItem('nexspark_interview', JSON.stringify(finalData));
+  localStorage.setItem('auxora_interview', JSON.stringify(finalData));
   
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
       Interview Complete!
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -675,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (waveform) {
     for (let i = 0; i < 20; i++) {
       const bar = document.createElement('div');
-      bar.className = 'waveform-bar bg-nexspark-gold/70 rounded-full transition-all';
+      bar.className = 'waveform-bar bg-auxora-gold/70 rounded-full transition-all';
       bar.style.width = '4px';
       bar.style.height = '10%';
       waveform.appendChild(bar);

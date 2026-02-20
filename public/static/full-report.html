@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generating Your Growth Strategy | NexSpark</title>
+    <title>Generating Your Growth Strategy | Auxora</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 blue: '#99CCFF',
@@ -61,7 +61,7 @@
     <div class="max-w-4xl mx-auto text-center">
         <!-- Loading Spinner -->
         <div class="inline-block mb-8">
-            <i class="fas fa-rocket text-nexspark-gold text-8xl animate-spin-slow"></i>
+            <i class="fas fa-rocket text-auxora-gold text-8xl animate-spin-slow"></i>
         </div>
         
         <!-- Main Message -->
@@ -69,14 +69,14 @@
             Generating Your Growth Strategy
         </h1>
         
-        <p class="text-nexspark-blue text-2xl font-mono mb-8">
+        <p class="text-auxora-blue text-2xl font-mono mb-8">
             Claude Opus AI is analyzing your business...
         </p>
         
         <!-- Status Message -->
-        <div class="bg-nexspark-dark rounded-2xl p-8 border-2 border-nexspark-gold/30 inline-block">
+        <div class="bg-auxora-dark rounded-2xl p-8 border-2 border-auxora-gold/30 inline-block">
             <div id="statusMessage" class="text-white text-xl animate-pulse-slow">
-                <i class="fas fa-brain mr-3 text-nexspark-purple"></i>
+                <i class="fas fa-brain mr-3 text-auxora-purple"></i>
                 <span>Generating comprehensive growth strategy with Claude Opus...</span>
             </div>
             <div class="text-white/50 text-sm mt-4">
@@ -89,7 +89,7 @@
         <div id="errorContainer" class="hidden mt-8 bg-red-900/20 border-2 border-red-500 rounded-xl p-6">
             <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-3"></i>
             <div id="errorMessage" class="text-red-400 text-lg"></div>
-            <button onclick="window.location.href='/dashboard'" class="mt-4 px-6 py-3 bg-nexspark-gold text-black font-bold rounded-lg hover:bg-yellow-500 transition">
+            <button onclick="window.location.href='/dashboard'" class="mt-4 px-6 py-3 bg-auxora-gold text-black font-bold rounded-lg hover:bg-yellow-500 transition">
                 Return to Dashboard
             </button>
         </div>
@@ -99,10 +99,10 @@
         console.log('🚀 Full Report Generation Page Loaded');
         
         // Get data from localStorage
-        const user = JSON.parse(localStorage.getItem('nexspark_user') || '{}');
-        const summary = JSON.parse(localStorage.getItem('nexspark_summary') || '{}');
-        const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
-        const payment = JSON.parse(localStorage.getItem('nexspark_payment') || '{}');
+        const user = JSON.parse(localStorage.getItem('auxora_user') || '{}');
+        const summary = JSON.parse(localStorage.getItem('auxora_summary') || '{}');
+        const interview = JSON.parse(localStorage.getItem('auxora_interview') || '{}');
+        const payment = JSON.parse(localStorage.getItem('auxora_payment') || '{}');
         
         console.log('User:', user);
         console.log('Summary:', summary);
@@ -150,9 +150,9 @@
                     console.log('✅ Report generated successfully!');
                     
                     // Save report to localStorage
-                    localStorage.setItem('nexspark_report', JSON.stringify(response.data.report));
-                    localStorage.setItem('nexspark_report_ready', 'true');
-                    localStorage.setItem('nexspark_report_timestamp', new Date().toISOString());
+                    localStorage.setItem('auxora_report', JSON.stringify(response.data.report));
+                    localStorage.setItem('auxora_report_ready', 'true');
+                    localStorage.setItem('auxora_report_timestamp', new Date().toISOString());
                     
                     // Update status
                     updateStatus('Report generated! Redirecting...', 'fa-check-circle');
@@ -177,7 +177,7 @@
         
         function updateStatus(message, icon) {
             document.getElementById('statusMessage').innerHTML = `
-                <i class="fas ${icon} mr-3 text-nexspark-purple"></i>
+                <i class="fas ${icon} mr-3 text-auxora-purple"></i>
                 <span>${message}</span>
             `;
         }

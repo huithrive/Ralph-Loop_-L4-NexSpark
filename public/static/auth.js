@@ -4,8 +4,8 @@
  * Check if user is authenticated
  */
 function isAuthenticated() {
-  const user = localStorage.getItem('nexspark_user');
-  const session = localStorage.getItem('nexspark_session');
+  const user = localStorage.getItem('auxora_user');
+  const session = localStorage.getItem('auxora_session');
   return !!(user && session);
 }
 
@@ -13,7 +13,7 @@ function isAuthenticated() {
  * Get current user
  */
 function getCurrentUser() {
-  const user = localStorage.getItem('nexspark_user');
+  const user = localStorage.getItem('auxora_user');
   if (!user) return null;
 
   try {
@@ -37,8 +37,8 @@ async function loginWithEmail(email, password) {
     const data = await response.json();
 
     if (data.success) {
-      localStorage.setItem('nexspark_user', JSON.stringify(data.user));
-      localStorage.setItem('nexspark_session', data.sessionToken);
+      localStorage.setItem('auxora_user', JSON.stringify(data.user));
+      localStorage.setItem('auxora_session', data.sessionToken);
       return { success: true };
     }
 
@@ -62,8 +62,8 @@ async function registerWithEmail(email, password, name, type = 'brand') {
     const data = await response.json();
 
     if (data.success) {
-      localStorage.setItem('nexspark_user', JSON.stringify(data.user));
-      localStorage.setItem('nexspark_session', data.sessionToken);
+      localStorage.setItem('auxora_user', JSON.stringify(data.user));
+      localStorage.setItem('auxora_session', data.sessionToken);
       return { success: true, message: data.message };
     }
 
@@ -81,10 +81,10 @@ function logout() {
   fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
 
   // Clear all local data
-  localStorage.removeItem('nexspark_user');
-  localStorage.removeItem('nexspark_session');
-  localStorage.removeItem('nexspark_interview');
-  localStorage.removeItem('nexspark_interview_progress');
+  localStorage.removeItem('auxora_user');
+  localStorage.removeItem('auxora_session');
+  localStorage.removeItem('auxora_interview');
+  localStorage.removeItem('auxora_interview_progress');
 
   console.log('✅ User logged out');
   window.location.href = '/';

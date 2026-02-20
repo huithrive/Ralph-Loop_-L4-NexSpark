@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growth Strategy Analysis | NexSpark</title>
+    <title>Growth Strategy Analysis | Auxora</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 pale: '#FFCC99',
@@ -127,26 +127,26 @@
         <div class="max-w-6xl mx-auto">
             
             <!-- Header -->
-            <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-8 mb-8 rounded-lg">
+            <div class="bg-auxora-panel border-t-4 border-auxora-gold p-8 mb-8 rounded-lg">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-4">
-                        <i class="fas fa-chart-line text-4xl text-nexspark-gold"></i>
+                        <i class="fas fa-chart-line text-4xl text-auxora-gold"></i>
                         <div>
                             <h1 class="text-4xl font-header font-bold text-white uppercase">
                                 Growth Strategy Analysis
                             </h1>
-                            <p class="text-nexspark-blue font-mono text-sm uppercase tracking-widest mt-1">
+                            <p class="text-auxora-blue font-mono text-sm uppercase tracking-widest mt-1">
                                 AI-Powered GTM Strategy Generation
                             </p>
                         </div>
                     </div>
-                    <a href="/dashboard" class="px-6 py-3 bg-nexspark-blue hover:bg-white text-black rounded-lg font-bold transition">
+                    <a href="/dashboard" class="px-6 py-3 bg-auxora-blue hover:bg-white text-black rounded-lg font-bold transition">
                         <i class="fas fa-arrow-left mr-2"></i> Dashboard
                     </a>
                 </div>
                 
                 <!-- Progress Bar -->
-                <div class="mt-6 bg-nexspark-dark rounded-full h-2">
+                <div class="mt-6 bg-auxora-dark rounded-full h-2">
                     <div id="progressBar" class="progress-bar rounded-full" style="width: 0%"></div>
                 </div>
             </div>
@@ -176,50 +176,50 @@
             </div>
 
             <!-- Step 1: Interview Analysis -->
-            <div id="analysisStep" class="bg-nexspark-panel border-l-4 border-nexspark-gold p-8 rounded-lg mb-8">
+            <div id="analysisStep" class="bg-auxora-panel border-l-4 border-auxora-gold p-8 rounded-lg mb-8">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-header font-bold text-white uppercase">
-                        <i class="fas fa-brain text-nexspark-gold mr-2"></i>
+                        <i class="fas fa-brain text-auxora-gold mr-2"></i>
                         Step 1: Analyzing Your Interview
                     </h2>
-                    <span id="step1Timer" class="text-nexspark-pale font-mono text-sm">⏱️ Est. 10-15s</span>
+                    <span id="step1Timer" class="text-auxora-pale font-mono text-sm">⏱️ Est. 10-15s</span>
                 </div>
                 
                 <!-- Interview Summary -->
-                <div id="interviewSummary" class="mb-6 p-4 bg-nexspark-dark rounded-lg border border-nexspark-blue/30">
-                    <h3 class="text-lg font-bold text-nexspark-blue mb-3">📝 Your Interview Responses:</h3>
+                <div id="interviewSummary" class="mb-6 p-4 bg-auxora-dark rounded-lg border border-auxora-blue/30">
+                    <h3 class="text-lg font-bold text-auxora-blue mb-3">📝 Your Interview Responses:</h3>
                     <div id="interviewSummaryContent" class="space-y-2 font-mono text-sm text-white/80"></div>
                 </div>
                 
                 <div class="space-y-4" id="analysisProgress">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-spinner fa-spin text-nexspark-gold text-xl"></i>
+                        <i class="fas fa-spinner fa-spin text-auxora-gold text-xl"></i>
                         <span class="text-white font-mono">Extracting business profile<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-spinner fa-spin text-nexspark-blue text-xl"></i>
+                        <i class="fas fa-spinner fa-spin text-auxora-blue text-xl"></i>
                         <span class="text-white font-mono">Identifying industry and target market<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-spinner fa-spin text-nexspark-purple text-xl"></i>
+                        <i class="fas fa-spinner fa-spin text-auxora-purple text-xl"></i>
                         <span class="text-white font-mono">Analyzing growth challenges and opportunities<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></span>
                     </div>
                 </div>
                 
-                <div id="businessProfileResult" class="hidden mt-6 p-6 bg-nexspark-dark rounded-lg border border-nexspark-blue">
-                    <h3 class="text-lg font-bold text-nexspark-gold mb-4">Business Profile Extracted:</h3>
+                <div id="businessProfileResult" class="hidden mt-6 p-6 bg-auxora-dark rounded-lg border border-auxora-blue">
+                    <h3 class="text-lg font-bold text-auxora-gold mb-4">Business Profile Extracted:</h3>
                     <div id="profileDetails" class="space-y-2 font-mono text-sm"></div>
                 </div>
             </div>
 
             <!-- Step 2: Website Verification -->
-            <div id="verificationStep" class="hidden bg-nexspark-panel border-l-4 border-nexspark-purple p-8 rounded-lg mb-8">
+            <div id="verificationStep" class="hidden bg-auxora-panel border-l-4 border-auxora-purple p-8 rounded-lg mb-8">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-header font-bold text-white uppercase">
-                        <i class="fas fa-globe text-nexspark-purple mr-2"></i>
+                        <i class="fas fa-globe text-auxora-purple mr-2"></i>
                         Step 2: Verify Your Website
                     </h2>
-                    <span id="step2Timer" class="text-nexspark-pale font-mono text-sm">⏱️ Est. 15-20s</span>
+                    <span id="step2Timer" class="text-auxora-pale font-mono text-sm">⏱️ Est. 15-20s</span>
                 </div>
                 
                 <div class="mb-6">
@@ -227,7 +227,7 @@
                     <input 
                         id="websiteInput" 
                         type="text" 
-                        class="w-full px-4 py-3 bg-nexspark-dark border-2 border-nexspark-purple rounded-lg text-white font-mono focus:border-nexspark-gold focus:outline-none"
+                        class="w-full px-4 py-3 bg-auxora-dark border-2 border-auxora-purple rounded-lg text-white font-mono focus:border-auxora-gold focus:outline-none"
                         placeholder="e.g., www.yourcompany.com"
                     >
                 </div>
@@ -235,29 +235,29 @@
                 <button 
                     id="verifyBtn"
                     onclick="verifyWebsite()" 
-                    class="w-full py-4 bg-nexspark-purple hover:bg-nexspark-pale text-black rounded-lg font-bold text-lg transition">
+                    class="w-full py-4 bg-auxora-purple hover:bg-auxora-pale text-black rounded-lg font-bold text-lg transition">
                     <i class="fas fa-check mr-2"></i> VERIFY & START RESEARCH
                 </button>
                 
-                <div id="researchStatus" class="hidden mt-6 p-6 bg-nexspark-dark rounded-lg border border-nexspark-purple">
+                <div id="researchStatus" class="hidden mt-6 p-6 bg-auxora-dark rounded-lg border border-auxora-purple">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
-                            <i class="fas fa-spinner fa-spin text-nexspark-purple text-2xl"></i>
+                            <i class="fas fa-spinner fa-spin text-auxora-purple text-2xl"></i>
                             <span class="text-white font-mono text-lg">Researching competitors and market data...</span>
                         </div>
-                        <span id="researchTimer" class="text-nexspark-pale font-mono text-sm"></span>
+                        <span id="researchTimer" class="text-auxora-pale font-mono text-sm"></span>
                     </div>
                     <div class="space-y-3 mb-4">
                         <div class="flex items-center gap-2 text-sm font-mono">
-                            <i class="fas fa-search text-nexspark-blue"></i>
+                            <i class="fas fa-search text-auxora-blue"></i>
                             <span class="text-white/70">Analyzing website content...</span>
                         </div>
                         <div class="flex items-center gap-2 text-sm font-mono">
-                            <i class="fas fa-chart-line text-nexspark-gold"></i>
+                            <i class="fas fa-chart-line text-auxora-gold"></i>
                             <span class="text-white/70">Fetching traffic data from RapidAPI...</span>
                         </div>
                         <div class="flex items-center gap-2 text-sm font-mono">
-                            <i class="fas fa-users text-nexspark-purple"></i>
+                            <i class="fas fa-users text-auxora-purple"></i>
                             <span class="text-white/70">Identifying top competitors...</span>
                         </div>
                     </div>
@@ -266,9 +266,9 @@
             </div>
 
             <!-- Step 3: Payment -->
-            <div id="paymentStep" class="hidden bg-nexspark-panel border-l-4 border-nexspark-gold p-8 rounded-lg mb-8">
+            <div id="paymentStep" class="hidden bg-auxora-panel border-l-4 border-auxora-gold p-8 rounded-lg mb-8">
                 <h2 class="text-2xl font-header font-bold text-white uppercase mb-6">
-                    <i class="fas fa-lock text-nexspark-gold mr-2"></i>
+                    <i class="fas fa-lock text-auxora-gold mr-2"></i>
                     Step 3: Unlock Your Growth Strategy Report
                 </h2>
                 
@@ -328,23 +328,23 @@
             </div>
 
             <!-- Step 4: Report Generation -->
-            <div id="reportStep" class="hidden bg-nexspark-panel border-l-4 border-nexspark-blue p-8 rounded-lg mb-8">
+            <div id="reportStep" class="hidden bg-auxora-panel border-l-4 border-auxora-blue p-8 rounded-lg mb-8">
                 <h2 class="text-2xl font-header font-bold text-white uppercase mb-6">
-                    <i class="fas fa-rocket text-nexspark-blue mr-2"></i>
+                    <i class="fas fa-rocket text-auxora-blue mr-2"></i>
                     Step 4: Generating Your Strategy Report
                 </h2>
                 
                 <div id="generationStatus" class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-spinner fa-spin text-nexspark-blue text-xl"></i>
-                        <span class="text-white font-mono">NexSpark AI analyzing your business...</span>
+                        <i class="fas fa-spinner fa-spin text-auxora-blue text-xl"></i>
+                        <span class="text-white font-mono">Auxora AI analyzing your business...</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-spinner fa-spin text-nexspark-gold text-xl"></i>
+                        <i class="fas fa-spinner fa-spin text-auxora-gold text-xl"></i>
                         <span class="text-white font-mono">Building 6-month roadmap...</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-spinner fa-spin text-nexspark-purple text-xl"></i>
+                        <i class="fas fa-spinner fa-spin text-auxora-purple text-xl"></i>
                         <span class="text-white font-mono">Calculating budget projections...</span>
                     </div>
                 </div>
@@ -355,19 +355,19 @@
                         <h3 class="text-3xl font-header font-bold text-white mb-4">
                             Your Growth Strategy is Ready! 🎉
                         </h3>
-                        <p class="text-nexspark-blue font-mono mb-8">
+                        <p class="text-auxora-blue font-mono mb-8">
                             Your comprehensive GTM strategy has been generated and is ready to view.
                         </p>
                         
                         <div class="flex gap-4 justify-center">
                             <button 
                                 onclick="viewReport()" 
-                                class="px-8 py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black rounded-lg font-bold text-lg transition">
+                                class="px-8 py-4 bg-auxora-gold hover:bg-auxora-pale text-black rounded-lg font-bold text-lg transition">
                                 <i class="fas fa-eye mr-2"></i> VIEW REPORT
                             </button>
                             <button 
                                 onclick="downloadReport()" 
-                                class="px-8 py-4 bg-nexspark-blue hover:bg-white text-black rounded-lg font-bold text-lg transition">
+                                class="px-8 py-4 bg-auxora-blue hover:bg-white text-black rounded-lg font-bold text-lg transition">
                                 <i class="fas fa-download mr-2"></i> DOWNLOAD HTML
                             </button>
                         </div>
@@ -392,8 +392,8 @@
         let clientSecret = null;
         
         // Get user and interview info from localStorage
-        const user = JSON.parse(localStorage.getItem('nexspark_user') || '{}');
-        const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+        const user = JSON.parse(localStorage.getItem('auxora_user') || '{}');
+        const interview = JSON.parse(localStorage.getItem('auxora_interview') || '{}');
         
         // Initialize
         window.addEventListener('DOMContentLoaded', async () => {
@@ -532,8 +532,8 @@
             const summary = responses.map((r, i) => {
                 const shortAnswer = r.answer.length > 150 ? r.answer.substring(0, 150) + '...' : r.answer;
                 return `
-                    <div class="border-l-2 border-nexspark-blue pl-3">
-                        <div class="text-nexspark-gold text-xs mb-1">Q${i + 1}. ${r.question}</div>
+                    <div class="border-l-2 border-auxora-blue pl-3">
+                        <div class="text-auxora-gold text-xs mb-1">Q${i + 1}. ${r.question}</div>
                         <div class="text-white/90">${shortAnswer}</div>
                     </div>
                 `;
@@ -564,11 +564,11 @@
             const detailsDiv = document.getElementById('profileDetails');
             
             detailsDiv.innerHTML = `
-                <div><strong class="text-nexspark-gold">Brand:</strong> ${businessProfile.brandName || 'Not specified'}</div>
-                <div><strong class="text-nexspark-gold">Website:</strong> ${businessProfile.website || 'Not specified'}</div>
-                <div><strong class="text-nexspark-gold">Industry:</strong> ${businessProfile.industry}</div>
-                <div><strong class="text-nexspark-gold">Target Market:</strong> ${businessProfile.targetMarket}</div>
-                <div><strong class="text-nexspark-gold">Stage:</strong> ${businessProfile.currentStage}</div>
+                <div><strong class="text-auxora-gold">Brand:</strong> ${businessProfile.brandName || 'Not specified'}</div>
+                <div><strong class="text-auxora-gold">Website:</strong> ${businessProfile.website || 'Not specified'}</div>
+                <div><strong class="text-auxora-gold">Industry:</strong> ${businessProfile.industry}</div>
+                <div><strong class="text-auxora-gold">Target Market:</strong> ${businessProfile.targetMarket}</div>
+                <div><strong class="text-auxora-gold">Stage:</strong> ${businessProfile.currentStage}</div>
             `;
             
             resultDiv.classList.remove('hidden');
@@ -620,10 +620,10 @@
                     
                     const competitorsList = document.getElementById('competitorsList');
                     competitorsList.innerHTML = `
-                        <div class="mt-4 p-4 bg-nexspark-gold/10 border border-nexspark-gold rounded-lg">
-                            <div class="text-nexspark-gold font-bold mb-3">✓ Research Complete</div>
+                        <div class="mt-4 p-4 bg-auxora-gold/10 border border-auxora-gold rounded-lg">
+                            <div class="text-auxora-gold font-bold mb-3">✓ Research Complete</div>
                             ${competitors.map((c, i) => 
-                                `<div class="text-nexspark-blue animate-fadeIn" style="animation-delay: ${i * 0.2}s">• Competitor ${i + 1}: <strong>${c}</strong></div>`
+                                `<div class="text-auxora-blue animate-fadeIn" style="animation-delay: ${i * 0.2}s">• Competitor ${i + 1}: <strong>${c}</strong></div>`
                             ).join('')}
                         </div>
                     `;
@@ -762,7 +762,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `nexspark-growth-strategy-${Date.now()}.html`;
+            a.download = `auxora-growth-strategy-${Date.now()}.html`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -790,7 +790,7 @@
             console.log('🎭 Starting Demo Flow...');
             
             // Get demo data from localStorage
-            const demoInterview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+            const demoInterview = JSON.parse(localStorage.getItem('auxora_interview') || '{}');
             console.log('📦 Demo Interview Data:', demoInterview);
             
             businessProfile = {
@@ -843,7 +843,7 @@
             await sleep(3000);
             
             competitorsList.innerHTML = competitors.map((c, i) => 
-                `<div class="text-nexspark-blue animate-fadeIn" style="animation-delay: ${i * 0.2}s">✓ Competitor ${i + 1}: ${c}</div>`
+                `<div class="text-auxora-blue animate-fadeIn" style="animation-delay: ${i * 0.2}s">✓ Competitor ${i + 1}: ${c}</div>`
             ).join('');
             
             await sleep(2000);
@@ -878,10 +878,10 @@
             
             // Add demo notice
             const demoNotice = document.createElement('div');
-            demoNotice.className = 'bg-nexspark-purple/20 border-2 border-nexspark-purple rounded-lg p-4 mb-6';
+            demoNotice.className = 'bg-auxora-purple/20 border-2 border-auxora-purple rounded-lg p-4 mb-6';
             demoNotice.innerHTML = `
                 <div class="flex items-center gap-3 text-white font-mono">
-                    <i class="fas fa-info-circle text-nexspark-purple text-2xl"></i>
+                    <i class="fas fa-info-circle text-auxora-purple text-2xl"></i>
                     <div>
                         <div class="font-bold mb-1">🎭 DEMO MODE</div>
                         <div class="text-sm text-white/70">Payment step will be simulated - no actual charge</div>
@@ -900,7 +900,7 @@
             document.getElementById('reportStep').scrollIntoView({ behavior: 'smooth' });
             
             const statusMessages = [
-                'NexSpark AI analyzing your business model...',
+                'Auxora AI analyzing your business model...',
                 'Pulling real traffic data for competitors...',
                 'Identifying market opportunities...',
                 'Building 6-month growth roadmap...',
@@ -916,7 +916,7 @@
                 const icons = ['fa-brain', 'fa-chart-bar', 'fa-lightbulb', 'fa-calendar-alt', 'fa-dollar-sign', 'fa-calculator', 'fa-file-alt'];
                 generationStatus.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <i class="fas ${icons[i]} fa-spin text-nexspark-gold text-xl"></i>
+                        <i class="fas ${icons[i]} fa-spin text-auxora-gold text-xl"></i>
                         <span class="text-white font-mono">${statusMessages[i]}</span>
                     </div>
                 `;
@@ -1073,7 +1073,7 @@
         </table>
         
         <div class="footer">
-            <p>Generated by NexSpark Growth OS • Powered by NexSpark AI</p>
+            <p>Generated by Auxora • Powered by Auxora AI</p>
             <p><em>This is a demo report for testing purposes</em></p>
         </div>
     </div>

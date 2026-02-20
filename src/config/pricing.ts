@@ -6,7 +6,7 @@ export const PRICING = {
   report: {
     amount: 499, // $4.99 in cents - first D2C strategist report
     currency: 'usd',
-    description: 'NexSpark D2C Growth Strategy Report',
+    description: 'Auxora D2C Growth Strategy Report',
   },
 } as const;
 

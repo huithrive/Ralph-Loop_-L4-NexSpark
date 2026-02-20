@@ -98,7 +98,7 @@ const paginationState = {
 
 // Check authentication
 function checkAuth() {
-  const user = localStorage.getItem('nexspark_user');
+  const user = localStorage.getItem('auxora_user');
   
   if (!user) {
     // Not logged in, redirect to home
@@ -110,7 +110,7 @@ function checkAuth() {
     return JSON.parse(user);
   } catch (e) {
     console.error('Failed to parse user data:', e);
-    localStorage.removeItem('nexspark_user');
+    localStorage.removeItem('auxora_user');
     window.location.href = '/';
     return null;
   }
@@ -128,7 +128,7 @@ function loadUserData() {
   }
   
   // Check interview status
-  const interviewData = localStorage.getItem('nexspark_interview');
+  const interviewData = localStorage.getItem('auxora_interview');
   if (interviewData) {
     try {
       const interview = JSON.parse(interviewData);
@@ -210,10 +210,10 @@ function displayInterviewHistory(interviews) {
     
     const statusClass = interview.completed ? 'status-completed' : 'status-pending';
     const statusText = interview.completed ? 'COMPLETED' : 'IN PROGRESS';
-    const borderColor = interview.completed ? 'border-nexspark-gold' : 'border-nexspark-blue';
+    const borderColor = interview.completed ? 'border-auxora-gold' : 'border-auxora-blue';
     
     return `
-      <div class="bg-nexspark-panel border-l-4 ${borderColor} p-6 backdrop-blur-sm hover:bg-nexspark-panel/80 transition-all">
+      <div class="bg-auxora-panel border-l-4 ${borderColor} p-6 backdrop-blur-sm hover:bg-auxora-panel/80 transition-all">
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
             <div class="flex items-center gap-3 mb-2">
@@ -222,12 +222,12 @@ function displayInterviewHistory(interviews) {
                 ${formattedDate}, Version ${interview.version}
               </h3>
             </div>
-            <p class="text-nexspark-blue font-mono text-xs">
+            <p class="text-auxora-blue font-mono text-xs">
               <i class="fas fa-clock mr-1"></i> ${formattedTime}
             </p>
           </div>
           <div class="text-right">
-            <div class="text-nexspark-gold font-mono text-xs uppercase tracking-wider mb-1">${statusText}</div>
+            <div class="text-auxora-gold font-mono text-xs uppercase tracking-wider mb-1">${statusText}</div>
             <div class="text-white/50 font-mono text-xs">
               ${interview.question_count || 0}/10 Questions
             </div>
@@ -236,17 +236,17 @@ function displayInterviewHistory(interviews) {
         
         <div class="flex gap-2">
           <button onclick="viewInterview('${interview.id}')"
-                  class="lcars-btn bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs flex-1">
+                  class="lcars-btn bg-auxora-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs flex-1">
             <i class="fas fa-eye mr-1"></i> VIEW
           </button>
           ${interview.completed ? `
             <button onclick="analyzeInterview('${interview.id}')"
-                    class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
+                    class="lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black px-4 py-2 rounded text-xs flex-1">
               <i class="fas fa-rocket mr-1"></i> ANALYZE
             </button>
           ` : `
             <button onclick="continueInterview('${interview.id}')"
-                    class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
+                    class="lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black px-4 py-2 rounded text-xs flex-1">
               <i class="fas fa-play mr-1"></i> CONTINUE
             </button>
           `}
@@ -291,24 +291,24 @@ function displayPagination() {
   const currentPage = paginationState.currentPage;
 
   container.innerHTML = `
-    <div class="flex items-center justify-between mt-6 px-4 py-4 bg-nexspark-panel border border-nexspark-gold/30 rounded-lg">
+    <div class="flex items-center justify-between mt-6 px-4 py-4 bg-auxora-panel border border-auxora-gold/30 rounded-lg">
       <button
         onclick="loadInterviewHistory(${currentPage - 1})"
         ${!paginationState.hasPrevious ? 'disabled' : ''}
-        class="lcars-btn bg-nexspark-blue text-black px-6 py-2 rounded-lg transition-all ${!paginationState.hasPrevious ? 'opacity-30 cursor-not-allowed' : 'hover:bg-nexspark-pale'}"
+        class="lcars-btn bg-auxora-blue text-black px-6 py-2 rounded-lg transition-all ${!paginationState.hasPrevious ? 'opacity-30 cursor-not-allowed' : 'hover:bg-auxora-pale'}"
       >
         <i class="fas fa-arrow-left mr-2"></i>PREVIOUS
       </button>
 
       <div class="text-white font-mono text-sm">
-        Page <span class="text-nexspark-gold font-bold">${currentPage + 1}</span> of <span class="text-nexspark-gold font-bold">${totalPages}</span>
+        Page <span class="text-auxora-gold font-bold">${currentPage + 1}</span> of <span class="text-auxora-gold font-bold">${totalPages}</span>
         <span class="text-white/50 ml-2">(${paginationState.total} total)</span>
       </div>
 
       <button
         onclick="loadInterviewHistory(${currentPage + 1})"
         ${!paginationState.hasMore ? 'disabled' : ''}
-        class="lcars-btn bg-nexspark-gold text-black px-6 py-2 rounded-lg transition-all ${!paginationState.hasMore ? 'opacity-30 cursor-not-allowed' : 'hover:bg-nexspark-pale'}"
+        class="lcars-btn bg-auxora-gold text-black px-6 py-2 rounded-lg transition-all ${!paginationState.hasMore ? 'opacity-30 cursor-not-allowed' : 'hover:bg-auxora-pale'}"
       >
         NEXT<i class="fas fa-arrow-right ml-2"></i>
       </button>
@@ -318,7 +318,7 @@ function displayPagination() {
 
 // Continue an incomplete interview
 function continueInterview(interviewId) {
-  localStorage.setItem('nexspark_continue_interview', interviewId);
+  localStorage.setItem('auxora_continue_interview', interviewId);
   window.location.href = '/interview';
 }
 
@@ -331,10 +331,10 @@ function showConfirmModal(message, onConfirm) {
   modal.style.animation = 'fadeIn 0.2s ease-out';
 
   modal.innerHTML = `
-    <div class="bg-nexspark-panel border-4 border-nexspark-red rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
+    <div class="bg-auxora-panel border-4 border-auxora-red rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
       <div class="text-center mb-6">
-        <div class="w-16 h-16 bg-nexspark-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <i class="fas fa-exclamation-triangle text-nexspark-red text-3xl"></i>
+        <div class="w-16 h-16 bg-auxora-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-exclamation-triangle text-auxora-red text-3xl"></i>
         </div>
         <h2 class="text-2xl font-header font-bold text-white uppercase mb-3">
           Confirm Deletion
@@ -346,11 +346,11 @@ function showConfirmModal(message, onConfirm) {
 
       <div class="flex gap-3">
         <button onclick="document.getElementById('confirmModal').remove()"
-                class="flex-1 py-3 bg-nexspark-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
+                class="flex-1 py-3 bg-auxora-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
           <i class="fas fa-times mr-2"></i>CANCEL
         </button>
         <button id="confirmButton"
-                class="flex-1 py-3 bg-nexspark-red hover:bg-red-600 text-white font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
+                class="flex-1 py-3 bg-auxora-red hover:bg-red-600 text-white font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
           <i class="fas fa-trash-alt mr-2"></i>DELETE
         </button>
       </div>
@@ -449,7 +449,7 @@ async function analyzeInterview(interviewId) {
         completedAt: interview.completed_at || interview.created_at
       };
 
-      localStorage.setItem('nexspark_interview', JSON.stringify(interviewData));
+      localStorage.setItem('auxora_interview', JSON.stringify(interviewData));
 
       console.log('✅ Loaded interview for analysis:', interviewId);
 
@@ -482,16 +482,16 @@ function showInterviewModal(interview) {
   });
   
   modal.innerHTML = `
-    <div class="bg-nexspark-panel border border-nexspark-gold max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
-      <div class="sticky top-0 bg-nexspark-dark border-b border-nexspark-gold p-6 z-10">
+    <div class="bg-auxora-panel border border-auxora-gold max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
+      <div class="sticky top-0 bg-auxora-dark border-b border-auxora-gold p-6 z-10">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-3xl font-header font-bold text-nexspark-gold uppercase">
+            <h2 class="text-3xl font-header font-bold text-auxora-gold uppercase">
               Interview - ${formattedDate}
             </h2>
-            <p class="text-nexspark-blue font-mono text-sm mt-1">Version ${interview.version}</p>
+            <p class="text-auxora-blue font-mono text-sm mt-1">Version ${interview.version}</p>
           </div>
-          <button onclick="this.closest('.fixed').remove()" class="lcars-btn bg-nexspark-red hover:bg-red-700 text-white px-4 py-2 rounded">
+          <button onclick="this.closest('.fixed').remove()" class="lcars-btn bg-auxora-red hover:bg-red-700 text-white px-4 py-2 rounded">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -499,11 +499,11 @@ function showInterviewModal(interview) {
       
       <div class="p-6 space-y-4">
         ${responses.map((r, i) => `
-          <div class="bg-nexspark-dark/50 border border-nexspark-blue/30 p-4 rounded">
+          <div class="bg-auxora-dark/50 border border-auxora-blue/30 p-4 rounded">
             <div class="flex items-start gap-3 mb-2">
-              <span class="text-nexspark-gold font-header text-lg">${i + 1}.</span>
+              <span class="text-auxora-gold font-header text-lg">${i + 1}.</span>
               <div class="flex-1">
-                <p class="text-nexspark-blue font-mono text-sm mb-2">${r.question}</p>
+                <p class="text-auxora-blue font-mono text-sm mb-2">${r.question}</p>
                 <p class="text-white font-sans">${r.answer || '<em class="text-white/50">No response recorded</em>'}</p>
               </div>
             </div>
@@ -528,16 +528,16 @@ function updateInterviewStatus(interview) {
     interviewStatus.className = 'status-indicator status-completed';
     interviewCard.innerHTML = `
       <div class="flex items-center justify-between mb-4">
-        <i class="fas fa-microphone text-3xl text-nexspark-blue"></i>
+        <i class="fas fa-microphone text-3xl text-auxora-blue"></i>
         <span class="status-indicator status-completed"></span>
       </div>
-      <h3 class="text-xl font-header font-bold text-nexspark-blue uppercase mb-2">Voice Interview</h3>
+      <h3 class="text-xl font-header font-bold text-auxora-blue uppercase mb-2">Voice Interview</h3>
       <p class="text-white/70 font-mono text-sm">Interview completed successfully</p>
-      <div class="mt-4 mb-4 text-nexspark-blue font-mono text-xs">
+      <div class="mt-4 mb-4 text-auxora-blue font-mono text-xs">
         <i class="fas fa-check-circle mr-1"></i> COMPLETED ${new Date(interview.completedAt).toLocaleDateString()}
       </div>
       <div class="mt-4">
-        <button onclick="proceedToAnalysis()" class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded-lg text-sm w-full">
+        <button onclick="proceedToAnalysis()" class="lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black px-4 py-2 rounded-lg text-sm w-full">
           <i class="fas fa-rocket mr-1"></i> START ANALYSIS
         </button>
       </div>
@@ -548,13 +548,13 @@ function updateInterviewStatus(interview) {
       growthPlanStatus.className = 'status-indicator status-completed';
       growthPlanCard.innerHTML = `
         <div class="flex items-center justify-between mb-4">
-          <i class="fas fa-chart-line text-3xl text-nexspark-purple"></i>
+          <i class="fas fa-chart-line text-3xl text-auxora-purple"></i>
           <span class="status-indicator status-completed"></span>
         </div>
-        <h3 class="text-xl font-header font-bold text-nexspark-purple uppercase mb-2">Growth Plan</h3>
+        <h3 class="text-xl font-header font-bold text-auxora-purple uppercase mb-2">Growth Plan</h3>
         <p class="text-white/70 font-mono text-sm">AI-generated strategy ready</p>
         <div class="mt-4">
-          <button onclick="viewGrowthStrategy()" class="lcars-btn bg-nexspark-purple hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs">
+          <button onclick="viewGrowthStrategy()" class="lcars-btn bg-auxora-purple hover:bg-auxora-pale text-black px-4 py-2 rounded text-xs">
             <i class="fas fa-file-alt mr-1"></i> VIEW STRATEGY
           </button>
         </div>
@@ -572,12 +572,12 @@ function updateInterviewStatus(interview) {
       if (growthPlanCard) {
         growthPlanCard.innerHTML = `
         <div class="flex items-center justify-between mb-4">
-          <i class="fas fa-chart-line text-3xl text-nexspark-purple"></i>
+          <i class="fas fa-chart-line text-3xl text-auxora-purple"></i>
           <span class="status-indicator status-pending"></span>
         </div>
-        <h3 class="text-xl font-header font-bold text-nexspark-purple uppercase mb-2">Growth Plan</h3>
+        <h3 class="text-xl font-header font-bold text-auxora-purple uppercase mb-2">Growth Plan</h3>
         <p class="text-white/70 font-mono text-sm">Being prepared by our team</p>
-        <div class="mt-4 text-nexspark-purple font-mono text-xs">
+        <div class="mt-4 text-auxora-purple font-mono text-xs">
           <i class="fas fa-clock mr-1"></i> PROCESSING
         </div>
       `;
@@ -590,7 +590,7 @@ function updateInterviewStatus(interview) {
 
 // Display analysis summary
 function displayAnalysisSummary(analysis) {
-  const systemInfo = document.querySelector('.bg-nexspark-blue\\/10.border-l-4');
+  const systemInfo = document.querySelector('.bg-auxora-blue\\/10.border-l-4');
   if (!systemInfo) return;
 
   // Validate analysis object structure
@@ -610,11 +610,11 @@ function displayAnalysisSummary(analysis) {
   const nextSteps = Array.isArray(analysis.nextSteps) ? analysis.nextSteps : [];
 
   const summaryHTML = `
-    <div class="bg-nexspark-purple/10 border-l-4 border-nexspark-purple p-6 rounded-r-lg backdrop-blur-sm mt-6">
+    <div class="bg-auxora-purple/10 border-l-4 border-auxora-purple p-6 rounded-r-lg backdrop-blur-sm mt-6">
       <div class="flex items-start gap-3">
-        <i class="fas fa-lightbulb text-nexspark-purple text-xl mt-1"></i>
+        <i class="fas fa-lightbulb text-auxora-purple text-xl mt-1"></i>
         <div class="flex-1">
-          <div class="text-nexspark-purple font-mono text-xs uppercase tracking-widest mb-3">
+          <div class="text-auxora-purple font-mono text-xs uppercase tracking-widest mb-3">
             Growth Analysis Summary
           </div>
 
@@ -623,9 +623,9 @@ function displayAnalysisSummary(analysis) {
             <div>
               <h4 class="text-white font-header text-sm uppercase mb-2">Your Brand</h4>
               <div class="text-white/70 font-mono text-xs space-y-1">
-                <p><span class="text-nexspark-blue">Industry:</span> ${industry}</p>
-                <p><span class="text-nexspark-blue">Stage:</span> ${stage}</p>
-                <p><span class="text-nexspark-blue">Current Channels:</span> ${currentChannels.length > 0 ? currentChannels.join(', ') : 'Not specified'}</p>
+                <p><span class="text-auxora-blue">Industry:</span> ${industry}</p>
+                <p><span class="text-auxora-blue">Stage:</span> ${stage}</p>
+                <p><span class="text-auxora-blue">Current Channels:</span> ${currentChannels.length > 0 ? currentChannels.join(', ') : 'Not specified'}</p>
               </div>
             </div>
 
@@ -634,7 +634,7 @@ function displayAnalysisSummary(analysis) {
             <div>
               <h4 class="text-white font-header text-sm uppercase mb-2">Main Challenges</h4>
               <ul class="text-white/70 font-mono text-xs space-y-1">
-                ${mainChallenges.map(c => `<li><i class="fas fa-chevron-right text-nexspark-gold mr-2"></i>${c}</li>`).join('')}
+                ${mainChallenges.map(c => `<li><i class="fas fa-chevron-right text-auxora-gold mr-2"></i>${c}</li>`).join('')}
               </ul>
             </div>
             ` : ''}
@@ -644,10 +644,10 @@ function displayAnalysisSummary(analysis) {
             <div>
               <h4 class="text-white font-header text-sm uppercase mb-2">Priority Actions</h4>
               <div class="text-white/70 font-mono text-xs space-y-1">
-                <p class="text-nexspark-gold mb-2">${recommendations.priority}</p>
-                ${recommendedChannels.length > 0 ? `<p><span class="text-nexspark-blue">Recommended Channels:</span> ${recommendedChannels.join(', ')}</p>` : ''}
-                ${recommendations.budget ? `<p><span class="text-nexspark-blue">Budget Range:</span> ${recommendations.budget}</p>` : ''}
-                ${recommendations.timeline ? `<p><span class="text-nexspark-blue">Timeline:</span> ${recommendations.timeline}</p>` : ''}
+                <p class="text-auxora-gold mb-2">${recommendations.priority}</p>
+                ${recommendedChannels.length > 0 ? `<p><span class="text-auxora-blue">Recommended Channels:</span> ${recommendedChannels.join(', ')}</p>` : ''}
+                ${recommendations.budget ? `<p><span class="text-auxora-blue">Budget Range:</span> ${recommendations.budget}</p>` : ''}
+                ${recommendations.timeline ? `<p><span class="text-auxora-blue">Timeline:</span> ${recommendations.timeline}</p>` : ''}
               </div>
             </div>
             ` : ''}
@@ -672,7 +672,7 @@ function displayAnalysisSummary(analysis) {
 
 // View full growth strategy in modal
 function viewGrowthStrategy() {
-  const interviewData = localStorage.getItem('nexspark_interview');
+  const interviewData = localStorage.getItem('auxora_interview');
   if (!interviewData) return;
   
   try {
@@ -683,12 +683,12 @@ function viewGrowthStrategy() {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4';
     modal.innerHTML = `
-      <div class="bg-black border-2 border-nexspark-purple rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-black border-b-2 border-nexspark-purple p-6 flex items-center justify-between">
-          <h2 class="text-2xl font-header font-bold text-nexspark-purple uppercase">
+      <div class="bg-black border-2 border-auxora-purple rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-black border-b-2 border-auxora-purple p-6 flex items-center justify-between">
+          <h2 class="text-2xl font-header font-bold text-auxora-purple uppercase">
             <i class="fas fa-file-alt mr-2"></i> Your Growth Strategy
           </h2>
-          <button onclick="this.closest('.fixed').remove()" class="text-white hover:text-nexspark-purple">
+          <button onclick="this.closest('.fixed').remove()" class="text-white hover:text-auxora-purple">
             <i class="fas fa-times text-2xl"></i>
           </button>
         </div>
@@ -699,10 +699,10 @@ ${interview.strategy}
             </div>
           </div>
           <div class="mt-8 flex gap-4">
-            <button onclick="downloadStrategy()" class="lcars-btn bg-nexspark-blue hover:bg-white text-black px-6 py-3 rounded">
+            <button onclick="downloadStrategy()" class="lcars-btn bg-auxora-blue hover:bg-white text-black px-6 py-3 rounded">
               <i class="fas fa-download mr-2"></i> DOWNLOAD PDF
             </button>
-            <button onclick="scheduleCall()" class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-6 py-3 rounded">
+            <button onclick="scheduleCall()" class="lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black px-6 py-3 rounded">
               <i class="fas fa-calendar mr-2"></i> SCHEDULE CALL
             </button>
           </div>
@@ -722,16 +722,16 @@ function downloadStrategy() {
   showAlert('PDF download feature coming soon! For now, you can copy the text or take a screenshot.', {
     title: 'Coming Soon',
     icon: 'fa-file-pdf',
-    iconColor: 'nexspark-blue'
+    iconColor: 'auxora-blue'
   });
 }
 
 // Schedule call (placeholder)
 function scheduleCall() {
-  showAlert('Scheduling feature coming soon! Please email founders@nexspark.io to schedule a call.', {
+  showAlert('Scheduling feature coming soon! Please email founders@auxora.ai to schedule a call.', {
     title: 'Coming Soon',
     icon: 'fa-calendar',
-    iconColor: 'nexspark-blue'
+    iconColor: 'auxora-blue'
   });
 }
 
@@ -746,7 +746,7 @@ function startInterview() {
 
 // Proceed to analysis (for completed interviews)
 function proceedToAnalysis() {
-  const interviewData = localStorage.getItem('nexspark_interview');
+  const interviewData = localStorage.getItem('auxora_interview');
   if (!interviewData) {
     showError('No interview data found. Please complete an interview first.');
     return;
@@ -773,7 +773,7 @@ function proceedToAnalysis() {
       // Save extracted data
       interview.companyName = detectedCompany;
       interview.website = detectedWebsite;
-      localStorage.setItem('nexspark_interview', JSON.stringify(interview));
+      localStorage.setItem('auxora_interview', JSON.stringify(interview));
     }
     
     // Redirect to strategy analysis
@@ -787,10 +787,10 @@ function proceedToAnalysis() {
 // Logout function
 function logout() {
   if (confirm('Are you sure you want to logout?')) {
-    localStorage.removeItem('nexspark_user');
-    localStorage.removeItem('nexspark_session');
-    localStorage.removeItem('nexspark_interview');
-    localStorage.removeItem('nexspark_interview_progress');
+    localStorage.removeItem('auxora_user');
+    localStorage.removeItem('auxora_session');
+    localStorage.removeItem('auxora_interview');
+    localStorage.removeItem('auxora_interview_progress');
     console.log('✅ User logged out');
     window.location.href = '/';
   }
@@ -836,7 +836,7 @@ function displayGeneratedReports(reports) {
   }
 
   container.innerHTML = reports.map(report => `
-    <div class="bg-nexspark-panel border-l-4 border-nexspark-purple p-6">
+    <div class="bg-auxora-panel border-l-4 border-auxora-purple p-6">
       <div class="flex justify-between mb-4">
         <div>
           <h3 class="text-xl font-header font-bold text-white">${report.brand_name || 'Report'}</h3>
@@ -845,10 +845,10 @@ function displayGeneratedReports(reports) {
         <div class="text-green-500 font-mono text-xs"><i class="fas fa-check-circle mr-1"></i>READY</div>
       </div>
       <div class="flex gap-2">
-        <button onclick="window.open('/report/${report.id}', '_blank')" class="flex-1 bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs font-bold">
+        <button onclick="window.open('/report/${report.id}', '_blank')" class="flex-1 bg-auxora-gold hover:bg-auxora-pale text-black px-4 py-2 rounded text-xs font-bold">
           <i class="fas fa-eye mr-1"></i>VIEW
         </button>
-        <button onclick="downloadReportById('${report.id}')" class="flex-1 bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs font-bold">
+        <button onclick="downloadReportById('${report.id}')" class="flex-1 bg-auxora-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs font-bold">
           <i class="fas fa-download mr-1"></i>DOWNLOAD
         </button>
       </div>
@@ -875,15 +875,15 @@ async function downloadReportById(reportId) {
 document.addEventListener('DOMContentLoaded', () => {
   loadUserData();
   
-  console.log('%c⚡ NEXSPARK DASHBOARD', 'color: #FF9C00; font-size: 20px; font-weight: bold; font-family: Antonio;');
+  console.log('%c⚡ AUXORA DASHBOARD', 'color: #FF9C00; font-size: 20px; font-weight: bold; font-family: Antonio;');
   console.log('%cMISSION CONTROL ONLINE', 'color: #99CCFF; font-family: JetBrains Mono;');
 });
 
 // Load reports from localStorage
 function loadReports() {
-  const reportReady = localStorage.getItem('nexspark_report_ready');
-  const reportData = localStorage.getItem('nexspark_report_data');
-  const summaryData = localStorage.getItem('nexspark_summary');
+  const reportReady = localStorage.getItem('auxora_report_ready');
+  const reportData = localStorage.getItem('auxora_report_data');
+  const summaryData = localStorage.getItem('auxora_summary');
   
   if (reportReady === 'true' && (reportData || summaryData)) {
     const reportsSection = document.getElementById('reportsSection');
@@ -892,7 +892,7 @@ function loadReports() {
     if (reportsSection && reportsList) {
       reportsSection.classList.remove('hidden');
       
-      const timestamp = localStorage.getItem('nexspark_report_timestamp');
+      const timestamp = localStorage.getItem('auxora_report_timestamp');
       const date = timestamp ? new Date(timestamp) : new Date();
       const formattedDate = date.toLocaleDateString('en-US', { 
         month: 'short', 
@@ -910,7 +910,7 @@ function loadReports() {
       } catch (e) {}
       
       reportsList.innerHTML = `
-        <div class="bg-nexspark-panel border-l-4 border-nexspark-gold p-6 backdrop-blur-sm">
+        <div class="bg-auxora-panel border-l-4 border-auxora-gold p-6 backdrop-blur-sm">
           <div class="flex items-start justify-between mb-4">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
@@ -919,12 +919,12 @@ function loadReports() {
                   ${brandName} - Growth Strategy Report
                 </h3>
               </div>
-              <p class="text-nexspark-blue font-mono text-xs">
+              <p class="text-auxora-blue font-mono text-xs">
                 <i class="fas fa-clock mr-1"></i> Generated ${formattedDate}
               </p>
             </div>
             <div class="text-right">
-              <div class="text-nexspark-gold font-mono text-xs uppercase tracking-wider mb-1">READY</div>
+              <div class="text-auxora-gold font-mono text-xs uppercase tracking-wider mb-1">READY</div>
               <div class="text-white/50 font-mono text-xs">
                 Complete Report
               </div>
@@ -933,11 +933,11 @@ function loadReports() {
           
           <div class="flex gap-2">
             <button onclick="viewReportInline()" 
-                    class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded text-xs flex-1">
+                    class="lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black px-4 py-2 rounded text-xs flex-1">
               <i class="fas fa-eye mr-1"></i> VIEW REPORT
             </button>
             <button onclick="downloadReportPDF()" 
-                    class="lcars-btn bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs flex-1">
+                    class="lcars-btn bg-auxora-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-xs flex-1">
               <i class="fas fa-download mr-1"></i> DOWNLOAD PDF
             </button>
           </div>
@@ -949,7 +949,7 @@ function loadReports() {
 
 // View report inline (Slack-like)
 function viewReportInline() {
-  const summaryData = localStorage.getItem('nexspark_summary');
+  const summaryData = localStorage.getItem('auxora_summary');
   if (!summaryData) {
     showError('No report data found');
     return;
@@ -973,7 +973,7 @@ function showReportModal(summary) {
   };
   
   const brandName = summary.brandName || summary.companyName || 'Your Company';
-  const timestamp = localStorage.getItem('nexspark_report_timestamp');
+  const timestamp = localStorage.getItem('auxora_report_timestamp');
   const date = timestamp ? new Date(timestamp) : new Date();
   const formattedDate = date.toLocaleDateString('en-US', { 
     month: 'long', 
@@ -982,24 +982,24 @@ function showReportModal(summary) {
   });
   
   modal.innerHTML = `
-    <div class="bg-nexspark-dark border-2 border-nexspark-gold max-w-5xl w-full max-h-[90vh] flex flex-col rounded-lg overflow-hidden">
+    <div class="bg-auxora-dark border-2 border-auxora-gold max-w-5xl w-full max-h-[90vh] flex flex-col rounded-lg overflow-hidden">
       <!-- Header (sticky) -->
-      <div class="bg-nexspark-panel border-b border-nexspark-gold p-6 flex-shrink-0">
+      <div class="bg-auxora-panel border-b border-auxora-gold p-6 flex-shrink-0">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
-            <i class="fas fa-file-alt text-nexspark-gold text-3xl"></i>
+            <i class="fas fa-file-alt text-auxora-gold text-3xl"></i>
             <div>
               <h2 class="text-2xl font-header font-bold text-white uppercase">
                 Growth Strategy Report
               </h2>
-              <p class="text-nexspark-blue font-mono text-sm mt-1">${brandName} • ${formattedDate}</p>
+              <p class="text-auxora-blue font-mono text-sm mt-1">${brandName} • ${formattedDate}</p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <button onclick="downloadReportPDF()" class="lcars-btn bg-nexspark-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">
+            <button onclick="downloadReportPDF()" class="lcars-btn bg-auxora-blue hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">
               <i class="fas fa-download mr-1"></i> DOWNLOAD
             </button>
-            <button onclick="this.closest('.fixed').remove()" class="lcars-btn bg-nexspark-red hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+            <button onclick="this.closest('.fixed').remove()" class="lcars-btn bg-auxora-red hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -1010,33 +1010,33 @@ function showReportModal(summary) {
       <div class="flex-1 overflow-y-auto p-8 space-y-8">
         
         <!-- Executive Summary -->
-        <div class="bg-nexspark-panel border-l-4 border-nexspark-gold p-6 rounded-r-lg">
-          <h3 class="text-2xl font-header font-bold text-nexspark-gold uppercase mb-4 flex items-center gap-2">
+        <div class="bg-auxora-panel border-l-4 border-auxora-gold p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-auxora-gold uppercase mb-4 flex items-center gap-2">
             <i class="fas fa-lightbulb"></i>
             Executive Summary
           </h3>
           <div class="space-y-4 text-white/90 font-mono text-sm">
             <div>
-              <span class="text-nexspark-blue font-bold">Brand:</span> ${brandName}
+              <span class="text-auxora-blue font-bold">Brand:</span> ${brandName}
             </div>
             <div>
-              <span class="text-nexspark-blue font-bold">Product:</span> ${summary.productDescription || 'N/A'}
+              <span class="text-auxora-blue font-bold">Product:</span> ${summary.productDescription || 'N/A'}
             </div>
             <div>
-              <span class="text-nexspark-blue font-bold">Current Revenue:</span> ${summary.currentRevenue || 'N/A'}
+              <span class="text-auxora-blue font-bold">Current Revenue:</span> ${summary.currentRevenue || 'N/A'}
             </div>
             <div>
-              <span class="text-nexspark-blue font-bold">6-Month Goal:</span> ${summary.sixMonthGoal || 'N/A'}
+              <span class="text-auxora-blue font-bold">6-Month Goal:</span> ${summary.sixMonthGoal || 'N/A'}
             </div>
             <div>
-              <span class="text-nexspark-blue font-bold">Biggest Challenge:</span> ${summary.biggestChallenge || 'N/A'}
+              <span class="text-auxora-blue font-bold">Biggest Challenge:</span> ${summary.biggestChallenge || 'N/A'}
             </div>
           </div>
         </div>
         
         <!-- Marketing Channels -->
-        <div class="bg-nexspark-panel border-l-4 border-nexspark-blue p-6 rounded-r-lg">
-          <h3 class="text-2xl font-header font-bold text-nexspark-blue uppercase mb-4 flex items-center gap-2">
+        <div class="bg-auxora-panel border-l-4 border-auxora-blue p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-auxora-blue uppercase mb-4 flex items-center gap-2">
             <i class="fas fa-chart-line"></i>
             Current Marketing Channels
           </h3>
@@ -1045,14 +1045,14 @@ function showReportModal(summary) {
           </div>
           ${summary.bestChannel ? `
             <div class="mt-4 pt-4 border-t border-white/10">
-              <span class="text-nexspark-gold font-bold">Best Performing:</span> ${summary.bestChannel}
+              <span class="text-auxora-gold font-bold">Best Performing:</span> ${summary.bestChannel}
             </div>
           ` : ''}
         </div>
         
         <!-- Target Customer -->
-        <div class="bg-nexspark-panel border-l-4 border-nexspark-purple p-6 rounded-r-lg">
-          <h3 class="text-2xl font-header font-bold text-nexspark-purple uppercase mb-4 flex items-center gap-2">
+        <div class="bg-auxora-panel border-l-4 border-auxora-purple p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-auxora-purple uppercase mb-4 flex items-center gap-2">
             <i class="fas fa-users"></i>
             Target Customer Profile
           </h3>
@@ -1063,8 +1063,8 @@ function showReportModal(summary) {
         
         <!-- Competitors -->
         ${summary.competitors ? `
-          <div class="bg-nexspark-panel border-l-4 border-nexspark-red p-6 rounded-r-lg">
-            <h3 class="text-2xl font-header font-bold text-nexspark-red uppercase mb-4 flex items-center gap-2">
+          <div class="bg-auxora-panel border-l-4 border-auxora-red p-6 rounded-r-lg">
+            <h3 class="text-2xl font-header font-bold text-auxora-red uppercase mb-4 flex items-center gap-2">
               <i class="fas fa-trophy"></i>
               Key Competitors
             </h3>
@@ -1081,57 +1081,57 @@ function showReportModal(summary) {
             Strategic Recommendations
           </h3>
           <div class="space-y-4 text-white/90 font-mono text-sm">
-            <div class="bg-nexspark-dark/50 p-4 rounded">
+            <div class="bg-auxora-dark/50 p-4 rounded">
               <div class="text-green-400 font-bold mb-2">Priority Action:</div>
               <div>Focus on addressing "${summary.biggestChallenge}" through targeted channel optimization and strategic budget allocation.</div>
             </div>
-            <div class="bg-nexspark-dark/50 p-4 rounded">
-              <div class="text-nexspark-blue font-bold mb-2">Growth Path:</div>
+            <div class="bg-auxora-dark/50 p-4 rounded">
+              <div class="text-auxora-blue font-bold mb-2">Growth Path:</div>
               <div>Scale from ${summary.currentRevenue} to ${summary.sixMonthGoal} within 6 months through systematic execution.</div>
             </div>
           </div>
         </div>
         
         <!-- Next Steps -->
-        <div class="bg-nexspark-gold/10 border-l-4 border-nexspark-gold p-6 rounded-r-lg">
-          <h3 class="text-2xl font-header font-bold text-nexspark-gold uppercase mb-4 flex items-center gap-2">
+        <div class="bg-auxora-gold/10 border-l-4 border-auxora-gold p-6 rounded-r-lg">
+          <h3 class="text-2xl font-header font-bold text-auxora-gold uppercase mb-4 flex items-center gap-2">
             <i class="fas fa-tasks"></i>
             Next Steps
           </h3>
           <ol class="space-y-3 text-white/90 font-mono text-sm">
             <li class="flex items-start gap-3">
-              <span class="text-nexspark-gold font-bold flex-shrink-0">1.</span>
+              <span class="text-auxora-gold font-bold flex-shrink-0">1.</span>
               <span>Review detailed competitive analysis and traffic benchmarks</span>
             </li>
             <li class="flex items-start gap-3">
-              <span class="text-nexspark-gold font-bold flex-shrink-0">2.</span>
+              <span class="text-auxora-gold font-bold flex-shrink-0">2.</span>
               <span>Implement recommended channel strategy based on data</span>
             </li>
             <li class="flex items-start gap-3">
-              <span class="text-nexspark-gold font-bold flex-shrink-0">3.</span>
+              <span class="text-auxora-gold font-bold flex-shrink-0">3.</span>
               <span>Allocate budget according to 6-month roadmap priorities</span>
             </li>
             <li class="flex items-start gap-3">
-              <span class="text-nexspark-gold font-bold flex-shrink-0">4.</span>
+              <span class="text-auxora-gold font-bold flex-shrink-0">4.</span>
               <span>Track KPIs and adjust strategy based on performance data</span>
             </li>
             <li class="flex items-start gap-3">
-              <span class="text-nexspark-gold font-bold flex-shrink-0">5.</span>
+              <span class="text-auxora-gold font-bold flex-shrink-0">5.</span>
               <span>Schedule monthly reviews to assess progress toward ${summary.sixMonthGoal} goal</span>
             </li>
           </ol>
         </div>
         
         <!-- Call to Action -->
-        <div class="bg-nexspark-panel border-2 border-nexspark-gold p-6 rounded-lg text-center">
+        <div class="bg-auxora-panel border-2 border-auxora-gold p-6 rounded-lg text-center">
           <h3 class="text-xl font-header font-bold text-white uppercase mb-3">
             Ready to Accelerate Your Growth?
           </h3>
           <p class="text-white/70 font-mono text-sm mb-4">
             This report contains the strategic foundation. Let's discuss implementation details.
           </p>
-          <button onclick="window.open('mailto:founders@nexspark.io?subject=Growth Strategy Discussion - ${encodeURIComponent(brandName)}')" 
-                  class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-8 py-3 rounded-lg text-lg">
+          <button onclick="window.open('mailto:founders@auxora.ai?subject=Growth Strategy Discussion - ${encodeURIComponent(brandName)}')" 
+                  class="lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black px-8 py-3 rounded-lg text-lg">
             <i class="fas fa-envelope mr-2"></i> SCHEDULE STRATEGY CALL
           </button>
         </div>
@@ -1144,9 +1144,9 @@ function showReportModal(summary) {
 
 // Download report as PDF
 async function downloadReportPDF() {
-  const summaryData = localStorage.getItem('nexspark_summary');
-  const user = JSON.parse(localStorage.getItem('nexspark_user') || '{}');
-  const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+  const summaryData = localStorage.getItem('auxora_summary');
+  const user = JSON.parse(localStorage.getItem('auxora_user') || '{}');
+  const interview = JSON.parse(localStorage.getItem('auxora_interview') || '{}');
   
   if (!summaryData) {
     showError('No report data found');
@@ -1181,7 +1181,7 @@ async function downloadReportPDF() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `NexSpark-Growth-Report-${brandName.replace(/\s+/g, '-')}-${Date.now()}.html`;
+      a.download = `Auxora-Growth-Report-${brandName.replace(/\s+/g, '-')}-${Date.now()}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1206,7 +1206,7 @@ async function downloadReportPDF() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `NexSpark-Growth-Report-${brandName.replace(/\s+/g, '-')}-${Date.now()}.html`;
+      a.download = `Auxora-Growth-Report-${brandName.replace(/\s+/g, '-')}-${Date.now()}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1249,7 +1249,7 @@ function generateComprehensiveReportHTML(report, brandName) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${brandName} - NexSpark Growth Strategy Report</title>
+    <title>${brandName} - Auxora Growth Strategy Report</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -1455,7 +1455,7 @@ function generateComprehensiveReportHTML(report, brandName) {
 </head>
 <body>
     <div class="report-header">
-        <h1>🚀 NexSpark Growth Strategy Report</h1>
+        <h1>🚀 Auxora Growth Strategy Report</h1>
         <div class="subtitle">${brandName}</div>
         <div class="meta">
             Generated ${timestamp} • ${report.slides.length} Comprehensive Slides • ${report.metadata.provider}
@@ -1479,9 +1479,9 @@ function generateComprehensiveReportHTML(report, brandName) {
     ` : ''}
     
     <div class="footer">
-        <strong>NexSpark Growth OS</strong>
-        <p>Your AI Growth Co-Founder • founders@nexspark.io</p>
-        <p>© ${new Date().getFullYear()} NexSpark. All rights reserved.</p>
+        <strong>Auxora</strong>
+        <p>Your AI Growth Co-Founder • founders@auxora.ai</p>
+        <p>© ${new Date().getFullYear()} Auxora. All rights reserved.</p>
         <p style="margin-top: 20px; font-size: 13px;">This report was generated using Claude Sonnet 4 AI technology.</p>
     </div>
 </body>
@@ -1502,7 +1502,7 @@ function generateReportHTML(summary) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${brandName} - NexSpark Growth Strategy Report</title>
+    <title>${brandName} - Auxora Growth Strategy Report</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1577,7 +1577,7 @@ function generateReportHTML(summary) {
 </head>
 <body>
     <div class="header">
-        <h1>🚀 NexSpark Growth Strategy Report</h1>
+        <h1>🚀 Auxora Growth Strategy Report</h1>
         <div class="subtitle">${brandName} • Generated ${timestamp}</div>
     </div>
     
@@ -1641,9 +1641,9 @@ function generateReportHTML(summary) {
     </div>
     
     <div class="footer">
-        <p><strong>NexSpark Growth OS</strong></p>
-        <p>Your AI Growth Co-Founder • founders@nexspark.io</p>
-        <p>© ${new Date().getFullYear()} NexSpark. All rights reserved.</p>
+        <p><strong>Auxora</strong></p>
+        <p>Your AI Growth Co-Founder • founders@auxora.ai</p>
+        <p>© ${new Date().getFullYear()} Auxora. All rights reserved.</p>
     </div>
 </body>
 </html>`;
@@ -1658,7 +1658,7 @@ function showToast(message, type = 'info') {
     toast.classList.add('bg-green-500', 'text-white');
     toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
   } else {
-    toast.classList.add('bg-nexspark-blue', 'text-black');
+    toast.classList.add('bg-auxora-blue', 'text-black');
     toast.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
   }
   

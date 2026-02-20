@@ -1,14 +1,14 @@
 {
-  "name": "nexspark-landing",
+  "name": "auxora-landing",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:db": "npm run build && wrangler pages dev dist --d1=DB=nexspark-interviews --local --port 3000",
+    "dev:db": "npm run build && wrangler pages dev dist --d1=DB=auxora-interviews --local --port 3000",
     "dev:sandbox": "wrangler pages dev dist --ip 0.0.0.0 --port 3000",
     "build": "vite build",
     "preview": "wrangler pages dev dist",
     "deploy": "npm run build && wrangler pages deploy dist",
-    "deploy:prod": "npm run build && wrangler pages deploy dist --project-name nexspark-growth",
+    "deploy:prod": "npm run build && wrangler pages deploy dist --project-name auxora-growth",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
     "clean-port": "fuser -k 3000/tcp 2>/dev/null || true",
     "test": "curl http://localhost:3000",

@@ -1,4 +1,4 @@
-// LCARS-Styled Modal Utilities for NexSpark
+// LCARS-Styled Modal Utilities for Auxora
 // Replaces browser default alert() and confirm() with custom modals
 
 console.log('✅ Modal utilities loaded');
@@ -10,7 +10,7 @@ window.showAlert = function showAlert(message, options = {}) {
   const {
     title = 'Notification',
     icon = 'fa-info-circle',
-    iconColor = 'nexspark-blue',
+    iconColor = 'auxora-blue',
     buttonText = 'OK'
   } = options;
 
@@ -26,7 +26,7 @@ window.showAlert = function showAlert(message, options = {}) {
     modal.style.animation = 'fadeIn 0.2s ease-out';
 
     modal.innerHTML = `
-      <div class="bg-nexspark-panel border-4 border-nexspark-gold rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
+      <div class="bg-auxora-panel border-4 border-auxora-gold rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
         <div class="text-center mb-6">
           <div class="w-16 h-16 bg-${iconColor}/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <i class="fas ${icon} text-${iconColor} text-3xl"></i>
@@ -40,7 +40,7 @@ window.showAlert = function showAlert(message, options = {}) {
         </div>
 
         <button id="alertOkButton"
-                class="w-full py-3 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
+                class="w-full py-3 bg-auxora-gold hover:bg-auxora-pale text-black font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
           ${buttonText}
         </button>
       </div>
@@ -98,16 +98,16 @@ window.showConfirm = function showConfirm(message, options = {}) {
   const {
     title = 'Confirm Action',
     icon = 'fa-question-circle',
-    iconColor = 'nexspark-gold',
+    iconColor = 'auxora-gold',
     confirmText = 'CONFIRM',
     cancelText = 'CANCEL',
-    confirmColor = 'nexspark-gold',
+    confirmColor = 'auxora-gold',
     danger = false
   } = options;
 
   const finalIcon = danger ? 'fa-exclamation-triangle' : icon;
-  const finalIconColor = danger ? 'nexspark-red' : iconColor;
-  const finalConfirmColor = danger ? 'nexspark-red' : confirmColor;
+  const finalIconColor = danger ? 'auxora-red' : iconColor;
+  const finalConfirmColor = danger ? 'auxora-red' : confirmColor;
 
   return new Promise((resolve) => {
     // Remove existing modals
@@ -121,7 +121,7 @@ window.showConfirm = function showConfirm(message, options = {}) {
     modal.style.animation = 'fadeIn 0.2s ease-out';
 
     modal.innerHTML = `
-      <div class="bg-nexspark-panel border-4 border-${finalIconColor} rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
+      <div class="bg-auxora-panel border-4 border-${finalIconColor} rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
         <div class="text-center mb-6">
           <div class="w-16 h-16 bg-${finalIconColor}/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <i class="fas ${finalIcon} text-${finalIconColor} text-3xl"></i>
@@ -136,11 +136,11 @@ window.showConfirm = function showConfirm(message, options = {}) {
 
         <div class="flex gap-3">
           <button id="confirmCancelButton"
-                  class="flex-1 py-3 bg-nexspark-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
+                  class="flex-1 py-3 bg-auxora-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
             <i class="fas fa-times mr-2"></i>${cancelText}
           </button>
           <button id="confirmOkButton"
-                  class="flex-1 py-3 bg-${finalConfirmColor} ${danger ? 'hover:bg-red-600' : 'hover:bg-nexspark-pale'} text-${danger ? 'white' : 'black'} font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
+                  class="flex-1 py-3 bg-${finalConfirmColor} ${danger ? 'hover:bg-red-600' : 'hover:bg-auxora-pale'} text-${danger ? 'white' : 'black'} font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
             <i class="fas fa-check mr-2"></i>${confirmText}
           </button>
         </div>
@@ -205,7 +205,7 @@ window.showError = function showError(message, title = 'Error') {
   return showAlert(message, {
     title,
     icon: 'fa-exclamation-circle',
-    iconColor: 'nexspark-red',
+    iconColor: 'auxora-red',
     buttonText: 'OK'
   });
 }

@@ -11,8 +11,8 @@ const InterviewUI = {
     ready: {
       title: 'Ready to Record',
       subtitle: 'Hold button to speak • Release to transcribe • Record again to add more',
-      titleColor: 'nexspark-gold',
-      subtitleColor: 'nexspark-blue',
+      titleColor: 'auxora-gold',
+      subtitleColor: 'auxora-blue',
       icon: 'fa-microphone',
       buttonClass: 'mic-button',
       iconColor: 'black'
@@ -20,7 +20,7 @@ const InterviewUI = {
     listening: {
       title: 'Recording...',
       subtitle: 'Release when finished speaking',
-      titleColor: 'nexspark-blue',
+      titleColor: 'auxora-blue',
       subtitleColor: 'white/70',
       icon: 'fa-microphone',
       buttonClass: 'mic-button listening',
@@ -29,7 +29,7 @@ const InterviewUI = {
     processing: {
       title: 'Transcribing...',
       subtitle: 'Converting speech to text',
-      titleColor: 'nexspark-purple',
+      titleColor: 'auxora-purple',
       subtitleColor: 'white/70',
       icon: 'fa-spinner',
       buttonClass: 'mic-button processing',
@@ -91,10 +91,10 @@ const InterviewUI = {
    */
   showAlert(message, type = 'info') {
     const colors = {
-      info: 'nexspark-blue',
-      success: 'nexspark-gold',
-      warning: 'nexspark-purple',
-      error: 'nexspark-red'
+      info: 'auxora-blue',
+      success: 'auxora-gold',
+      warning: 'auxora-purple',
+      error: 'auxora-red'
     };
 
     const icons = {
@@ -137,16 +137,16 @@ const InterviewUI = {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
     modal.innerHTML = `
-      <div class="bg-nexspark-panel border-2 border-nexspark-gold rounded-xl p-8 max-w-md">
+      <div class="bg-auxora-panel border-2 border-auxora-gold rounded-xl p-8 max-w-md">
         <div class="mb-6">
-          <i class="fas fa-question-circle text-5xl text-nexspark-gold mb-4"></i>
+          <i class="fas fa-question-circle text-5xl text-auxora-gold mb-4"></i>
           <p class="text-white font-mono text-lg">${message}</p>
         </div>
         <div class="flex gap-4">
-          <button id="confirmBtn" class="flex-1 px-6 py-3 bg-nexspark-gold text-black font-header uppercase rounded-lg hover:bg-nexspark-pale transition-all">
+          <button id="confirmBtn" class="flex-1 px-6 py-3 bg-auxora-gold text-black font-header uppercase rounded-lg hover:bg-auxora-pale transition-all">
             Confirm
           </button>
-          <button id="cancelBtn" class="flex-1 px-6 py-3 bg-nexspark-dark border-2 border-nexspark-blue/30 text-nexspark-blue font-header uppercase rounded-lg hover:border-nexspark-blue transition-all">
+          <button id="cancelBtn" class="flex-1 px-6 py-3 bg-auxora-dark border-2 border-auxora-blue/30 text-auxora-blue font-header uppercase rounded-lg hover:border-auxora-blue transition-all">
             Cancel
           </button>
         </div>
@@ -184,9 +184,9 @@ const InterviewUI = {
     const loader = document.createElement('div');
     loader.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center';
     loader.innerHTML = `
-      <div class="bg-nexspark-panel border-2 border-nexspark-gold rounded-xl p-8 text-center">
-        <div class="w-16 h-16 border-4 border-nexspark-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-nexspark-gold font-header text-xl uppercase tracking-wider">${message}</p>
+      <div class="bg-auxora-panel border-2 border-auxora-gold rounded-xl p-8 text-center">
+        <div class="w-16 h-16 border-4 border-auxora-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p class="text-auxora-gold font-header text-xl uppercase tracking-wider">${message}</p>
       </div>
     `;
 
@@ -212,10 +212,10 @@ const InterviewUI = {
     element.innerHTML = `
       <div class="flex items-start gap-4">
         <div class="shrink-0">
-          <i class="fas fa-question-circle text-3xl text-nexspark-blue"></i>
+          <i class="fas fa-question-circle text-3xl text-auxora-blue"></i>
         </div>
         <div class="flex-1">
-          <div class="text-nexspark-blue font-mono text-xs uppercase tracking-wider mb-2">
+          <div class="text-auxora-blue font-mono text-xs uppercase tracking-wider mb-2">
             Question ${question.number} of ${question.total}:
           </div>
           <p class="text-white text-lg font-mono leading-relaxed">
@@ -279,7 +279,7 @@ const FormValidation = {
    * Show validation error on input
    */
   showError(inputElement, message) {
-    inputElement.classList.add('border-nexspark-red');
+    inputElement.classList.add('border-auxora-red');
 
     // Remove existing error
     const existingError = inputElement.parentElement.querySelector('.validation-error');
@@ -287,7 +287,7 @@ const FormValidation = {
 
     // Add error message
     const error = document.createElement('div');
-    error.className = 'validation-error text-nexspark-red font-mono text-xs mt-1';
+    error.className = 'validation-error text-auxora-red font-mono text-xs mt-1';
     error.textContent = message;
     inputElement.parentElement.appendChild(error);
   },
@@ -296,7 +296,7 @@ const FormValidation = {
    * Clear validation error
    */
   clearError(inputElement) {
-    inputElement.classList.remove('border-nexspark-red');
+    inputElement.classList.remove('border-auxora-red');
     const error = inputElement.parentElement.querySelector('.validation-error');
     if (error) error.remove();
   }

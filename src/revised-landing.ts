@@ -1,5 +1,6 @@
-// D2C-Focused Landing Page
-// Warm, friendly, light background design for Direct-to-Consumer brands
+// Auxora.ai — "Vibe Business" Landing Page
+// Aesthetic: "Infrastructure with a Soul"
+// Dark premium backbone · Warm living energy · Autonomous revenue engine
 
 export const REVISED_LANDING_HTML = `
 <!DOCTYPE html>
@@ -7,12 +8,14 @@ export const REVISED_LANDING_HTML = `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexSpark | AI Growth Strategy for D2C Brands</title>
-    <meta name="description" content="Get your personalized D2C growth strategy in minutes. AI-powered insights trusted by direct-to-consumer brands. Start for just $4.99.">
+    <title>Auxora — The Vibe Business OS</title>
+    <meta name="description" content="You build the product. Auxora builds the profit. The world's first autonomous revenue agent for D2C founders.">
+    <meta property="og:title" content="Auxora — The Vibe Business OS">
+    <meta property="og:description" content="Stop grinding. Enter flow. Auxora autonomously runs your entire growth stack.">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Shared Modules -->
     <script src="/static/shared/storage.js"></script>
@@ -22,26 +25,31 @@ export const REVISED_LANDING_HTML = `
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              display: ['Playfair Display', 'serif'],
+              display: ['Syne', 'sans-serif'],
+              body:    ['Inter', 'sans-serif'],
+              mono:    ['Space Mono', 'monospace'],
             },
             colors: {
-              brand: {
-                orange:   '#F97316',
-                orangeL:  '#FFEDD5',
-                coral:    '#FB7185',
-                rose:     '#FFF1F2',
-                amber:    '#F59E0B',
-                amberL:   '#FFFBEB',
-                warm:     '#FDF8F4',
-                cream:    '#FEFCE8',
-                text:     '#1C1917',
-                muted:    '#78716C',
-                border:   '#E7E5E4',
-                green:    '#22C55E',
-                greenL:   '#F0FDF4',
-                teal:     '#0EA5E9',
-                tealL:    '#F0F9FF',
+              ax: {
+                // Core dark
+                void:    '#08090C',
+                deep:    '#0E1018',
+                surface: '#14161F',
+                raised:  '#1C1F2E',
+                border:  '#252840',
+                // Primary energy: electric violet → magenta
+                volt:    '#7C3AED',
+                glow:    '#A855F7',
+                pulse:   '#D946EF',
+                // Warm accent: amber
+                amber:   '#F59E0B',
+                gold:    '#FBBF24',
+                // Signal green
+                signal:  '#10B981',
+                // Text
+                text:    '#F0F2FF',
+                muted:   '#8B8FA8',
+                faint:   '#4A4D66',
               }
             }
           }
@@ -50,945 +58,1193 @@ export const REVISED_LANDING_HTML = `
     </script>
 
     <style>
-      * { box-sizing: border-box; }
-      body {
-        background-color: #FAFAF9;
-        color: #1C1917;
-        font-family: 'Inter', sans-serif;
-        overflow-x: hidden;
-      }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      /* Smooth scroll */
       html { scroll-behavior: smooth; }
 
-      /* Scrollbar */
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: #F5F5F4; }
-      ::-webkit-scrollbar-thumb { background: #F97316; border-radius: 4px; }
-
-      /* Gradient hero background */
-      .hero-bg {
-        background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 30%, #FCE7F3 60%, #EFF6FF 100%);
+      body {
+        background-color: #08090C;
+        color: #F0F2FF;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
       }
 
-      /* Wavy divider */
-      .wave-divider {
-        width: 100%;
-        overflow: hidden;
-        line-height: 0;
-        transform: rotate(180deg);
-      }
-      .wave-divider svg {
-        display: block;
-        width: calc(100% + 1.3px);
-        height: 60px;
-      }
-      .wave-divider .shape-fill { fill: #FAFAF9; }
+      /* ─── Scrollbar ─── */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #0E1018; }
+      ::-webkit-scrollbar-thumb { background: #7C3AED; border-radius: 3px; }
 
-      /* Card hover effect */
-      .card-hover {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-      .card-hover:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      /* ─── Noise texture overlay ─── */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.4;
       }
 
-      /* CTA gradient button */
+      /* ─── Grid lines background ─── */
+      .grid-bg {
+        background-image:
+          linear-gradient(rgba(124, 58, 237, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(124, 58, 237, 0.04) 1px, transparent 1px);
+        background-size: 60px 60px;
+      }
+
+      /* ─── Glow effects ─── */
+      .glow-violet {
+        box-shadow: 0 0 40px rgba(124, 58, 237, 0.25), 0 0 80px rgba(168, 85, 247, 0.1);
+      }
+      .glow-amber {
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.3), 0 0 60px rgba(251, 191, 36, 0.1);
+      }
+      .text-glow-violet {
+        text-shadow: 0 0 40px rgba(168, 85, 247, 0.6);
+      }
+      .text-glow-amber {
+        text-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+      }
+
+      /* ─── Gradient text ─── */
+      .grad-volt {
+        background: linear-gradient(135deg, #A855F7 0%, #D946EF 50%, #F59E0B 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .grad-warm {
+        background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .grad-cool {
+        background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ─── CTA Buttons ─── */
       .btn-primary {
-        background: linear-gradient(135deg, #F97316, #FB7185);
+        background: linear-gradient(135deg, #7C3AED, #D946EF);
         color: white;
+        font-family: 'Syne', sans-serif;
         font-weight: 700;
-        transition: all 0.2s ease;
-        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.35);
+        letter-spacing: 0.03em;
+        border-radius: 12px;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
       }
+      .btn-primary::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, transparent, rgba(255,255,255,0.08));
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .btn-primary:hover::after { opacity: 1; }
       .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(249, 115, 22, 0.45);
+        box-shadow: 0 8px 30px rgba(124, 58, 237, 0.5), 0 0 0 1px rgba(168, 85, 247, 0.3);
       }
 
-      /* Badge pill */
+      .btn-ghost {
+        background: transparent;
+        color: #F0F2FF;
+        font-family: 'Syne', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        border: 1px solid rgba(124, 58, 237, 0.4);
+        border-radius: 12px;
+        transition: all 0.25s ease;
+      }
+      .btn-ghost:hover {
+        border-color: #A855F7;
+        background: rgba(124, 58, 237, 0.1);
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+      }
+
+      /* ─── Card styles ─── */
+      .card {
+        background: #14161F;
+        border: 1px solid #252840;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.03), transparent);
+        pointer-events: none;
+      }
+      .card:hover {
+        border-color: rgba(168, 85, 247, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(124, 58, 237, 0.15);
+      }
+
+      /* ─── Pill badge ─── */
       .pill {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 6px 14px;
+        padding: 5px 14px;
         border-radius: 999px;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
+        font-family: 'Space Mono', monospace;
+        letter-spacing: 0.05em;
+      }
+      .pill-volt {
+        background: rgba(124, 58, 237, 0.15);
+        border: 1px solid rgba(168, 85, 247, 0.25);
+        color: #A855F7;
+      }
+      .pill-amber {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        color: #F59E0B;
+      }
+      .pill-green {
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        color: #10B981;
       }
 
-      /* Stat counter */
-      .stat-card {
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        text-align: center;
-        border: 1px solid #E7E5E4;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      /* ─── Divider ─── */
+      .gradient-divider {
+        height: 1px;
+        background: linear-gradient(to right, transparent, rgba(124, 58, 237, 0.4), rgba(217, 70, 239, 0.4), transparent);
       }
 
-      /* Steps connector line */
-      .step-connector {
-        position: absolute;
-        top: 32px;
-        left: calc(50% + 40px);
-        width: calc(100% - 80px);
-        height: 2px;
-        background: linear-gradient(to right, #F97316, #FB7185);
-        opacity: 0.3;
-      }
-
-      /* Testimonial card */
-      .testimonial-card {
-        background: white;
-        border-radius: 20px;
-        padding: 28px;
-        border: 1px solid #E7E5E4;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-        position: relative;
-      }
-      .testimonial-card::before {
-        content: '"';
-        position: absolute;
-        top: 12px;
-        left: 20px;
-        font-size: 80px;
-        line-height: 1;
-        color: #F97316;
-        opacity: 0.15;
-        font-family: 'Playfair Display', serif;
-      }
-
-      /* Input style */
-      .website-input {
-        border: 2px solid #E7E5E4;
-        background: white;
-        border-radius: 12px;
-        padding: 16px 20px;
-        font-size: 16px;
-        width: 100%;
-        transition: border-color 0.2s;
-        outline: none;
-      }
-      .website-input:focus {
-        border-color: #F97316;
-        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
-      }
-
-      /* Price badge */
-      .price-badge {
-        background: linear-gradient(135deg, #F97316, #FB7185);
-        color: white;
+      /* ─── Stat number ─── */
+      .stat-num {
+        font-family: 'Syne', sans-serif;
         font-weight: 800;
-        font-size: 20px;
-        padding: 6px 18px;
-        border-radius: 999px;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 1;
+        background: linear-gradient(135deg, #A855F7, #D946EF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ─── Hero orbit decoration ─── */
+      @keyframes orbit {
+        from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+        to   { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+      }
+      @keyframes orbit2 {
+        from { transform: rotate(120deg) translateX(180px) rotate(-120deg); }
+        to   { transform: rotate(480deg) translateX(180px) rotate(-480deg); }
+      }
+      .orbit-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #A855F7;
+        box-shadow: 0 0 12px rgba(168, 85, 247, 0.8);
+        position: absolute;
+        top: 50%; left: 50%;
+        margin: -4px 0 0 -4px;
+        animation: orbit 8s linear infinite;
+      }
+      .orbit-dot-2 {
+        width: 5px; height: 5px;
+        margin: -2.5px 0 0 -2.5px;
+        background: #F59E0B;
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+        animation: orbit2 12s linear infinite;
+      }
+
+      /* ─── Terminal window ─── */
+      .terminal {
+        background: #0A0C14;
+        border: 1px solid #252840;
+        border-radius: 16px;
+        font-family: 'Space Mono', monospace;
+        font-size: 13px;
+      }
+      .terminal-bar {
+        padding: 12px 16px;
+        border-bottom: 1px solid #252840;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .terminal-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+      }
+
+      /* ─── Shimmer animation ─── */
+      @keyframes shimmer {
+        0%   { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      .shimmer-text {
+        background: linear-gradient(90deg, #A855F7 0%, #D946EF 25%, #F59E0B 50%, #D946EF 75%, #A855F7 100%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: shimmer 4s linear infinite;
+      }
+
+      /* ─── Ticker ─── */
+      @keyframes ticker {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .ticker-track {
+        display: flex;
+        animation: ticker 30s linear infinite;
+        width: max-content;
+      }
+
+      /* ─── Pulse dot ─── */
+      @keyframes pulseDot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%       { opacity: 0.4; transform: scale(0.8); }
+      }
+      .pulse-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #10B981;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        animation: pulseDot 2s ease-in-out infinite;
         display: inline-block;
       }
 
-      /* Floating animation */
-      @keyframes floatUp {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-8px); }
+      /* ─── Fade in ─── */
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
-      .float-anim { animation: floatUp 4s ease-in-out infinite; }
+      .fade-up { animation: fadeUp 0.7s ease forwards; }
+      .delay-1 { animation-delay: 0.1s; opacity: 0; }
+      .delay-2 { animation-delay: 0.2s; opacity: 0; }
+      .delay-3 { animation-delay: 0.35s; opacity: 0; }
+      .delay-4 { animation-delay: 0.5s; opacity: 0; }
 
-      /* Fade in animation */
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+      /* ─── Section glow bg ─── */
+      .section-glow {
+        position: relative;
       }
-      .fade-in { animation: fadeIn 0.6s ease forwards; }
-      .fade-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
-      .fade-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
-      .fade-in-delay-3 { animation-delay: 0.3s; opacity: 0; }
-
-      /* Checkmark list */
-      .check-list li {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        margin-bottom: 10px;
-        font-size: 15px;
-        color: #44403C;
-      }
-      .check-list li .icon {
-        color: #22C55E;
-        font-size: 14px;
-        margin-top: 3px;
-        flex-shrink: 0;
-      }
-
-      /* Section title underline */
-      .section-title::after {
+      .section-glow::before {
         content: '';
-        display: block;
-        width: 60px;
-        height: 4px;
-        background: linear-gradient(to right, #F97316, #FB7185);
-        border-radius: 2px;
-        margin: 12px auto 0;
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px; height: 400px;
+        background: radial-gradient(ellipse, rgba(124, 58, 237, 0.08) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ─── Input style ─── */
+      .ax-input {
+        background: #0E1018;
+        border: 1px solid #252840;
+        border-radius: 12px;
+        color: #F0F2FF;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        padding: 14px 18px;
+        transition: all 0.2s;
+        outline: none;
+        width: 100%;
+      }
+      .ax-input::placeholder { color: #4A4D66; }
+      .ax-input:focus {
+        border-color: #7C3AED;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+      }
+
+      /* ─── Flow stage indicator ─── */
+      .flow-stage {
+        position: relative;
+      }
+      .flow-stage::after {
+        content: '';
+        position: absolute;
+        top: 28px; left: calc(100% + 0px);
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(to right, rgba(124, 58, 237, 0.5), rgba(124, 58, 237, 0.1));
+      }
+      .flow-stage:last-child::after { display: none; }
+
+      /* ─── Agent card live border ─── */
+      @keyframes borderPulse {
+        0%, 100% { border-color: rgba(124, 58, 237, 0.3); }
+        50%       { border-color: rgba(217, 70, 239, 0.6); }
+      }
+      .agent-card {
+        animation: borderPulse 3s ease-in-out infinite;
+      }
+
+      /* ─── Toggle comparison ─── */
+      .grind-flow {
+        position: relative;
       }
     </style>
 </head>
-<body>
+<body class="grid-bg">
+  <div style="position:relative; z-index:2;">
 
-    <!-- ========== NAVBAR ========== -->
-    <nav class="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-brand-border">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-orange to-brand-coral flex items-center justify-center">
-                    <i class="fas fa-bolt text-white text-sm"></i>
-                </div>
-                <span class="text-xl font-bold text-brand-text tracking-tight">NexSpark</span>
-                <span class="pill bg-brand-orangeL text-brand-orange text-xs ml-1 hidden sm:inline-flex">For D2C Brands</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="/login" class="text-brand-muted hover:text-brand-text font-medium text-sm transition-colors hidden sm:block">Sign In</a>
-                <button onclick="startInterview()" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold">
-                    Get Started Free
-                </button>
-            </div>
+    <!-- ══════════════════════════════════════════════
+         NAVBAR
+    ══════════════════════════════════════════════ -->
+    <nav style="position:fixed;top:0;left:0;width:100%;z-index:100;border-bottom:1px solid rgba(37,40,64,0.8);backdrop-filter:blur(16px);background:rgba(8,9,12,0.85);">
+      <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+        <!-- Logo -->
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7C3AED,#D946EF);display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(124,58,237,0.4);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.02em;color:#F0F2FF;">Auxora</span>
+          <span class="pill pill-volt" style="font-size:10px;padding:3px 10px;">BETA</span>
         </div>
+
+        <!-- Nav links -->
+        <div style="display:flex;align-items:center;gap:28px;">
+          <a href="#how-it-works" style="color:#8B8FA8;font-size:14px;font-weight:500;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#F0F2FF'" onmouseout="this.style.color='#8B8FA8'">How It Works</a>
+          <a href="#results" style="color:#8B8FA8;font-size:14px;font-weight:500;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#F0F2FF'" onmouseout="this.style.color='#8B8FA8'" class="hidden sm:block">Results</a>
+          <a href="#pricing" style="color:#8B8FA8;font-size:14px;font-weight:500;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#F0F2FF'" onmouseout="this.style.color='#8B8FA8'" class="hidden sm:block">Pricing</a>
+          <a href="/login" style="color:#8B8FA8;font-size:14px;font-weight:500;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#F0F2FF'" onmouseout="this.style.color='#8B8FA8'">Sign In</a>
+          <button onclick="startJourney()" class="btn-primary" style="padding:9px 22px;font-size:14px;">
+            Enter Flow State →
+          </button>
+        </div>
+      </div>
     </nav>
 
-    <!-- ========== HERO ========== -->
-    <section class="hero-bg pt-28 pb-16 px-4 relative overflow-hidden">
-        <!-- Decorative circles -->
-        <div class="absolute top-20 right-10 w-64 h-64 rounded-full bg-brand-orange/10 blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-10 left-10 w-48 h-48 rounded-full bg-brand-coral/10 blur-3xl pointer-events-none"></div>
 
-        <div class="max-w-6xl mx-auto">
-            <div class="flex flex-col lg:flex-row items-center gap-12">
+    <!-- ══════════════════════════════════════════════
+         HERO — "The Entrance"
+    ══════════════════════════════════════════════ -->
+    <section style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;position:relative;overflow:hidden;">
 
-                <!-- Left: Copy -->
-                <div class="flex-1 text-center lg:text-left">
-                    <!-- Trust badge -->
-                    <div class="inline-flex items-center gap-2 bg-white border border-brand-border rounded-full px-4 py-2 text-sm font-medium text-brand-muted mb-6 shadow-sm fade-in fade-in-delay-1">
-                        <span class="flex items-center gap-1 text-brand-orange font-semibold">
-                            <i class="fas fa-star text-xs"></i> D2C Brand Growth Specialists
-                        </span>
-                        <span class="w-px h-4 bg-brand-border"></span>
-                        <span>Trusted by 200+ brands</span>
-                    </div>
+      <!-- Radial glow backlight -->
+      <div style="position:absolute;top:20%;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse at center, rgba(124,58,237,0.12) 0%, rgba(217,70,239,0.06) 40%, transparent 70%);pointer-events:none;z-index:0;"></div>
+      <div style="position:absolute;bottom:0;left:30%;width:400px;height:400px;background:radial-gradient(ellipse, rgba(245,158,11,0.05) 0%, transparent 60%);pointer-events:none;"></div>
 
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-brand-text leading-tight mb-6 fade-in fade-in-delay-1">
-                        Grow Your <span class="text-brand-orange">D2C Brand</span><br/>
-                        <span class="text-brand-coral">10× Faster</span> with AI
-                    </h1>
+      <div style="position:relative;z-index:1;max-width:900px;width:100%;text-align:center;">
 
-                    <p class="text-lg sm:text-xl text-brand-muted leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0 fade-in fade-in-delay-2">
-                        Get a personalized growth strategy built for <strong class="text-brand-text">direct-to-consumer brands</strong> — covering ads, channels, budget, and a 6-month roadmap. In minutes, not months.
-                    </p>
-
-                    <!-- Website input -->
-                    <div class="bg-white rounded-2xl p-2 shadow-lg border border-brand-border max-w-xl mx-auto lg:mx-0 mb-6 fade-in fade-in-delay-2">
-                        <form id="websiteForm" class="flex gap-2">
-                            <input
-                                type="text"
-                                id="websiteInput"
-                                placeholder="Enter your website (e.g. mybrand.com)"
-                                class="website-input border-0 shadow-none flex-1 py-3"
-                                required
-                            />
-                            <button type="submit" class="btn-primary px-6 py-3 rounded-xl whitespace-nowrap font-semibold flex items-center gap-2">
-                                <i class="fas fa-bolt text-sm"></i>
-                                <span class="hidden sm:inline">Analyze</span>
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Social proof -->
-                    <div class="flex items-center justify-center lg:justify-start gap-4 text-sm text-brand-muted fade-in fade-in-delay-3">
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-check-circle text-brand-green text-xs"></i>
-                            <span>No credit card to start</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-check-circle text-brand-green text-xs"></i>
-                            <span>Results in 10 min</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-check-circle text-brand-green text-xs"></i>
-                            <span>First report $4.99</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Hero Card -->
-                <div class="flex-1 max-w-md w-full fade-in fade-in-delay-2">
-                    <div class="bg-white rounded-3xl shadow-xl border border-brand-border p-6 relative float-anim">
-                        <!-- Card header -->
-                        <div class="flex items-center justify-between mb-5">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-lg bg-brand-greenL flex items-center justify-center">
-                                    <i class="fas fa-chart-line text-brand-green text-sm"></i>
-                                </div>
-                                <span class="font-semibold text-sm text-brand-text">Your Growth Dashboard</span>
-                            </div>
-                            <span class="pill bg-brand-greenL text-brand-green text-xs">
-                                <span class="w-1.5 h-1.5 rounded-full bg-brand-green"></span>
-                                Live
-                            </span>
-                        </div>
-
-                        <!-- Metrics grid -->
-                        <div class="grid grid-cols-3 gap-3 mb-5">
-                            <div class="bg-brand-orangeL rounded-xl p-3 text-center">
-                                <div class="text-2xl font-bold text-brand-orange">10×</div>
-                                <div class="text-xs text-brand-muted mt-0.5">Revenue</div>
-                            </div>
-                            <div class="bg-brand-rose rounded-xl p-3 text-center">
-                                <div class="text-2xl font-bold text-brand-coral">3×</div>
-                                <div class="text-xs text-brand-muted mt-0.5">ROAS</div>
-                            </div>
-                            <div class="bg-brand-greenL rounded-xl p-3 text-center">
-                                <div class="text-2xl font-bold text-brand-green">6mo</div>
-                                <div class="text-xs text-brand-muted mt-0.5">Roadmap</div>
-                            </div>
-                        </div>
-
-                        <!-- Progress bars -->
-                        <div class="space-y-3 mb-5">
-                            <div>
-                                <div class="flex justify-between text-xs text-brand-muted mb-1">
-                                    <span>Meta Ads Performance</span>
-                                    <span class="text-brand-orange font-semibold">+340%</span>
-                                </div>
-                                <div class="h-2 bg-brand-orangeL rounded-full">
-                                    <div class="h-2 bg-gradient-to-r from-brand-orange to-brand-coral rounded-full" style="width: 78%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs text-brand-muted mb-1">
-                                    <span>Customer Acquisition</span>
-                                    <span class="text-brand-green font-semibold">-62% CAC</span>
-                                </div>
-                                <div class="h-2 bg-brand-greenL rounded-full">
-                                    <div class="h-2 bg-brand-green rounded-full" style="width: 62%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs text-brand-muted mb-1">
-                                    <span>Revenue Growth</span>
-                                    <span class="text-brand-teal font-semibold">+$48K/mo</span>
-                                </div>
-                                <div class="h-2 bg-brand-tealL rounded-full">
-                                    <div class="h-2 bg-brand-teal rounded-full" style="width: 90%"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bottom note -->
-                        <div class="bg-brand-amberL rounded-xl p-3 flex items-center gap-2">
-                            <i class="fas fa-award text-brand-amber text-base"></i>
-                            <span class="text-xs text-brand-muted font-medium">Based on real NexSpark client results</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+        <!-- Category badge -->
+        <div class="fade-up delay-1" style="margin-bottom:24px;">
+          <span class="pill pill-volt">
+            <span class="pulse-dot"></span>
+            Introducing the Vibe Business OS
+          </span>
         </div>
+
+        <!-- Main headline -->
+        <h1 class="fade-up delay-2" style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(42px,7vw,88px);line-height:1.0;letter-spacing:-0.03em;margin-bottom:28px;">
+          <span style="color:#F0F2FF;">You build</span><br/>
+          <span style="color:#F0F2FF;">the product.</span><br/>
+          <span class="shimmer-text">Auxora builds</span><br/>
+          <span class="shimmer-text">the profit.</span>
+        </h1>
+
+        <!-- Sub-headline -->
+        <p class="fade-up delay-3" style="font-size:clamp(16px,2vw,20px);color:#8B8FA8;max-width:640px;margin:0 auto 40px;line-height:1.7;font-weight:400;">
+          The world's first <strong style="color:#A855F7;">autonomous revenue agent</strong> for D2C founders.
+          We run your entire growth stack — Ads, SEO, Email, Influencers — through pure brand energy.
+          <br/><br/>
+          <em style="color:#F59E0B;font-style:normal;font-weight:600;">Stop grinding. Enter flow.</em>
+        </p>
+
+        <!-- CTA row -->
+        <div class="fade-up delay-4" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;">
+          <button onclick="startJourney()" class="btn-primary" style="padding:16px 36px;font-size:16px;display:flex;align-items:center;gap:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Activate Auxora — Free
+          </button>
+          <button onclick="window.location.href='#how-it-works'" class="btn-ghost" style="padding:16px 28px;font-size:16px;">
+            See How It Works
+          </button>
+        </div>
+
+        <!-- Social proof strip -->
+        <div class="fade-up delay-4" style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap-8px;">
+            <div style="display:flex;gap:4px;margin-right:10px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#D946EF);border:2px solid #08090C;"></div>
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#F97316);border:2px solid #08090C;margin-left:-8px;"></div>
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#10B981,#0EA5E9);border:2px solid #08090C;margin-left:-8px;"></div>
+            </div>
+            <span style="color:#8B8FA8;font-size:13px;">200+ D2C founders in flow</span>
+          </div>
+          <div style="width:1px;height:20px;background:#252840;"></div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-star" style="color:#F59E0B;font-size:12px;"></i>
+            <i class="fas fa-star" style="color:#F59E0B;font-size:12px;"></i>
+            <i class="fas fa-star" style="color:#F59E0B;font-size:12px;"></i>
+            <i class="fas fa-star" style="color:#F59E0B;font-size:12px;"></i>
+            <i class="fas fa-star" style="color:#F59E0B;font-size:12px;"></i>
+            <span style="color:#8B8FA8;font-size:13px;margin-left:4px;">4.9 · First report $4.99</span>
+          </div>
+          <div style="width:1px;height:20px;background:#252840;"></div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="pulse-dot" style="background:#10B981;box-shadow:0 0 8px rgba(16,185,129,0.6);"></span>
+            <span style="color:#8B8FA8;font-size:13px;">Agent active now</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero live terminal -->
+      <div class="fade-up delay-4" style="position:relative;z-index:1;max-width:680px;width:100%;margin-top:60px;">
+        <div class="terminal glow-violet">
+          <div class="terminal-bar">
+            <div class="terminal-dot" style="background:#FF5F57;"></div>
+            <div class="terminal-dot" style="background:#FFBD2E;"></div>
+            <div class="terminal-dot" style="background:#28C940;"></div>
+            <span style="color:#4A4D66;font-size:11px;margin-left:8px;">auxora-agent v2.1 · revenue mode active</span>
+            <span style="margin-left:auto;" class="pill pill-green" style="font-size:10px;padding:2px 8px;">RUNNING</span>
+          </div>
+          <div id="terminalOutput" style="padding:20px 20px 24px;line-height:1.8;min-height:160px;">
+            <div style="color:#4A4D66;">$ auxora start --brand yamabushi-farms --mode autonomous</div>
+            <div id="termLine1" style="color:#A855F7;opacity:0;transition:opacity 0.3s;">◆ Scanning 847 competitor ad creatives...</div>
+            <div id="termLine2" style="color:#10B981;opacity:0;transition:opacity 0.3s;">✓ Identified 3 high-converting angles for your niche</div>
+            <div id="termLine3" style="color:#A855F7;opacity:0;transition:opacity 0.3s;">◆ Building Meta + Google campaign structure...</div>
+            <div id="termLine4" style="color:#10B981;opacity:0;transition:opacity 0.3s;">✓ Budget allocated: $1,200/mo · Projected ROAS: 3.2×</div>
+            <div id="termLine5" style="color:#A855F7;opacity:0;transition:opacity 0.3s;">◆ Launching 6-month GTM roadmap...</div>
+            <div id="termLine6" style="color:#F59E0B;opacity:0;transition:opacity 0.3s;">⚡ Revenue engine online. Your vibe business is live.</div>
+            <div id="termCursor" style="display:inline-block;width:8px;height:16px;background:#A855F7;vertical-align:middle;opacity:0;"></div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Stats bar -->
-    <section class="bg-white border-b border-brand-border py-8 px-4">
-        <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="text-center">
-                <div class="text-3xl font-bold text-brand-orange mb-1">200+</div>
-                <div class="text-sm text-brand-muted">D2C Brands Served</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-brand-coral mb-1">10×</div>
-                <div class="text-sm text-brand-muted">Avg Revenue Growth</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-brand-green mb-1">10 min</div>
-                <div class="text-sm text-brand-muted">To Your Strategy</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-brand-text mb-1"><span class="price-badge">$4.99</span></div>
-                <div class="text-sm text-brand-muted mt-1">First Report</div>
-            </div>
-        </div>
-    </section>
 
-    <!-- ========== WHO IT'S FOR ========== -->
-    <section class="py-20 px-4 bg-brand-warm">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-14">
-                <span class="pill bg-brand-orangeL text-brand-orange mb-3">
-                    <i class="fas fa-heart text-xs"></i> Built for You
-                </span>
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-brand-text section-title">
-                    Made for D2C Brand Owners
-                </h2>
-                <p class="text-brand-muted mt-4 max-w-lg mx-auto text-base">
-                    Whether you're launching your first product or scaling to $1M+, NexSpark gives you a clear path forward.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="card-hover bg-white rounded-2xl p-6 border border-brand-border">
-                    <div class="w-12 h-12 rounded-2xl bg-brand-orangeL flex items-center justify-center mb-4">
-                        <i class="fas fa-seedling text-brand-orange text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-brand-text mb-2">Just Starting Out?</h3>
-                    <p class="text-brand-muted text-sm leading-relaxed mb-4">
-                        Validate your product idea, understand your ideal customer, and choose the right channel to launch without wasting budget.
-                    </p>
-                    <ul class="check-list">
-                        <li><i class="fas fa-check-circle icon"></i> Market validation report</li>
-                        <li><i class="fas fa-check-circle icon"></i> Competitor analysis</li>
-                        <li><i class="fas fa-check-circle icon"></i> First $10K roadmap</li>
-                    </ul>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="card-hover bg-gradient-to-br from-brand-orange to-brand-coral rounded-2xl p-6 text-white relative overflow-hidden">
-                    <div class="absolute top-3 right-3">
-                        <span class="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-4">
-                        <i class="fas fa-rocket text-white text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">Ready to Scale?</h3>
-                    <p class="text-white/85 text-sm leading-relaxed mb-4">
-                        You have a proven product. Now get a data-driven strategy to 3× your revenue in the next 90 days with paid social and search.
-                    </p>
-                    <ul class="check-list">
-                        <li><i class="fas fa-check-circle icon" style="color:#fff"></i> <span style="color:#ffe4d6">Meta + Google ads blueprint</span></li>
-                        <li><i class="fas fa-check-circle icon" style="color:#fff"></i> <span style="color:#ffe4d6">CAC/LTV optimization</span></li>
-                        <li><i class="fas fa-check-circle icon" style="color:#fff"></i> <span style="color:#ffe4d6">6-month GTM plan</span></li>
-                    </ul>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="card-hover bg-white rounded-2xl p-6 border border-brand-border">
-                    <div class="w-12 h-12 rounded-2xl bg-brand-greenL flex items-center justify-center mb-4">
-                        <i class="fas fa-chart-bar text-brand-green text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-brand-text mb-2">Hitting a Growth Wall?</h3>
-                    <p class="text-brand-muted text-sm leading-relaxed mb-4">
-                        Ads aren't converting? CAC too high? Get an AI audit of your current strategy and a clear plan to fix what's broken.
-                    </p>
-                    <ul class="check-list">
-                        <li><i class="fas fa-check-circle icon"></i> Full performance audit</li>
-                        <li><i class="fas fa-check-circle icon"></i> Channel rebalancing plan</li>
-                        <li><i class="fas fa-check-circle icon"></i> Profitability analysis</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== HOW IT WORKS ========== -->
-    <section class="py-20 px-4 bg-white">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-14">
-                <span class="pill bg-brand-tealL text-brand-teal mb-3">
-                    <i class="fas fa-magic text-xs"></i> Simple Process
-                </span>
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-brand-text section-title">
-                    From Zero to Strategy in 3 Steps
-                </h2>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8 relative">
-
-                <!-- Step 1 -->
-                <div class="text-center relative">
-                    <div class="w-16 h-16 rounded-2xl bg-brand-orangeL mx-auto mb-5 flex items-center justify-center">
-                        <i class="fas fa-microphone text-brand-orange text-2xl"></i>
-                    </div>
-                    <div class="inline-block bg-brand-orange text-white text-xs font-bold px-3 py-1 rounded-full mb-3">Step 1</div>
-                    <h3 class="text-xl font-bold text-brand-text mb-3">Tell Us About Your Brand</h3>
-                    <p class="text-brand-muted text-sm leading-relaxed">
-                        A quick 10-minute AI-powered interview. No jargon, no forms. Just tell us about your products, goals, and customers in plain English.
-                    </p>
-                </div>
-
-                <!-- Connector (hidden on mobile) -->
-                <div class="hidden md:flex items-start justify-center relative">
-                    <div class="absolute top-7 left-0 right-0 h-px bg-gradient-to-r from-brand-orangeL via-brand-orange to-brand-coral opacity-40"></div>
-                    <div class="w-16 h-16 rounded-2xl bg-brand-rose mx-auto mb-5 flex items-center justify-center relative z-10">
-                        <i class="fas fa-brain text-brand-coral text-2xl"></i>
-                    </div>
-                </div>
-                <div class="md:hidden text-center relative">
-                    <div class="w-16 h-16 rounded-2xl bg-brand-rose mx-auto mb-5 flex items-center justify-center">
-                        <i class="fas fa-brain text-brand-coral text-2xl"></i>
-                    </div>
-                    <div class="inline-block bg-brand-coral text-white text-xs font-bold px-3 py-1 rounded-full mb-3">Step 2</div>
-                    <h3 class="text-xl font-bold text-brand-text mb-3">AI Builds Your Strategy</h3>
-                    <p class="text-brand-muted text-sm leading-relaxed">
-                        Our AI analyzes your competitors, market size, and best channels — then generates a custom 6-month growth plan just for you.
-                    </p>
-                </div>
-
-            </div>
-
-            <!-- Step row for desktop, restructured for clarity -->
-            <div class="hidden md:grid md:grid-cols-3 gap-8 mt-6">
-                <div class="text-center">
-                    <!-- empty, step 1 desc above -->
-                </div>
-                <div class="text-center">
-                    <div class="inline-block bg-brand-coral text-white text-xs font-bold px-3 py-1 rounded-full mb-3">Step 2</div>
-                    <h3 class="text-xl font-bold text-brand-text mb-3">AI Builds Your Strategy</h3>
-                    <p class="text-brand-muted text-sm leading-relaxed">
-                        Our AI analyzes your competitors, market size, and best channels — then generates a custom 6-month growth plan just for you.
-                    </p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 rounded-2xl bg-brand-greenL mx-auto mb-5 flex items-center justify-center">
-                        <i class="fas fa-file-chart-line text-brand-green text-2xl"></i>
-                    </div>
-                    <div class="inline-block bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-full mb-3">Step 3</div>
-                    <h3 class="text-xl font-bold text-brand-text mb-3">Get Your Report for $4.99</h3>
-                    <p class="text-brand-muted text-sm leading-relaxed">
-                        Unlock your full strategy report — with channel breakdowns, budget recommendations, and a step-by-step execution plan.
-                    </p>
-                </div>
-            </div>
-            <!-- Step 3 mobile -->
-            <div class="md:hidden text-center mt-6">
-                <div class="w-16 h-16 rounded-2xl bg-brand-greenL mx-auto mb-5 flex items-center justify-center">
-                    <i class="fas fa-file-chart-line text-brand-green text-2xl"></i>
-                </div>
-                <div class="inline-block bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-full mb-3">Step 3</div>
-                <h3 class="text-xl font-bold text-brand-text mb-3">Get Your Report for $4.99</h3>
-                <p class="text-brand-muted text-sm leading-relaxed">
-                    Unlock your full strategy report — with channel breakdowns, budget recommendations, and a step-by-step execution plan.
-                </p>
-            </div>
-
-            <div class="text-center mt-12">
-                <button onclick="startInterview()" class="btn-primary px-10 py-4 rounded-2xl text-lg inline-flex items-center gap-3">
-                    <i class="fas fa-rocket"></i>
-                    Start My Free Analysis
-                </button>
-                <p class="text-brand-muted text-sm mt-3">
-                    <i class="fas fa-lock text-xs mr-1"></i> Free to start · Full report just $4.99
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== SUCCESS STORY ========== -->
-    <section id="proven-results" class="py-20 px-4 bg-brand-warm">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-14">
-                <span class="pill bg-brand-amberL text-brand-amber mb-3">
-                    <i class="fas fa-trophy text-xs"></i> Real Results
-                </span>
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-brand-text section-title">
-                    D2C Brands Love NexSpark
-                </h2>
-                <p class="text-brand-muted mt-4 max-w-lg mx-auto text-base">
-                    See how real brands transformed their growth with AI-powered strategy.
-                </p>
-            </div>
-
-            <!-- Case Study Card -->
-            <div class="max-w-3xl mx-auto">
-                <div class="card-hover bg-white rounded-3xl overflow-hidden border border-brand-border shadow-lg cursor-pointer" onclick="openVideoModal(0)">
-                    <!-- Video Thumbnail -->
-                    <div class="aspect-video relative bg-brand-orangeL overflow-hidden">
-                        <img
-                            src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
-                            alt="Yamabushi Farms Success Story"
-                            class="w-full h-full object-cover"
-                        />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                        <!-- Play button -->
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-20 h-20 rounded-full bg-white/95 flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
-                                <i class="fas fa-play text-brand-orange text-2xl ml-1"></i>
-                            </div>
-                        </div>
-                        <!-- D2C Badge -->
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-brand-orange text-white px-4 py-1.5 rounded-full font-semibold text-sm shadow-lg">
-                                🛒 D2C Brand Story
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Card Body -->
-                    <div class="p-8">
-                        <h3 class="text-2xl font-display font-bold text-brand-text mb-2">Yamabushi Farms</h3>
-                        <p class="text-brand-muted text-sm mb-6">Japanese heritage D2C brand selling premium wellness products</p>
-
-                        <div class="grid grid-cols-3 gap-4 mb-6">
-                            <div class="text-center bg-brand-orangeL rounded-xl p-4">
-                                <div class="text-3xl font-bold text-brand-orange">10×</div>
-                                <div class="text-xs text-brand-muted mt-1">Revenue<br/>in 2 months</div>
-                            </div>
-                            <div class="text-center bg-brand-rose rounded-xl p-4">
-                                <div class="text-3xl font-bold text-brand-coral">3×</div>
-                                <div class="text-xs text-brand-muted mt-1">ROAS<br/>in 1 month</div>
-                            </div>
-                            <div class="text-center bg-brand-greenL rounded-xl p-4">
-                                <div class="text-3xl font-bold text-brand-green">62%</div>
-                                <div class="text-xs text-brand-muted mt-1">CAC<br/>reduction</div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-4 border-t border-brand-border">
-                            <div class="flex items-center gap-2 text-sm text-brand-muted">
-                                <i class="fas fa-tag text-xs text-brand-orange"></i>
-                                <span>D2C CPG • Wellness Products</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-brand-orange font-semibold text-sm">
-                                <i class="fas fa-play-circle"></i>
-                                Watch Story
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Testimonials -->
-            <div class="grid md:grid-cols-2 gap-6 mt-10 max-w-3xl mx-auto">
-                <div class="testimonial-card">
-                    <div class="flex items-center gap-3 mb-4 relative z-10">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-orange to-brand-coral flex items-center justify-center text-white font-bold text-sm">
-                            S
-                        </div>
-                        <div>
-                            <div class="font-semibold text-sm text-brand-text">Sarah K.</div>
-                            <div class="text-xs text-brand-muted">Skincare D2C Founder</div>
-                        </div>
-                        <div class="ml-auto flex gap-0.5">
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                        </div>
-                    </div>
-                    <p class="text-brand-muted text-sm leading-relaxed relative z-10">
-                        "I was spending $5K/mo on ads with almost no return. NexSpark identified exactly where my budget was leaking. Turned it around in 6 weeks."
-                    </p>
-                </div>
-                <div class="testimonial-card">
-                    <div class="flex items-center gap-3 mb-4 relative z-10">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-teal to-brand-green flex items-center justify-center text-white font-bold text-sm">
-                            M
-                        </div>
-                        <div>
-                            <div class="font-semibold text-sm text-brand-text">Marcus T.</div>
-                            <div class="text-xs text-brand-muted">Pet Accessories Brand</div>
-                        </div>
-                        <div class="ml-auto flex gap-0.5">
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                            <i class="fas fa-star text-brand-amber text-xs"></i>
-                        </div>
-                    </div>
-                    <p class="text-brand-muted text-sm leading-relaxed relative z-10">
-                        "The $4.99 strategy report was the best money I've ever spent on marketing. It gave me a roadmap that actually made sense for my stage."
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== WHAT'S IN THE REPORT ========== -->
-    <section class="py-20 px-4 bg-white">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex flex-col lg:flex-row gap-12 items-center">
-                <!-- Left -->
-                <div class="flex-1">
-                    <span class="pill bg-brand-orangeL text-brand-orange mb-4">
-                        <i class="fas fa-file-alt text-xs"></i> What You Get
-                    </span>
-                    <h2 class="text-3xl sm:text-4xl font-display font-bold text-brand-text mb-6">
-                        Your Complete D2C<br/>
-                        <span class="text-brand-orange">Growth Strategy Report</span>
-                    </h2>
-                    <p class="text-brand-muted text-base leading-relaxed mb-8">
-                        For just $4.99, get a full strategic playbook tailored to your brand — the same quality you'd pay an agency $5,000+ to produce.
-                    </p>
-
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-4 p-4 rounded-xl bg-brand-warm border border-brand-border">
-                            <div class="w-10 h-10 rounded-xl bg-brand-orangeL flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-search text-brand-orange"></i>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-brand-text mb-0.5">Competitor Intelligence</div>
-                                <div class="text-sm text-brand-muted">Top 5 competitors analyzed — their traffic, ads, and what's working</div>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4 p-4 rounded-xl bg-brand-warm border border-brand-border">
-                            <div class="w-10 h-10 rounded-xl bg-brand-rose flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-users text-brand-coral"></i>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-brand-text mb-0.5">Customer Profile & Targeting</div>
-                                <div class="text-sm text-brand-muted">Detailed personas with platform targeting parameters for Meta & Google</div>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4 p-4 rounded-xl bg-brand-warm border border-brand-border">
-                            <div class="w-10 h-10 rounded-xl bg-brand-amberL flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-dollar-sign text-brand-amber"></i>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-brand-text mb-0.5">Budget & CAC Projections</div>
-                                <div class="text-sm text-brand-muted">Recommended spend per channel with expected CAC and LTV modelling</div>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4 p-4 rounded-xl bg-brand-warm border border-brand-border">
-                            <div class="w-10 h-10 rounded-xl bg-brand-greenL flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-map text-brand-green"></i>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-brand-text mb-0.5">6-Month Execution Roadmap</div>
-                                <div class="text-sm text-brand-muted">Week-by-week action plan from launch to profitable scale</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Price CTA -->
-                <div class="flex-1 max-w-sm w-full mx-auto">
-                    <div class="bg-gradient-to-br from-brand-orange to-brand-coral rounded-3xl p-8 text-white text-center shadow-xl relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
-
-                        <div class="relative z-10">
-                            <div class="text-white/80 text-sm font-medium mb-2">First D2C Strategy Report</div>
-                            <div class="text-6xl font-bold mb-1">$4.99</div>
-                            <div class="text-white/70 text-sm mb-8">One-time · Instant delivery</div>
-
-                            <ul class="text-left space-y-3 mb-8">
-                                <li class="flex items-center gap-2 text-sm">
-                                    <i class="fas fa-check-circle text-white"></i> Full competitor analysis
-                                </li>
-                                <li class="flex items-center gap-2 text-sm">
-                                    <i class="fas fa-check-circle text-white"></i> Custom audience targeting
-                                </li>
-                                <li class="flex items-center gap-2 text-sm">
-                                    <i class="fas fa-check-circle text-white"></i> Channel & budget plan
-                                </li>
-                                <li class="flex items-center gap-2 text-sm">
-                                    <i class="fas fa-check-circle text-white"></i> 6-month GTM roadmap
-                                </li>
-                                <li class="flex items-center gap-2 text-sm">
-                                    <i class="fas fa-check-circle text-white"></i> PDF download + email
-                                </li>
-                            </ul>
-
-                            <button onclick="startInterview()" class="w-full bg-white text-brand-orange font-bold py-4 rounded-2xl text-lg hover:bg-brand-orangeL transition-colors shadow-lg">
-                                Get My Strategy →
-                            </button>
-
-                            <p class="text-white/60 text-xs mt-4">
-                                <i class="fas fa-shield-alt mr-1"></i> Secure payment via Stripe
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== FAQ ========== -->
-    <section class="py-20 px-4 bg-brand-warm">
-        <div class="max-w-3xl mx-auto">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-brand-text section-title">
-                    Common Questions
-                </h2>
-            </div>
-            <div class="space-y-4">
-                <details class="bg-white rounded-2xl border border-brand-border p-6 group cursor-pointer">
-                    <summary class="flex justify-between items-center font-semibold text-brand-text list-none">
-                        What makes NexSpark different from a marketing agency?
-                        <i class="fas fa-plus text-brand-orange group-open:rotate-45 transition-transform"></i>
-                    </summary>
-                    <p class="text-brand-muted text-sm mt-4 leading-relaxed">
-                        Traditional agencies charge $5,000–$20,000 for a strategy that takes weeks. NexSpark delivers the same quality in 10 minutes for $4.99. We use AI trained on $100M+ in D2C ad spend data to give you insights that are actually actionable.
-                    </p>
-                </details>
-                <details class="bg-white rounded-2xl border border-brand-border p-6 group cursor-pointer">
-                    <summary class="flex justify-between items-center font-semibold text-brand-text list-none">
-                        Do I need to connect my ad accounts?
-                        <i class="fas fa-plus text-brand-orange group-open:rotate-45 transition-transform"></i>
-                    </summary>
-                    <p class="text-brand-muted text-sm mt-4 leading-relaxed">
-                        No! You just answer a few questions about your brand and goals. No API keys, no ad account access, no technical setup required. We build your strategy from your answers and market research.
-                    </p>
-                </details>
-                <details class="bg-white rounded-2xl border border-brand-border p-6 group cursor-pointer">
-                    <summary class="flex justify-between items-center font-semibold text-brand-text list-none">
-                        How quickly will I get my report?
-                        <i class="fas fa-plus text-brand-orange group-open:rotate-45 transition-transform"></i>
-                    </summary>
-                    <p class="text-brand-muted text-sm mt-4 leading-relaxed">
-                        After your 10-minute interview and payment, your report is generated in 2–3 minutes. You can stay on the page to watch it generate live, or we'll email it to you the moment it's ready.
-                    </p>
-                </details>
-                <details class="bg-white rounded-2xl border border-brand-border p-6 group cursor-pointer">
-                    <summary class="flex justify-between items-center font-semibold text-brand-text list-none">
-                        Is it really only $4.99?
-                        <i class="fas fa-plus text-brand-orange group-open:rotate-45 transition-transform"></i>
-                    </summary>
-                    <p class="text-brand-muted text-sm mt-4 leading-relaxed">
-                        Yes — $4.99 for your first full D2C strategy report. It's intentionally affordable so you can see the quality before committing to anything bigger. No subscriptions, no hidden fees.
-                    </p>
-                </details>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== FINAL CTA ========== -->
-    <section class="py-20 px-4 bg-white">
-        <div class="max-w-3xl mx-auto text-center">
-            <div class="bg-gradient-to-br from-brand-orangeL via-brand-rose to-brand-amberL rounded-3xl p-12 border border-brand-border shadow-lg">
-                <div class="text-5xl mb-4">🚀</div>
-                <h2 class="text-3xl sm:text-4xl font-display font-bold text-brand-text mb-4">
-                    Ready to Grow Your D2C Brand?
-                </h2>
-                <p class="text-brand-muted text-lg mb-8 max-w-md mx-auto">
-                    Join 200+ D2C brands who've used NexSpark to find their path to profitable growth.
-                </p>
-                <button onclick="startInterview()" class="btn-primary px-12 py-5 rounded-2xl text-xl inline-flex items-center gap-3 mx-auto">
-                    <i class="fas fa-rocket"></i>
-                    Start for Free
-                </button>
-                <p class="text-brand-muted text-sm mt-4">
-                    Free to start · First strategy report just $4.99
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== FOOTER ========== -->
-    <footer class="bg-brand-text text-white py-10 px-4">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-orange to-brand-coral flex items-center justify-center">
-                    <i class="fas fa-bolt text-white text-xs"></i>
-                </div>
-                <span class="font-bold">NexSpark</span>
-                <span class="text-white/40 text-sm">— AI Growth for D2C Brands</span>
-            </div>
-            <div class="flex items-center gap-6 text-sm text-white/50">
-                <a href="/login" class="hover:text-white transition-colors">Sign In</a>
-                <a href="/register" class="hover:text-white transition-colors">Register</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ========== VIDEO MODAL ========== -->
-    <div id="videoModal" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="relative w-full max-w-4xl">
-            <button onclick="closeVideoModal()" class="absolute -top-12 right-0 text-white hover:text-brand-orange transition-colors text-3xl">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="bg-white rounded-3xl overflow-hidden shadow-2xl">
-                <div class="aspect-video">
-                    <iframe id="videoPlayer" width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 id="videoTitle" class="text-xl font-bold text-brand-text"></h3>
-                            <p id="videoDescription" class="text-brand-muted text-sm mt-1"></p>
-                        </div>
-                        <button onclick="closeVideoModal()" class="btn-primary px-6 py-2.5 rounded-xl text-sm">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- ══════════════════════════════════════════════
+         TICKER — Category definition
+    ══════════════════════════════════════════════ -->
+    <div style="overflow:hidden;padding:14px 0;border-top:1px solid #252840;border-bottom:1px solid #252840;background:#0E1018;">
+      <div class="ticker-track" style="gap:0;">
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">AUTONOMOUS ADS</span>
+        <span style="color:#A855F7;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">VIBE BUSINESS</span>
+        <span style="color:#F59E0B;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">REVENUE ON AUTOPILOT</span>
+        <span style="color:#A855F7;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">D2C BRAND GROWTH</span>
+        <span style="color:#10B981;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">STOP GRINDING</span>
+        <span style="color:#D946EF;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">ENTER FLOW</span>
+        <span style="color:#A855F7;padding:0 12px;">◆</span>
+        <!-- Duplicate for seamless loop -->
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">AUTONOMOUS ADS</span>
+        <span style="color:#A855F7;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">VIBE BUSINESS</span>
+        <span style="color:#F59E0B;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">REVENUE ON AUTOPILOT</span>
+        <span style="color:#A855F7;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">D2C BRAND GROWTH</span>
+        <span style="color:#10B981;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">STOP GRINDING</span>
+        <span style="color:#D946EF;padding:0 12px;">◆</span>
+        <span style="white-space:nowrap;padding:0 40px;color:#4A4D66;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.05em;">ENTER FLOW</span>
+        <span style="color:#A855F7;padding:0 12px;">◆</span>
+      </div>
     </div>
 
-    <script>
-    // Video Modal
-    const videoData = [
-        {
-            id: 'nw1XYryhdIU',
-            title: 'Yamabushi Farms',
-            description: 'D2C Brand · 10× Revenue in 2 Months · 3× ROAS'
-        }
+
+    <!-- ══════════════════════════════════════════════
+         GRIND vs FLOW — The Category Definition
+    ══════════════════════════════════════════════ -->
+    <section style="padding:100px 24px;position:relative;overflow:hidden;" class="section-glow">
+      <div style="max-width:1200px;margin:0 auto;position:relative;z-index:1;">
+        <div style="text-align:center;margin-bottom:64px;">
+          <span class="pill pill-amber" style="margin-bottom:16px;">The Category Shift</span>
+          <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,56px);letter-spacing:-0.03em;line-height:1.1;margin-top:16px;">
+            <span style="color:#8B8FA8;">From the</span> <span class="grad-warm">Marketing Grind</span><br/>
+            <span style="color:#8B8FA8;">to the</span> <span class="grad-volt">Revenue Flow</span>
+          </h2>
+          <p style="color:#8B8FA8;font-size:17px;max-width:560px;margin:20px auto 0;line-height:1.7;">
+            Every D2C founder knows the feeling. You're brilliant at building products. But growth became a second full-time job. Auxora ends that.
+          </p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:start;">
+
+          <!-- GRIND side -->
+          <div class="card" style="padding:36px;border-color:rgba(239,68,68,0.2);">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
+              <div style="width:44px;height:44px;border-radius:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-fire" style="color:#EF4444;font-size:18px;"></i>
+              </div>
+              <div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#F0F2FF;">The Grind</div>
+                <div style="color:#EF4444;font-size:12px;font-family:'Space Mono',monospace;">CURRENT STATE</div>
+              </div>
+            </div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:14px;">
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-times-circle" style="color:#EF4444;margin-top:2px;flex-shrink:0;"></i>
+                <span>Spending 30+ hrs/week on ads that don't convert</span>
+              </li>
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-times-circle" style="color:#EF4444;margin-top:2px;flex-shrink:0;"></i>
+                <span>Hiring agencies for $5K/mo with zero accountability</span>
+              </li>
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-times-circle" style="color:#EF4444;margin-top:2px;flex-shrink:0;"></i>
+                <span>CAC spiraling, ROAS collapsing, growth stalling</span>
+              </li>
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-times-circle" style="color:#EF4444;margin-top:2px;flex-shrink:0;"></i>
+                <span>Brilliant product, zero distribution leverage</span>
+              </li>
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-times-circle" style="color:#EF4444;margin-top:2px;flex-shrink:0;"></i>
+                <span>No clear roadmap — just reacting to what's on fire</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Center arrow -->
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:40px;gap:12px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#D946EF);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(124,58,237,0.4);">
+              <i class="fas fa-arrow-right" style="color:white;font-size:20px;"></i>
+            </div>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:#4A4D66;text-align:center;writing-mode:vertical-rl;display:none;">AUXORA</span>
+          </div>
+
+          <!-- FLOW side -->
+          <div class="card" style="padding:36px;border-color:rgba(124,58,237,0.3);" class="glow-violet">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
+              <div style="width:44px;height:44px;border-radius:12px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-infinity" style="color:#A855F7;font-size:18px;"></i>
+              </div>
+              <div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#F0F2FF;">The Flow</div>
+                <div style="color:#10B981;font-size:12px;font-family:'Space Mono',monospace;">WITH AUXORA</div>
+              </div>
+            </div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:14px;">
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-check-circle" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i>
+                <span>Agent runs your full ad stack <strong style="color:#F0F2FF;">24/7 autonomously</strong></span>
+              </li>
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-check-circle" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i>
+                <span>$4.99 strategy report instead of $5K agency retainer</span>
+              </li>
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-check-circle" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i>
+                <span>CAC optimized, ROAS maximized in real-time</span>
+              </li>
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-check-circle" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i>
+                <span>Brand energy converted into distribution leverage</span>
+              </li>
+              <li style="display:flex;gap:10px;align-items:flex-start;color:#8B8FA8;font-size:14px;">
+                <i class="fas fa-check-circle" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i>
+                <span>6-month roadmap, updated weekly by your AI co-founder</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════
+         STATS BAR
+    ══════════════════════════════════════════════ -->
+    <div class="gradient-divider"></div>
+    <div style="background:#0E1018;padding:48px 24px;">
+      <div style="max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <div style="text-align:center;padding:24px 12px;border-right:1px solid #252840;">
+          <div class="stat-num">10×</div>
+          <div style="color:#8B8FA8;font-size:13px;margin-top:8px;">Avg Revenue<br/>Multiplier</div>
+        </div>
+        <div style="text-align:center;padding:24px 12px;border-right:1px solid #252840;">
+          <div class="stat-num">3×</div>
+          <div style="color:#8B8FA8;font-size:13px;margin-top:8px;">Average<br/>ROAS</div>
+        </div>
+        <div style="text-align:center;padding:24px 12px;border-right:1px solid #252840;">
+          <div class="stat-num">$4.99</div>
+          <div style="color:#8B8FA8;font-size:13px;margin-top:8px;">First Full<br/>Strategy</div>
+        </div>
+        <div style="text-align:center;padding:24px 12px;">
+          <div class="stat-num">10m</div>
+          <div style="color:#8B8FA8;font-size:13px;margin-top:8px;">To Your<br/>Roadmap</div>
+        </div>
+      </div>
+    </div>
+    <div class="gradient-divider"></div>
+
+
+    <!-- ══════════════════════════════════════════════
+         HOW IT WORKS — The Agent Protocol
+    ══════════════════════════════════════════════ -->
+    <section id="how-it-works" style="padding:100px 24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:50%;right:-100px;width:500px;height:500px;background:radial-gradient(ellipse,rgba(217,70,239,0.06) 0%,transparent 60%);pointer-events:none;transform:translateY(-50%);"></div>
+
+      <div style="max-width:1200px;margin:0 auto;position:relative;z-index:1;">
+        <div style="text-align:center;margin-bottom:72px;">
+          <span class="pill pill-volt" style="margin-bottom:16px;">The Protocol</span>
+          <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,52px);letter-spacing:-0.03em;margin-top:16px;color:#F0F2FF;">
+            How the <span class="grad-volt">Revenue Agent</span><br/>Actually Works
+          </h2>
+          <p style="color:#8B8FA8;font-size:17px;max-width:520px;margin:20px auto 0;line-height:1.7;">
+            Five minutes of your brand's voice. A lifetime of autonomous execution.
+          </p>
+        </div>
+
+        <!-- Steps -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:relative;">
+
+          <div class="card flow-stage" style="padding:28px;text-align:center;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(124,58,237,0.05));border:1px solid rgba(124,58,237,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <i class="fas fa-microphone" style="color:#A855F7;font-size:22px;"></i>
+            </div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#4A4D66;letter-spacing:0.1em;margin-bottom:8px;">01</div>
+            <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#F0F2FF;margin-bottom:8px;">Brand Interview</h3>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.6;">10-minute voice conversation. Our AI captures your brand's DNA — voice, values, audience, and goals.</p>
+          </div>
+
+          <div class="card flow-stage" style="padding:28px;text-align:center;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(217,70,239,0.2),rgba(217,70,239,0.05));border:1px solid rgba(217,70,239,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <i class="fas fa-search" style="color:#D946EF;font-size:22px;"></i>
+            </div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#4A4D66;letter-spacing:0.1em;margin-bottom:8px;">02</div>
+            <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#F0F2FF;margin-bottom:8px;">Market Intelligence</h3>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.6;">We scan 1,000+ competitor ads, find the gaps, and model your fastest path to profitability.</p>
+          </div>
+
+          <div class="card flow-stage" style="padding:28px;text-align:center;">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <i class="fas fa-bolt" style="color:#F59E0B;font-size:22px;"></i>
+            </div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#4A4D66;letter-spacing:0.1em;margin-bottom:8px;">03</div>
+            <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#F0F2FF;margin-bottom:8px;">Strategy Unlock</h3>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.6;">$4.99 unlocks your full 6-month GTM roadmap — channels, budget, CAC targets, creative angles.</p>
+          </div>
+
+          <div class="card" style="padding:28px;text-align:center;border-color:rgba(16,185,129,0.3);">
+            <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05));border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <i class="fas fa-infinity" style="color:#10B981;font-size:22px;"></i>
+            </div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#4A4D66;letter-spacing:0.1em;margin-bottom:8px;">04</div>
+            <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#F0F2FF;margin-bottom:8px;">Autonomous Execution</h3>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.6;">Agent launches and optimizes your campaigns. Revenue compounds. You stay in flow.</p>
+          </div>
+
+        </div>
+
+        <div style="text-align:center;margin-top:48px;">
+          <button onclick="startJourney()" class="btn-primary" style="padding:16px 40px;font-size:15px;">
+            Start the Protocol — Free
+          </button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════
+         THE AGENT STACK — What Auxora Runs
+    ══════════════════════════════════════════════ -->
+    <section style="padding:100px 24px;background:#0E1018;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:1px;height:200px;background:linear-gradient(to bottom,transparent,#A855F7,transparent);"></div>
+
+      <div style="max-width:1200px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:72px;">
+          <span class="pill pill-volt" style="margin-bottom:16px;">The Agent Stack</span>
+          <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,52px);letter-spacing:-0.03em;margin-top:16px;">
+            <span style="color:#F0F2FF;">Your Entire Growth Stack.</span><br/>
+            <span class="grad-volt">Handled.</span>
+          </h2>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+
+          <div class="card agent-card" style="padding:32px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#1877F2,#0A52B5);display:flex;align-items:center;justify-content:center;">
+                  <i class="fab fa-facebook" style="color:white;font-size:16px;"></i>
+                </div>
+                <span style="font-family:'Syne',sans-serif;font-weight:700;color:#F0F2FF;">Meta Ads</span>
+              </div>
+              <span class="pill pill-green" style="font-size:10px;padding:3px 8px;">AUTO</span>
+            </div>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.7;margin-bottom:16px;">Campaign creation, audience targeting, creative testing, bid optimization — all running without you.</p>
+            <div style="background:#14161F;border-radius:10px;padding:12px;border:1px solid #252840;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="color:#4A4D66;font-family:'Space Mono',monospace;font-size:11px;">ROAS TARGET</span>
+                <span style="color:#10B981;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">3.2×</span>
+              </div>
+              <div style="height:4px;background:#252840;border-radius:2px;"><div style="height:4px;background:linear-gradient(to right,#1877F2,#A855F7);border-radius:2px;width:78%;"></div></div>
+            </div>
+          </div>
+
+          <div class="card agent-card" style="padding:32px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#EA4335,#FBBC05);display:flex;align-items:center;justify-content:center;">
+                  <i class="fab fa-google" style="color:white;font-size:16px;"></i>
+                </div>
+                <span style="font-family:'Syne',sans-serif;font-weight:700;color:#F0F2FF;">Google Ads</span>
+              </div>
+              <span class="pill pill-green" style="font-size:10px;padding:3px 8px;">AUTO</span>
+            </div>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.7;margin-bottom:16px;">Search + Shopping campaigns with AI-driven keyword selection, negative lists, and CPA optimization.</p>
+            <div style="background:#14161F;border-radius:10px;padding:12px;border:1px solid #252840;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="color:#4A4D66;font-family:'Space Mono',monospace;font-size:11px;">CPC EFFICIENCY</span>
+                <span style="color:#10B981;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">−42%</span>
+              </div>
+              <div style="height:4px;background:#252840;border-radius:2px;"><div style="height:4px;background:linear-gradient(to right,#EA4335,#FBBC05);border-radius:2px;width:65%;"></div></div>
+            </div>
+          </div>
+
+          <div class="card agent-card" style="padding:32px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#A855F7,#D946EF);display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-chart-line" style="color:white;font-size:16px;"></i>
+                </div>
+                <span style="font-family:'Syne',sans-serif;font-weight:700;color:#F0F2FF;">SEO + Content</span>
+              </div>
+              <span class="pill pill-volt" style="font-size:10px;padding:3px 8px;">BUILDING</span>
+            </div>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.7;margin-bottom:16px;">Long-term organic moat. AI generates keyword strategies, content calendars, and link-building plans.</p>
+            <div style="background:#14161F;border-radius:10px;padding:12px;border:1px solid #252840;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="color:#4A4D66;font-family:'Space Mono',monospace;font-size:11px;">ORGANIC TRAFFIC</span>
+                <span style="color:#A855F7;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">+340%</span>
+              </div>
+              <div style="height:4px;background:#252840;border-radius:2px;"><div style="height:4px;background:linear-gradient(to right,#A855F7,#D946EF);border-radius:2px;width:88%;"></div></div>
+            </div>
+          </div>
+
+          <div class="card agent-card" style="padding:32px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#F59E0B,#F97316);display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-envelope" style="color:white;font-size:16px;"></i>
+                </div>
+                <span style="font-family:'Syne',sans-serif;font-weight:700;color:#F0F2FF;">Email & SMS</span>
+              </div>
+              <span class="pill pill-green" style="font-size:10px;padding:3px 8px;">AUTO</span>
+            </div>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.7;margin-bottom:16px;">Lifecycle flows, winback campaigns, and segmented broadcasts that convert at every stage of the funnel.</p>
+            <div style="background:#14161F;border-radius:10px;padding:12px;border:1px solid #252840;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="color:#4A4D66;font-family:'Space Mono',monospace;font-size:11px;">OPEN RATE</span>
+                <span style="color:#F59E0B;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">38%</span>
+              </div>
+              <div style="height:4px;background:#252840;border-radius:2px;"><div style="height:4px;background:linear-gradient(to right,#F59E0B,#F97316);border-radius:2px;width:72%;"></div></div>
+            </div>
+          </div>
+
+          <div class="card agent-card" style="padding:32px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#EC4899,#8B5CF6);display:flex;align-items:center;justify-content:center;">
+                  <i class="fab fa-instagram" style="color:white;font-size:16px;"></i>
+                </div>
+                <span style="font-family:'Syne',sans-serif;font-weight:700;color:#F0F2FF;">Influencers</span>
+              </div>
+              <span class="pill pill-volt" style="font-size:10px;padding:3px 8px;">SOON</span>
+            </div>
+            <p style="color:#8B8FA8;font-size:13px;line-height:1.7;margin-bottom:16px;">AI-matched micro-influencer outreach, performance tracking, and UGC content briefs tailored to your brand.</p>
+            <div style="background:#14161F;border-radius:10px;padding:12px;border:1px solid #252840;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="color:#4A4D66;font-family:'Space Mono',monospace;font-size:11px;">ENGAGEMENT</span>
+                <span style="color:#EC4899;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">6.2%</span>
+              </div>
+              <div style="height:4px;background:#252840;border-radius:2px;"><div style="height:4px;background:linear-gradient(to right,#EC4899,#8B5CF6);border-radius:2px;width:55%;"></div></div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:32px;background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(217,70,239,0.05));border-color:rgba(124,58,237,0.3);">
+            <div style="height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px;">
+              <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#D946EF);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(124,58,237,0.4);">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <h3 style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#F0F2FF;">Full Stack<br/>Orchestration</h3>
+              <p style="color:#8B8FA8;font-size:13px;line-height:1.6;">All channels working in sync. One agent, one strategy, compounding results.</p>
+              <button onclick="startJourney()" class="btn-primary" style="padding:12px 28px;font-size:14px;width:100%;">
+                Activate Now →
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════
+         RESULTS — Proven in the Wild
+    ══════════════════════════════════════════════ -->
+    <section id="results" style="padding:100px 24px;position:relative;overflow:hidden;" class="section-glow">
+      <div style="max-width:1200px;margin:0 auto;position:relative;z-index:1;">
+        <div style="text-align:center;margin-bottom:72px;">
+          <span class="pill pill-amber" style="margin-bottom:16px;">Proof of Flow</span>
+          <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,52px);letter-spacing:-0.03em;margin-top:16px;color:#F0F2FF;">
+            Real Brands. <span class="grad-warm">Real Revenue.</span>
+          </h2>
+        </div>
+
+        <!-- Hero case study -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px;border-color:rgba(245,158,11,0.2);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;">
+            <!-- Video side -->
+            <div style="position:relative;cursor:pointer;background:#000;" onclick="openVideoModal(0)">
+              <img src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg" alt="Yamabushi Farms" style="width:100%;aspect-ratio:16/9;object-fit:cover;opacity:0.8;display:block;"/>
+              <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 50%,rgba(8,9,12,0.9));"></div>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                <div style="width:72px;height:72px;border-radius:50%;background:rgba(245,158,11,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(245,158,11,0.5);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                  <i class="fas fa-play" style="color:black;font-size:24px;margin-left:4px;"></i>
+                </div>
+              </div>
+              <div style="position:absolute;top:16px;left:16px;">
+                <span class="pill pill-amber">🛒 D2C Case Study</span>
+              </div>
+            </div>
+
+            <!-- Stats side -->
+            <div style="padding:40px;">
+              <div style="font-family:'Space Mono',monospace;font-size:11px;color:#4A4D66;letter-spacing:0.1em;margin-bottom:12px;">CASE STUDY · VERIFIED RESULTS</div>
+              <h3 style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#F0F2FF;margin-bottom:6px;">Yamabushi Farms</h3>
+              <p style="color:#8B8FA8;font-size:14px;margin-bottom:28px;">Japanese heritage wellness brand · D2C direct</p>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;">
+                <div style="background:#0E1018;border-radius:12px;padding:16px;border:1px solid rgba(245,158,11,0.2);">
+                  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#F59E0B;">10×</div>
+                  <div style="color:#8B8FA8;font-size:12px;margin-top:4px;">Revenue in<br/>2 months</div>
+                </div>
+                <div style="background:#0E1018;border-radius:12px;padding:16px;border:1px solid rgba(16,185,129,0.2);">
+                  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#10B981;">3×</div>
+                  <div style="color:#8B8FA8;font-size:12px;margin-top:4px;">ROAS in<br/>first month</div>
+                </div>
+                <div style="background:#0E1018;border-radius:12px;padding:16px;border:1px solid rgba(168,85,247,0.2);">
+                  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#A855F7;">62%</div>
+                  <div style="color:#8B8FA8;font-size:12px;margin-top:4px;">CAC<br/>reduction</div>
+                </div>
+                <div style="background:#0E1018;border-radius:12px;padding:16px;border:1px solid rgba(217,70,239,0.2);">
+                  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#D946EF;">6wk</div>
+                  <div style="color:#8B8FA8;font-size:12px;margin-top:4px;">To<br/>profitability</div>
+                </div>
+              </div>
+
+              <button onclick="openVideoModal(0)" class="btn-ghost" style="width:100%;padding:14px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;">
+                <i class="fas fa-play-circle" style="color:#F59E0B;"></i>
+                Watch the Full Story
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonials -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card" style="padding:28px;">
+            <div style="display:flex;gap:1px;margin-bottom:12px;">
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+            </div>
+            <p style="color:#8B8FA8;font-size:14px;line-height:1.7;margin-bottom:20px;font-style:italic;">"I was drowning in Meta Ads dashboards. Auxora took that entire thing off my plate. Now I just check the dashboard on Friday mornings and the numbers are going up."</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#A855F7,#D946EF);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:white;">S</div>
+              <div>
+                <div style="font-weight:600;font-size:13px;color:#F0F2FF;">Sarah K.</div>
+                <div style="color:#4A4D66;font-size:12px;font-family:'Space Mono',monospace;">Skincare D2C Founder</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:28px;">
+            <div style="display:flex;gap:1px;margin-bottom:12px;">
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+              <i class="fas fa-star" style="color:#F59E0B;font-size:13px;"></i>
+            </div>
+            <p style="color:#8B8FA8;font-size:14px;line-height:1.7;margin-bottom:20px;font-style:italic;">"The $4.99 report was insane value. It showed me exactly why my ads weren't converting and gave me a week-by-week plan. Best marketing spend I've ever made."</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#10B981,#0EA5E9);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:white;">M</div>
+              <div>
+                <div style="font-weight:600;font-size:13px;color:#F0F2FF;">Marcus T.</div>
+                <div style="color:#4A4D66;font-size:12px;font-family:'Space Mono',monospace;">Pet Accessories Brand</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════
+         PRICING — The Entry Point
+    ══════════════════════════════════════════════ -->
+    <section id="pricing" style="padding:100px 24px;background:#0E1018;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(124,58,237,0.08) 0%,transparent 60%);pointer-events:none;"></div>
+
+      <div style="max-width:1200px;margin:0 auto;position:relative;z-index:1;">
+        <div style="text-align:center;margin-bottom:72px;">
+          <span class="pill pill-volt" style="margin-bottom:16px;">Pricing</span>
+          <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,52px);letter-spacing:-0.03em;margin-top:16px;color:#F0F2FF;">
+            Start for $4.99.<br/><span class="grad-volt">Scale with the Agent.</span>
+          </h2>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto;">
+
+          <!-- Starter -->
+          <div class="card" style="padding:32px;">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#4A4D66;letter-spacing:0.1em;margin-bottom:16px;">ENTRY</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:40px;color:#F0F2FF;margin-bottom:4px;">$4.99</div>
+            <div style="color:#8B8FA8;font-size:13px;margin-bottom:24px;">one-time · first report</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i> Full competitor intelligence</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i> 6-month GTM roadmap</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i> Channel + budget plan</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i> CAC/LTV projections</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#10B981;margin-top:2px;flex-shrink:0;"></i> PDF + email delivery</li>
+            </ul>
+            <button onclick="startJourney()" class="btn-ghost" style="width:100%;padding:14px;font-size:14px;">
+              Get My Strategy →
+            </button>
+          </div>
+
+          <!-- Growth — highlighted -->
+          <div class="card" style="padding:32px;border-color:rgba(124,58,237,0.4);background:linear-gradient(160deg,rgba(124,58,237,0.08),rgba(14,16,24,0.9));position:relative;">
+            <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7C3AED,#D946EF);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.05em;padding:5px 16px;border-radius:999px;">MOST POPULAR</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#A855F7;letter-spacing:0.1em;margin-bottom:16px;">GROWTH</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:40px;color:#F0F2FF;margin-bottom:4px;">$450<span style="font-size:20px;color:#8B8FA8;">/mo</span></div>
+            <div style="color:#8B8FA8;font-size:13px;margin-bottom:24px;">autonomous agent · billed monthly</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#A855F7;margin-top:2px;flex-shrink:0;"></i> Everything in Entry</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#A855F7;margin-top:2px;flex-shrink:0;"></i> Meta + Google auto-management</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#A855F7;margin-top:2px;flex-shrink:0;"></i> Weekly AI optimization</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#A855F7;margin-top:2px;flex-shrink:0;"></i> Email + SMS flows</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#A855F7;margin-top:2px;flex-shrink:0;"></i> Real-time dashboard</li>
+            </ul>
+            <button onclick="startJourney()" class="btn-primary" style="width:100%;padding:14px;font-size:14px;">
+              Enter Flow State →
+            </button>
+          </div>
+
+          <!-- Scale -->
+          <div class="card" style="padding:32px;">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#4A4D66;letter-spacing:0.1em;margin-bottom:16px;">SCALE</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:40px;color:#F0F2FF;margin-bottom:4px;">$1,200<span style="font-size:20px;color:#8B8FA8;">/mo</span></div>
+            <div style="color:#8B8FA8;font-size:13px;margin-bottom:24px;">full stack · custom execution</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#F59E0B;margin-top:2px;flex-shrink:0;"></i> Everything in Growth</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#F59E0B;margin-top:2px;flex-shrink:0;"></i> Influencer outreach</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#F59E0B;margin-top:2px;flex-shrink:0;"></i> SEO + content engine</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#F59E0B;margin-top:2px;flex-shrink:0;"></i> Dedicated AI strategist</li>
+              <li style="display:flex;gap:8px;align-items:flex-start;color:#8B8FA8;font-size:13px;"><i class="fas fa-check" style="color:#F59E0B;margin-top:2px;flex-shrink:0;"></i> White-glove onboarding</li>
+            </ul>
+            <button onclick="startJourney()" class="btn-ghost" style="width:100%;padding:14px;font-size:14px;">
+              Talk to Us →
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════
+         WEBSITE INPUT — Direct CTA
+    ══════════════════════════════════════════════ -->
+    <section style="padding:80px 24px;position:relative;overflow:hidden;">
+      <div style="max-width:640px;margin:0 auto;text-align:center;">
+        <span class="pill pill-volt" style="margin-bottom:20px;">Start Now</span>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,4vw,44px);letter-spacing:-0.03em;color:#F0F2FF;margin:16px 0 12px;">
+          Enter Your Brand URL.<br/><span class="grad-volt">Let the Agent Begin.</span>
+        </h2>
+        <p style="color:#8B8FA8;margin-bottom:32px;font-size:16px;">Auxora analyzes your market in seconds. No setup, no credit card.</p>
+
+        <div style="background:#14161F;border-radius:16px;padding:8px;border:1px solid #252840;box-shadow:0 0 40px rgba(124,58,237,0.1);">
+          <form id="websiteForm" style="display:flex;gap:8px;">
+            <input
+              type="text"
+              id="websiteInput"
+              placeholder="yourbrand.com"
+              class="ax-input"
+              style="flex:1;border:0;background:transparent;border-radius:10px;padding:14px 18px;"
+              required
+            />
+            <button type="submit" class="btn-primary" style="padding:14px 28px;font-size:15px;white-space:nowrap;border-radius:10px;">
+              <i class="fas fa-bolt" style="margin-right:6px;"></i> Analyze
+            </button>
+          </form>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:20px;margin-top:16px;flex-wrap:wrap;">
+          <span style="display:flex;align-items:center;gap:6px;color:#4A4D66;font-size:12px;font-family:'Space Mono',monospace;">
+            <i class="fas fa-check" style="color:#10B981;"></i> Free to start
+          </span>
+          <span style="display:flex;align-items:center;gap:6px;color:#4A4D66;font-size:12px;font-family:'Space Mono',monospace;">
+            <i class="fas fa-check" style="color:#10B981;"></i> Results in 10 min
+          </span>
+          <span style="display:flex;align-items:center;gap:6px;color:#4A4D66;font-size:12px;font-family:'Space Mono',monospace;">
+            <i class="fas fa-check" style="color:#10B981;"></i> First report $4.99
+          </span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════
+         FOOTER
+    ══════════════════════════════════════════════ -->
+    <div class="gradient-divider"></div>
+    <footer style="padding:40px 24px;background:#08090C;">
+      <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#7C3AED,#D946EF);display:flex;align-items:center;justify-content:center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#F0F2FF;">Auxora</span>
+          <span style="color:#4A4D66;font-size:13px;">— The Vibe Business OS</span>
+        </div>
+        <div style="display:flex;gap:24px;">
+          <a href="/login" style="color:#4A4D66;font-size:13px;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#8B8FA8'" onmouseout="this.style.color='#4A4D66'">Sign In</a>
+          <a href="/register" style="color:#4A4D66;font-size:13px;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#8B8FA8'" onmouseout="this.style.color='#4A4D66'">Register</a>
+          <span style="color:#4A4D66;font-size:13px;">© 2025 Auxora.ai</span>
+        </div>
+      </div>
+    </footer>
+
+
+    <!-- ══════════════════════════════════════════════
+         VIDEO MODAL
+    ══════════════════════════════════════════════ -->
+    <div id="videoModal" style="display:none;position:fixed;inset:0;background:rgba(8,9,12,0.95);z-index:1000;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(12px);">
+      <div style="position:relative;width:100%;max-width:900px;">
+        <button onclick="closeVideoModal()" style="position:absolute;top:-44px;right:0;background:none;border:none;color:#8B8FA8;font-size:24px;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#A855F7'" onmouseout="this.style.color='#8B8FA8'">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="card" style="overflow:hidden;padding:0;border-color:rgba(124,58,237,0.3);">
+          <div style="aspect-ratio:16/9;">
+            <iframe id="videoPlayer" width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div style="padding:24px;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div id="videoTitle" style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#F0F2FF;"></div>
+              <div id="videoDescription" style="color:#8B8FA8;font-size:13px;margin-top:4px;"></div>
+            </div>
+            <button onclick="closeVideoModal()" class="btn-ghost" style="padding:10px 20px;font-size:13px;">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /z-index wrapper -->
+
+
+  <!-- ══════════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════════ -->
+  <script>
+  // ── Terminal animation ──
+  (function animateTerminal() {
+    const lines = [
+      { el: 'termLine1', delay: 800 },
+      { el: 'termLine2', delay: 1600 },
+      { el: 'termLine3', delay: 2600 },
+      { el: 'termLine4', delay: 3600 },
+      { el: 'termLine5', delay: 4800 },
+      { el: 'termLine6', delay: 5800 },
+      { el: 'termCursor', delay: 6200 },
     ];
-
-    let currentVideoIndex = 0;
-
-    function openVideoModal(index) {
-        currentVideoIndex = index;
-        const video = videoData[index];
-        document.getElementById('videoPlayer').src = 'https://www.youtube.com/embed/' + video.id + '?autoplay=1&rel=0';
-        document.getElementById('videoTitle').textContent = video.title;
-        document.getElementById('videoDescription').textContent = video.description;
-        document.getElementById('videoModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeVideoModal() {
-        document.getElementById('videoPlayer').src = '';
-        document.getElementById('videoModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeVideoModal();
+    lines.forEach(({ el, delay }) => {
+      setTimeout(() => {
+        const e = document.getElementById(el);
+        if (e) e.style.opacity = '1';
+      }, delay);
     });
+    // Cursor blink
+    setTimeout(() => {
+      const cursor = document.getElementById('termCursor');
+      if (!cursor) return;
+      let visible = true;
+      setInterval(() => {
+        cursor.style.opacity = (visible = !visible) ? '1' : '0';
+      }, 500);
+    }, 6200);
+  })();
 
-    // Website Form Handler
-    document.getElementById('websiteForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        let website = document.getElementById('websiteInput').value.trim();
-        if (!website) {
-            alert('Please enter your website or brand name');
-            return;
-        }
-        if (!website.startsWith('http://') && !website.startsWith('https://')) {
-            website = 'https://' + website;
-        }
-        const user = Storage.getUser();
-        const session = Storage.getSession();
-        if (!user || !session) {
-            const returnUrl = '/report-preview?website=' + encodeURIComponent(website);
-            window.location.href = '/login?returnUrl=' + encodeURIComponent(returnUrl);
-            return;
-        }
-        window.location.href = '/report-preview?website=' + encodeURIComponent(website);
-    });
+  // ── Video Modal ──
+  const videoData = [
+    { id: 'nw1XYryhdIU', title: 'Yamabushi Farms', description: 'D2C Brand · 10× Revenue in 2 Months · 3× ROAS' }
+  ];
 
-    // Start interview (requires login)
-    function startInterview() {
-        const existingUser = localStorage.getItem('nexspark_user');
-        if (existingUser) {
-            window.location.href = '/dashboard';
-        } else {
-            window.location.href = '/static/login.html';
-        }
+  function openVideoModal(index) {
+    const v = videoData[index];
+    document.getElementById('videoPlayer').src = 'https://www.youtube.com/embed/' + v.id + '?autoplay=1&rel=0';
+    document.getElementById('videoTitle').textContent = v.title;
+    document.getElementById('videoDescription').textContent = v.description;
+    const modal = document.getElementById('videoModal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeVideoModal() {
+    document.getElementById('videoPlayer').src = '';
+    document.getElementById('videoModal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideoModal(); });
+
+  // ── Website form ──
+  document.getElementById('websiteForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let w = document.getElementById('websiteInput').value.trim();
+    if (!w) return;
+    if (!w.startsWith('http://') && !w.startsWith('https://')) w = 'https://' + w;
+    const user = typeof Storage !== 'undefined' ? Storage.getUser() : null;
+    const session = typeof Storage !== 'undefined' ? Storage.getSession() : null;
+    if (!user || !session) {
+      window.location.href = '/login?returnUrl=' + encodeURIComponent('/report-preview?website=' + encodeURIComponent(w));
+      return;
     }
+    window.location.href = '/report-preview?website=' + encodeURIComponent(w);
+  });
 
-    // Update CTA buttons
-    document.addEventListener('DOMContentLoaded', () => {
-        const buttons = document.querySelectorAll('button[onclick*=\'/interview\']');
-        buttons.forEach(button => {
-            button.onclick = (e) => {
-                e.preventDefault();
-                startInterview();
-            };
-        });
+  // ── Start journey ──
+  function startInterview() {
+    const u = localStorage.getItem('auxora_user');
+    window.location.href = u ? '/dashboard' : '/static/login.html';
+  }
+  function startJourney() { startInterview(); }
+
+  // ── Smooth scroll for anchor links ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
-    </script>
+  });
+  </script>
 
-    <script src="/static/modal-utils.js"></script>
-    <script src="/static/app.js"></script>
+  <script src="/static/modal-utils.js"></script>
+  <script src="/static/app.js"></script>
 </body>
 </html>
 `;

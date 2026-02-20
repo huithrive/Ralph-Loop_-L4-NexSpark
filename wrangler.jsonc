@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "nexspark-growth",
+	"name": "auxora-growth",
 	"compatibility_date": "2024-01-01",
 	"pages_build_output_dir": "./dist",
 	"compatibility_flags": [
@@ -12,7 +12,7 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "nexspark-interviews",
+			"database_name": "auxora-interviews",
 			"database_id": "a393086b-cffc-487a-b49a-9f147e0c445f"
 		}
 	],

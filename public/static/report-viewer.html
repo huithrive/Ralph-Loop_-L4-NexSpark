@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growth Strategy Report | NexSpark</title>
+    <title>Growth Strategy Report | Auxora</title>
     <style>
         body {
             margin: 0;
@@ -50,7 +50,7 @@
 <body>
     <div id="toolbar">
         <div style="color: #FF9C00; font-weight: bold; font-size: 18px;">
-            <i class="fas fa-bolt"></i> NEXSPARK REPORT
+            <i class="fas fa-bolt"></i> AUXORA REPORT
         </div>
         <div style="display: flex; gap: 12px;">
             <button onclick="downloadReport()">
@@ -98,7 +98,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `nexspark-report-${data.report.brand_name || 'report'}-${Date.now()}.html`;
+                a.download = `auxora-report-${data.report.brand_name || 'report'}-${Date.now()}.html`;
                 a.click();
                 URL.revokeObjectURL(url);
 

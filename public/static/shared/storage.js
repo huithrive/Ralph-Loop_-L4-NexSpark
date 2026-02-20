@@ -3,11 +3,11 @@
  */
 
 const STORAGE_KEYS = {
-  USER: 'nexspark_user',
-  SESSION: 'nexspark_session',
-  INTERVIEW: 'nexspark_interview',
-  INTERVIEW_PROGRESS: 'nexspark_interview_progress',
-  CONTINUE_INTERVIEW: 'nexspark_continue_interview',
+  USER: 'auxora_user',
+  SESSION: 'auxora_session',
+  INTERVIEW: 'auxora_interview',
+  INTERVIEW_PROGRESS: 'auxora_interview_progress',
+  CONTINUE_INTERVIEW: 'auxora_continue_interview',
 };
 
 /**

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Interview | NexSpark Growth OS</title>
+    <title>Voice Interview | Auxora</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 pale: '#FFCC99',
@@ -143,16 +143,16 @@
         <div class="flex items-center gap-2 flex-1">
             <div class="h-12 bg-white rounded-full flex items-center justify-center px-6 min-w-[180px]">
                 <i class="fas fa-bolt text-3xl text-yellow-500 mr-2"></i>
-                <span class="text-2xl font-header font-bold text-black tracking-wider">NEXSPARK</span>
+                <span class="text-2xl font-header font-bold text-black tracking-wider">AUXORA</span>
             </div>
-            <div class="h-8 w-16 bg-nexspark-red rounded-full self-start mt-2 hidden md:block"></div>
-            <div class="h-8 w-64 bg-nexspark-gold rounded-full flex items-center justify-center px-6 self-start mt-2 hidden lg:flex">
+            <div class="h-8 w-16 bg-auxora-red rounded-full self-start mt-2 hidden md:block"></div>
+            <div class="h-8 w-64 bg-auxora-gold rounded-full flex items-center justify-center px-6 self-start mt-2 hidden lg:flex">
                 <span class="text-black font-header font-bold tracking-widest text-sm">VOICE INTERVIEW</span>
             </div>
         </div>
         
         <div class="flex items-center gap-4 mt-2">
-            <button onclick="window.location.href='/dashboard'" class="lcars-btn bg-nexspark-blue hover:bg-white text-black px-4 py-2 rounded-lg text-xs">
+            <button onclick="window.location.href='/dashboard'" class="lcars-btn bg-auxora-blue hover:bg-white text-black px-4 py-2 rounded-lg text-xs">
                 <i class="fas fa-arrow-left mr-1"></i> BACK TO DASHBOARD
             </button>
         </div>
@@ -165,14 +165,14 @@
             <!-- Interview Header -->
             <div class="mb-12">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="h-20 w-20 bg-nexspark-gold rounded-tl-3xl flex items-center justify-center">
+                    <div class="h-20 w-20 bg-auxora-gold rounded-tl-3xl flex items-center justify-center">
                         <i class="fas fa-microphone text-4xl text-black"></i>
                     </div>
                     <div class="flex-1">
                         <h1 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
                             Growth Diagnosis
                         </h1>
-                        <p class="text-nexspark-gold font-mono text-sm uppercase tracking-widest mt-2">
+                        <p class="text-auxora-gold font-mono text-sm uppercase tracking-widest mt-2">
                             <i class="fas fa-robot mr-2"></i>
                             Interview with Nexspark
                         </p>
@@ -181,19 +181,19 @@
             </div>
 
             <!-- Interview Interface -->
-            <div class="bg-nexspark-panel border-2 border-nexspark-gold rounded-2xl p-8 backdrop-blur-xl mb-8">
+            <div class="bg-auxora-panel border-2 border-auxora-gold rounded-2xl p-8 backdrop-blur-xl mb-8">
                 
                 <!-- Microphone Status Indicator -->
                 <div class="flex flex-col items-center justify-center mb-8">
                     <div class="relative mb-6">
-                        <div class="absolute inset-0 rounded-full bg-nexspark-gold opacity-20 pulse-ring"></div>
-                        <div id="micButton" class="w-32 h-32 rounded-full bg-nexspark-gold flex items-center justify-center cursor-pointer hover:bg-nexspark-pale transition-all shadow-lg shadow-nexspark-gold/50" onclick="toggleRecording()">
+                        <div class="absolute inset-0 rounded-full bg-auxora-gold opacity-20 pulse-ring"></div>
+                        <div id="micButton" class="w-32 h-32 rounded-full bg-auxora-gold flex items-center justify-center cursor-pointer hover:bg-auxora-pale transition-all shadow-lg shadow-auxora-gold/50" onclick="toggleRecording()">
                             <i id="micIcon" class="fas fa-microphone text-5xl text-black"></i>
                         </div>
                     </div>
                     
                     <div id="statusText" class="text-center mb-4">
-                        <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+                        <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
                             Ready to Begin
                         </div>
                         <div class="text-white/70 font-mono text-sm">
@@ -214,11 +214,11 @@
                 </div>
 
                 <!-- Current Question Display -->
-                <div id="questionBox" class="bg-nexspark-blue/10 border-l-4 border-nexspark-blue p-6 rounded-r-lg mb-6 hidden">
+                <div id="questionBox" class="bg-auxora-blue/10 border-l-4 border-auxora-blue p-6 rounded-r-lg mb-6 hidden">
                     <div class="flex items-start gap-3">
-                        <i class="fas fa-robot text-nexspark-blue text-2xl mt-1"></i>
+                        <i class="fas fa-robot text-auxora-blue text-2xl mt-1"></i>
                         <div class="flex-1">
-                            <div class="text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">
+                            <div class="text-auxora-blue font-mono text-xs uppercase tracking-widest mb-2">
                                 Nexspark:
                             </div>
                             <p id="currentQuestion" class="text-white font-mono text-base leading-relaxed">
@@ -230,7 +230,7 @@
 
                 <!-- Transcript Display -->
                 <div id="transcriptContainer" class="space-y-4 max-h-96 overflow-y-auto mb-6 hidden">
-                    <div class="text-nexspark-gold font-mono text-xs uppercase tracking-widest mb-4">
+                    <div class="text-auxora-gold font-mono text-xs uppercase tracking-widest mb-4">
                         <i class="fas fa-file-alt mr-2"></i>
                         Interview Transcript
                     </div>
@@ -241,22 +241,22 @@
 
                 <!-- Control Buttons -->
                 <div class="flex gap-4 justify-center">
-                    <button id="startBtn" onclick="startInterview()" class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-8 py-3 rounded-lg">
+                    <button id="startBtn" onclick="startInterview()" class="lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black px-8 py-3 rounded-lg">
                         <i class="fas fa-play mr-2"></i> START INTERVIEW
                     </button>
-                    <button id="pauseBtn" onclick="pauseInterview()" class="lcars-btn bg-nexspark-blue hover:bg-white text-black px-8 py-3 rounded-lg hidden" disabled>
+                    <button id="pauseBtn" onclick="pauseInterview()" class="lcars-btn bg-auxora-blue hover:bg-white text-black px-8 py-3 rounded-lg hidden" disabled>
                         <i class="fas fa-pause mr-2"></i> PAUSE
                     </button>
-                    <button id="endBtn" onclick="endInterview()" class="lcars-btn bg-nexspark-red hover:bg-red-700 text-white px-8 py-3 rounded-lg hidden" disabled>
+                    <button id="endBtn" onclick="endInterview()" class="lcars-btn bg-auxora-red hover:bg-red-700 text-white px-8 py-3 rounded-lg hidden" disabled>
                         <i class="fas fa-stop mr-2"></i> END INTERVIEW
                     </button>
                 </div>
             </div>
 
             <!-- Interview Progress -->
-            <div class="bg-nexspark-panel border-l-4 border-nexspark-purple p-6 rounded-r-lg backdrop-blur-sm">
+            <div class="bg-auxora-panel border-l-4 border-auxora-purple p-6 rounded-r-lg backdrop-blur-sm">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="text-nexspark-purple font-mono text-xs uppercase tracking-widest">
+                    <div class="text-auxora-purple font-mono text-xs uppercase tracking-widest">
                         <i class="fas fa-tasks mr-2"></i>
                         Interview Progress
                     </div>
@@ -265,23 +265,23 @@
                     </div>
                 </div>
                 <div class="w-full bg-black rounded-full h-3 overflow-hidden">
-                    <div id="progressBar" class="bg-gradient-to-r from-nexspark-gold via-nexspark-blue to-nexspark-purple h-full transition-all duration-500" style="width: 0%"></div>
+                    <div id="progressBar" class="bg-gradient-to-r from-auxora-gold via-auxora-blue to-auxora-purple h-full transition-all duration-500" style="width: 0%"></div>
                 </div>
             </div>
 
             <!-- System Info -->
-            <div class="mt-8 bg-nexspark-gold/10 border-l-4 border-nexspark-gold p-6 rounded-r-lg backdrop-blur-sm">
+            <div class="mt-8 bg-auxora-gold/10 border-l-4 border-auxora-gold p-6 rounded-r-lg backdrop-blur-sm">
                 <div class="flex items-start gap-3">
-                    <i class="fas fa-info-circle text-nexspark-gold text-xl mt-1"></i>
+                    <i class="fas fa-info-circle text-auxora-gold text-xl mt-1"></i>
                     <div>
-                        <div class="text-nexspark-gold font-mono text-xs uppercase tracking-widest mb-2">
+                        <div class="text-auxora-gold font-mono text-xs uppercase tracking-widest mb-2">
                             Interview Guidelines
                         </div>
                         <ul class="text-white/90 font-mono text-sm leading-relaxed space-y-2">
-                            <li><i class="fas fa-check text-nexspark-blue mr-2"></i>Speak clearly and naturally</li>
-                            <li><i class="fas fa-check text-nexspark-blue mr-2"></i>Take your time to think about answers</li>
-                            <li><i class="fas fa-check text-nexspark-blue mr-2"></i>Be specific about your growth challenges</li>
-                            <li><i class="fas fa-check text-nexspark-blue mr-2"></i>Interview typically takes 10-15 minutes</li>
+                            <li><i class="fas fa-check text-auxora-blue mr-2"></i>Speak clearly and naturally</li>
+                            <li><i class="fas fa-check text-auxora-blue mr-2"></i>Take your time to think about answers</li>
+                            <li><i class="fas fa-check text-auxora-blue mr-2"></i>Be specific about your growth challenges</li>
+                            <li><i class="fas fa-check text-auxora-blue mr-2"></i>Interview typically takes 10-15 minutes</li>
                         </ul>
                     </div>
                 </div>

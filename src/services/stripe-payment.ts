@@ -40,7 +40,7 @@ export async function createPaymentIntent(
         'metadata[userId]': userId,
         'metadata[product]': 'growth_strategy_report',
         'receipt_email': userEmail,
-        'description': 'NexSpark Growth Strategy Report - Comprehensive 6-Month GTM Plan'
+        'description': 'Auxora Growth Strategy Report - Comprehensive 6-Month GTM Plan'
       })
     });
 

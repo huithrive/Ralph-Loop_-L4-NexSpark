@@ -274,7 +274,7 @@ export async function generateRealtimeSummary(
         console.log(`🔍 Researching website: ${context.userProfile.websiteUrl}`);
         const siteResponse = await fetch(context.userProfile.websiteUrl, {
           headers: {
-            'User-Agent': 'Mozilla/5.0 (compatible; NexSpark/1.0; +https://nexspark.io)'
+            'User-Agent': 'Mozilla/5.0 (compatible; Auxora/1.0; +https://auxora.ai)'
           }
         });
         

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | NexSpark Growth OS</title>
+    <title>Dashboard | Auxora</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 pale: '#FFCC99',
@@ -114,20 +114,20 @@
         <div class="flex items-center gap-2 flex-1">
             <div class="h-12 bg-white rounded-full flex items-center justify-center px-6 min-w-[180px]">
                 <i class="fas fa-bolt text-3xl text-yellow-500 mr-2"></i>
-                <span class="text-2xl font-header font-bold text-black tracking-wider">NEXSPARK</span>
+                <span class="text-2xl font-header font-bold text-black tracking-wider">AUXORA</span>
             </div>
-            <div class="h-8 w-16 bg-nexspark-red rounded-full self-start mt-2 hidden md:block"></div>
-            <div class="h-8 w-64 bg-nexspark-blue rounded-full flex items-center justify-center px-6 self-start mt-2 hidden lg:flex">
+            <div class="h-8 w-16 bg-auxora-red rounded-full self-start mt-2 hidden md:block"></div>
+            <div class="h-8 w-64 bg-auxora-blue rounded-full flex items-center justify-center px-6 self-start mt-2 hidden lg:flex">
                 <span class="text-black font-header font-bold tracking-widest text-sm">GROWTH OS - DASHBOARD</span>
             </div>
         </div>
         
         <div class="flex items-center gap-4 mt-2">
             <div class="text-right hidden md:block">
-                <div class="text-nexspark-gold font-mono text-xs uppercase tracking-wider">Operator</div>
+                <div class="text-auxora-gold font-mono text-xs uppercase tracking-wider">Operator</div>
                 <div id="userName" class="text-white font-header text-sm">Loading...</div>
             </div>
-            <button onclick="logout()" class="lcars-btn bg-nexspark-red hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs">
+            <button onclick="logout()" class="lcars-btn bg-auxora-red hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs">
                 <i class="fas fa-sign-out-alt mr-1"></i> LOGOUT
             </button>
         </div>
@@ -140,14 +140,14 @@
             <!-- Welcome Section -->
             <div class="mb-12">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="h-20 w-20 bg-nexspark-gold rounded-tl-3xl flex items-center justify-center">
+                    <div class="h-20 w-20 bg-auxora-gold rounded-tl-3xl flex items-center justify-center">
                         <span class="text-black font-header text-4xl font-bold">01</span>
                     </div>
                     <div class="flex-1">
                         <h1 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
                             Mission Control
                         </h1>
-                        <p class="text-nexspark-blue font-mono text-sm uppercase tracking-widest mt-2">
+                        <p class="text-auxora-blue font-mono text-sm uppercase tracking-widest mt-2">
                             <span class="status-indicator status-active"></span>
                             System Online
                         </p>
@@ -158,40 +158,40 @@
             <!-- Growth Journey Status -->
             <div class="grid md:grid-cols-3 gap-6 mb-12">
                 <!-- Registration Status -->
-                <div class="bg-nexspark-panel border-t-4 border-nexspark-blue p-6 backdrop-blur-sm">
+                <div class="bg-auxora-panel border-t-4 border-auxora-blue p-6 backdrop-blur-sm">
                     <div class="flex items-center justify-between mb-4">
-                        <i class="fas fa-user-check text-3xl text-nexspark-blue"></i>
+                        <i class="fas fa-user-check text-3xl text-auxora-blue"></i>
                         <span class="status-indicator status-completed"></span>
                     </div>
-                    <h3 class="text-xl font-header font-bold text-nexspark-blue uppercase mb-2">Registration</h3>
+                    <h3 class="text-xl font-header font-bold text-auxora-blue uppercase mb-2">Registration</h3>
                     <p class="text-white/70 font-mono text-sm">Account created and authenticated</p>
-                    <div class="mt-4 text-nexspark-gold font-mono text-xs">
+                    <div class="mt-4 text-auxora-gold font-mono text-xs">
                         <i class="fas fa-check-circle mr-1"></i> COMPLETED
                     </div>
                 </div>
 
                 <!-- Voice Interview Status -->
-                <div id="interviewCard" class="bg-nexspark-panel border-t-4 border-nexspark-gold p-6 backdrop-blur-sm cursor-pointer hover:border-nexspark-pale transition-all" onclick="startInterview()">
+                <div id="interviewCard" class="bg-auxora-panel border-t-4 border-auxora-gold p-6 backdrop-blur-sm cursor-pointer hover:border-auxora-pale transition-all" onclick="startInterview()">
                     <div class="flex items-center justify-between mb-4">
-                        <i class="fas fa-microphone text-3xl text-nexspark-gold"></i>
+                        <i class="fas fa-microphone text-3xl text-auxora-gold"></i>
                         <span id="interviewStatus" class="status-indicator status-pending"></span>
                     </div>
-                    <h3 class="text-xl font-header font-bold text-nexspark-gold uppercase mb-2">Voice Interview</h3>
+                    <h3 class="text-xl font-header font-bold text-auxora-gold uppercase mb-2">Voice Interview</h3>
                     <p class="text-white/70 font-mono text-sm">AI-powered growth diagnosis with Nexspark</p>
                     <div class="mt-4">
-                        <button class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-4 py-2 rounded-lg text-sm w-full">
+                        <button class="lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black px-4 py-2 rounded-lg text-sm w-full">
                             <i class="fas fa-play mr-1"></i> START INTERVIEW
                         </button>
                     </div>
                 </div>
 
                 <!-- Growth Plan Status -->
-                <div class="bg-nexspark-panel border-t-4 border-nexspark-purple p-6 backdrop-blur-sm opacity-50">
+                <div class="bg-auxora-panel border-t-4 border-auxora-purple p-6 backdrop-blur-sm opacity-50">
                     <div class="flex items-center justify-between mb-4">
-                        <i class="fas fa-chart-line text-3xl text-nexspark-purple"></i>
+                        <i class="fas fa-chart-line text-3xl text-auxora-purple"></i>
                         <span class="status-indicator status-pending"></span>
                     </div>
-                    <h3 class="text-xl font-header font-bold text-nexspark-purple uppercase mb-2">Growth Plan</h3>
+                    <h3 class="text-xl font-header font-bold text-auxora-purple uppercase mb-2">Growth Plan</h3>
                     <p class="text-white/70 font-mono text-sm">Custom strategy and expert matching</p>
                     <div class="mt-4 text-white/50 font-mono text-xs">
                         <i class="fas fa-lock mr-1"></i> LOCKED - Complete interview first
@@ -202,14 +202,14 @@
             <!-- Quick Actions -->
             <div class="mb-12">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="h-16 w-16 bg-nexspark-blue rounded-tl-3xl flex items-center justify-center">
+                    <div class="h-16 w-16 bg-auxora-blue rounded-tl-3xl flex items-center justify-center">
                         <span class="text-black font-header text-3xl font-bold">02</span>
                     </div>
                     <div class="flex-1">
                         <h2 class="text-3xl md:text-4xl font-header font-bold text-white uppercase tracking-tight">
                             Interview History
                         </h2>
-                        <p class="text-nexspark-blue font-mono text-sm uppercase tracking-widest mt-2">
+                        <p class="text-auxora-blue font-mono text-sm uppercase tracking-widest mt-2">
                             Your Growth Journey Records
                         </p>
                     </div>
@@ -230,14 +230,14 @@
             <!-- Growth Reports Section -->
             <div id="reportsSection" class="mb-12">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="h-16 w-16 bg-nexspark-purple rounded-tl-3xl flex items-center justify-center">
+                    <div class="h-16 w-16 bg-auxora-purple rounded-tl-3xl flex items-center justify-center">
                         <span class="text-black font-header text-3xl font-bold">03</span>
                     </div>
                     <div class="flex-1">
                         <h2 class="text-3xl md:text-4xl font-header font-bold text-white uppercase tracking-tight">
                             Growth Reports
                         </h2>
-                        <p class="text-nexspark-blue font-mono text-sm uppercase tracking-widest mt-2">
+                        <p class="text-auxora-blue font-mono text-sm uppercase tracking-widest mt-2">
                             Your Generated Strategies
                         </p>
                     </div>
@@ -253,11 +253,11 @@
             </div>
 
             <!-- System Information -->
-            <div class="bg-nexspark-blue/10 border-l-4 border-nexspark-blue p-6 rounded-r-lg backdrop-blur-sm">
+            <div class="bg-auxora-blue/10 border-l-4 border-auxora-blue p-6 rounded-r-lg backdrop-blur-sm">
                 <div class="flex items-start gap-3">
-                    <i class="fas fa-info-circle text-nexspark-blue text-xl mt-1"></i>
+                    <i class="fas fa-info-circle text-auxora-blue text-xl mt-1"></i>
                     <div>
-                        <div class="text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">
+                        <div class="text-auxora-blue font-mono text-xs uppercase tracking-widest mb-2">
                             System Status
                         </div>
                         <p class="text-white/90 font-mono text-sm leading-relaxed">

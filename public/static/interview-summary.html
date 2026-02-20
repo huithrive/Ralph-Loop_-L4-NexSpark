@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Summary - NexSpark Growth OS</title>
+    <title>Interview Summary - Auxora</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
@@ -22,11 +22,11 @@
             font-family: 'Orbitron', sans-serif;
         }
         
-        .nexspark-gold { color: #FF9C00; }
-        .nexspark-blue { color: #99CCFF; }
-        .nexspark-purple { color: #CC99CC; }
-        .nexspark-panel { background: rgba(26, 31, 58, 0.8); }
-        .nexspark-dark { background: rgba(10, 14, 26, 0.9); }
+        .auxora-gold { color: #FF9C00; }
+        .auxora-blue { color: #99CCFF; }
+        .auxora-purple { color: #CC99CC; }
+        .auxora-panel { background: rgba(26, 31, 58, 0.8); }
+        .auxora-dark { background: rgba(10, 14, 26, 0.9); }
         
         @keyframes pulse {
             0%, 100% { opacity: 1; }
@@ -91,19 +91,19 @@
     <div class="max-w-4xl mx-auto">
         <!-- Header -->
         <div class="mb-8 text-center">
-            <h1 class="text-4xl font-header font-bold text-nexspark-gold uppercase tracking-wider mb-2">
+            <h1 class="text-4xl font-header font-bold text-auxora-gold uppercase tracking-wider mb-2">
                 <i class="fas fa-check-circle mr-3"></i>Interview Summary
             </h1>
-            <p class="text-nexspark-blue font-mono text-lg">
+            <p class="text-auxora-blue font-mono text-lg">
                 Let me confirm what I understood from our conversation...
             </p>
         </div>
         
         <!-- Loading State -->
-        <div id="loadingState" class="nexspark-panel border-2 border-nexspark-purple rounded-xl p-12 text-center">
+        <div id="loadingState" class="auxora-panel border-2 border-auxora-purple rounded-xl p-12 text-center">
             <div class="loading-spinner mx-auto mb-4"></div>
             <p class="text-white font-mono text-lg mb-2">
-                <i class="fas fa-brain mr-2"></i>NexSpark AI analyzing your responses...
+                <i class="fas fa-brain mr-2"></i>Auxora AI analyzing your responses...
             </p>
             <p class="text-white/60 text-sm">
                 This will take just a moment
@@ -113,8 +113,8 @@
         <!-- Summary Display (Hidden initially) -->
         <div id="summaryDisplay" class="hidden">
             <!-- Summary Content -->
-            <div class="nexspark-panel border-2 border-nexspark-gold rounded-xl p-8 mb-6">
-                <h2 class="text-2xl font-header font-bold text-nexspark-gold uppercase mb-6">
+            <div class="auxora-panel border-2 border-auxora-gold rounded-xl p-8 mb-6">
+                <h2 class="text-2xl font-header font-bold text-auxora-gold uppercase mb-6">
                     <i class="fas fa-clipboard-check mr-2"></i>Your Business Summary
                 </h2>
                 
@@ -125,21 +125,21 @@
             
             <!-- Confirmation Buttons -->
             <div class="flex gap-4 justify-center">
-                <button id="confirmBtn" class="px-8 py-4 bg-nexspark-gold text-black font-header font-bold text-lg uppercase rounded-lg hover:bg-yellow-500 transition-all transform hover:scale-105">
+                <button id="confirmBtn" class="px-8 py-4 bg-auxora-gold text-black font-header font-bold text-lg uppercase rounded-lg hover:bg-yellow-500 transition-all transform hover:scale-105">
                     <i class="fas fa-check mr-2"></i>Yes, This is Accurate
                 </button>
-                <button id="editBtn" class="px-8 py-4 bg-nexspark-purple text-white font-header font-bold text-lg uppercase rounded-lg hover:bg-purple-600 transition-all">
+                <button id="editBtn" class="px-8 py-4 bg-auxora-purple text-white font-header font-bold text-lg uppercase rounded-lg hover:bg-purple-600 transition-all">
                     <i class="fas fa-edit mr-2"></i>Let Me Edit
                 </button>
             </div>
         </div>
         
         <!-- Error State (Hidden initially) -->
-        <div id="errorState" class="hidden nexspark-panel border-2 border-red-500 rounded-xl p-8 text-center">
+        <div id="errorState" class="hidden auxora-panel border-2 border-red-500 rounded-xl p-8 text-center">
             <i class="fas fa-exclamation-triangle text-5xl text-red-500 mb-4"></i>
             <h3 class="text-2xl font-header font-bold text-white mb-2">Something went wrong</h3>
             <p class="text-white/70 mb-6" id="errorMessage"></p>
-            <button onclick="location.reload()" class="px-6 py-3 bg-nexspark-gold text-black font-header font-bold uppercase rounded-lg">
+            <button onclick="location.reload()" class="px-6 py-3 bg-auxora-gold text-black font-header font-bold uppercase rounded-lg">
                 <i class="fas fa-redo mr-2"></i>Try Again
             </button>
         </div>
@@ -148,7 +148,7 @@
     <script>
         // Check authentication
         function checkAuth() {
-            const user = localStorage.getItem('nexspark_user');
+            const user = localStorage.getItem('auxora_user');
             if (!user) {
                 console.log('No user found, redirecting to home');
                 window.location.href = '/';
@@ -159,7 +159,7 @@
         
         // Get interview data from localStorage
         function getInterviewData() {
-            const interview = localStorage.getItem('nexspark_interview');
+            const interview = localStorage.getItem('auxora_interview');
             if (!interview) {
                 console.error('No interview data found');
                 return null;
@@ -172,8 +172,8 @@
             const summaryContent = document.getElementById('summaryContent');
             
             summaryContent.innerHTML = `
-                <div class="mb-4 bg-nexspark-gold/10 border border-nexspark-gold/30 rounded-lg p-4">
-                    <div class="flex items-center gap-2 text-nexspark-gold mb-2">
+                <div class="mb-4 bg-auxora-gold/10 border border-auxora-gold/30 rounded-lg p-4">
+                    <div class="flex items-center gap-2 text-auxora-gold mb-2">
                         <i class="fas fa-edit"></i>
                         <span class="font-bold text-sm">Click any field to edit it</span>
                     </div>
@@ -181,64 +181,64 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-gold">
-                        <label class="text-nexspark-gold font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-gold">
+                        <label class="text-auxora-gold font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-tag mr-2"></i>Brand Name
                         </label>
                         <p class="text-white text-lg editable-field" data-field="brandName" onclick="editField('brandName', this)">${summary.brandName || 'N/A'}</p>
                     </div>
                     
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-blue">
-                        <label class="text-nexspark-blue font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-blue">
+                        <label class="text-auxora-blue font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-dollar-sign mr-2"></i>Current Revenue
                         </label>
                         <p class="text-white text-lg editable-field" data-field="currentRevenue" onclick="editField('currentRevenue', this)">${summary.currentRevenue || 'N/A'}</p>
                     </div>
                     
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-purple col-span-1 md:col-span-2">
-                        <label class="text-nexspark-purple font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-purple col-span-1 md:col-span-2">
+                        <label class="text-auxora-purple font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-box mr-2"></i>Product Description
                         </label>
                         <p class="text-white editable-field" data-field="productDescription" onclick="editField('productDescription', this)">${summary.productDescription || 'N/A'}</p>
                     </div>
                     
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-gold col-span-1 md:col-span-2">
-                        <label class="text-nexspark-gold font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-gold col-span-1 md:col-span-2">
+                        <label class="text-auxora-gold font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-lightbulb mr-2"></i>Motivation & Story
                         </label>
                         <p class="text-white editable-field" data-field="motivation" onclick="editField('motivation', this)">${summary.motivation || 'N/A'}</p>
                     </div>
                     
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-blue">
-                        <label class="text-nexspark-blue font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-blue">
+                        <label class="text-auxora-blue font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-chart-line mr-2"></i>Best Channel
                         </label>
                         <p class="text-white editable-field" data-field="bestChannel" onclick="editField('bestChannel', this)">${summary.bestChannel || 'N/A'}</p>
                     </div>
                     
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-purple">
-                        <label class="text-nexspark-purple font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-purple">
+                        <label class="text-auxora-purple font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-exclamation-circle mr-2"></i>Biggest Challenge
                         </label>
                         <p class="text-white editable-field" data-field="biggestChallenge" onclick="editField('biggestChallenge', this)">${summary.biggestChallenge || 'N/A'}</p>
                     </div>
                     
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-gold col-span-1 md:col-span-2">
-                        <label class="text-nexspark-gold font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-gold col-span-1 md:col-span-2">
+                        <label class="text-auxora-gold font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-users mr-2"></i>Ideal Customer
                         </label>
                         <p class="text-white editable-field" data-field="idealCustomer" onclick="editField('idealCustomer', this)">${summary.idealCustomer || 'N/A'}</p>
                     </div>
                     
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-blue">
-                        <label class="text-nexspark-blue font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-blue">
+                        <label class="text-auxora-blue font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-bullseye mr-2"></i>6-Month Goal
                         </label>
                         <p class="text-white editable-field" data-field="sixMonthGoal" onclick="editField('sixMonthGoal', this)">${summary.sixMonthGoal || 'N/A'}</p>
                     </div>
                     
-                    <div class="nexspark-dark rounded-lg p-4 border-l-4 border-nexspark-purple">
-                        <label class="text-nexspark-purple font-bold text-sm uppercase mb-2 block">
+                    <div class="auxora-dark rounded-lg p-4 border-l-4 border-auxora-purple">
+                        <label class="text-auxora-purple font-bold text-sm uppercase mb-2 block">
                             <i class="fas fa-trophy mr-2"></i>Competitors
                         </label>
                         <p class="text-white editable-field" data-field="competitors" onclick="editField('competitors', this)">${summary.competitors ? summary.competitors.join(', ') : 'N/A'}</p>
@@ -305,7 +305,7 @@
             }
             
             // Update summary in localStorage
-            const summaryData = localStorage.getItem('nexspark_summary');
+            const summaryData = localStorage.getItem('auxora_summary');
             const summary = JSON.parse(summaryData);
             
             // Handle competitors specially (convert to array)
@@ -315,7 +315,7 @@
                 summary[fieldName] = newValue;
             }
             
-            localStorage.setItem('nexspark_summary', JSON.stringify(summary));
+            localStorage.setItem('auxora_summary', JSON.stringify(summary));
             
             // Restore display
             const parentElement = inputElement.parentElement;
@@ -334,7 +334,7 @@
         
         function cancelEdit() {
             // Reload the summary to restore original display
-            const summaryData = localStorage.getItem('nexspark_summary');
+            const summaryData = localStorage.getItem('auxora_summary');
             const summary = JSON.parse(summaryData);
             displaySummary(summary);
             currentEditingField = null;
@@ -362,7 +362,7 @@
                 console.log('📊 Generating summary with', interview.responses.length, 'responses');
                 
                 // Get custom prompts if available
-                const customPrompts = localStorage.getItem('nexspark_admin_prompts');
+                const customPrompts = localStorage.getItem('auxora_admin_prompts');
                 const headers = {};
                 if (customPrompts) {
                     headers['X-Custom-Prompts'] = customPrompts;
@@ -382,7 +382,7 @@
                     console.log('✅ Summary generated:', summary);
                     
                     // Save summary to localStorage for next steps
-                    localStorage.setItem('nexspark_summary', JSON.stringify(summary));
+                    localStorage.setItem('auxora_summary', JSON.stringify(summary));
                     
                     // Display summary
                     displaySummary(summary);
@@ -409,17 +409,17 @@
             document.getElementById('loadingState').classList.add('hidden');
             
             const errorHTML = `
-                <div class="nexspark-panel border-2 border-nexspark-red rounded-xl p-8 text-center">
-                    <div class="w-20 h-20 bg-nexspark-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-exclamation-triangle text-5xl text-nexspark-red"></i>
+                <div class="auxora-panel border-2 border-auxora-red rounded-xl p-8 text-center">
+                    <div class="w-20 h-20 bg-auxora-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exclamation-triangle text-5xl text-auxora-red"></i>
                     </div>
                     <h3 class="text-3xl font-header font-bold text-white mb-3">Something Went Wrong</h3>
                     <p class="text-white/70 mb-6 text-lg">${message}</p>
                     
-                    <div class="bg-nexspark-gold/10 border border-nexspark-gold/30 rounded-lg p-6 mb-6">
+                    <div class="bg-auxora-gold/10 border border-auxora-gold/30 rounded-lg p-6 mb-6">
                         <div class="flex items-center gap-3 mb-3">
-                            <i class="fas fa-shield-check text-nexspark-gold text-2xl"></i>
-                            <h4 class="text-nexspark-gold font-bold text-lg">Your Answers Are Safe!</h4>
+                            <i class="fas fa-shield-check text-auxora-gold text-2xl"></i>
+                            <h4 class="text-auxora-gold font-bold text-lg">Your Answers Are Safe!</h4>
                         </div>
                         <p class="text-white/80 text-sm mb-2">
                             You completed ${questionCount} question${questionCount !== 1 ? 's' : ''} - all saved locally
@@ -432,15 +432,15 @@
                     </div>
                     
                     <div class="space-y-3">
-                        <button onclick="location.reload()" class="px-8 py-4 bg-nexspark-gold text-black font-header font-bold text-xl uppercase rounded-lg hover:bg-yellow-500 transition-all transform hover:scale-105">
+                        <button onclick="location.reload()" class="px-8 py-4 bg-auxora-gold text-black font-header font-bold text-xl uppercase rounded-lg hover:bg-yellow-500 transition-all transform hover:scale-105">
                             <i class="fas fa-redo mr-2"></i>Try Again
                         </button>
                         
-                        <button onclick="window.location.href='/interview'" class="px-8 py-4 bg-nexspark-blue/20 border-2 border-nexspark-blue text-nexspark-blue font-header font-bold text-xl uppercase rounded-lg hover:bg-nexspark-blue/40 transition-all">
+                        <button onclick="window.location.href='/interview'" class="px-8 py-4 bg-auxora-blue/20 border-2 border-auxora-blue text-auxora-blue font-header font-bold text-xl uppercase rounded-lg hover:bg-auxora-blue/40 transition-all">
                             <i class="fas fa-arrow-left mr-2"></i>Back to Interview
                         </button>
                         
-                        <button onclick="skipToDemo()" class="px-8 py-4 bg-nexspark-purple/20 border-2 border-nexspark-purple text-nexspark-purple font-header font-bold text-xl uppercase rounded-lg hover:bg-nexspark-purple/40 transition-all">
+                        <button onclick="skipToDemo()" class="px-8 py-4 bg-auxora-purple/20 border-2 border-auxora-purple text-auxora-purple font-header font-bold text-xl uppercase rounded-lg hover:bg-auxora-purple/40 transition-all">
                             <i class="fas fa-forward mr-2"></i>Skip to Demo
                         </button>
                     </div>
@@ -473,7 +473,7 @@
                 competitors: ["Competitor A", "Competitor B", "Competitor C"]
             };
             
-            localStorage.setItem('nexspark_summary', JSON.stringify(demoSummary));
+            localStorage.setItem('auxora_summary', JSON.stringify(demoSummary));
             window.location.href = '/report-preview';
         }
         

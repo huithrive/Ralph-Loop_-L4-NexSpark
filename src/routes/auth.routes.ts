@@ -181,14 +181,14 @@ authRoutes.get('/google/callback', async (c) => {
         // Return inline script that sets localStorage and redirects
         return c.html(`
           <script>
-            localStorage.setItem('nexspark_user', JSON.stringify({
+            localStorage.setItem('auxora_user', JSON.stringify({
               id: '${userId}',
               email: '${googleUser.email}',
               name: '${googleUser.name}',
               picture: '${googleUser.picture}',
               email_verified: ${googleUser.email_verified}
             }));
-            localStorage.setItem('nexspark_session', '${sessionToken}');
+            localStorage.setItem('auxora_session', '${sessionToken}');
             console.log('✅ Google authentication successful');
             window.location.href = '${returnUrl}';
           </script>
@@ -217,8 +217,8 @@ authRoutes.get('/google/callback', async (c) => {
     // Return inline script for fallback mode
     return c.html(`
       <script>
-        localStorage.setItem('nexspark_user', JSON.stringify(${JSON.stringify(user)}));
-        localStorage.setItem('nexspark_session', '${sessionToken}');
+        localStorage.setItem('auxora_user', JSON.stringify(${JSON.stringify(user)}));
+        localStorage.setItem('auxora_session', '${sessionToken}');
         console.log('✅ Google authentication successful');
         window.location.href = '${returnUrl}';
       </script>

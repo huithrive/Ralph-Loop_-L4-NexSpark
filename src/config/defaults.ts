@@ -21,7 +21,7 @@ export const EXAMPLE_ANSWERS = [
 ] as const;
 
 export const APP_CONSTANTS = {
-  appName: 'NexSpark',
+  appName: 'Auxora',
   defaultLanguage: 'en',
-  supportEmail: 'support@nexspark.io',
+  supportEmail: 'support@auxora.ai',
 } as const;

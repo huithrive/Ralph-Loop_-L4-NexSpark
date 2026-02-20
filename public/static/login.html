@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | NexSpark</title>
+    <title>Login | Auxora</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 pale: '#FFCC99',
@@ -80,19 +80,19 @@
             <div class="text-center mb-8">
                 <div class="inline-flex items-center gap-2 bg-white rounded-full px-6 py-3 mb-4">
                     <i class="fas fa-bolt text-3xl text-yellow-500"></i>
-                    <span class="font-header font-bold text-2xl text-black">NEXSPARK</span>
+                    <span class="font-header font-bold text-2xl text-black">AUXORA</span>
                 </div>
-                <h1 class="text-4xl font-header font-bold text-nexspark-gold mb-2">LOGIN</h1>
-                <p class="text-nexspark-blue font-mono text-sm">Access your growth dashboard</p>
+                <h1 class="text-4xl font-header font-bold text-auxora-gold mb-2">LOGIN</h1>
+                <p class="text-auxora-blue font-mono text-sm">Access your growth dashboard</p>
             </div>
 
             <!-- Login Panel -->
-            <div class="bg-nexspark-panel border-2 border-nexspark-gold rounded-2xl p-8 backdrop-blur-xl">
+            <div class="bg-auxora-panel border-2 border-auxora-gold rounded-2xl p-8 backdrop-blur-xl">
 
                 <!-- Error Message -->
-                <div id="errorMessage" class="hidden mb-6 bg-nexspark-red/20 border-2 border-nexspark-red rounded-lg p-4">
+                <div id="errorMessage" class="hidden mb-6 bg-auxora-red/20 border-2 border-auxora-red rounded-lg p-4">
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-exclamation-circle text-nexspark-red"></i>
+                        <i class="fas fa-exclamation-circle text-auxora-red"></i>
                         <span id="errorText" class="text-white font-mono text-sm"></span>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                 <!-- Email/Password Form -->
                 <form id="loginForm" class="space-y-6 mb-6">
                     <div>
-                        <label class="block text-nexspark-blue font-mono text-sm mb-2 uppercase">
+                        <label class="block text-auxora-blue font-mono text-sm mb-2 uppercase">
                             <i class="fas fa-envelope mr-2"></i>Email
                         </label>
                         <input
@@ -113,7 +113,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-nexspark-blue font-mono text-sm mb-2 uppercase">
+                        <label class="block text-auxora-blue font-mono text-sm mb-2 uppercase">
                             <i class="fas fa-lock mr-2"></i>Password
                         </label>
                         <input
@@ -128,7 +128,7 @@
 
                     <button
                         type="submit"
-                        class="w-full lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black font-bold py-4 rounded-lg text-xl"
+                        class="w-full lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black font-bold py-4 rounded-lg text-xl"
                     >
                         <i class="fas fa-sign-in-alt mr-2"></i>LOGIN
                     </button>
@@ -136,9 +136,9 @@
 
                 <!-- Divider -->
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="flex-1 h-px bg-nexspark-blue/30"></div>
-                    <span class="text-nexspark-blue/50 font-mono text-xs uppercase">Or</span>
-                    <div class="flex-1 h-px bg-nexspark-blue/30"></div>
+                    <div class="flex-1 h-px bg-auxora-blue/30"></div>
+                    <span class="text-auxora-blue/50 font-mono text-xs uppercase">Or</span>
+                    <div class="flex-1 h-px bg-auxora-blue/30"></div>
                 </div>
 
                 <!-- Google OAuth Button -->
@@ -158,7 +158,7 @@
                 <!-- Register Link -->
                 <div class="text-center">
                     <span class="text-white/50 font-mono text-sm">Don't have an account? </span>
-                    <a href="/static/register.html" class="text-nexspark-gold font-mono text-sm hover:text-nexspark-pale">
+                    <a href="/static/register.html" class="text-auxora-gold font-mono text-sm hover:text-auxora-pale">
                         Sign up here
                     </a>
                 </div>
@@ -167,7 +167,7 @@
 
             <!-- Back to Home -->
             <div class="text-center mt-6">
-                <a href="/" class="text-nexspark-blue/70 hover:text-nexspark-blue font-mono text-sm">
+                <a href="/" class="text-auxora-blue/70 hover:text-auxora-blue font-mono text-sm">
                     <i class="fas fa-arrow-left mr-2"></i>Back to Home
                 </a>
             </div>
@@ -256,8 +256,8 @@
 
         if (data.success) {
           // Store user and session token
-          localStorage.setItem('nexspark_user', JSON.stringify(data.user));
-          localStorage.setItem('nexspark_session', data.sessionToken);
+          localStorage.setItem('auxora_user', JSON.stringify(data.user));
+          localStorage.setItem('auxora_session', data.sessionToken);
 
           console.log('✅ Login successful');
 

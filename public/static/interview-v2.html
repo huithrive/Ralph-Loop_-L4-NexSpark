@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growth Diagnosis | NexSpark</title>
+    <title>Growth Diagnosis | Auxora</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,12 +13,12 @@
     <style>
         /* LCARS Design System */
         :root {
-            --nexspark-gold: #FF9C00;
-            --nexspark-pale: #FFCC00;
-            --nexspark-blue: #99CCFF;
-            --nexspark-purple: #CC99CC;
-            --nexspark-red: #CC3333;
-            --nexspark-panel: rgba(0, 0, 0, 0.8);
+            --auxora-gold: #FF9C00;
+            --auxora-pale: #FFCC00;
+            --auxora-blue: #99CCFF;
+            --auxora-purple: #CC99CC;
+            --auxora-red: #CC3333;
+            --auxora-panel: rgba(0, 0, 0, 0.8);
         }
         
         body {
@@ -36,44 +36,44 @@
             font-family: 'JetBrains Mono', monospace;
         }
         
-        .bg-nexspark-panel {
-            background: var(--nexspark-panel);
+        .bg-auxora-panel {
+            background: var(--auxora-panel);
         }
         
-        .bg-nexspark-gold {
-            background: var(--nexspark-gold);
+        .bg-auxora-gold {
+            background: var(--auxora-gold);
         }
         
-        .bg-nexspark-blue {
-            background: var(--nexspark-blue);
+        .bg-auxora-blue {
+            background: var(--auxora-blue);
         }
         
-        .bg-nexspark-red {
-            background: var(--nexspark-red);
+        .bg-auxora-red {
+            background: var(--auxora-red);
         }
         
-        .text-nexspark-gold {
-            color: var(--nexspark-gold);
+        .text-auxora-gold {
+            color: var(--auxora-gold);
         }
         
-        .text-nexspark-blue {
-            color: var(--nexspark-blue);
+        .text-auxora-blue {
+            color: var(--auxora-blue);
         }
         
-        .text-nexspark-red {
-            color: var(--nexspark-red);
+        .text-auxora-red {
+            color: var(--auxora-red);
         }
         
-        .border-nexspark-gold {
-            border-color: var(--nexspark-gold);
+        .border-auxora-gold {
+            border-color: var(--auxora-gold);
         }
         
-        .border-nexspark-blue {
-            border-color: var(--nexspark-blue);
+        .border-auxora-blue {
+            border-color: var(--auxora-blue);
         }
         
-        .border-nexspark-red {
-            border-color: var(--nexspark-red);
+        .border-auxora-red {
+            border-color: var(--auxora-red);
         }
         
         /* Waveform Visualizer */
@@ -87,7 +87,7 @@
         
         .waveform-bar {
             width: 4px;
-            background: var(--nexspark-gold);
+            background: var(--auxora-gold);
             border-radius: 2px;
             transition: height 0.1s ease;
         }
@@ -111,7 +111,7 @@
         /* Scroll Styles */
         .transcript-scroll {
             scrollbar-width: thin;
-            scrollbar-color: var(--nexspark-gold) transparent;
+            scrollbar-color: var(--auxora-gold) transparent;
         }
         
         .transcript-scroll::-webkit-scrollbar {
@@ -123,7 +123,7 @@
         }
         
         .transcript-scroll::-webkit-scrollbar-thumb {
-            background: var(--nexspark-gold);
+            background: var(--auxora-gold);
             border-radius: 3px;
         }
         
@@ -142,7 +142,7 @@
         
         .manual-input:focus {
             outline: none;
-            border-color: var(--nexspark-gold);
+            border-color: var(--auxora-gold);
             background: rgba(255, 156, 0, 0.1);
         }
     </style>
@@ -157,11 +157,11 @@
                         mono: ['JetBrains Mono', 'monospace']
                     },
                     colors: {
-                        'nexspark-gold': '#FF9C00',
-                        'nexspark-pale': '#FFCC00',
-                        'nexspark-blue': '#99CCFF',
-                        'nexspark-purple': '#CC99CC',
-                        'nexspark-red': '#CC3333'
+                        'auxora-gold': '#FF9C00',
+                        'auxora-pale': '#FFCC00',
+                        'auxora-blue': '#99CCFF',
+                        'auxora-purple': '#CC99CC',
+                        'auxora-red': '#CC3333'
                     }
                 }
             }
@@ -178,15 +178,15 @@
         <!-- Header -->
         <div class="mb-8 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2 bg-nexspark-panel border border-nexspark-gold rounded-full px-4 py-2">
-                    <i class="fas fa-bolt text-nexspark-gold"></i>
-                    <span class="font-header font-bold text-white">NEXSPARK</span>
+                <div class="flex items-center gap-2 bg-auxora-panel border border-auxora-gold rounded-full px-4 py-2">
+                    <i class="fas fa-bolt text-auxora-gold"></i>
+                    <span class="font-header font-bold text-white">AUXORA</span>
                 </div>
-                <div class="bg-nexspark-red rounded-full px-4 py-2">
+                <div class="bg-auxora-red rounded-full px-4 py-2">
                     <span class="font-mono text-xs uppercase font-bold">Voice Interview</span>
                 </div>
             </div>
-            <a href="/dashboard" class="flex items-center gap-2 bg-nexspark-blue/20 border border-nexspark-blue text-nexspark-blue rounded px-4 py-2 hover:bg-nexspark-blue/30 transition-all">
+            <a href="/dashboard" class="flex items-center gap-2 bg-auxora-blue/20 border border-auxora-blue text-auxora-blue rounded px-4 py-2 hover:bg-auxora-blue/30 transition-all">
                 <i class="fas fa-arrow-left"></i>
                 <span class="font-mono text-sm">Back to Dashboard</span>
             </a>
@@ -197,8 +197,8 @@
             
             <!-- Title -->
             <div class="text-center mb-8">
-                <div class="inline-flex items-center gap-4 bg-nexspark-gold/20 border-2 border-nexspark-gold rounded-2xl px-6 py-4">
-                    <div class="w-12 h-12 rounded-full bg-nexspark-gold flex items-center justify-center">
+                <div class="inline-flex items-center gap-4 bg-auxora-gold/20 border-2 border-auxora-gold rounded-2xl px-6 py-4">
+                    <div class="w-12 h-12 rounded-full bg-auxora-gold flex items-center justify-center">
                         <i class="fas fa-microphone text-2xl text-black"></i>
                     </div>
                     <div class="text-left">
@@ -209,30 +209,30 @@
             </div>
             
             <!-- Progress Bar -->
-            <div class="bg-nexspark-panel border border-nexspark-gold/30 rounded-xl p-6 mb-8">
+            <div class="bg-auxora-panel border border-auxora-gold/30 rounded-xl p-6 mb-8">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-white/50 font-mono text-xs uppercase tracking-wider"><i class="fas fa-clipboard-list mr-2"></i>Interview Progress</span>
-                    <span id="progressText" class="text-nexspark-gold font-mono text-sm font-bold">0/10 Questions</span>
+                    <span id="progressText" class="text-auxora-gold font-mono text-sm font-bold">0/10 Questions</span>
                 </div>
                 <div class="w-full h-3 bg-black/50 rounded-full overflow-hidden">
-                    <div id="progressBar" class="h-full bg-gradient-to-r from-nexspark-gold to-nexspark-pale transition-all duration-500" style="width: 0%"></div>
+                    <div id="progressBar" class="h-full bg-gradient-to-r from-auxora-gold to-auxora-pale transition-all duration-500" style="width: 0%"></div>
                 </div>
             </div>
             
             <!-- Interview Interface -->
-            <div class="bg-nexspark-panel border-2 border-nexspark-gold rounded-2xl p-8 backdrop-blur-xl mb-8">
+            <div class="bg-auxora-panel border-2 border-auxora-gold rounded-2xl p-8 backdrop-blur-xl mb-8">
                 
                 <!-- Microphone Status Indicator -->
                 <div class="flex flex-col items-center justify-center mb-8">
                     <div class="relative mb-6">
-                        <div class="absolute inset-0 rounded-full bg-nexspark-gold opacity-20 pulse-ring"></div>
-                        <div id="micButton" class="w-32 h-32 rounded-full bg-nexspark-gold flex items-center justify-center shadow-lg shadow-nexspark-gold/50">
+                        <div class="absolute inset-0 rounded-full bg-auxora-gold opacity-20 pulse-ring"></div>
+                        <div id="micButton" class="w-32 h-32 rounded-full bg-auxora-gold flex items-center justify-center shadow-lg shadow-auxora-gold/50">
                             <i id="micIcon" class="fas fa-microphone text-5xl text-black"></i>
                         </div>
                     </div>
                     
                     <div id="statusText" class="text-center mb-4">
-                        <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+                        <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
                             Ready to Begin
                         </div>
                         <div class="text-white/70 font-mono text-sm">
@@ -242,10 +242,10 @@
                     
                     <!-- VAD Toggle -->
                     <div class="flex items-center gap-4 mb-4">
-                        <button id="vadToggle" onclick="toggleVAD()" class="px-4 py-2 bg-nexspark-gold/20 text-nexspark-gold border border-nexspark-gold rounded font-mono text-sm hover:bg-nexspark-gold/30 transition-all">
+                        <button id="vadToggle" onclick="toggleVAD()" class="px-4 py-2 bg-auxora-gold/20 text-auxora-gold border border-auxora-gold rounded font-mono text-sm hover:bg-auxora-gold/30 transition-all">
                             <i class="fas fa-magic mr-2"></i>Auto-Stop: ON
                         </button>
-                        <button id="manualStopBtn" onclick="manualStopRecording()" class="px-4 py-2 bg-nexspark-red/20 text-nexspark-red border border-nexspark-red rounded font-mono text-sm hover:bg-nexspark-red/30 transition-all hidden">
+                        <button id="manualStopBtn" onclick="manualStopRecording()" class="px-4 py-2 bg-auxora-red/20 text-auxora-red border border-auxora-red rounded font-mono text-sm hover:bg-auxora-red/30 transition-all hidden">
                             <i class="fas fa-stop mr-2"></i>Stop Manually
                         </button>
                     </div>
@@ -255,11 +255,11 @@
                 </div>
 
                 <!-- Current Question Display -->
-                <div id="questionBox" class="bg-nexspark-blue/10 border-l-4 border-nexspark-blue p-6 rounded-r-lg mb-6 hidden">
+                <div id="questionBox" class="bg-auxora-blue/10 border-l-4 border-auxora-blue p-6 rounded-r-lg mb-6 hidden">
                     <div class="flex items-start gap-3">
-                        <i class="fas fa-robot text-nexspark-blue text-2xl mt-1"></i>
+                        <i class="fas fa-robot text-auxora-blue text-2xl mt-1"></i>
                         <div class="flex-1">
-                            <div class="text-nexspark-blue font-mono text-xs uppercase tracking-widest mb-2">
+                            <div class="text-auxora-blue font-mono text-xs uppercase tracking-widest mb-2">
                                 Nexspark:
                             </div>
                             <p id="currentQuestion" class="text-white font-mono text-base leading-relaxed">
@@ -270,19 +270,19 @@
                 </div>
                 
                 <!-- Current Input Section (NEW) -->
-                <div id="currentInputSection" class="bg-nexspark-gold/5 border-2 border-nexspark-gold/30 rounded-xl p-6 mb-6 hidden">
+                <div id="currentInputSection" class="bg-auxora-gold/5 border-2 border-auxora-gold/30 rounded-xl p-6 mb-6 hidden">
                     <div class="mb-4">
                         <div class="flex items-center justify-between mb-3">
                             <label class="text-white/70 font-mono text-sm uppercase tracking-wider">
                                 <i class="fas fa-comment-dots mr-2"></i>Your Response:
                             </label>
-                            <span class="text-nexspark-gold font-mono text-xs">
+                            <span class="text-auxora-gold font-mono text-xs">
                                 <i class="fas fa-info-circle mr-1"></i>Edit below if needed
                             </span>
                         </div>
                         
                         <!-- Real-time Transcript Display -->
-                        <div class="bg-black/30 border border-nexspark-gold/20 rounded-lg p-4 mb-4 min-h-[60px]">
+                        <div class="bg-black/30 border border-auxora-gold/20 rounded-lg p-4 mb-4 min-h-[60px]">
                             <p id="currentTranscript" class="text-white/90 font-mono text-sm leading-relaxed">
                                 <!-- Transcript will appear here -->
                             </p>
@@ -297,7 +297,7 @@
                         </div>
                         
                         <!-- Next Question Button -->
-                        <button id="nextQuestionBtn" onclick="confirmAndNext()" class="w-full bg-nexspark-gold hover:bg-nexspark-pale text-black font-header text-lg py-4 rounded-lg transition-all shadow-lg shadow-nexspark-gold/50 hidden">
+                        <button id="nextQuestionBtn" onclick="confirmAndNext()" class="w-full bg-auxora-gold hover:bg-auxora-pale text-black font-header text-lg py-4 rounded-lg transition-all shadow-lg shadow-auxora-gold/50 hidden">
                             <i class="fas fa-arrow-right mr-2"></i>Next Question
                         </button>
                     </div>
@@ -305,17 +305,17 @@
 
                 <!-- Control Buttons -->
                 <div class="flex gap-4 justify-center">
-                    <button id="startBtn" onclick="startInterview()" class="flex items-center gap-3 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header text-xl px-8 py-4 rounded-lg transition-all shadow-lg shadow-nexspark-gold/50">
+                    <button id="startBtn" onclick="startInterview()" class="flex items-center gap-3 bg-auxora-gold hover:bg-auxora-pale text-black font-header text-xl px-8 py-4 rounded-lg transition-all shadow-lg shadow-auxora-gold/50">
                         <i class="fas fa-play"></i>
                         <span>START INTERVIEW</span>
                     </button>
                     
-                    <button id="pauseBtn" onclick="pauseInterview()" class="hidden flex items-center gap-2 bg-nexspark-blue/20 border border-nexspark-blue text-nexspark-blue font-mono px-6 py-3 rounded-lg hover:bg-nexspark-blue/30 transition-all" disabled>
+                    <button id="pauseBtn" onclick="pauseInterview()" class="hidden flex items-center gap-2 bg-auxora-blue/20 border border-auxora-blue text-auxora-blue font-mono px-6 py-3 rounded-lg hover:bg-auxora-blue/30 transition-all" disabled>
                         <i class="fas fa-pause"></i>
                         <span>PAUSE</span>
                     </button>
                     
-                    <button id="endBtn" onclick="endInterview()" class="hidden flex items-center gap-2 bg-nexspark-red/20 border border-nexspark-red text-nexspark-red font-mono px-6 py-3 rounded-lg hover:bg-nexspark-red/30 transition-all" disabled>
+                    <button id="endBtn" onclick="endInterview()" class="hidden flex items-center gap-2 bg-auxora-red/20 border border-auxora-red text-auxora-red font-mono px-6 py-3 rounded-lg hover:bg-auxora-red/30 transition-all" disabled>
                         <i class="fas fa-stop"></i>
                         <span>END INTERVIEW</span>
                     </button>
@@ -323,9 +323,9 @@
             </div>
             
             <!-- Transcript Container -->
-            <div id="transcriptContainer" class="bg-nexspark-panel border border-nexspark-gold/30 rounded-2xl p-8 backdrop-blur-xl hidden">
+            <div id="transcriptContainer" class="bg-auxora-panel border border-auxora-gold/30 rounded-2xl p-8 backdrop-blur-xl hidden">
                 <div class="flex items-center gap-3 mb-6">
-                    <i class="fas fa-file-alt text-nexspark-gold text-2xl"></i>
+                    <i class="fas fa-file-alt text-auxora-gold text-2xl"></i>
                     <h2 class="font-header text-2xl font-bold text-white uppercase tracking-wider">Interview Transcript</h2>
                 </div>
                 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Interview - NexSpark Growth OS</title>
+    <title>Voice Interview - Auxora</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 pale: '#FFCC99',
@@ -163,7 +163,7 @@
 
     <div class="relative z-10 min-h-screen p-4 md:p-8 flex items-center justify-center">
         <!-- Main Container with Gold Border -->
-        <div class="w-full max-w-5xl bg-black/80 border-2 border-nexspark-gold/60 rounded-2xl p-6 md:p-8 backdrop-blur-sm shadow-[0_0_60px_rgba(255,156,0,0.15)]">
+        <div class="w-full max-w-5xl bg-black/80 border-2 border-auxora-gold/60 rounded-2xl p-6 md:p-8 backdrop-blur-sm shadow-[0_0_60px_rgba(255,156,0,0.15)]">
 
             <!-- Progress Steps -->
             <div class="flex items-center justify-center gap-2 mb-6">
@@ -173,10 +173,10 @@
             </div>
 
             <!-- Question Section -->
-            <div class="bg-nexspark-panel border-l-4 border-nexspark-blue rounded-lg p-5 mb-4">
+            <div class="bg-auxora-panel border-l-4 border-auxora-blue rounded-lg p-5 mb-4">
                 <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-full bg-nexspark-blue/20 flex items-center justify-center flex-shrink-0">
-                        <span id="questionNumber" class="text-nexspark-blue font-bold">1</span>
+                    <div class="w-10 h-10 rounded-full bg-auxora-blue/20 flex items-center justify-center flex-shrink-0">
+                        <span id="questionNumber" class="text-auxora-blue font-bold">1</span>
                     </div>
                     <div class="flex-1">
                         <p id="questionText" class="text-white text-xl font-medium leading-relaxed">
@@ -187,11 +187,11 @@
             </div>
 
             <!-- Example Answer (Always Visible) -->
-            <div class="bg-nexspark-panel/60 border-l-4 border-nexspark-purple/50 rounded-lg p-4 mb-6">
+            <div class="bg-auxora-panel/60 border-l-4 border-auxora-purple/50 rounded-lg p-4 mb-6">
                 <div class="flex items-start gap-3">
-                    <i class="fas fa-lightbulb text-nexspark-gold text-lg mt-0.5"></i>
+                    <i class="fas fa-lightbulb text-auxora-gold text-lg mt-0.5"></i>
                     <div>
-                        <p class="text-nexspark-gold font-mono text-xs uppercase tracking-wider mb-1">Example Answer</p>
+                        <p class="text-auxora-gold font-mono text-xs uppercase tracking-wider mb-1">Example Answer</p>
                         <p id="exampleAnswerText" class="text-white/70 font-mono text-sm leading-relaxed">
                             Loading example...
                         </p>
@@ -202,8 +202,8 @@
             <!-- Editable Answer -->
             <div class="mb-6">
                 <div class="flex items-center gap-2 mb-2">
-                    <i class="fas fa-edit text-nexspark-gold"></i>
-                    <h2 class="font-header text-base text-nexspark-gold uppercase tracking-wider">Edit Your Answer</h2>
+                    <i class="fas fa-edit text-auxora-gold"></i>
+                    <h2 class="font-header text-base text-auxora-gold uppercase tracking-wider">Edit Your Answer</h2>
                     <span id="charCount" class="ml-auto text-white/40 font-mono text-xs">0 chars</span>
                 </div>
                 <div class="editable-panel p-4">
@@ -220,7 +220,7 @@
             <div class="flex items-center justify-between">
                 <button
                     id="skipButton"
-                    class="px-5 py-3 bg-nexspark-dark border-2 border-nexspark-blue/30 text-nexspark-blue font-header uppercase tracking-wider rounded-lg hover:border-nexspark-blue transition-all"
+                    class="px-5 py-3 bg-auxora-dark border-2 border-auxora-blue/30 text-auxora-blue font-header uppercase tracking-wider rounded-lg hover:border-auxora-blue transition-all"
                 >
                     <i class="fas fa-forward mr-2"></i>Skip
                 </button>
@@ -231,14 +231,14 @@
                         <i id="micIcon" class="fas fa-microphone text-black text-3xl"></i>
                     </button>
                     <div id="statusText" class="text-center">
-                        <p class="text-nexspark-gold font-header text-sm uppercase">Ready</p>
-                        <p class="text-nexspark-blue font-mono text-xs">Hold to record</p>
+                        <p class="text-auxora-gold font-header text-sm uppercase">Ready</p>
+                        <p class="text-auxora-blue font-mono text-xs">Hold to record</p>
                     </div>
                 </div>
 
                 <button
                     id="nextButton"
-                    class="px-8 py-3 bg-nexspark-gold text-black font-header text-lg uppercase tracking-wider rounded-lg hover:bg-nexspark-pale transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="px-8 py-3 bg-auxora-gold text-black font-header text-lg uppercase tracking-wider rounded-lg hover:bg-auxora-pale transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled
                 >
                     <i class="fas fa-arrow-right mr-2"></i>Next
@@ -291,15 +291,15 @@
         // Update status display
         function updateStatusDisplay(status) {
             const statusConfig = {
-                ready: { title: 'Ready', subtitle: 'Hold to record', titleColor: 'text-nexspark-gold' },
-                listening: { title: 'Recording...', subtitle: 'Release when done', titleColor: 'text-nexspark-blue' },
-                processing: { title: 'Transcribing...', subtitle: 'Please wait', titleColor: 'text-nexspark-purple' }
+                ready: { title: 'Ready', subtitle: 'Hold to record', titleColor: 'text-auxora-gold' },
+                listening: { title: 'Recording...', subtitle: 'Release when done', titleColor: 'text-auxora-blue' },
+                processing: { title: 'Transcribing...', subtitle: 'Please wait', titleColor: 'text-auxora-purple' }
             };
 
             const config = statusConfig[status] || statusConfig.ready;
             elements.statusText.innerHTML = `
                 <p class="${config.titleColor} font-header text-lg uppercase">${config.title}</p>
-                <p class="text-nexspark-blue font-mono text-xs">${config.subtitle}</p>
+                <p class="text-auxora-blue font-mono text-xs">${config.subtitle}</p>
             `;
 
             // Update mic button state

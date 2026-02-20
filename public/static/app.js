@@ -125,14 +125,14 @@ function signInWithGoogle() {
   // For demo, simulate successful authentication
   const mockUser = {
     id: 'usr_' + Date.now(),
-    email: 'demo@nexspark.com',
+    email: 'demo@auxora.com',
     name: 'Demo User',
     picture: 'https://via.placeholder.com/150',
     created_at: new Date().toISOString()
   };
   
   // Save user data
-  localStorage.setItem('nexspark_user', JSON.stringify(mockUser));
+  localStorage.setItem('auxora_user', JSON.stringify(mockUser));
   
   // Show success message
   showSuccess('Successfully signed in! Redirecting to dashboard...', 'Welcome');
@@ -288,6 +288,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Initialize
-console.log('%c⚡ NEXSPARK GROWTH OS - v2.0', 'color: #FF9C00; font-size: 20px; font-weight: bold; font-family: Antonio;');
+console.log('%c⚡ AUXORA GROWTH OS - v2.0', 'color: #FF9C00; font-size: 20px; font-weight: bold; font-family: Antonio;');
 console.log('%cSYSTEM ONLINE | AI LAYER ACTIVE | ESCROW VAULT SECURED', 'color: #99CCFF; font-family: JetBrains Mono;');
 console.log('%cReady to transform growth for brands and agencies!', 'color: #CC99CC; font-family: JetBrains Mono;');

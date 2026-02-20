@@ -43,8 +43,8 @@
     
     <script>
         function checkData() {
-            const user = localStorage.getItem('nexspark_user');
-            const interview = localStorage.getItem('nexspark_interview');
+            const user = localStorage.getItem('auxora_user');
+            const interview = localStorage.getItem('auxora_interview');
             
             document.getElementById('user').textContent = user ? JSON.stringify(JSON.parse(user), null, 2) : 'NOT FOUND';
             document.getElementById('interview').textContent = interview ? JSON.stringify(JSON.parse(interview), null, 2) : 'NOT FOUND';
@@ -54,13 +54,13 @@
         }
         
         function fixInterviewId() {
-            const interview = localStorage.getItem('nexspark_interview');
+            const interview = localStorage.getItem('auxora_interview');
             if (interview) {
                 const data = JSON.parse(interview);
                 if (!data.id) {
                     data.id = 'fixed_' + Date.now();
                     data.interviewId = data.id;
-                    localStorage.setItem('nexspark_interview', JSON.stringify(data));
+                    localStorage.setItem('auxora_interview', JSON.stringify(data));
                     alert('✅ Added interview ID: ' + data.id);
                     checkData();
                 } else {

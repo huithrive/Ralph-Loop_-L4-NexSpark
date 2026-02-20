@@ -9,7 +9,7 @@ function showAlert(message, options = {}) {
   const {
     title = 'Alert',
     icon = 'fa-info-circle',
-    iconColor = 'nexspark-blue',
+    iconColor = 'auxora-blue',
   } = options;
 
   const modal = document.createElement('div');
@@ -17,7 +17,7 @@ function showAlert(message, options = {}) {
   modal.style.animation = 'fadeIn 0.3s ease-out';
 
   modal.innerHTML = `
-    <div class="bg-nexspark-panel border-4 border-${iconColor} rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
+    <div class="bg-auxora-panel border-4 border-${iconColor} rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
       <div class="text-center">
         <div class="w-20 h-20 bg-${iconColor}/20 rounded-full flex items-center justify-center mx-auto mb-4">
           <i class="fas ${icon} text-${iconColor} text-4xl"></i>
@@ -43,7 +43,7 @@ async function showConfirm(message, options = {}) {
     confirmText = 'CONFIRM',
     cancelText = 'CANCEL',
     icon = 'fa-question-circle',
-    iconColor = 'nexspark-gold',
+    iconColor = 'auxora-gold',
     danger = false,
   } = options;
 
@@ -52,10 +52,10 @@ async function showConfirm(message, options = {}) {
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm';
     modal.style.animation = 'fadeIn 0.3s ease-out';
 
-    const confirmColor = danger ? 'nexspark-red' : iconColor;
+    const confirmColor = danger ? 'auxora-red' : iconColor;
 
     modal.innerHTML = `
-      <div class="bg-nexspark-panel border-4 border-${iconColor} rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
+      <div class="bg-auxora-panel border-4 border-${iconColor} rounded-2xl p-8 max-w-md mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
         <div class="text-center">
           <div class="w-20 h-20 bg-${iconColor}/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <i class="fas ${icon} text-${iconColor} text-4xl"></i>
@@ -95,7 +95,7 @@ function showError(message) {
   showAlert(message, {
     title: 'Error',
     icon: 'fa-exclamation-triangle',
-    iconColor: 'nexspark-red',
+    iconColor: 'auxora-red',
   });
 }
 
@@ -119,8 +119,8 @@ function showLoading(message = 'Loading...') {
   modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm';
 
   modal.innerHTML = `
-    <div class="bg-nexspark-panel border-2 border-nexspark-gold rounded-2xl p-8 text-center">
-      <i class="fas fa-spinner fa-spin text-nexspark-gold text-6xl mb-4"></i>
+    <div class="bg-auxora-panel border-2 border-auxora-gold rounded-2xl p-8 text-center">
+      <i class="fas fa-spinner fa-spin text-auxora-gold text-6xl mb-4"></i>
       <p class="text-white font-mono text-lg">${message}</p>
     </div>
   `;

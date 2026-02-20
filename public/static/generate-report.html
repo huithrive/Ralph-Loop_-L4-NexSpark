@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generating Your Report | NexSpark</title>
+    <title>Generating Your Report | Auxora</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 pale: '#FFCC99',
@@ -126,17 +126,17 @@
 
     <div class="relative z-10 min-h-screen flex items-center justify-center p-4 md:p-8">
         <!-- Main Container -->
-        <div class="w-full max-w-3xl bg-black/80 border-2 border-nexspark-gold/60 rounded-2xl p-8 md:p-12 backdrop-blur-sm shadow-[0_0_60px_rgba(255,156,0,0.15)]">
+        <div class="w-full max-w-3xl bg-black/80 border-2 border-auxora-gold/60 rounded-2xl p-8 md:p-12 backdrop-blur-sm shadow-[0_0_60px_rgba(255,156,0,0.15)]">
 
             <!-- Header -->
             <div class="text-center mb-10">
                 <div id="headerIcon" class="inline-flex items-center justify-center w-20 h-20 mb-4">
                     <div class="spinner"></div>
                 </div>
-                <h1 id="headerTitle" class="text-3xl md:text-4xl font-header font-bold text-nexspark-gold uppercase tracking-wider mb-2">
+                <h1 id="headerTitle" class="text-3xl md:text-4xl font-header font-bold text-auxora-gold uppercase tracking-wider mb-2">
                     Generating Your Report
                 </h1>
-                <p id="headerSubtitle" class="text-nexspark-blue font-mono text-lg">
+                <p id="headerSubtitle" class="text-auxora-blue font-mono text-lg">
                     Our AI is analyzing your interview and market data
                 </p>
             </div>
@@ -188,10 +188,10 @@
             </div>
 
             <!-- Status Message -->
-            <div id="statusArea" class="bg-nexspark-panel rounded-xl p-6 mb-8 border-l-4 border-nexspark-blue">
+            <div id="statusArea" class="bg-auxora-panel rounded-xl p-6 mb-8 border-l-4 border-auxora-blue">
                 <div class="flex items-start gap-4">
-                    <div id="statusIcon" class="w-10 h-10 rounded-full bg-nexspark-blue/20 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-info-circle text-nexspark-blue"></i>
+                    <div id="statusIcon" class="w-10 h-10 rounded-full bg-auxora-blue/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-info-circle text-auxora-blue"></i>
                     </div>
                     <div>
                         <h3 id="statusTitle" class="font-header font-bold text-white text-lg uppercase mb-1">
@@ -208,16 +208,16 @@
             <div class="mb-8">
                 <div class="flex justify-between text-sm font-mono mb-2">
                     <span class="text-white/60">Progress</span>
-                    <span id="progressPercent" class="text-nexspark-gold font-bold">0%</span>
+                    <span id="progressPercent" class="text-auxora-gold font-bold">0%</span>
                 </div>
-                <div class="w-full h-3 bg-black/50 rounded-full overflow-hidden border border-nexspark-gold/30">
-                    <div id="progressBar" class="h-full bg-gradient-to-r from-nexspark-gold to-nexspark-pale transition-all duration-500" style="width: 0%"></div>
+                <div class="w-full h-3 bg-black/50 rounded-full overflow-hidden border border-auxora-gold/30">
+                    <div id="progressBar" class="h-full bg-gradient-to-r from-auxora-gold to-auxora-pale transition-all duration-500" style="width: 0%"></div>
                 </div>
             </div>
 
             <!-- Action Area (hidden until complete) -->
             <div id="actionArea" class="hidden text-center">
-                <button id="viewReportBtn" class="px-10 py-4 bg-nexspark-gold text-black font-header font-bold text-xl uppercase rounded-xl hover:bg-nexspark-pale transition-all transform hover:scale-105 shadow-xl">
+                <button id="viewReportBtn" class="px-10 py-4 bg-auxora-gold text-black font-header font-bold text-xl uppercase rounded-xl hover:bg-auxora-pale transition-all transform hover:scale-105 shadow-xl">
                     <i class="fas fa-eye mr-3"></i>View Your Report
                 </button>
                 <p class="text-white/60 font-mono text-sm mt-4">
@@ -232,7 +232,7 @@
                 <p id="errorMessage" class="text-white/70 font-mono text-sm mb-4">
                     Something went wrong. Please try again.
                 </p>
-                <button onclick="location.reload()" class="px-6 py-3 bg-nexspark-gold text-black font-header font-bold uppercase rounded-lg">
+                <button onclick="location.reload()" class="px-6 py-3 bg-auxora-gold text-black font-header font-bold uppercase rounded-lg">
                     <i class="fas fa-redo mr-2"></i>Try Again
                 </button>
             </div>
@@ -248,7 +248,7 @@
         }
 
         // Get interview data
-        const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+        const interview = JSON.parse(localStorage.getItem('auxora_interview') || '{}');
         if (!interview.id) {
             console.warn('No interview found, redirecting to interview');
             window.location.href = '/voice-interview';
@@ -303,11 +303,11 @@
         }
 
         // Update status
-        function updateStatus(title, message, iconClass = 'fa-info-circle', borderColor = 'border-nexspark-blue') {
+        function updateStatus(title, message, iconClass = 'fa-info-circle', borderColor = 'border-auxora-blue') {
             elements.statusTitle.textContent = title;
             elements.statusMessage.textContent = message;
-            elements.statusIcon.innerHTML = `<i class="fas ${iconClass} text-nexspark-blue"></i>`;
-            elements.statusArea.className = `bg-nexspark-panel rounded-xl p-6 mb-8 border-l-4 ${borderColor}`;
+            elements.statusIcon.innerHTML = `<i class="fas ${iconClass} text-auxora-blue"></i>`;
+            elements.statusArea.className = `bg-auxora-panel rounded-xl p-6 mb-8 border-l-4 ${borderColor}`;
         }
 
         // Show completion
@@ -319,7 +319,7 @@
                 </div>
             `;
             elements.headerTitle.textContent = 'Report Complete!';
-            elements.headerTitle.classList.remove('text-nexspark-gold');
+            elements.headerTitle.classList.remove('text-auxora-gold');
             elements.headerTitle.classList.add('text-green-400');
             elements.headerSubtitle.textContent = 'Your personalized growth strategy is ready';
 
@@ -347,7 +347,7 @@
             };
 
             // Clear interview from localStorage
-            localStorage.removeItem('nexspark_interview');
+            localStorage.removeItem('auxora_interview');
         }
 
         // Show error
@@ -363,7 +363,7 @@
                 </div>
             `;
             elements.headerTitle.textContent = 'Generation Failed';
-            elements.headerTitle.classList.remove('text-nexspark-gold');
+            elements.headerTitle.classList.remove('text-auxora-gold');
             elements.headerTitle.classList.add('text-red-400');
         }
 

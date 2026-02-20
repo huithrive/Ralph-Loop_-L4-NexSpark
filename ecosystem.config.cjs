@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'nexspark-landing',
+      name: 'auxora-landing',
       script: 'npx',
       args: 'wrangler pages dev dist --d1=nexspark-interviews --local --ip 0.0.0.0 --port 3000',
       env: {

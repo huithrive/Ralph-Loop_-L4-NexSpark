@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin: Prompt Management | NexSpark</title>
+    <title>Admin: Prompt Management | Auxora</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 pale: '#FFCC99',
@@ -42,12 +42,12 @@
         color: #99CCFF;
       }
       
-      .nexspark-panel {
+      .auxora-panel {
         background: rgba(20, 20, 25, 0.9);
         backdrop-filter: blur(10px);
       }
       
-      .nexspark-dark {
+      .auxora-dark {
         background: #111111;
       }
       
@@ -81,38 +81,38 @@
         <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h1 class="text-5xl font-header font-bold text-nexspark-gold uppercase tracking-wider mb-2">
+                    <h1 class="text-5xl font-header font-bold text-auxora-gold uppercase tracking-wider mb-2">
                         <i class="fas fa-robot mr-3"></i>Claude AI Prompt Manager
                     </h1>
-                    <p class="text-nexspark-blue font-mono text-lg">
+                    <p class="text-auxora-blue font-mono text-lg">
                         Customize AI prompts for preview and full report generation
                     </p>
                 </div>
-                <button onclick="window.location.href='/'" class="px-6 py-3 bg-nexspark-blue text-black font-header font-bold rounded-lg hover:bg-blue-400 transition">
+                <button onclick="window.location.href='/'" class="px-6 py-3 bg-auxora-blue text-black font-header font-bold rounded-lg hover:bg-blue-400 transition">
                     <i class="fas fa-home mr-2"></i>Back to Home
                 </button>
             </div>
             
             <!-- Stats Bar -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="nexspark-panel rounded-lg p-4 border-l-4 border-nexspark-gold">
-                    <div class="text-nexspark-gold text-sm font-bold mb-1">TOTAL PROMPTS</div>
+                <div class="auxora-panel rounded-lg p-4 border-l-4 border-auxora-gold">
+                    <div class="text-auxora-gold text-sm font-bold mb-1">TOTAL PROMPTS</div>
                     <div class="text-white text-3xl font-header font-bold">6</div>
                 </div>
-                <div class="nexspark-panel rounded-lg p-4 border-l-4 border-nexspark-blue">
-                    <div class="text-nexspark-blue text-sm font-bold mb-1">LAST SAVED</div>
+                <div class="auxora-panel rounded-lg p-4 border-l-4 border-auxora-blue">
+                    <div class="text-auxora-blue text-sm font-bold mb-1">LAST SAVED</div>
                     <div class="text-white text-lg font-mono" id="lastSaved">Never</div>
                 </div>
-                <div class="nexspark-panel rounded-lg p-4 border-l-4 border-nexspark-purple">
-                    <div class="text-nexspark-purple text-sm font-bold mb-1">STATUS</div>
+                <div class="auxora-panel rounded-lg p-4 border-l-4 border-auxora-purple">
+                    <div class="text-auxora-purple text-sm font-bold mb-1">STATUS</div>
                     <div class="text-white text-lg font-header">
                         <span id="statusIndicator">
                             <i class="fas fa-circle text-green-400 mr-2"></i>Ready
                         </span>
                     </div>
                 </div>
-                <div class="nexspark-panel rounded-lg p-4 border-l-4 border-nexspark-gold">
-                    <button onclick="saveAllPrompts()" class="w-full px-4 py-2 bg-nexspark-gold text-black font-header font-bold rounded hover:bg-yellow-500 transition">
+                <div class="auxora-panel rounded-lg p-4 border-l-4 border-auxora-gold">
+                    <button onclick="saveAllPrompts()" class="w-full px-4 py-2 bg-auxora-gold text-black font-header font-bold rounded hover:bg-yellow-500 transition">
                         <i class="fas fa-save mr-2"></i>SAVE ALL
                     </button>
                 </div>
@@ -122,150 +122,150 @@
         <!-- Prompt Cards -->
         <div class="space-y-6">
             <!-- 1. Interview Summary -->
-            <div class="prompt-card nexspark-panel border-2 border-nexspark-blue rounded-xl p-6">
+            <div class="prompt-card auxora-panel border-2 border-auxora-blue rounded-xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h2 class="text-2xl font-header font-bold text-nexspark-blue uppercase">
+                        <h2 class="text-2xl font-header font-bold text-auxora-blue uppercase">
                             <i class="fas fa-clipboard-list mr-2"></i>1. Interview Summary
                         </h2>
                         <p class="text-white/70 text-sm mt-1">
                             Used after interview completion to generate structured business summary
                         </p>
                         <div class="mt-2 flex gap-2">
-                            <span class="px-2 py-1 bg-blue-900/30 text-nexspark-blue text-xs font-mono rounded">POST /api/interview/summarize</span>
+                            <span class="px-2 py-1 bg-blue-900/30 text-auxora-blue text-xs font-mono rounded">POST /api/interview/summarize</span>
                             <span class="px-2 py-1 bg-green-900/30 text-green-400 text-xs font-mono rounded">Preview Stage</span>
                         </div>
                     </div>
-                    <button onclick="resetPrompt('summary')" class="px-4 py-2 bg-nexspark-dark text-nexspark-blue font-bold rounded hover:bg-nexspark-blue hover:text-black transition">
+                    <button onclick="resetPrompt('summary')" class="px-4 py-2 bg-auxora-dark text-auxora-blue font-bold rounded hover:bg-auxora-blue hover:text-black transition">
                         <i class="fas fa-undo mr-2"></i>Reset
                     </button>
                 </div>
-                <textarea id="prompt_summary" rows="12" class="w-full bg-nexspark-dark text-white/90 p-4 rounded-lg border-2 border-nexspark-blue/30 focus:border-nexspark-blue focus:outline-none resize-vertical"></textarea>
+                <textarea id="prompt_summary" rows="12" class="w-full bg-auxora-dark text-white/90 p-4 rounded-lg border-2 border-auxora-blue/30 focus:border-auxora-blue focus:outline-none resize-vertical"></textarea>
                 <div class="mt-2 text-xs text-white/50 font-mono">
                     Variables available: {transcript}, {responseCount}
                 </div>
             </div>
             
             <!-- 2. Competitor Preview -->
-            <div class="prompt-card nexspark-panel border-2 border-nexspark-purple rounded-xl p-6">
+            <div class="prompt-card auxora-panel border-2 border-auxora-purple rounded-xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h2 class="text-2xl font-header font-bold text-nexspark-purple uppercase">
+                        <h2 class="text-2xl font-header font-bold text-auxora-purple uppercase">
                             <i class="fas fa-users mr-2"></i>2. Competitor Preview
                         </h2>
                         <p class="text-white/70 text-sm mt-1">
                             Analyzes competitors and generates preview insights
                         </p>
                         <div class="mt-2 flex gap-2">
-                            <span class="px-2 py-1 bg-purple-900/30 text-nexspark-purple text-xs font-mono rounded">POST /api/preview/competitors</span>
+                            <span class="px-2 py-1 bg-purple-900/30 text-auxora-purple text-xs font-mono rounded">POST /api/preview/competitors</span>
                             <span class="px-2 py-1 bg-green-900/30 text-green-400 text-xs font-mono rounded">Preview Stage</span>
                         </div>
                     </div>
-                    <button onclick="resetPrompt('competitors')" class="px-4 py-2 bg-nexspark-dark text-nexspark-purple font-bold rounded hover:bg-nexspark-purple hover:text-black transition">
+                    <button onclick="resetPrompt('competitors')" class="px-4 py-2 bg-auxora-dark text-auxora-purple font-bold rounded hover:bg-auxora-purple hover:text-black transition">
                         <i class="fas fa-undo mr-2"></i>Reset
                     </button>
                 </div>
-                <textarea id="prompt_competitors" rows="12" class="w-full bg-nexspark-dark text-white/90 p-4 rounded-lg border-2 border-nexspark-purple/30 focus:border-nexspark-purple focus:outline-none resize-vertical"></textarea>
+                <textarea id="prompt_competitors" rows="12" class="w-full bg-auxora-dark text-white/90 p-4 rounded-lg border-2 border-auxora-purple/30 focus:border-auxora-purple focus:outline-none resize-vertical"></textarea>
                 <div class="mt-2 text-xs text-white/50 font-mono">
                     Variables available: {website}, {industry}, {competitors}
                 </div>
             </div>
             
             <!-- 3. Roadmap Preview -->
-            <div class="prompt-card nexspark-panel border-2 border-nexspark-gold rounded-xl p-6">
+            <div class="prompt-card auxora-panel border-2 border-auxora-gold rounded-xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h2 class="text-2xl font-header font-bold text-nexspark-gold uppercase">
+                        <h2 class="text-2xl font-header font-bold text-auxora-gold uppercase">
                             <i class="fas fa-map mr-2"></i>3. Roadmap Preview
                         </h2>
                         <p class="text-white/70 text-sm mt-1">
                             Creates high-level 6-month growth roadmap preview
                         </p>
                         <div class="mt-2 flex gap-2">
-                            <span class="px-2 py-1 bg-yellow-900/30 text-nexspark-gold text-xs font-mono rounded">POST /api/preview/roadmap</span>
+                            <span class="px-2 py-1 bg-yellow-900/30 text-auxora-gold text-xs font-mono rounded">POST /api/preview/roadmap</span>
                             <span class="px-2 py-1 bg-green-900/30 text-green-400 text-xs font-mono rounded">Preview Stage</span>
                         </div>
                     </div>
-                    <button onclick="resetPrompt('roadmap')" class="px-4 py-2 bg-nexspark-dark text-nexspark-gold font-bold rounded hover:bg-nexspark-gold hover:text-black transition">
+                    <button onclick="resetPrompt('roadmap')" class="px-4 py-2 bg-auxora-dark text-auxora-gold font-bold rounded hover:bg-auxora-gold hover:text-black transition">
                         <i class="fas fa-undo mr-2"></i>Reset
                     </button>
                 </div>
-                <textarea id="prompt_roadmap" rows="12" class="w-full bg-nexspark-dark text-white/90 p-4 rounded-lg border-2 border-nexspark-gold/30 focus:border-nexspark-gold focus:outline-none resize-vertical"></textarea>
+                <textarea id="prompt_roadmap" rows="12" class="w-full bg-auxora-dark text-white/90 p-4 rounded-lg border-2 border-auxora-gold/30 focus:border-auxora-gold focus:outline-none resize-vertical"></textarea>
                 <div class="mt-2 text-xs text-white/50 font-mono">
                     Variables available: {summary} (full business summary object)
                 </div>
             </div>
             
             <!-- 4. Benchmarks Preview -->
-            <div class="prompt-card nexspark-panel border-2 border-nexspark-blue rounded-xl p-6">
+            <div class="prompt-card auxora-panel border-2 border-auxora-blue rounded-xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h2 class="text-2xl font-header font-bold text-nexspark-blue uppercase">
+                        <h2 class="text-2xl font-header font-bold text-auxora-blue uppercase">
                             <i class="fas fa-chart-bar mr-2"></i>4. Paid Ads Benchmarks
                         </h2>
                         <p class="text-white/70 text-sm mt-1">
                             Generates realistic paid advertising benchmarks and projections
                         </p>
                         <div class="mt-2 flex gap-2">
-                            <span class="px-2 py-1 bg-blue-900/30 text-nexspark-blue text-xs font-mono rounded">POST /api/preview/benchmarks</span>
+                            <span class="px-2 py-1 bg-blue-900/30 text-auxora-blue text-xs font-mono rounded">POST /api/preview/benchmarks</span>
                             <span class="px-2 py-1 bg-green-900/30 text-green-400 text-xs font-mono rounded">Preview Stage</span>
                         </div>
                     </div>
-                    <button onclick="resetPrompt('benchmarks')" class="px-4 py-2 bg-nexspark-dark text-nexspark-blue font-bold rounded hover:bg-nexspark-blue hover:text-black transition">
+                    <button onclick="resetPrompt('benchmarks')" class="px-4 py-2 bg-auxora-dark text-auxora-blue font-bold rounded hover:bg-auxora-blue hover:text-black transition">
                         <i class="fas fa-undo mr-2"></i>Reset
                     </button>
                 </div>
-                <textarea id="prompt_benchmarks" rows="12" class="w-full bg-nexspark-dark text-white/90 p-4 rounded-lg border-2 border-nexspark-blue/30 focus:border-nexspark-blue focus:outline-none resize-vertical"></textarea>
+                <textarea id="prompt_benchmarks" rows="12" class="w-full bg-auxora-dark text-white/90 p-4 rounded-lg border-2 border-auxora-blue/30 focus:border-auxora-blue focus:outline-none resize-vertical"></textarea>
                 <div class="mt-2 text-xs text-white/50 font-mono">
                     Variables available: {summary} (full business summary object)
                 </div>
             </div>
             
             <!-- 5. Full Analysis -->
-            <div class="prompt-card nexspark-panel border-2 border-nexspark-purple rounded-xl p-6">
+            <div class="prompt-card auxora-panel border-2 border-auxora-purple rounded-xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h2 class="text-2xl font-header font-bold text-nexspark-purple uppercase">
+                        <h2 class="text-2xl font-header font-bold text-auxora-purple uppercase">
                             <i class="fas fa-brain mr-2"></i>5. Full Business Analysis
                         </h2>
                         <p class="text-white/70 text-sm mt-1">
                             Deep analysis of interview transcript to extract business profile
                         </p>
                         <div class="mt-2 flex gap-2">
-                            <span class="px-2 py-1 bg-purple-900/30 text-nexspark-purple text-xs font-mono rounded">analyzeInterview()</span>
+                            <span class="px-2 py-1 bg-purple-900/30 text-auxora-purple text-xs font-mono rounded">analyzeInterview()</span>
                             <span class="px-2 py-1 bg-red-900/30 text-red-400 text-xs font-mono rounded">Full Report (Paid)</span>
                         </div>
                     </div>
-                    <button onclick="resetPrompt('analysis')" class="px-4 py-2 bg-nexspark-dark text-nexspark-purple font-bold rounded hover:bg-nexspark-purple hover:text-black transition">
+                    <button onclick="resetPrompt('analysis')" class="px-4 py-2 bg-auxora-dark text-auxora-purple font-bold rounded hover:bg-auxora-purple hover:text-black transition">
                         <i class="fas fa-undo mr-2"></i>Reset
                     </button>
                 </div>
-                <textarea id="prompt_analysis" rows="14" class="w-full bg-nexspark-dark text-white/90 p-4 rounded-lg border-2 border-nexspark-purple/30 focus:border-nexspark-purple focus:outline-none resize-vertical"></textarea>
+                <textarea id="prompt_analysis" rows="14" class="w-full bg-auxora-dark text-white/90 p-4 rounded-lg border-2 border-auxora-purple/30 focus:border-auxora-purple focus:outline-none resize-vertical"></textarea>
                 <div class="mt-2 text-xs text-white/50 font-mono">
                     Variables available: {transcript}, {userId}, {interviewId}
                 </div>
             </div>
             
             <!-- 6. GTM Strategy Generation -->
-            <div class="prompt-card nexspark-panel border-2 border-nexspark-gold rounded-xl p-6">
+            <div class="prompt-card auxora-panel border-2 border-auxora-gold rounded-xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h2 class="text-2xl font-header font-bold text-nexspark-gold uppercase">
+                        <h2 class="text-2xl font-header font-bold text-auxora-gold uppercase">
                             <i class="fas fa-rocket mr-2"></i>6. GTM Strategy Generation
                         </h2>
                         <p class="text-white/70 text-sm mt-1">
                             Generates comprehensive 6-month go-to-market strategy
                         </p>
                         <div class="mt-2 flex gap-2">
-                            <span class="px-2 py-1 bg-yellow-900/30 text-nexspark-gold text-xs font-mono rounded">generateGTMStrategy()</span>
+                            <span class="px-2 py-1 bg-yellow-900/30 text-auxora-gold text-xs font-mono rounded">generateGTMStrategy()</span>
                             <span class="px-2 py-1 bg-red-900/30 text-red-400 text-xs font-mono rounded">Full Report (Paid)</span>
                         </div>
                     </div>
-                    <button onclick="resetPrompt('gtm')" class="px-4 py-2 bg-nexspark-dark text-nexspark-gold font-bold rounded hover:bg-nexspark-gold hover:text-black transition">
+                    <button onclick="resetPrompt('gtm')" class="px-4 py-2 bg-auxora-dark text-auxora-gold font-bold rounded hover:bg-auxora-gold hover:text-black transition">
                         <i class="fas fa-undo mr-2"></i>Reset
                     </button>
                 </div>
-                <textarea id="prompt_gtm" rows="16" class="w-full bg-nexspark-dark text-white/90 p-4 rounded-lg border-2 border-nexspark-gold/30 focus:border-nexspark-gold focus:outline-none resize-vertical"></textarea>
+                <textarea id="prompt_gtm" rows="16" class="w-full bg-auxora-dark text-white/90 p-4 rounded-lg border-2 border-auxora-gold/30 focus:border-auxora-gold focus:outline-none resize-vertical"></textarea>
                 <div class="mt-2 text-xs text-white/50 font-mono">
                     Variables available: {businessProfile}, {competitors}, {trafficData}
                 </div>
@@ -274,16 +274,16 @@
         
         <!-- Save Button (Bottom) -->
         <div class="mt-8 sticky bottom-4 z-10">
-            <div class="nexspark-panel border-2 border-nexspark-gold rounded-xl p-6 flex items-center justify-between shadow-2xl">
+            <div class="auxora-panel border-2 border-auxora-gold rounded-xl p-6 flex items-center justify-between shadow-2xl">
                 <div>
-                    <div class="text-nexspark-gold font-header font-bold text-xl uppercase mb-1">
+                    <div class="text-auxora-gold font-header font-bold text-xl uppercase mb-1">
                         <i class="fas fa-save mr-2"></i>Save Changes
                     </div>
                     <div class="text-white/70 text-sm">
                         All prompts will be saved to localStorage and used immediately
                     </div>
                 </div>
-                <button onclick="saveAllPrompts()" class="px-12 py-4 bg-gradient-to-r from-nexspark-gold to-yellow-500 text-black font-header font-bold text-2xl uppercase rounded-xl hover:from-yellow-500 hover:to-nexspark-gold transition-all transform hover:scale-105 shadow-xl">
+                <button onclick="saveAllPrompts()" class="px-12 py-4 bg-gradient-to-r from-auxora-gold to-yellow-500 text-black font-header font-bold text-2xl uppercase rounded-xl hover:from-yellow-500 hover:to-auxora-gold transition-all transform hover:scale-105 shadow-xl">
                     <i class="fas fa-cloud-upload-alt mr-3"></i>SAVE ALL PROMPTS
                 </button>
             </div>
@@ -425,7 +425,7 @@ Return as structured JSON.`
         
         // Load prompts from localStorage or use defaults
         function loadPrompts() {
-            const saved = localStorage.getItem('nexspark_admin_prompts');
+            const saved = localStorage.getItem('auxora_admin_prompts');
             const prompts = saved ? JSON.parse(saved) : DEFAULT_PROMPTS;
             
             document.getElementById('prompt_summary').value = prompts.summary || DEFAULT_PROMPTS.summary;
@@ -436,7 +436,7 @@ Return as structured JSON.`
             document.getElementById('prompt_gtm').value = prompts.gtm || DEFAULT_PROMPTS.gtm;
             
             // Update last saved time
-            const lastSaved = localStorage.getItem('nexspark_prompts_last_saved');
+            const lastSaved = localStorage.getItem('auxora_prompts_last_saved');
             if (lastSaved) {
                 const date = new Date(lastSaved);
                 document.getElementById('lastSaved').textContent = date.toLocaleString();
@@ -454,8 +454,8 @@ Return as structured JSON.`
                 gtm: document.getElementById('prompt_gtm').value
             };
             
-            localStorage.setItem('nexspark_admin_prompts', JSON.stringify(prompts));
-            localStorage.setItem('nexspark_prompts_last_saved', new Date().toISOString());
+            localStorage.setItem('auxora_admin_prompts', JSON.stringify(prompts));
+            localStorage.setItem('auxora_prompts_last_saved', new Date().toISOString());
             
             // Update UI
             const now = new Date();

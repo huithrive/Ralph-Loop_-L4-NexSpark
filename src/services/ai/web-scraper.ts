@@ -24,7 +24,7 @@ export async function scrapeWebsite(url: string): Promise<ScrapedWebsite> {
     const response = await fetchWithTimeout(normalizedUrl, {
       timeout: TIMEOUTS.api.default,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; NexSparkBot/1.0)',
+        'User-Agent': 'Mozilla/5.0 (compatible; AuxoraBot/1.0)',
       },
     });
 

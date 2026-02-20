@@ -1,4 +1,4 @@
-// NexSpark Voice Interview - Real-Time Transcription + Simplified UI v3
+// Auxora Voice Interview - Real-Time Transcription + Simplified UI v3
 // Implements Web Speech API for real-time transcription and simplified controls
 
 // Animated Starfield Background
@@ -88,7 +88,7 @@ function autoSaveProgress() {
     lastSaved: new Date().toISOString(),
     userId: interviewState.userId
   };
-  localStorage.setItem('nexspark_interview_progress', JSON.stringify(saveData));
+  localStorage.setItem('auxora_interview_progress', JSON.stringify(saveData));
   
   // Show auto-save indicator
   const indicator = document.getElementById('autoSaveIndicator');
@@ -102,7 +102,7 @@ function autoSaveProgress() {
 
 // AUTO-SAVE: Load saved progress
 async function loadSavedProgress() {
-  const saved = localStorage.getItem('nexspark_interview_progress');
+  const saved = localStorage.getItem('auxora_interview_progress');
   if (!saved) return false;
   
   try {
@@ -114,7 +114,7 @@ async function loadSavedProgress() {
     
     if (saveAge > maxAge) {
       console.log('Saved progress too old, ignoring');
-      localStorage.removeItem('nexspark_interview_progress');
+      localStorage.removeItem('auxora_interview_progress');
       return false;
     }
     
@@ -133,7 +133,7 @@ async function loadSavedProgress() {
         confirmText: 'CONTINUE',
         cancelText: 'START OVER',
         icon: 'fa-play-circle',
-        iconColor: 'nexspark-gold'
+        iconColor: 'auxora-gold'
       }
     );
 
@@ -149,12 +149,12 @@ async function loadSavedProgress() {
       return true;
     } else {
       // Clear saved progress
-      localStorage.removeItem('nexspark_interview_progress');
+      localStorage.removeItem('auxora_interview_progress');
       return false;
     }
   } catch (e) {
     console.error('Error loading saved progress:', e);
-    localStorage.removeItem('nexspark_interview_progress');
+    localStorage.removeItem('auxora_interview_progress');
     return false;
   }
 }
@@ -197,7 +197,7 @@ const interviewQuestions = [
 
 // Authentication Check
 function checkAuth() {
-  const user = localStorage.getItem('nexspark_user');
+  const user = localStorage.getItem('auxora_user');
   if (!user) {
     console.log('No user found, redirecting to home');
     window.location.href = '/';
@@ -230,7 +230,7 @@ async function checkExistingInterview() {
           confirmText: 'START NEW',
           cancelText: 'CONTINUE OLD',
           icon: 'fa-history',
-          iconColor: 'nexspark-blue'
+          iconColor: 'auxora-blue'
         }
       );
 
@@ -359,10 +359,10 @@ async function startInterview() {
   if (!user) return;
 
   // Check if dashboard requested to continue specific interview
-  const continueInterviewId = localStorage.getItem('nexspark_continue_interview');
+  const continueInterviewId = localStorage.getItem('auxora_continue_interview');
   if (continueInterviewId) {
     console.log('Continuing interview:', continueInterviewId);
-    localStorage.removeItem('nexspark_continue_interview');
+    localStorage.removeItem('auxora_continue_interview');
 
     // Load specific interview from database
     try {
@@ -424,7 +424,7 @@ async function startInterview() {
   document.getElementById('finishedBtn').classList.remove('hidden');
   
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
       Ready to Listen
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -442,7 +442,7 @@ async function startInterview() {
   setTimeout(() => {
     startRecording();
     document.getElementById('statusText').innerHTML = `
-      <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
+      <div class="text-auxora-red font-header text-2xl uppercase tracking-wider mb-2">
         Listening...
       </div>
       <div class="text-white/70 font-mono text-sm">
@@ -575,10 +575,10 @@ async function startRecording() {
     }
     
     // Update UI
-    document.getElementById('micIcon').className = 'fas fa-circle text-5xl text-nexspark-red animate-pulse';
-    document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-nexspark-red/20 flex items-center justify-center border-4 border-nexspark-red cursor-pointer transition-all shadow-lg shadow-nexspark-red/50';
+    document.getElementById('micIcon').className = 'fas fa-circle text-5xl text-auxora-red animate-pulse';
+    document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-auxora-red/20 flex items-center justify-center border-4 border-auxora-red cursor-pointer transition-all shadow-lg shadow-auxora-red/50';
     document.getElementById('statusText').innerHTML = `
-      <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
+      <div class="text-auxora-red font-header text-2xl uppercase tracking-wider mb-2">
         Listening...
       </div>
       <div class="text-white/70 font-mono text-sm">
@@ -620,9 +620,9 @@ function stopRecording() {
   
   // Update UI
   document.getElementById('micIcon').className = 'fas fa-microphone text-5xl text-black';
-  document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-nexspark-gold flex items-center justify-center cursor-pointer hover:bg-nexspark-pale transition-all shadow-lg shadow-nexspark-gold/50';
+  document.getElementById('micButton').className = 'w-32 h-32 rounded-full bg-auxora-gold flex items-center justify-center cursor-pointer hover:bg-auxora-pale transition-all shadow-lg shadow-auxora-gold/50';
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
       Response Captured
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -646,7 +646,7 @@ async function finishedSpeaking() {
   if (!finalAnswer) {
     showAlert('Please provide an answer before continuing.', {
       icon: 'fa-comment-slash',
-      iconColor: 'nexspark-gold'
+      iconColor: 'auxora-gold'
     });
     return;
   }
@@ -655,7 +655,7 @@ async function finishedSpeaking() {
   
   // Show processing status
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-blue font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-blue font-header text-2xl uppercase tracking-wider mb-2">
       Saving...
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -696,7 +696,7 @@ async function finishedSpeaking() {
         setTimeout(() => {
           startRecording();
           document.getElementById('statusText').innerHTML = `
-            <div class="text-nexspark-red font-header text-2xl uppercase tracking-wider mb-2">
+            <div class="text-auxora-red font-header text-2xl uppercase tracking-wider mb-2">
               Listening...
             </div>
             <div class="text-white/70 font-mono text-sm">
@@ -771,10 +771,10 @@ function showErrorWithRecovery(errorMessage, errorType = 'general') {
   const totalAnswered = interviewState.responses.length;
   
   errorModal.innerHTML = `
-    <div class="bg-nexspark-panel border-4 border-nexspark-red rounded-2xl p-8 max-w-2xl mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
+    <div class="bg-auxora-panel border-4 border-auxora-red rounded-2xl p-8 max-w-2xl mx-4 shadow-2xl" style="animation: slideUp 0.3s ease-out">
       <div class="text-center mb-6">
-        <div class="w-20 h-20 bg-nexspark-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <i class="fas fa-exclamation-triangle text-nexspark-red text-4xl"></i>
+        <div class="w-20 h-20 bg-auxora-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-exclamation-triangle text-auxora-red text-4xl"></i>
         </div>
         <h2 class="text-3xl font-header font-bold text-white uppercase mb-2">
           Oops! Something Went Wrong
@@ -784,11 +784,11 @@ function showErrorWithRecovery(errorMessage, errorType = 'general') {
         </p>
       </div>
       
-      <div class="bg-nexspark-dark border border-nexspark-gold/30 rounded-lg p-6 mb-6">
+      <div class="bg-auxora-dark border border-auxora-gold/30 rounded-lg p-6 mb-6">
         <div class="flex items-center gap-3 mb-4">
-          <i class="fas fa-shield-check text-nexspark-gold text-2xl"></i>
+          <i class="fas fa-shield-check text-auxora-gold text-2xl"></i>
           <div>
-            <h3 class="text-nexspark-gold font-bold text-lg">Your Progress is Safe!</h3>
+            <h3 class="text-auxora-gold font-bold text-lg">Your Progress is Safe!</h3>
             <p class="text-white/70 text-sm">You've answered ${totalAnswered} question${totalAnswered !== 1 ? 's' : ''} - all saved locally</p>
           </div>
         </div>
@@ -801,15 +801,15 @@ function showErrorWithRecovery(errorMessage, errorType = 'general') {
       </div>
       
       <div class="space-y-3">
-        <button onclick="retryCurrentQuestion()" class="w-full py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-xl uppercase rounded-xl transition-all transform hover:scale-105 shadow-lg">
+        <button onclick="retryCurrentQuestion()" class="w-full py-4 bg-auxora-gold hover:bg-auxora-pale text-black font-header font-bold text-xl uppercase rounded-xl transition-all transform hover:scale-105 shadow-lg">
           <i class="fas fa-redo mr-2"></i>Retry This Question
         </button>
         
-        <button onclick="continueFromLastSaved()" class="w-full py-4 bg-nexspark-blue/20 border-2 border-nexspark-blue hover:bg-nexspark-blue/40 text-nexspark-blue font-header font-bold text-xl uppercase rounded-xl transition-all">
+        <button onclick="continueFromLastSaved()" class="w-full py-4 bg-auxora-blue/20 border-2 border-auxora-blue hover:bg-auxora-blue/40 text-auxora-blue font-header font-bold text-xl uppercase rounded-xl transition-all">
           <i class="fas fa-play mr-2"></i>Continue from Question ${totalAnswered + 1}
         </button>
         
-        <button onclick="restartInterview()" class="w-full py-4 bg-nexspark-purple/20 border-2 border-nexspark-purple hover:bg-nexspark-purple/40 text-nexspark-purple font-header font-bold text-xl uppercase rounded-xl transition-all">
+        <button onclick="restartInterview()" class="w-full py-4 bg-auxora-purple/20 border-2 border-auxora-purple hover:bg-auxora-purple/40 text-auxora-purple font-header font-bold text-xl uppercase rounded-xl transition-all">
           <i class="fas fa-refresh mr-2"></i>Start Fresh Interview
         </button>
         
@@ -847,7 +847,7 @@ function retryCurrentQuestion() {
   
   // Show ready to record status
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
       Ready to Try Again
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -912,8 +912,8 @@ async function restartInterview() {
   interviewState.isProcessing = false;
   
   // Clear localStorage
-  localStorage.removeItem('nexspark_interview_progress');
-  localStorage.removeItem('nexspark_interview');
+  localStorage.removeItem('auxora_interview_progress');
+  localStorage.removeItem('auxora_interview');
   
   // Clear transcript
   document.getElementById('transcriptMessages').innerHTML = '';
@@ -927,8 +927,8 @@ function addToTranscript(speaker, message) {
   const transcriptMessages = document.getElementById('transcriptMessages');
   const messageEl = document.createElement('div');
   messageEl.className = speaker === 'leon' 
-    ? 'p-4 rounded bg-nexspark-blue/10 border border-nexspark-blue/30'
-    : 'p-4 rounded bg-nexspark-gold/10 border border-nexspark-gold/30';
+    ? 'p-4 rounded bg-auxora-blue/10 border border-auxora-blue/30'
+    : 'p-4 rounded bg-auxora-gold/10 border border-auxora-gold/30';
   
   const speakerName = speaker === 'leon' ? 'DIGITAL LEON' : 'YOU';
   const icon = speaker === 'leon' ? '🤖' : '👤';
@@ -956,7 +956,7 @@ function pauseInterview() {
   showAlert('Interview paused. Click "Resume" to continue.', {
     title: 'Interview Paused',
     icon: 'fa-pause-circle',
-    iconColor: 'nexspark-blue'
+    iconColor: 'auxora-blue'
   });
 }
 
@@ -969,7 +969,7 @@ async function endInterview() {
       confirmText: 'END',
       cancelText: 'CONTINUE',
       icon: 'fa-stop-circle',
-      iconColor: 'nexspark-red'
+      iconColor: 'auxora-red'
     }
   );
 
@@ -1015,7 +1015,7 @@ async function completeInterview() {
         completed: true,
         completedAt: finalData.completedAt
       };
-      localStorage.setItem('nexspark_interview', JSON.stringify(storedInterview));
+      localStorage.setItem('auxora_interview', JSON.stringify(storedInterview));
       console.log('✅ Saved complete interview data to localStorage:', {
         id: result.interviewId,
         responseCount: interviewState.responses.length
@@ -1032,12 +1032,12 @@ async function completeInterview() {
       completed: true,
       completedAt: finalData.completedAt
     };
-    localStorage.setItem('nexspark_interview', JSON.stringify(storedInterview));
+    localStorage.setItem('auxora_interview', JSON.stringify(storedInterview));
     console.log('⚠️ API failed, saved interview data locally');
   }
   
   document.getElementById('statusText').innerHTML = `
-    <div class="text-nexspark-gold font-header text-2xl uppercase tracking-wider mb-2">
+    <div class="text-auxora-gold font-header text-2xl uppercase tracking-wider mb-2">
       Interview Complete!
     </div>
     <div class="text-white/70 font-mono text-sm">
@@ -1073,40 +1073,40 @@ function showCompletionPopup() {
   overlay.style.animation = 'fadeIn 0.3s ease-out';
   
   overlay.innerHTML = `
-    <div class="bg-nexspark-panel border-4 border-nexspark-gold rounded-2xl p-8 max-w-2xl w-full" style="animation: slideUp 0.4s ease-out;">
+    <div class="bg-auxora-panel border-4 border-auxora-gold rounded-2xl p-8 max-w-2xl w-full" style="animation: slideUp 0.4s ease-out;">
       <div class="text-center mb-6">
-        <i class="fas fa-check-circle text-6xl text-nexspark-gold mb-4"></i>
+        <i class="fas fa-check-circle text-6xl text-auxora-gold mb-4"></i>
         <h2 class="text-4xl font-header font-bold text-white uppercase mb-2">
           Interview Complete!
         </h2>
-        <p class="text-nexspark-blue font-mono text-lg">
+        <p class="text-auxora-blue font-mono text-lg">
           🎉 Great job! Here's what we captured:
         </p>
       </div>
       
-      <div class="bg-nexspark-dark rounded-xl p-6 mb-6 space-y-4">
-        <div class="border-b border-nexspark-blue/30 pb-3">
-          <label class="block text-nexspark-gold font-bold mb-2 uppercase text-sm">
+      <div class="bg-auxora-dark rounded-xl p-6 mb-6 space-y-4">
+        <div class="border-b border-auxora-blue/30 pb-3">
+          <label class="block text-auxora-gold font-bold mb-2 uppercase text-sm">
             <i class="fas fa-building mr-2"></i>Company Name
           </label>
           <input 
             type="text" 
             id="companyNameInput" 
             value="${detectedCompany}"
-            class="w-full px-4 py-3 bg-black border-2 border-nexspark-purple rounded-lg text-white font-mono focus:border-nexspark-gold focus:outline-none"
+            class="w-full px-4 py-3 bg-black border-2 border-auxora-purple rounded-lg text-white font-mono focus:border-auxora-gold focus:outline-none"
             placeholder="Enter your company name"
           >
         </div>
         
-        <div class="border-b border-nexspark-blue/30 pb-3">
-          <label class="block text-nexspark-gold font-bold mb-2 uppercase text-sm">
+        <div class="border-b border-auxora-blue/30 pb-3">
+          <label class="block text-auxora-gold font-bold mb-2 uppercase text-sm">
             <i class="fas fa-globe mr-2"></i>Website URL
           </label>
           <input 
             type="text" 
             id="websiteInput" 
             value="${detectedWebsite}"
-            class="w-full px-4 py-3 bg-black border-2 border-nexspark-purple rounded-lg text-white font-mono focus:border-nexspark-gold focus:outline-none"
+            class="w-full px-4 py-3 bg-black border-2 border-auxora-purple rounded-lg text-white font-mono focus:border-auxora-gold focus:outline-none"
             placeholder="e.g., www.yourcompany.com"
           >
           <p class="text-white/50 text-xs font-mono mt-2">
@@ -1116,7 +1116,7 @@ function showCompletionPopup() {
         </div>
         
         <div>
-          <label class="block text-nexspark-gold font-bold mb-2 uppercase text-sm">
+          <label class="block text-auxora-gold font-bold mb-2 uppercase text-sm">
             <i class="fas fa-comments mr-2"></i>Total Responses Captured
           </label>
           <div class="text-white font-mono text-2xl">
@@ -1125,26 +1125,26 @@ function showCompletionPopup() {
         </div>
       </div>
       
-      <div class="bg-gradient-to-r from-nexspark-gold/20 to-nexspark-blue/20 rounded-xl p-6 mb-6 border border-nexspark-gold/30">
+      <div class="bg-gradient-to-r from-auxora-gold/20 to-auxora-blue/20 rounded-xl p-6 mb-6 border border-auxora-gold/30">
         <h3 class="text-white font-header text-xl uppercase mb-3">
-          <i class="fas fa-magic mr-2 text-nexspark-gold"></i>
+          <i class="fas fa-magic mr-2 text-auxora-gold"></i>
           What Happens Next?
         </h3>
         <div class="space-y-2 text-white/80 font-mono text-sm">
           <div class="flex items-start gap-2">
-            <span class="text-nexspark-gold">1.</span>
+            <span class="text-auxora-gold">1.</span>
             <span>We'll analyze your interview with Claude AI</span>
           </div>
           <div class="flex items-start gap-2">
-            <span class="text-nexspark-gold">2.</span>
+            <span class="text-auxora-gold">2.</span>
             <span>Automatically identify your top 3 competitors</span>
           </div>
           <div class="flex items-start gap-2">
-            <span class="text-nexspark-gold">3.</span>
+            <span class="text-auxora-gold">3.</span>
             <span>Generate a comprehensive 6-month GTM strategy</span>
           </div>
           <div class="flex items-start gap-2">
-            <span class="text-nexspark-gold">4.</span>
+            <span class="text-auxora-gold">4.</span>
             <span>Provide budget allocation and CAC projections</span>
           </div>
         </div>
@@ -1153,12 +1153,12 @@ function showCompletionPopup() {
       <div class="flex gap-4">
         <button 
           onclick="goToDashboard()" 
-          class="flex-1 py-4 bg-nexspark-dark hover:bg-nexspark-purple text-white rounded-lg font-bold text-lg transition border border-nexspark-purple">
+          class="flex-1 py-4 bg-auxora-dark hover:bg-auxora-purple text-white rounded-lg font-bold text-lg transition border border-auxora-purple">
           <i class="fas fa-arrow-left mr-2"></i> BACK TO DASHBOARD
         </button>
         <button 
           onclick="startAnalysis()" 
-          class="flex-1 py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black rounded-lg font-bold text-lg transition shadow-lg">
+          class="flex-1 py-4 bg-auxora-gold hover:bg-auxora-pale text-black rounded-lg font-bold text-lg transition shadow-lg">
           <i class="fas fa-rocket mr-2"></i> START ANALYSIS
         </button>
       </div>
@@ -1179,16 +1179,16 @@ function startAnalysis() {
   if (!website) {
     showAlert('Please enter your website URL to continue', {
       icon: 'fa-globe',
-      iconColor: 'nexspark-gold'
+      iconColor: 'auxora-gold'
     });
     return;
   }
   
   // Save company name and website to localStorage for strategy analysis
-  const existingInterview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+  const existingInterview = JSON.parse(localStorage.getItem('auxora_interview') || '{}');
   existingInterview.companyName = companyName;
   existingInterview.website = website;
-  localStorage.setItem('nexspark_interview', JSON.stringify(existingInterview));
+  localStorage.setItem('auxora_interview', JSON.stringify(existingInterview));
   
   // Redirect to strategy analysis
   window.location.href = '/static/interview-summary.html';
@@ -1199,11 +1199,11 @@ function skipToDemo() {
   // Create demo user if not exists
   const demoUser = {
     id: 'usr_demo_' + Date.now(),
-    email: 'demo@nexspark.io',
+    email: 'demo@auxora.ai',
     name: 'Demo User',
     created_at: new Date().toISOString()
   };
-  localStorage.setItem('nexspark_user', JSON.stringify(demoUser));
+  localStorage.setItem('auxora_user', JSON.stringify(demoUser));
   
   // Create demo interview data
   const demoInterview = {
@@ -1267,11 +1267,11 @@ function skipToDemo() {
     demo: true
   };
   
-  localStorage.setItem('nexspark_interview', JSON.stringify(demoInterview));
+  localStorage.setItem('auxora_interview', JSON.stringify(demoInterview));
   
   // Show a brief notification
   const notification = document.createElement('div');
-  notification.className = 'fixed top-4 right-4 bg-nexspark-gold text-black px-6 py-4 rounded-lg shadow-lg z-50 font-bold';
+  notification.className = 'fixed top-4 right-4 bg-auxora-gold text-black px-6 py-4 rounded-lg shadow-lg z-50 font-bold';
   notification.innerHTML = `
     <i class="fas fa-magic mr-2"></i>
     Demo Mode Activated! Redirecting to analysis...

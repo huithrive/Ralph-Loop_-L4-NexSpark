@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review Interview | NexSpark</title>
+    <title>Review Interview | Auxora</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
               mono: ['JetBrains Mono', 'monospace'],
             },
             colors: {
-              nexspark: {
+              auxora: {
                 bg: '#000000',
                 gold: '#FF9C00',
                 pale: '#FFCC99',
@@ -68,20 +68,20 @@
             <div class="text-center mb-8">
                 <div class="inline-flex items-center gap-2 bg-white rounded-full px-6 py-3 mb-4">
                     <i class="fas fa-bolt text-3xl text-yellow-500"></i>
-                    <span class="font-header font-bold text-2xl text-black">NEXSPARK</span>
+                    <span class="font-header font-bold text-2xl text-black">AUXORA</span>
                 </div>
-                <h1 class="text-4xl md:text-5xl font-header font-bold text-nexspark-gold mb-2">
+                <h1 class="text-4xl md:text-5xl font-header font-bold text-auxora-gold mb-2">
                     REVIEW YOUR INTERVIEW
                 </h1>
-                <p class="text-nexspark-blue font-mono text-sm">
+                <p class="text-auxora-blue font-mono text-sm">
                     Confirm your answers before generating your growth strategy
                 </p>
             </div>
 
             <!-- Website Confirmation (Highlighted) -->
-            <div class="bg-nexspark-gold/10 border-2 border-nexspark-gold rounded-2xl p-6 mb-6">
+            <div class="bg-auxora-gold/10 border-2 border-auxora-gold rounded-2xl p-6 mb-6">
                 <div class="flex items-center gap-3 mb-4">
-                    <i class="fas fa-globe text-nexspark-gold text-3xl"></i>
+                    <i class="fas fa-globe text-auxora-gold text-3xl"></i>
                     <div>
                         <h2 class="text-2xl font-header font-bold text-white">Confirm Your Website</h2>
                         <p class="text-white/70 font-mono text-xs">
@@ -106,9 +106,9 @@
             </div>
 
             <!-- Interview Responses -->
-            <div class="bg-nexspark-panel border-2 border-nexspark-blue/30 rounded-2xl p-6 mb-6">
+            <div class="bg-auxora-panel border-2 border-auxora-blue/30 rounded-2xl p-6 mb-6">
                 <div class="flex items-center gap-3 mb-6">
-                    <i class="fas fa-clipboard-list text-nexspark-blue text-2xl"></i>
+                    <i class="fas fa-clipboard-list text-auxora-blue text-2xl"></i>
                     <h2 class="text-2xl font-header font-bold text-white">Your Interview Responses</h2>
                 </div>
 
@@ -119,10 +119,10 @@
 
             <!-- Action Buttons -->
             <div class="flex gap-4">
-                <button onclick="window.location.href='/dashboard'" class="flex-1 py-4 bg-nexspark-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
+                <button onclick="window.location.href='/dashboard'" class="flex-1 py-4 bg-auxora-dark border-2 border-white/30 hover:border-white/50 text-white font-header font-bold text-lg uppercase rounded-xl transition-all">
                     <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
                 </button>
-                <button onclick="proceedToGeneration()" class="flex-1 py-4 bg-nexspark-gold hover:bg-nexspark-pale text-black font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
+                <button onclick="proceedToGeneration()" class="flex-1 py-4 bg-auxora-gold hover:bg-auxora-pale text-black font-header font-bold text-lg uppercase rounded-xl transition-all shadow-lg">
                     <i class="fas fa-rocket mr-2"></i>Generate Report
                 </button>
             </div>
@@ -193,7 +193,7 @@
 
     <script src="/static/modal-utils.js"></script>
     <script>
-        const interview = JSON.parse(localStorage.getItem('nexspark_interview') || '{}');
+        const interview = JSON.parse(localStorage.getItem('auxora_interview') || '{}');
         let editedAnswers = {};
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -214,11 +214,11 @@
             const responses = interview.responses || [];
 
             container.innerHTML = responses.map((resp, index) => `
-                <div class="bg-black/30 rounded-lg p-4 border-l-4 border-nexspark-blue/50">
+                <div class="bg-black/30 rounded-lg p-4 border-l-4 border-auxora-blue/50">
                     <div class="flex justify-between items-start mb-2">
-                        <div class="text-nexspark-gold font-bold font-mono text-sm">Q${index + 1}</div>
+                        <div class="text-auxora-gold font-bold font-mono text-sm">Q${index + 1}</div>
                         <button onclick="toggleEditQuestion(${index})"
-                                class="text-white/40 hover:text-nexspark-gold text-xs transition-all">
+                                class="text-white/40 hover:text-auxora-gold text-xs transition-all">
                             <i class="fas fa-edit mr-1"></i>Edit
                         </button>
                     </div>
@@ -232,11 +232,11 @@
                     <!-- Edit Mode (hidden by default) -->
                     <div id="editAnswer${index}" class="hidden">
                         <textarea id="answerInput${index}"
-                                  class="w-full px-4 py-3 rounded-lg font-mono text-sm min-h-[100px] bg-black/50 border-2 border-nexspark-gold text-white focus:border-nexspark-pale focus:outline-none"
+                                  class="w-full px-4 py-3 rounded-lg font-mono text-sm min-h-[100px] bg-black/50 border-2 border-auxora-gold text-white focus:border-auxora-pale focus:outline-none"
                                   >${resp.answer}</textarea>
                         <div class="flex gap-2 mt-2">
                             <button onclick="saveAnswer(${index})"
-                                    class="px-4 py-2 bg-nexspark-gold hover:bg-nexspark-pale text-black rounded text-xs font-bold transition-all">
+                                    class="px-4 py-2 bg-auxora-gold hover:bg-auxora-pale text-black rounded text-xs font-bold transition-all">
                                 <i class="fas fa-check mr-1"></i>Save
                             </button>
                             <button onclick="cancelEdit(${index})"
@@ -261,7 +261,7 @@
             if (!newAnswer) {
                 showAlert('Answer cannot be empty', {
                     icon: 'fa-exclamation-triangle',
-                    iconColor: 'nexspark-red'
+                    iconColor: 'auxora-red'
                 });
                 return;
             }
@@ -320,7 +320,7 @@
             if (!website) {
                 showAlert('Please enter your website URL to continue', {
                     icon: 'fa-globe',
-                    iconColor: 'nexspark-red'
+                    iconColor: 'auxora-red'
                 });
                 document.getElementById('websiteInput').focus();
                 return;
@@ -335,7 +335,7 @@
                 await saveEditedInterview();
             }
 
-            localStorage.setItem('nexspark_interview', JSON.stringify(interview));
+            localStorage.setItem('auxora_interview', JSON.stringify(interview));
 
             console.log('✅ Website confirmed:', website);
 

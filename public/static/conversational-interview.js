@@ -142,8 +142,8 @@ function updateUILanguage() {
 // Initialize Interview
 async function initializeInterview() {
   // Generate user ID
-  state.userId = localStorage.getItem('nexspark_user_id') || generateUserId();
-  localStorage.setItem('nexspark_user_id', state.userId);
+  state.userId = localStorage.getItem('auxora_user_id') || generateUserId();
+  localStorage.setItem('auxora_user_id', state.userId);
   
   // Generate interview ID
   state.interviewId = `interview_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
