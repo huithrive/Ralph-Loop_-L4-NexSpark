@@ -446,22 +446,23 @@ export const REVISED_LANDING_HTML = `
       <div class="fade-up d1" style="text-align:center;margin-bottom:24px;">
         <span class="badge badge-rust" style="font-size:12px;">
           <span style="width:7px;height:7px;border-radius:50%;background:#BF6744;display:inline-block;animation:pulse 2s infinite;"></span>
-          Now in early access · Trusted by 200+ D2C founders
+          Trusted by 200+ D2C founders &nbsp;·&nbsp; Built by team behind $15M in 10 months
         </span>
       </div>
 
       <!-- Headline -->
       <div class="fade-up d2" style="text-align:center;margin-bottom:28px;">
-        <h1 class="editorial" style="font-size:clamp(52px,7vw,96px);color:#1C1917;max-width:900px;margin:0 auto;line-height:1.05;">
-          Your brand, growing<br/>
-          <em style="color:#BF6744;font-style:italic;">on autopilot.</em>
+        <h1 class="editorial" style="font-size:clamp(44px,6vw,88px);color:#1C1917;max-width:980px;margin:0 auto;line-height:1.05;">
+          What takes an agency 30 days &amp; $12,000<br/>
+          <em style="color:#BF6744;font-style:italic;">we do in 1 day for $200.</em>
         </h1>
       </div>
 
       <!-- Sub-headline -->
       <div class="fade-up d3" style="text-align:center;margin-bottom:48px;">
-        <p class="editorial-body" style="font-size:19px;color:#7A6E65;max-width:560px;margin:0 auto;line-height:1.75;font-style:italic;">
-          The AI growth partner built for D2C founders — from brand story to full strategy, ads, and autonomous execution.
+        <p style="font-size:18px;color:#7A6E65;max-width:620px;margin:0 auto;line-height:1.75;">
+          Strategy → landing page → ad creatives → campaigns → A/B testing → email LTV → SEO.
+          Every step. Fully automated. Live in <strong style="color:#1C1917;">24 hours</strong>. Built to scale to <strong style="color:#1C1917;">$100M ARR</strong>.
         </p>
       </div>
 
@@ -476,83 +477,112 @@ export const REVISED_LANDING_HTML = `
             style="border:none;padding:10px 4px;box-shadow:none;font-size:15px;"
           />
           <button type="submit" class="btn-rust" style="padding:12px 28px;font-size:14px;flex-shrink:0;">
-            Analyse free →
+            Get started free →
           </button>
         </form>
       </div>
 
       <div class="fade-up d5" style="text-align:center;margin-bottom:0;display:flex;justify-content:center;gap:24px;flex-wrap:wrap;">
         <span style="font-size:13px;color:#A8A09A;display:flex;align-items:center;gap:5px;">
-          <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:12px;"></i> No credit card to start
+          <i class="fas fa-bolt" style="color:#BF6744;font-size:11px;"></i> Live in 1 day
         </span>
         <span style="color:#D6CCBF;font-size:13px;">·</span>
         <span style="font-size:13px;color:#A8A09A;display:flex;align-items:center;gap:5px;">
-          <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:12px;"></i> First strategy report $4.99
+          <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:12px;"></i> $200 vs $12,000 agency
         </span>
         <span style="color:#D6CCBF;font-size:13px;">·</span>
         <span style="font-size:13px;color:#A8A09A;display:flex;align-items:center;gap:5px;">
-          <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:12px;"></i> Ready in 10 minutes
+          <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:12px;"></i> Strategy built for $100M ARR
         </span>
       </div>
 
-      <!-- Hero visual band -->
-      <div style="margin-top:72px;position:relative;overflow:hidden;border-radius:24px 24px 0 0;background:#F5EFE8;padding:40px 40px 0;">
-        <!-- Decorative metrics floating above the fold line -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:800px;margin:0 auto;">
+      <!-- Hero: 3 USP cards + Agency vs Auxora comparison -->
+      <div style="margin-top:60px;">
 
-          <div style="background:white;border-radius:16px;padding:20px;border:1px solid #EDE4D9;text-align:center;">
-            <div class="editorial" style="font-size:36px;font-weight:700;color:#BF6744;line-height:1;">10×</div>
-            <div style="font-size:12px;color:#A8A09A;margin-top:4px;font-weight:500;">Revenue growth</div>
+        <!-- 3 USP Pill Cards -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:0 auto 32px;">
+
+          <!-- USP 1: 1 Day -->
+          <div style="background:white;border:2px solid #F0CEBE;border-radius:20px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#BF6744,#E8946A);"></div>
+            <div class="editorial" style="font-size:clamp(36px,4vw,54px);color:#BF6744;line-height:1;margin-bottom:8px;">1 day</div>
+            <div style="font-size:14px;font-weight:700;color:#1C1917;margin-bottom:6px;">Full launch. Day one.</div>
+            <p style="font-size:12px;color:#A8A09A;line-height:1.6;">Strategy, ads, email, SEO — all running within 24 hours, not 30 days.</p>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid #F0D8CE;">
+              <span style="font-size:10px;color:#BF6744;font-weight:600;letter-spacing:0.06em;">vs. 30 DAYS WITH AN AGENCY</span>
+            </div>
           </div>
 
-          <div style="background:white;border-radius:16px;padding:20px;border:1px solid #EDE4D9;text-align:center;">
-            <div class="editorial" style="font-size:36px;font-weight:700;color:#4A6741;line-height:1;">3×</div>
-            <div style="font-size:12px;color:#A8A09A;margin-top:4px;font-weight:500;">ROAS achieved</div>
+          <!-- USP 2: $100M ARR -->
+          <div style="background:white;border:2px solid #C8D8C2;border-radius:20px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4A6741,#8AAB78);"></div>
+            <div class="editorial" style="font-size:clamp(36px,4vw,54px);color:#4A6741;line-height:1;margin-bottom:8px;">$100M</div>
+            <div style="font-size:14px;font-weight:700;color:#1C1917;margin-bottom:6px;">ARR-ready infrastructure</div>
+            <p style="font-size:12px;color:#A8A09A;line-height:1.6;">Built by a team that grew a brand $100K → $15M in 10 months. Now automated for you.</p>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid #C8D8C2;">
+              <span style="font-size:10px;color:#4A6741;font-weight:600;letter-spacing:0.06em;">FOUNDER-MARKET FIT PROVEN</span>
+            </div>
           </div>
 
-          <div style="background:white;border-radius:16px;padding:20px;border:1px solid #EDE4D9;text-align:center;">
-            <div class="editorial" style="font-size:36px;font-weight:700;color:#1C1917;line-height:1;">$4.99</div>
-            <div style="font-size:12px;color:#A8A09A;margin-top:4px;font-weight:500;">First strategy</div>
-          </div>
-
-          <div style="background:white;border-radius:16px;padding:20px;border:1px solid #EDE4D9;text-align:center;">
-            <div class="editorial" style="font-size:36px;font-weight:700;color:#1C1917;line-height:1;">10m</div>
-            <div style="font-size:12px;color:#A8A09A;margin-top:4px;font-weight:500;">To your roadmap</div>
+          <!-- USP 3: $200 -->
+          <div style="background:white;border:2px solid #EDE4D9;border-radius:20px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#1C1917,#3D3530);"></div>
+            <div class="editorial" style="font-size:clamp(36px,4vw,54px);color:#1C1917;line-height:1;margin-bottom:8px;">$200</div>
+            <div style="font-size:14px;font-weight:700;color:#1C1917;margin-bottom:6px;">Full service. 1/10th cost.</div>
+            <p style="font-size:12px;color:#A8A09A;line-height:1.6;">What agencies charge $12,000 for. We deliver the same — often better — for $200.</p>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid #EDE4D9;">
+              <span style="font-size:10px;color:#3D3530;font-weight:600;letter-spacing:0.06em;">vs. $12,000 TRADITIONAL AGENCY</span>
+            </div>
           </div>
 
         </div>
 
-        <!-- Fake dashboard preview bar -->
-        <div style="max-width:800px;margin:28px auto 0;background:white;border-radius:16px 16px 0 0;border:1px solid #EDE4D9;border-bottom:none;padding:16px 20px 0;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-            <div style="width:10px;height:10px;border-radius:50%;background:#F0C5B5;"></div>
-            <div style="width:10px;height:10px;border-radius:50%;background:#F0D9B5;"></div>
-            <div style="width:10px;height:10px;border-radius:50%;background:#C5D9C0;"></div>
-            <div style="flex:1;height:8px;background:#F5EFE8;border-radius:100px;margin-left:8px;"></div>
-          </div>
-          <div style="display:flex;gap:12px;padding-bottom:0;">
-            <div style="flex:1;background:#FAFAF8;border-radius:12px 12px 0 0;padding:16px;border:1px solid #EDE4D9;border-bottom:none;min-height:120px;">
-              <div class="eyebrow" style="margin-bottom:10px;">Your Growth Plan</div>
-              <div style="height:8px;background:#F5EFE8;border-radius:100px;width:75%;margin-bottom:8px;"></div>
-              <div style="height:8px;background:#F5EFE8;border-radius:100px;width:60%;margin-bottom:8px;"></div>
-              <div style="height:8px;background:#F5EFE8;border-radius:100px;width:85%;margin-bottom:12px;"></div>
-              <div style="display:flex;gap:6px;">
-                <div style="height:24px;background:#FDF2EE;border-radius:100px;padding:0 10px;display:flex;align-items:center;font-size:10px;color:#BF6744;font-weight:600;">Meta Ads</div>
-                <div style="height:24px;background:#EEF3EC;border-radius:100px;padding:0 10px;display:flex;align-items:center;font-size:10px;color:#4A6741;font-weight:600;">Email</div>
-                <div style="height:24px;background:#F5EFE8;border-radius:100px;padding:0 10px;display:flex;align-items:center;font-size:10px;color:#7A6E65;font-weight:600;">SEO</div>
+        <!-- Agency Timeline vs Auxora -->
+        <div style="background:#F5EFE8;border-radius:24px;padding:36px;max-width:900px;margin:0 auto;">
+          <p class="eyebrow" style="text-align:center;margin-bottom:28px;">The same full service — done in 1 day, not 30</p>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start;">
+
+            <!-- Agency -->
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#BF6744;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">Agency · 30 days · $12,000</div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">7d</span></div><span style="font-size:13px;color:#7A6E65;">Strategy &amp; positioning</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5d</span></div><span style="font-size:13px;color:#7A6E65;">Landing page &amp; website</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5d</span></div><span style="font-size:13px;color:#7A6E65;">Ad creative production</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5d</span></div><span style="font-size:13px;color:#7A6E65;">Campaign setup &amp; launch</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">4d</span></div><span style="font-size:13px;color:#7A6E65;">A/B testing setup</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">4d</span></div><span style="font-size:13px;color:#7A6E65;">Email flows for LTV</span></div>
+              </div>
+              <div style="margin-top:14px;padding:10px 16px;background:#FDF2EE;border-radius:12px;border:1px solid #F0CEBE;">
+                <div style="font-size:18px;font-weight:800;color:#BF6744;font-family:'Playfair Display',serif;">$12,000 &amp; 30 days</div>
+                <div style="font-size:11px;color:#A8A09A;margin-top:2px;">paid upfront · no guarantee</div>
               </div>
             </div>
-            <div style="flex:1;background:#FAFAF8;border-radius:12px 12px 0 0;padding:16px;border:1px solid #EDE4D9;border-bottom:none;min-height:120px;">
-              <div class="eyebrow" style="margin-bottom:10px;">Revenue Forecast</div>
-              <div id="heroBars" style="display:flex;align-items:flex-end;gap:6px;height:72px;padding-top:8px;">
-                <div style="flex:1;background:#F5EFE8;border-radius:4px 4px 0 0;height:30%;transition:height 1.2s ease;"></div>
-                <div style="flex:1;background:#EDE4D9;border-radius:4px 4px 0 0;height:45%;transition:height 1.2s ease;"></div>
-                <div style="flex:1;background:#D6CCBF;border-radius:4px 4px 0 0;height:55%;transition:height 1.2s ease;"></div>
-                <div style="flex:1;background:#BF6744;border-radius:4px 4px 0 0;height:70%;transition:height 1.2s ease;opacity:0.7;"></div>
-                <div style="flex:1;background:#BF6744;border-radius:4px 4px 0 0;height:85%;transition:height 1.2s ease;opacity:0.85;"></div>
-                <div style="flex:1;background:#BF6744;border-radius:4px 4px 0 0;height:100%;transition:height 1.2s ease;"></div>
+
+            <!-- VS -->
+            <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px;">
+              <div style="flex:1;width:1px;background:linear-gradient(to bottom,transparent,#D6CCBF);"></div>
+              <div style="font-size:12px;font-weight:700;color:#1C1917;background:white;border:1.5px solid #D6CCBF;border-radius:100px;padding:5px 10px;margin:8px 0;">VS</div>
+              <div style="flex:1;width:1px;background:linear-gradient(to bottom,#D6CCBF,transparent);"></div>
+            </div>
+
+            <!-- Auxora -->
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#4A6741;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">Auxora · 24 hours · $200</div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check" style="font-size:8px;color:#4A6741;"></i></div><span style="font-size:13px;color:#3D4A38;">Strategy &amp; positioning</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check" style="font-size:8px;color:#4A6741;"></i></div><span style="font-size:13px;color:#3D4A38;">Landing page &amp; website</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check" style="font-size:8px;color:#4A6741;"></i></div><span style="font-size:13px;color:#3D4A38;">AI-generated ad creatives</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check" style="font-size:8px;color:#4A6741;"></i></div><span style="font-size:13px;color:#3D4A38;">Auto campaign setup &amp; launch</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check" style="font-size:8px;color:#4A6741;"></i></div><span style="font-size:13px;color:#3D4A38;">Automated A/B testing</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:22px;height:22px;border-radius:50%;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-check" style="font-size:8px;color:#4A6741;"></i></div><span style="font-size:13px;color:#3D4A38;">Email &amp; LTV automation</span></div>
+              </div>
+              <div style="margin-top:14px;padding:10px 16px;background:#EEF3EC;border-radius:12px;border:1px solid #C8D8C2;">
+                <div style="font-size:18px;font-weight:800;color:#4A6741;font-family:'Playfair Display',serif;">$200 · in 24 hours</div>
+                <div style="font-size:11px;color:#A8A09A;margin-top:2px;">results-based · cancel anytime</div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -598,31 +628,61 @@ export const REVISED_LANDING_HTML = `
 
 
   <!-- ══════════════════════════════
-       USP TRIO BAR
+       WHY AUXORA IS DIFFERENT
   ══════════════════════════════ -->
-  <section style="background:#1C1917;padding:56px 24px;">
-    <div style="max-width:960px;margin:0 auto;">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#3D3530;border-radius:20px;overflow:hidden;">
+  <section style="background:#1C1917;padding:60px 24px;">
+    <div style="max-width:1000px;margin:0 auto;">
 
-        <!-- USP 1 -->
-        <div style="background:#1C1917;padding:40px 36px;text-align:center;">
-          <div class="editorial" style="font-size:clamp(44px,5vw,68px);color:#BF6744;line-height:1;margin-bottom:10px;">24h</div>
-          <div style="font-size:15px;font-weight:600;color:#FAF7F4;margin-bottom:8px;">Revenue in 24 hours</div>
-          <p style="font-size:13px;color:#7A6E65;line-height:1.65;">From onboarding to your first sale — Auxora gets your brand live and earning the same day.</p>
+      <p style="text-align:center;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#7A6E65;margin-bottom:40px;">Why Auxora is different — from the team that’s done it before</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+
+        <!-- Card 1: Speed -->
+        <div style="background:#252220;border:1px solid #3D3530;border-radius:20px;padding:32px 26px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:rgba(191,103,68,0.07);"></div>
+          <div style="width:40px;height:40px;border-radius:12px;background:#3D3530;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+            <i class="fas fa-bolt" style="color:#BF6744;font-size:15px;"></i>
+          </div>
+          <div class="editorial" style="font-size:clamp(36px,3.5vw,50px);color:#FAF7F4;line-height:1;margin-bottom:6px;">1 day<br/><span style="color:#BF6744;font-size:0.5em;font-style:italic;">not 30 days</span></div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.65;margin-top:10px;margin-bottom:16px;">An agency takes 30 days to do strategy, landing page, creatives, campaign setup, A/B tests, and email flows. Auxora’s AI does all of it in <strong style="color:#A8A09A;">24 hours</strong>.</p>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;">
+            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Strategy</span>
+            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Landing page</span>
+            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Creatives</span>
+            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Campaigns</span>
+            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">A/B Tests</span>
+            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Email LTV</span>
+          </div>
         </div>
 
-        <!-- USP 2 -->
-        <div style="background:#1C1917;padding:40px 36px;text-align:center;border-left:1px solid #3D3530;border-right:1px solid #3D3530;">
-          <div class="editorial" style="font-size:clamp(44px,5vw,68px);color:#6E8B5E;line-height:1;margin-bottom:10px;">$100M</div>
-          <div style="font-size:15px;font-weight:600;color:#FAF7F4;margin-bottom:8px;">Scales to $100M ARR</div>
-          <p style="font-size:13px;color:#7A6E65;line-height:1.65;">Not a starter tool — a full growth infrastructure engineered to take you from day one to eight figures.</p>
+        <!-- Card 2: Scale -->
+        <div style="background:#252220;border:1px solid #3D3530;border-radius:20px;padding:32px 26px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:rgba(74,103,65,0.07);"></div>
+          <div style="width:40px;height:40px;border-radius:12px;background:#3D3530;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+            <i class="fas fa-chart-line" style="color:#6E8B5E;font-size:15px;"></i>
+          </div>
+          <div class="editorial" style="font-size:clamp(36px,3.5vw,50px);color:#FAF7F4;line-height:1;margin-bottom:6px;">$100M<br/><span style="color:#6E8B5E;font-size:0.5em;font-style:italic;">ARR-ready</span></div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.65;margin-top:10px;margin-bottom:16px;">Our founding team scaled a product from <strong style="color:#A8A09A;">$100K → $15M ARR in 10 months</strong>. That same playbook — now fully automated and available to every founder.</p>
+          <div style="padding:10px 14px;background:#1C1917;border-radius:10px;border:1px solid #3D3530;">
+            <div style="font-size:11px;color:#7A6E65;">Track record: <span style="color:#FAF7F4;font-weight:600;">LAIX (FluentU) · XNG · Silicon Valley</span></div>
+          </div>
         </div>
 
-        <!-- USP 3 -->
-        <div style="background:#1C1917;padding:40px 36px;text-align:center;">
-          <div class="editorial" style="font-size:clamp(44px,5vw,68px);color:#FAF7F4;line-height:1;margin-bottom:10px;">1/10</div>
-          <div style="font-size:15px;font-weight:600;color:#FAF7F4;margin-bottom:8px;">Agency cost. Better results.</div>
-          <p style="font-size:13px;color:#7A6E65;line-height:1.65;">Agencies charge $5K–$20K/month regardless of outcomes. Pay Auxora only when you grow.</p>
+        <!-- Card 3: Cost -->
+        <div style="background:#252220;border:1px solid #3D3530;border-radius:20px;padding:32px 26px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:rgba(250,247,244,0.03);"></div>
+          <div style="width:40px;height:40px;border-radius:12px;background:#3D3530;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+            <i class="fas fa-coins" style="color:#B09A85;font-size:15px;"></i>
+          </div>
+          <div class="editorial" style="font-size:clamp(36px,3.5vw,50px);color:#FAF7F4;line-height:1;margin-bottom:6px;">$200<br/><span style="color:#B09A85;font-size:0.5em;font-style:italic;">not $12,000</span></div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.65;margin-top:10px;margin-bottom:16px;">Agencies charge <strong style="color:#A8A09A;">$12,000</strong> for the same full-service package — paid upfront with no performance guarantee. Auxora delivers it for <strong style="color:#A8A09A;">$200</strong>.</p>
+          <div style="padding:10px 14px;background:#1C1917;border-radius:10px;border:1px solid #3D3530;display:flex;align-items:center;justify-content:space-around;">
+            <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:#BF6744;font-family:'Playfair Display',serif;">$12K</div><div style="font-size:10px;color:#7A6E65;">Agency</div></div>
+            <div style="color:#3D3530;font-size:14px;">→</div>
+            <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:#FAF7F4;font-family:'Playfair Display',serif;">$200</div><div style="font-size:10px;color:#7A6E65;">Auxora</div></div>
+            <div style="color:#3D3530;font-size:14px;">→</div>
+            <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:#6E8B5E;font-family:'Playfair Display',serif;">60×</div><div style="font-size:10px;color:#7A6E65;">cheaper</div></div>
+          </div>
         </div>
 
       </div>
@@ -637,13 +697,13 @@ export const REVISED_LANDING_HTML = `
     <div style="max-width:1200px;margin:0 auto;">
 
       <div style="max-width:680px;margin:0 auto 80px;text-align:center;">
-        <p class="eyebrow" style="margin-bottom:16px;">The reality for most D2C founders</p>
+        <p class="eyebrow" style="margin-bottom:16px;">The D2C founder’s reality</p>
         <h2 class="editorial" style="font-size:clamp(40px,4.5vw,64px);color:#1C1917;margin-bottom:20px;">
-          Great product.<br/>
-          <em style="color:#BF6744;">Exhausting growth.</em>
+          Agencies take 30 days.<br/>
+          <em style="color:#BF6744;">Charge $12,000.</em>
         </h2>
         <p style="font-size:17px;color:#7A6E65;line-height:1.75;font-weight:400;">
-          You didn't start your brand to spend 30+ hours a week managing ads, writing emails, and second-guessing strategy. Auxora was built to end that grind.
+          By the time your agency finishes strategy, builds the landing page, creates ad assets, sets up campaigns, runs A/B tests, and builds email flows — your competitor has already launched and taken your market.
         </p>
       </div>
 
@@ -661,23 +721,23 @@ export const REVISED_LANDING_HTML = `
           <ul style="list-style:none;display:flex;flex-direction:column;gap:16px;">
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Weeks crafting a strategy that's outdated before launch</span>
+              <span style="font-size:15px;color:#7A6E65;line-height:1.6;"><strong>30 days</strong> to complete the full launch process</span>
             </li>
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">$5–20K/mo agencies with no real accountability</span>
+              <span style="font-size:15px;color:#7A6E65;line-height:1.6;"><strong>$12,000</strong> full-service package, paid upfront with no ROI guarantee</span>
             </li>
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Ad spend bleeding with unclear ROAS path</span>
+              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Strategy, creatives, emails all done manually — slow to change</span>
             </li>
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Guessing which channel to scale next</span>
+              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Hits a ceiling — built for $500K, breaks at $5M scale</span>
             </li>
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Reactive, exhausted, stuck in execution</span>
+              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Your competitor launched in week one while you waited</span>
             </li>
           </ul>
         </div>
@@ -693,23 +753,23 @@ export const REVISED_LANDING_HTML = `
           <ul style="list-style:none;display:flex;flex-direction:column;gap:16px;">
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">Full 6-month GTM roadmap in 10 minutes, for $4.99</span>
+              <span style="font-size:15px;color:#3D4A38;line-height:1.6;"><strong>Everything live in 24 hours</strong> — strategy, ads, emails, A/B tests, SEO</span>
             </li>
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">AI agent manages your ads autonomously, 24/7</span>
+              <span style="font-size:15px;color:#3D4A38;line-height:1.6;"><strong>$200 total</strong> — same deliverables as a $12,000 agency</span>
             </li>
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">Budget optimised for 3× ROAS from day one</span>
+              <span style="font-size:15px;color:#3D4A38;line-height:1.6;"><strong>Strategy built to scale to $100M ARR</strong> — not just your first $100K</span>
             </li>
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">Data-backed channel mix, refreshed weekly</span>
+              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">AI executes ads, email, A/B tests autonomously 24/7</span>
             </li>
             <li style="display:flex;gap:14px;align-items:flex-start;">
               <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">You focus on your product. Auxora handles the rest.</span>
+              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">You build your product. Auxora handles the growth.</span>
             </li>
           </ul>
         </div>
