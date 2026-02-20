@@ -423,8 +423,17 @@
                 return;
             }
             
-            // Initialize Stripe with live publishable key
-            stripe = Stripe('REDACTED_STRIPE_PUBLISHABLE');
+            // Initialize Stripe with publishable key fetched from server
+            try {
+                const configRes = await axios.get('/api/payment/config');
+                const publishableKey = configRes.data.publishableKey;
+                if (!publishableKey) throw new Error('No publishable key returned from server');
+                stripe = Stripe(publishableKey);
+            } catch (e) {
+                console.error('Failed to load Stripe config:', e);
+                alert('Payment system unavailable. Please refresh and try again.');
+                return;
+            }
             const elements = stripe.elements();
             cardElement = elements.create('card', {
                 style: {
