@@ -3,339 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up | Auxora</title>
+    <title>Create Account | Auxora</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Rajdhani', 'sans-serif'],
-              header: ['Antonio', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
-            },
-            colors: {
-              auxora: {
-                bg: '#000000',
-                gold: '#FF9C00',
-                pale: '#FFCC99',
-                red: '#CC3333',
-                blue: '#99CCFF',
-                purple: '#CC99CC',
-                dark: '#111111',
-                panel: 'rgba(20, 20, 25, 0.9)'
-              }
-            }
-          }
-        }
-      }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
       body {
-        background-color: #000000;
-        color: #99CCFF;
-        overflow-x: hidden;
+        background: #FAF7F4;
+        color: #1C1917;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        -webkit-font-smoothing: antialiased;
       }
 
-      .lcars-btn {
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-family: 'Antonio', sans-serif;
-        font-weight: 700;
-        transition: all 0.2s;
+      .editorial { font-family: 'Playfair Display', serif; }
+
+      /* Left panel */
+      .left-panel {
+        width: 420px;
+        flex-shrink: 0;
+        background: #1C1917;
+        padding: 48px 44px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+      }
+      .left-panel::before {
+        content: '';
+        position: absolute;
+        top: -80px; right: -80px;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(191,103,68,0.15), transparent 70%);
+        pointer-events: none;
+      }
+      .left-panel::after {
+        content: '';
+        position: absolute;
+        bottom: -60px; left: -60px;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(74,103,65,0.12), transparent 70%);
+        pointer-events: none;
       }
 
-      .lcars-btn:hover {
-        filter: brightness(1.2);
+      /* Right panel */
+      .right-panel {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 32px;
+        background: #FFFFFF;
+        overflow-y: auto;
       }
 
-      input {
-        background: rgba(153, 204, 255, 0.05);
-        border: 2px solid rgba(153, 204, 255, 0.3);
-        color: #fff;
-        font-family: 'JetBrains Mono', monospace;
-      }
-
-      input:focus {
+      /* Input styles */
+      .field-input {
+        width: 100%;
+        background: #FAF7F4;
+        border: 1.5px solid #D6CCBF;
+        border-radius: 12px;
+        color: #1C1917;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 15px;
+        padding: 14px 18px;
         outline: none;
-        border-color: #FF9C00;
-        background: rgba(255, 156, 0, 0.1);
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .field-input::placeholder { color: #C4BAB0; }
+      .field-input:focus {
+        border-color: #1C1917;
+        box-shadow: 0 0 0 3px rgba(28,25,23,0.07);
+        background: #FFFFFF;
+      }
+
+      /* Buttons */
+      .btn-dark {
+        width: 100%;
+        background: #1C1917;
+        color: #FAF7F4;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 15px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .btn-dark:hover {
+        background: #3D3530;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(28,25,23,0.2);
+      }
+      .btn-dark:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-google {
+        width: 100%;
+        background: #FFFFFF;
+        color: #1C1917;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        padding: 14px;
+        border-radius: 12px;
+        border: 1.5px solid #D6CCBF;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .btn-google:hover {
+        border-color: #B09A85;
+        background: #FAF7F4;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(28,25,23,0.08);
+      }
+
+      /* Divider */
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: #C4BAB0;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #EDE4D9;
+      }
+
+      /* Alerts */
+      .alert-error {
+        background: #FEF2F2;
+        border: 1px solid #FECACA;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #991B1B;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .alert-success {
+        background: #F0FDF4;
+        border: 1px solid #BBF7D0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #166534;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @media (max-width: 768px) {
+        .left-panel { display: none; }
+        .right-panel { padding: 32px 20px; background: #FAF7F4; }
       }
     </style>
 </head>
-<body class="relative">
-    <!-- Animated Background -->
-    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+<body>
 
-    <!-- Main Container -->
-    <div class="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full">
+  <!-- Left branding panel -->
+  <div class="left-panel">
+    <!-- Logo -->
+    <div>
+      <a href="/" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;margin-bottom:64px;">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="10" fill="#FAF7F4"/>
+          <path d="M10 23L16 9l6 14" stroke="#1C1917" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12.5 18h7" stroke="#BF6744" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:18px;color:#FAF7F4;letter-spacing:-0.02em;">Auxora<span style="color:#B09A85;">.ai</span></span>
+      </a>
 
-            <!-- Logo -->
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center gap-2 bg-white rounded-full px-6 py-3 mb-4">
-                    <i class="fas fa-bolt text-3xl text-yellow-500"></i>
-                    <span class="font-header font-bold text-2xl text-black">AUXORA</span>
-                </div>
-                <h1 class="text-4xl font-header font-bold text-auxora-gold mb-2">SIGN UP</h1>
-                <p class="text-auxora-blue font-mono text-sm">Create your growth account</p>
-            </div>
-
-            <!-- Register Panel -->
-            <div class="bg-auxora-panel border-2 border-auxora-gold rounded-2xl p-8 backdrop-blur-xl">
-
-                <!-- Success Message -->
-                <div id="successMessage" class="hidden mb-6 bg-green-500/20 border-2 border-green-500 rounded-lg p-4">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-check-circle text-green-500"></i>
-                        <span id="successText" class="text-white font-mono text-sm"></span>
-                    </div>
-                </div>
-
-                <!-- Error Message -->
-                <div id="errorMessage" class="hidden mb-6 bg-auxora-red/20 border-2 border-auxora-red rounded-lg p-4">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-exclamation-circle text-auxora-red"></i>
-                        <span id="errorText" class="text-white font-mono text-sm"></span>
-                    </div>
-                </div>
-
-                <!-- Email/Password Form -->
-                <form id="registerForm" class="space-y-6 mb-6">
-                    <div>
-                        <label class="block text-auxora-blue font-mono text-sm mb-2 uppercase">
-                            <i class="fas fa-user mr-2"></i>Full Name
-                        </label>
-                        <input
-                            type="text"
-                            id="nameInput"
-                            required
-                            class="w-full px-4 py-3 rounded-lg"
-                            placeholder="John Doe"
-                        >
-                    </div>
-
-                    <div>
-                        <label class="block text-auxora-blue font-mono text-sm mb-2 uppercase">
-                            <i class="fas fa-envelope mr-2"></i>Email
-                        </label>
-                        <input
-                            type="email"
-                            id="emailInput"
-                            required
-                            class="w-full px-4 py-3 rounded-lg"
-                            placeholder="your@email.com"
-                        >
-                    </div>
-
-                    <div>
-                        <label class="block text-auxora-blue font-mono text-sm mb-2 uppercase">
-                            <i class="fas fa-lock mr-2"></i>Password
-                        </label>
-                        <input
-                            type="password"
-                            id="passwordInput"
-                            required
-                            minlength="8"
-                            class="w-full px-4 py-3 rounded-lg"
-                            placeholder="Minimum 8 characters"
-                        >
-                        <p class="text-white/40 font-mono text-xs mt-1">
-                            <i class="fas fa-info-circle mr-1"></i>Minimum 8 characters required
-                        </p>
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="w-full lcars-btn bg-auxora-gold hover:bg-auxora-pale text-black font-bold py-4 rounded-lg text-xl"
-                    >
-                        <i class="fas fa-user-plus mr-2"></i>CREATE ACCOUNT
-                    </button>
-                </form>
-
-                <!-- Divider -->
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="flex-1 h-px bg-auxora-blue/30"></div>
-                    <span class="text-auxora-blue/50 font-mono text-xs uppercase">Or</span>
-                    <div class="flex-1 h-px bg-auxora-blue/30"></div>
-                </div>
-
-                <!-- Google OAuth Button -->
-                <button
-                    id="googleSignUpBtn"
-                    class="w-full lcars-btn bg-white hover:bg-gray-100 text-black font-bold py-4 rounded-lg text-lg mb-6 flex items-center justify-center gap-3"
-                >
-                    <svg class="w-6 h-6" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    Sign up with Google
-                </button>
-
-                <!-- Login Link -->
-                <div class="text-center">
-                    <span class="text-white/50 font-mono text-sm">Already have an account? </span>
-                    <a href="/static/login.html" class="text-auxora-gold font-mono text-sm hover:text-auxora-pale">
-                        Login here
-                    </a>
-                </div>
-
-            </div>
-
-            <!-- Back to Home -->
-            <div class="text-center mt-6">
-                <a href="/" class="text-auxora-blue/70 hover:text-auxora-blue font-mono text-sm">
-                    <i class="fas fa-arrow-left mr-2"></i>Back to Home
-                </a>
-            </div>
-
-        </div>
+      <div class="editorial" style="font-size:36px;color:#FAF7F4;line-height:1.15;font-weight:600;margin-bottom:20px;">
+        Start growing<br/>
+        <em style="color:#D4845C;">for $4.99.</em>
+      </div>
+      <p style="font-size:14px;color:#7A6E65;line-height:1.7;max-width:280px;">
+        Create your free account and get your personalized D2C growth strategy in under 10 minutes.
+      </p>
     </div>
 
-    <!-- Background Animation Script -->
-    <script>
-    (() => {
-      const canvas = document.getElementById('bgCanvas');
-      if (!canvas) return;
+    <!-- What you get -->
+    <div style="position:relative;z-index:1;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#5A5040;margin-bottom:16px;">What you get</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:32px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(191,103,68,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <i class="fas fa-check" style="color:#D4845C;font-size:10px;"></i>
+          </div>
+          <span style="font-size:13px;color:#9C8E80;line-height:1.5;">Full competitor analysis tailored to your brand</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(191,103,68,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <i class="fas fa-check" style="color:#D4845C;font-size:10px;"></i>
+          </div>
+          <span style="font-size:13px;color:#9C8E80;line-height:1.5;">6-month growth roadmap with channels & budgets</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(191,103,68,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <i class="fas fa-check" style="color:#D4845C;font-size:10px;"></i>
+          </div>
+          <span style="font-size:13px;color:#9C8E80;line-height:1.5;">CAC/LTV projections for your specific market</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(191,103,68,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <i class="fas fa-check" style="color:#D4845C;font-size:10px;"></i>
+          </div>
+          <span style="font-size:13px;color:#9C8E80;line-height:1.5;">PDF report delivered in 2–3 minutes</span>
+        </div>
+      </div>
 
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px;">
+        <div class="editorial" style="font-size:28px;color:#D4845C;font-weight:700;line-height:1;flex-shrink:0;">$4.99</div>
+        <div style="font-size:12px;color:#5A5040;line-height:1.5;">First strategy report · one-time · no subscription required</div>
+      </div>
+    </div>
+  </div>
 
-      const stars = Array.from({ length: 800 }, () => ({
-        x: Math.random() * canvas.width - canvas.width / 2,
-        y: Math.random() * canvas.height - canvas.height / 2,
-        z: Math.random() * 1000,
-        color: ['#FF9C00', '#99CCFF', '#CC99CC', '#FFFFFF'][Math.floor(Math.random() * 4)]
-      }));
+  <!-- Right form panel -->
+  <div class="right-panel">
+    <div style="width:100%;max-width:420px;">
 
-      function animate() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      <h1 class="editorial" style="font-size:32px;font-weight:600;color:#1C1917;margin-bottom:6px;">Create account</h1>
+      <p style="font-size:14px;color:#7A6E65;margin-bottom:32px;">
+        Already have one?
+        <a href="/static/login.html" style="color:#BF6744;font-weight:600;text-decoration:none;">Sign in →</a>
+      </p>
 
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
+      <!-- Messages -->
+      <div id="errorMessage" style="display:none;margin-bottom:20px;" class="alert-error">
+        <i class="fas fa-exclamation-circle" style="flex-shrink:0;"></i>
+        <span id="errorText"></span>
+      </div>
+      <div id="successMessage" style="display:none;margin-bottom:20px;" class="alert-success">
+        <i class="fas fa-check-circle" style="flex-shrink:0;"></i>
+        <span id="successText"></span>
+      </div>
 
-        stars.forEach(star => {
-          star.z -= 2;
-          if (star.z <= 0) {
-            star.z = 1000;
-            star.x = Math.random() * canvas.width - centerX;
-            star.y = Math.random() * canvas.height - centerY;
-          }
+      <!-- Google first (recommended) -->
+      <button id="googleSignUpBtn" class="btn-google" style="margin-bottom:20px;">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continue with Google
+      </button>
 
-          const scale = 1000 / star.z;
-          const x = centerX + star.x * scale;
-          const y = centerY + star.y * scale;
-          const size = Math.max(0, (1 - star.z / 1000) * 3);
+      <!-- Divider -->
+      <div class="divider" style="margin-bottom:20px;">or sign up with email</div>
 
-          ctx.fillStyle = star.color;
-          ctx.beginPath();
-          ctx.arc(x, y, size, 0, Math.PI * 2);
-          ctx.fill();
-        });
+      <!-- Register form -->
+      <form id="registerForm" style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
 
-        requestAnimationFrame(animate);
-      }
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#3D3530;margin-bottom:7px;">
+            Your name
+          </label>
+          <input
+            type="text"
+            id="nameInput"
+            required
+            class="field-input"
+            placeholder="Jane Smith"
+            autocomplete="name"
+          />
+        </div>
 
-      animate();
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#3D3530;margin-bottom:7px;">
+            Email address
+          </label>
+          <input
+            type="email"
+            id="emailInput"
+            required
+            class="field-input"
+            placeholder="you@yourbrand.com"
+            autocomplete="email"
+          />
+        </div>
 
-      window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      });
-    })();
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#3D3530;margin-bottom:7px;">
+            Password
+            <span style="font-weight:400;color:#A8A09A;font-size:12px;margin-left:6px;">min. 8 characters</span>
+          </label>
+          <input
+            type="password"
+            id="passwordInput"
+            required
+            minlength="8"
+            class="field-input"
+            placeholder="••••••••"
+            autocomplete="new-password"
+          />
+        </div>
 
-    // Register Form Handler
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        <button type="submit" class="btn-dark" id="registerBtn">
+          Create my account
+          <i class="fas fa-arrow-right" style="font-size:13px;"></i>
+        </button>
+
+      </form>
+
+      <p style="font-size:12px;color:#C4BAB0;text-align:center;line-height:1.6;margin-bottom:24px;">
+        By creating an account you agree to our terms. No spam, ever.
+      </p>
+
+      <!-- Back link -->
+      <div style="text-align:center;">
+        <a href="/" style="font-size:13px;color:#A8A09A;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color 0.2s;" onmouseover="this.style.color='#7A6E65'" onmouseout="this.style.color='#A8A09A'">
+          <i class="fas fa-arrow-left" style="font-size:11px;"></i>
+          Back to Auxora
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Register form
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const name = document.getElementById('nameInput').value.trim();
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value;
+      const btn = document.getElementById('registerBtn');
+      const errDiv = document.getElementById('errorMessage');
+      const errText = document.getElementById('errorText');
+      const sucDiv = document.getElementById('successMessage');
+      const sucText = document.getElementById('successText');
 
-      // Hide previous messages
-      document.getElementById('errorMessage').classList.add('hidden');
-      document.getElementById('successMessage').classList.add('hidden');
+      errDiv.style.display = 'none';
+      sucDiv.style.display = 'none';
 
-      // Show loading state
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>CREATING ACCOUNT...';
-      submitBtn.disabled = true;
+      if (password.length < 8) {
+        errText.textContent = 'Password must be at least 8 characters.';
+        errDiv.style.display = 'flex';
+        return;
+      }
+
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size:14px;"></i> Creating account…';
+      btn.disabled = true;
 
       try {
-        const response = await fetch('/api/auth/register', {
+        const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, name, type: 'brand' })
         });
-
-        const data = await response.json();
+        const data = await res.json();
 
         if (data.success) {
-          // Store user and session token
           localStorage.setItem('auxora_user', JSON.stringify(data.user));
           localStorage.setItem('auxora_session', data.sessionToken);
 
-          // Show success message
-          document.getElementById('successText').textContent = data.message || 'Account created successfully!';
-          document.getElementById('successMessage').classList.remove('hidden');
+          sucText.textContent = 'Account created! Taking you to your dashboard…';
+          sucDiv.style.display = 'flex';
 
-          console.log('✅ Registration successful');
+          const params = new URLSearchParams(window.location.search);
+          const returnUrl = params.get('returnUrl');
 
-          // Check for return URL parameter
-          const urlParams = new URLSearchParams(window.location.search);
-          const returnUrl = urlParams.get('returnUrl');
-
-          // Redirect to return URL or dashboard after brief delay
-          setTimeout(() => {
-            if (returnUrl) {
-              window.location.href = decodeURIComponent(returnUrl);
-            } else {
-              window.location.href = '/dashboard';
-            }
-          }, 1500);
+          setTimeout(function() {
+            window.location.href = returnUrl ? decodeURIComponent(returnUrl) : '/dashboard';
+          }, 1200);
         } else {
-          // Show error
-          document.getElementById('errorText').textContent = data.message || 'Registration failed';
-          document.getElementById('errorMessage').classList.remove('hidden');
-
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
+          errText.textContent = data.message || data.error || 'Registration failed. Please try again.';
+          errDiv.style.display = 'flex';
+          btn.innerHTML = 'Create my account <i class="fas fa-arrow-right" style="font-size:13px;"></i>';
+          btn.disabled = false;
         }
-      } catch (error) {
-        console.error('Registration error:', error);
-        document.getElementById('errorText').textContent = 'Network error. Please try again.';
-        document.getElementById('errorMessage').classList.remove('hidden');
-
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+      } catch (err) {
+        errText.textContent = 'Network error. Please try again.';
+        errDiv.style.display = 'flex';
+        btn.innerHTML = 'Create my account <i class="fas fa-arrow-right" style="font-size:13px;"></i>';
+        btn.disabled = false;
       }
     });
 
-    // Google Sign Up Button Handler
-    document.getElementById('googleSignUpBtn').addEventListener('click', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const returnUrl = urlParams.get('returnUrl');
-
-      let googleAuthUrl = '/auth/google';
-      if (returnUrl) {
-        googleAuthUrl += '?returnUrl=' + encodeURIComponent(returnUrl);
-      }
-
-      console.log('Redirecting to Google OAuth:', googleAuthUrl);
-      window.location.href = googleAuthUrl;
+    // Google sign-up
+    document.getElementById('googleSignUpBtn').addEventListener('click', function() {
+      const params = new URLSearchParams(window.location.search);
+      const returnUrl = params.get('returnUrl');
+      let url = '/auth/google';
+      if (returnUrl) url += '?returnUrl=' + encodeURIComponent(returnUrl);
+      window.location.href = url;
     });
-    </script>
+  </script>
 
-    <script src="/static/modal-utils.js"></script>
+  <script src="/static/modal-utils.js"></script>
 </body>
 </html>
