@@ -598,6 +598,39 @@ export const REVISED_LANDING_HTML = `
 
 
   <!-- ══════════════════════════════
+       USP TRIO BAR
+  ══════════════════════════════ -->
+  <section style="background:#1C1917;padding:56px 24px;">
+    <div style="max-width:960px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#3D3530;border-radius:20px;overflow:hidden;">
+
+        <!-- USP 1 -->
+        <div style="background:#1C1917;padding:40px 36px;text-align:center;">
+          <div class="editorial" style="font-size:clamp(44px,5vw,68px);color:#BF6744;line-height:1;margin-bottom:10px;">24h</div>
+          <div style="font-size:15px;font-weight:600;color:#FAF7F4;margin-bottom:8px;">Revenue in 24 hours</div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.65;">From onboarding to your first sale — Auxora gets your brand live and earning the same day.</p>
+        </div>
+
+        <!-- USP 2 -->
+        <div style="background:#1C1917;padding:40px 36px;text-align:center;border-left:1px solid #3D3530;border-right:1px solid #3D3530;">
+          <div class="editorial" style="font-size:clamp(44px,5vw,68px);color:#6E8B5E;line-height:1;margin-bottom:10px;">$100M</div>
+          <div style="font-size:15px;font-weight:600;color:#FAF7F4;margin-bottom:8px;">Scales to $100M ARR</div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.65;">Not a starter tool — a full growth infrastructure engineered to take you from day one to eight figures.</p>
+        </div>
+
+        <!-- USP 3 -->
+        <div style="background:#1C1917;padding:40px 36px;text-align:center;">
+          <div class="editorial" style="font-size:clamp(44px,5vw,68px);color:#FAF7F4;line-height:1;margin-bottom:10px;">1/10</div>
+          <div style="font-size:15px;font-weight:600;color:#FAF7F4;margin-bottom:8px;">Agency cost. Better results.</div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.65;">Agencies charge $5K–$20K/month regardless of outcomes. Pay Auxora only when you grow.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════
        THE PROBLEM
   ══════════════════════════════ -->
   <section class="section" style="background:#FFFFFF;">
@@ -736,8 +769,8 @@ export const REVISED_LANDING_HTML = `
           <div style="display:flex;justify-content:center;margin-bottom:20px;">
             <div class="step-dot" style="background:#1C1917;border-color:#1C1917;color:#FAF7F4;">4</div>
           </div>
-          <h3 class="editorial" style="font-size:20px;color:#1C1917;margin-bottom:10px;">Auxora executes</h3>
-          <p style="font-size:13px;color:#A8A09A;line-height:1.65;">Your AI agent runs ads, emails, and optimisations around the clock. You build; we grow.</p>
+          <h3 class="editorial" style="font-size:20px;color:#1C1917;margin-bottom:10px;">Revenue in 24 hours</h3>
+          <p style="font-size:13px;color:#A8A09A;line-height:1.65;">Your AI agent launches campaigns, drives traffic, and generates your first revenue — all within 24 hours of activation.</p>
         </div>
 
       </div>
@@ -1024,7 +1057,7 @@ export const REVISED_LANDING_HTML = `
           <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:#BF6744;color:#FAF7F4;font-size:11px;font-weight:600;letter-spacing:0.12em;padding:5px 16px;border-radius:0 0 12px 12px;white-space:nowrap;">MOST POPULAR</div>
           <p class="eyebrow" style="color:#A8A09A;margin-top:16px;margin-bottom:16px;">Growth</p>
           <div class="editorial" style="font-size:52px;color:#FAF7F4;margin-bottom:4px;line-height:1;">$450</div>
-          <div style="font-size:13px;color:#7A6E65;margin-bottom:32px;font-weight:500;">per month · full agent activation</div>
+          <div style="font-size:13px;color:#A8A09A;margin-bottom:32px;font-weight:500;">per month · vs $5K–20K agency · pay for results</div>
           <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px;">
             <li style="font-size:14px;color:#A8A09A;display:flex;gap:10px;align-items:flex-start;line-height:1.5;">
               <i class="fas fa-check" style="color:#BF6744;font-size:12px;margin-top:3px;flex-shrink:0;"></i>
@@ -1125,17 +1158,17 @@ export const REVISED_LANDING_HTML = `
             <i class="fas fa-plus faq-plus" style="color:#A8A09A;font-size:13px;flex-shrink:0;margin-left:16px;"></i>
           </summary>
           <div style="padding:0 26px 22px;font-size:14px;color:#7A6E65;line-height:1.75;border-top:1px solid #EDE4D9;">
-            Traditional agencies charge $5K–$20K/month for strategy that takes weeks and is often generic. Auxora delivers a fully personalised strategy in 10 minutes for $4.99, then autonomously executes it — no account managers, no delays, no fluff.
+            Traditional agencies charge $5K–$20K/month with no performance guarantee — you pay whether results come or not. Auxora starts at $4.99, gets your brand earning within 24 hours, and charges at 1/10th the cost of an agency. The strategy is built to scale all the way to $100M ARR, not just your first $100K.
           </div>
         </details>
 
         <details style="border:1px solid #EDE4D9;border-radius:16px;overflow:hidden;background:white;">
           <summary style="padding:22px 26px;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600;color:#1C1917;font-family:'Plus Jakarta Sans',sans-serif;">
-            Do I need to connect ad accounts or give API access to start?
+            How quickly can I start seeing revenue?
             <i class="fas fa-plus faq-plus" style="color:#A8A09A;font-size:13px;flex-shrink:0;margin-left:16px;"></i>
           </summary>
           <div style="padding:0 26px 22px;font-size:14px;color:#7A6E65;line-height:1.75;border-top:1px solid #EDE4D9;">
-            No — not to start. Just answer a few questions about your brand and goals. You can connect ad accounts later when you move to the Growth plan for autonomous execution.
+            Brands on the Growth plan typically see their first attributed revenue within 24 hours of activation. Your AI agent launches campaigns immediately, targets your best-fit audiences, and starts optimising from hour one.
           </div>
         </details>
 
@@ -1182,11 +1215,11 @@ export const REVISED_LANDING_HTML = `
 
       <p class="eyebrow" style="margin-bottom:20px;">Start today</p>
       <h2 class="editorial" style="font-size:clamp(44px,6vw,76px);color:#1C1917;margin-bottom:18px;line-height:1.05;">
-        Your brand deserves<br/>
-        <em style="color:#BF6744;">better growth.</em>
+        Revenue in 24 hours.<br/>
+        <em style="color:#BF6744;">Growth to $100M.</em>
       </h2>
       <p style="font-size:17px;color:#7A6E65;line-height:1.75;margin-bottom:44px;max-width:480px;margin-left:auto;margin-right:auto;">
-        Join 200+ D2C founders who stopped guessing and let Auxora build their growth engine.
+        Join 200+ D2C founders who went live in 24 hours and are scaling to $100M — at 1/10th agency cost.
       </p>
 
       <!-- CTA pill input -->
