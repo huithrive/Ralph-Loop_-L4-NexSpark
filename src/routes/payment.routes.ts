@@ -9,6 +9,15 @@ import { PRICING } from '../config';
 
 export const paymentRoutes = new Hono();
 
+// Get Stripe publishable key (safe to expose - it's meant to be public)
+paymentRoutes.get('/config', (c) => {
+  const publishableKey = (c.env as any).STRIPE_PUBLISHABLE_KEY || '';
+  return c.json({
+    success: true,
+    publishableKey,
+  });
+});
+
 // Create payment intent
 paymentRoutes.post('/create-intent', async (c) => {
   try {

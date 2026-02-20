@@ -84,7 +84,7 @@
                         <div class="text-white font-semibold text-lg">NexSpark Growth Strategy Report</div>
                         <div class="text-white/60 text-sm mt-1">Complete 6-Month GTM Plan</div>
                     </div>
-                    <div class="text-white font-bold text-2xl">$20</div>
+                    <div class="text-white font-bold text-2xl">$4.99</div>
                 </div>
                 
                 <div class="bg-nexspark-dark rounded-lg p-4 mt-4">
@@ -128,37 +128,7 @@
             </h2>
             
             <form id="payment-form">
-                <!-- TEST MODE BANNER -->
-                <div class="bg-yellow-500/20 border-2 border-yellow-500 rounded-xl p-6 mb-6">
-                    <div class="flex items-start gap-4">
-                        <i class="fas fa-exclamation-triangle text-yellow-500 text-3xl"></i>
-                        <div class="flex-1">
-                            <h3 class="text-yellow-500 font-bold text-xl mb-3">🧪 TEST MODE - Use These Card Details</h3>
-                            <div class="bg-black/40 rounded-lg p-4 font-mono text-sm space-y-2">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-white/70">Card Number:</span>
-                                    <span class="text-white font-bold text-lg tracking-wider">4242 4242 4242 4242</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-white/70">Expiry Date:</span>
-                                    <span class="text-white font-bold">Any future date (e.g., 12/25)</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-white/70">CVC:</span>
-                                    <span class="text-white font-bold">Any 3 digits (e.g., 123)</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-white/70">ZIP Code:</span>
-                                    <span class="text-white font-bold">Any 5 digits (e.g., 12345)</span>
-                                </div>
-                            </div>
-                            <p class="text-white/70 text-xs mt-3">
-                                <i class="fas fa-info-circle mr-1"></i>
-                                This is Stripe TEST mode. No real charges will be made. Use the exact card number above.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+
                 
                 <!-- Card Element -->
                 <div class="mb-6">
@@ -203,7 +173,7 @@
                     class="w-full py-6 bg-gradient-to-r from-nexspark-gold to-yellow-500 text-black font-header font-bold text-2xl uppercase rounded-xl hover:from-yellow-500 hover:to-nexspark-gold transition-all transform hover:scale-[1.02] shadow-2xl"
                 >
                     <i class="fas fa-lock mr-3"></i>
-                    <span id="button-text">Pay $20 & Generate Report</span>
+                    <span id="button-text">Pay $4.99 & Generate Report</span>
                     <i class="fas fa-spinner fa-spin ml-3 hidden" id="spinner"></i>
                 </button>
                 
@@ -263,8 +233,16 @@
 
         console.log('Payment page initialized with:', { website, hasPreviewData: !!previewData });
         
-        // Initialize Stripe
-        const stripe = Stripe('REDACTED_STRIPE_PUBLISHABLE');
+        // Initialize Stripe asynchronously (fetch live publishable key from server)
+        async function initStripe() {
+            let stripePublishableKey = '';
+            try {
+                const configRes = await axios.get('/api/payment/config');
+                stripePublishableKey = configRes.data.publishableKey;
+            } catch (e) {
+                console.error('Failed to fetch Stripe config:', e);
+            }
+            const stripe = Stripe(stripePublishableKey);
         const elements = stripe.elements();
         const cardElement = elements.create('card', {
             style: {
@@ -311,7 +289,7 @@
                 const response = await axios.post('/api/payment/create-intent', {
                     userId: user.id,
                     userEmail: user.email || user.id + '@nexspark.ai',
-                    amount: 2000, // $20
+                    amount: 499, // $4.99
                     summary: summary // Include summary data
                 });
                 
@@ -360,7 +338,7 @@
                         await axios.post('/api/payment/record', {
                             userId: user.id,
                             paymentIntentId: paymentIntent.id,
-                            amount: 2000
+                            amount: 499
                         });
                         console.log('✅ Payment recorded in database');
                     } catch (recordError) {
@@ -371,7 +349,7 @@
                     // Save payment info to localStorage (persistent)
                     localStorage.setItem('nexspark_payment', JSON.stringify({
                         paymentIntentId: paymentIntent.id,
-                        amount: 2000,
+                        amount: 499,
                         paid: true,
                         timestamp: new Date().toISOString()
                     }));
@@ -389,10 +367,12 @@
                 const errorMessage = error.response?.data?.message || error.message || 'Payment failed. Please try again.';
                 document.getElementById('card-errors').textContent = errorMessage;
                 submitButton.disabled = false;
-                buttonText.textContent = 'Pay $20 & Generate Report';
+                buttonText.textContent = 'Pay $4.99 & Generate Report';
                 spinner.classList.add('hidden');
             }
         });
+        } // end initStripe
+        initStripe();
     </script>
 </body>
 </html>
