@@ -1,31 +1,33 @@
 #!/bin/bash
 
-# Update Cloudflare Pages Environment Variables for Stripe TEST Mode
+# Update Cloudflare Pages Environment Variables for Stripe
+# Usage: Set STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY as env vars before running
+# Example:
+#   export STRIPE_SECRET_KEY=sk_live_...
+#   export STRIPE_PUBLISHABLE_KEY=pk_live_...
+#   ./update-stripe-test-keys.sh
 
 echo "=============================================="
-echo "🧪 Updating Cloudflare to Stripe TEST Mode"
+echo "🔑 Updating Cloudflare Stripe Keys"
 echo "=============================================="
-echo ""
 
-export CLOUDFLARE_API_TOKEN=$(cat /home/user/webapp/.cloudflare-token)
+export CLOUDFLARE_API_TOKEN=$(cat /home/user/webapp/.cloudflare-token 2>/dev/null)
 PROJECT_NAME="nexspark-growth"
 
-echo "📝 Setting STRIPE_SECRET_KEY (TEST)..."
-echo "REDACTED_STRIPE_SECRET" | \
+if [ -z "$STRIPE_SECRET_KEY" ] || [ -z "$STRIPE_PUBLISHABLE_KEY" ]; then
+  echo "❌ Error: STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY must be set as environment variables"
+  exit 1
+fi
+
+echo "📝 Setting STRIPE_SECRET_KEY..."
+echo "$STRIPE_SECRET_KEY" | \
   npx wrangler pages secret put STRIPE_SECRET_KEY --project-name="$PROJECT_NAME"
 
 echo ""
-echo "📝 Setting STRIPE_PUBLISHABLE_KEY (TEST)..."
-echo "REDACTED_STRIPE_PUBLISHABLE" | \
+echo "📝 Setting STRIPE_PUBLISHABLE_KEY..."
+echo "$STRIPE_PUBLISHABLE_KEY" | \
   npx wrangler pages secret put STRIPE_PUBLISHABLE_KEY --project-name="$PROJECT_NAME"
 
 echo ""
 echo "✅ Cloudflare environment variables updated!"
-echo ""
 echo "⏳ Wait 2-3 minutes for automatic redeploy..."
-echo ""
-echo "🧪 Test Card: 4242 4242 4242 4242"
-echo "   Expiry: 12/25"
-echo "   CVC: 123"
-echo "   ZIP: 12345"
-echo ""
