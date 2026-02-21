@@ -1,3 +1,8 @@
+require('dotenv').config();
+// Also check parent directory for .env if key not found
+if (!process.env.ANTHROPIC_API_KEY) {
+  require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
+}
 const express = require('express');
 const path = require('path');
 const mock = require('./data/mock');
@@ -11,6 +16,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(require('./routes/guided'));
+app.use(require('./routes/v3-api'));
 
 function isHtmx(req) {
   return req.headers['hx-request'] === 'true';

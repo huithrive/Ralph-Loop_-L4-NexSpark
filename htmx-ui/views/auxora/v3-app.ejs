@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auxora.ai — Growth Partner</title>
+  <link rel="stylesheet" href="/css/auxora-theme.css">
+  <link rel="stylesheet" href="/css/auxora-v3.css">
+</head>
+<body>
+  <div class="v3-app">
+
+    <!-- Left: Chat Panel -->
+    <div class="v3-chat-panel">
+      <div class="v3-chat-header">
+        <div class="v3-chat-header-info">
+          <div class="v3-chat-avatar-lg">A</div>
+          <div>
+            <div class="v3-chat-brand">Auxora</div>
+            <div class="v3-chat-subtitle">Your AI Growth Co-Founder</div>
+          </div>
+        </div>
+        <div class="v3-header-right">
+          <div class="v3-mode-toggle" id="proModeToggle" onclick="V3.toggleProMode()">
+            <span class="v3-mode-label" data-mode="amateur">Simple</span>
+            <div class="v3-mode-switch"><div class="v3-mode-switch-thumb"></div></div>
+            <span class="v3-mode-label" data-mode="pro">Pro</span>
+          </div>
+          <span class="v3-active-badge"><span class="v3-active-dot"></span> Active</span>
+        </div>
+      </div>
+
+      <div class="v3-chat-messages" id="chatMessages">
+        <!-- JS populates messages here -->
+      </div>
+
+      <div class="v3-chat-input-area">
+        <div class="v3-chat-input-row">
+          <input type="text" id="chatInput" placeholder="Type your message..." onkeydown="if(event.key==='Enter')V3.sendMessage()">
+          <button class="v3-chat-send-btn" onclick="V3.sendMessage()">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resize Handle -->
+    <div class="v3-resize-handle" id="resizeHandle"></div>
+
+    <!-- Right: Content Panel -->
+    <div class="v3-content-panel">
+
+      <!-- Journey Summary — shows total effort before revenue starts -->
+      <div class="v3-journey-bar" id="journeyBar">
+        <div class="v3-journey-label">
+          <span class="v3-journey-title">Your path to revenue</span>
+          <span class="v3-journey-eta" id="journeyEta">~20 min to ads live, then autopilot</span>
+        </div>
+        <div class="v3-journey-track">
+          <div class="v3-journey-fill" id="journeyFill" style="width: 0%"></div>
+          <div class="v3-journey-milestone" style="left: 25%" data-label="Plan"></div>
+          <div class="v3-journey-milestone" style="left: 50%" data-label="Connect"></div>
+          <div class="v3-journey-milestone" style="left: 75%" data-label="Live"></div>
+          <div class="v3-journey-milestone" style="left: 100%" data-label="Revenue"></div>
+        </div>
+      </div>
+
+      <div class="v3-content-tabs">
+        <button class="v3-tab active" data-tab="onboarding">
+          <span class="v3-tab-num">1</span>
+          <span class="v3-tab-label">Build Plan</span>
+          <span class="v3-tab-time">~10 min</span>
+        </button>
+        <button class="v3-tab" data-tab="execution">
+          <span class="v3-tab-num">2</span>
+          <span class="v3-tab-label">Connect & Launch</span>
+          <span class="v3-tab-time">~10 min</span>
+        </button>
+        <button class="v3-tab" data-tab="openclaw">
+          <span class="v3-tab-num">3</span>
+          <span class="v3-tab-label">Monitor</span>
+          <span class="v3-tab-time">Autopilot</span>
+        </button>
+        <button class="v3-tab" data-tab="results">
+          <span class="v3-tab-num">4</span>
+          <span class="v3-tab-label">Revenue</span>
+          <span class="v3-tab-time">5 min/week</span>
+        </button>
+      </div>
+
+      <!-- Dynamic Progress Stepper — JS updates labels per stage -->
+      <div class="v3-progress-stepper" id="progressSteps">
+        <div class="v3-step active" data-step="1">
+          <div class="v3-step-circle">1</div>
+          <div class="v3-step-label">Enter URL</div>
+        </div>
+        <div class="v3-step-connector" data-connector="1"></div>
+        <div class="v3-step" data-step="2">
+          <div class="v3-step-circle">2</div>
+          <div class="v3-step-label">Research</div>
+        </div>
+        <div class="v3-step-connector" data-connector="2"></div>
+        <div class="v3-step" data-step="3">
+          <div class="v3-step-circle">3</div>
+          <div class="v3-step-label">Interview</div>
+        </div>
+        <div class="v3-step-connector" data-connector="3"></div>
+        <div class="v3-step" data-step="4">
+          <div class="v3-step-circle">4</div>
+          <div class="v3-step-label">GTM Report</div>
+        </div>
+      </div>
+
+      <!-- Canvas: each tab has its own content area, JS toggles visibility -->
+      <div class="v3-canvas" id="canvasPanel">
+        <!-- Onboarding canvas (default) -->
+        <div class="v3-canvas-view active" data-canvas="onboarding" id="canvasOnboarding">
+          <div class="v3-canvas-welcome">
+            <div class="v3-canvas-welcome-icon">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--auxora-primary-400)" stroke-width="1.5">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                <circle cx="12" cy="12" r="5"/>
+              </svg>
+            </div>
+            <h2>Welcome to Auxora</h2>
+            <p>Start chatting to begin your growth journey. I'll research your market, analyze competitors, and build a personalized GTM strategy.</p>
+          </div>
+        </div>
+
+        <!-- Execution canvas -->
+        <div class="v3-canvas-view" data-canvas="execution" id="canvasExecution"></div>
+
+        <!-- OpenClaw canvas -->
+        <div class="v3-canvas-view" data-canvas="openclaw" id="canvasOpenclaw"></div>
+
+        <!-- Results canvas -->
+        <div class="v3-canvas-view" data-canvas="results" id="canvasResults"></div>
+      </div>
+
+      <!-- Canvas Detail Overlay (WS2) -->
+      <div id="canvasDetailOverlay" class="v3-canvas-detail-overlay" style="display:none">
+        <div class="v3-canvas-detail-header">
+          <button class="v3-canvas-detail-back" onclick="V3.hideCanvasDetail()">&larr; Back</button>
+          <span class="v3-canvas-detail-title" id="canvasDetailTitle"></span>
+        </div>
+        <div class="v3-canvas-detail-body" id="canvasDetailBody"></div>
+      </div>
+
+      <!-- Agent Status Bar (compact, auto-collapse) -->
+      <div class="v3-agent-status-bar" id="agentStatusBar" style="display:none" onclick="V3.toggleAgentDrawer()">
+        <div class="v3-agent-status-left">
+          <div class="v3-agent-status-spinner" id="agentStatusSpinner"></div>
+          <span class="v3-agent-status-text" id="agentStatusText">Working...</span>
+        </div>
+        <span class="v3-agent-status-count" id="agentActionCount">0</span>
+      </div>
+      <!-- Expanded agent action log (hidden by default) -->
+      <div class="v3-agent-expanded" id="agentExpanded" style="display:none">
+        <div class="v3-agent-actions-list" id="agentActionsList"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    var v3Stages = <%- JSON.stringify(stages) %>;
+    var v3Data = { cards: <%- JSON.stringify(cards) %>, canvasData: <%- JSON.stringify(canvasData) %> };
+    var v3StepperConfigs = {
+      'discovery':         { steps: ['Enter URL', 'Research', 'Interview', 'GTM Report'] },
+      'report-gen':        { steps: ['Enter URL', 'Research', 'Interview', 'GTM Report'] },
+      'strategy':          { steps: ['Enter URL', 'Research', 'Interview', 'GTM Report'] },
+      'competitor-research': { steps: ['Research'] },
+      'execution-setup':   { steps: ['Store', 'Meta', 'Google', 'Tracking'] },
+      'campaign-planning': { steps: ['Budget', 'Channels', 'Objective', 'Structure', 'Audiences', 'Allocation', 'Creatives', 'Review'] },
+      'launch':            { steps: ['Create', 'Submit', 'Verify', 'Live'] },
+      'monitoring':        { steps: ['48h Check', 'Week 1', 'Week 2', 'Phase 2'] },
+      'weekly-sync':       { steps: ['48h Check', 'Week 1', 'Week 2', 'Phase 2'] },
+      'optimization':      { steps: ['Analyze', 'Recommend', 'Adjust', 'Scale'] },
+      'scaling':           { steps: ['Phase 1', 'Phase 2', 'Phase 3', 'Goal'] }
+    };
+  </script>
+  <script src="/js/auxora-v3.js"></script>
+</body>
+</html>

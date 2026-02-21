@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auxora.ai — Your AI Growth Team</title>
+  <link rel="stylesheet" href="/css/auxora-v3.css">
+</head>
+<body>
+  <div class="v3-landing">
+
+    <nav class="v3-landing-nav">
+      <div class="v3-landing-logo">Auxora<span>.ai</span></div>
+      <button class="v3-landing-login">Log in</button>
+    </nav>
+
+    <section class="v3-hero">
+      <h1><%= demo.landing.headline %></h1>
+      <p><%= demo.landing.subheadline %></p>
+      <a href="/auxora/v3/app" class="v3-btn-primary">Start Growing <span>&rarr;</span></a>
+    </section>
+
+    <section class="v3-features">
+      <% demo.landing.features.forEach(function(f, i) { %>
+        <div class="v3-feature-card">
+          <div class="feature-num"><%= i + 1 %></div>
+          <h3><%= f.title %></h3>
+          <p><%= f.desc %></p>
+        </div>
+      <% }) %>
+    </section>
+
+    <section class="v3-testimonial">
+      <blockquote>"<%= demo.landing.testimonial.quote %>"</blockquote>
+      <cite><%= demo.landing.testimonial.author %>, <%= demo.landing.testimonial.company %></cite>
+    </section>
+
+    <section class="v3-pricing">
+      <h2>Pricing</h2>
+      <div class="v3-pricing-grid">
+        <% demo.landing.pricing.forEach(function(p) { %>
+          <div class="v3-pricing-card<%= p.primary ? ' featured' : '' %>">
+            <h3><%= p.tier %></h3>
+            <div>
+              <span class="price"><%= p.price %></span>
+              <% if (p.period) { %><span class="price-period"> <%= p.period %></span><% } %>
+            </div>
+            <ul>
+              <% p.features.forEach(function(f) { %>
+                <li><%= f %></li>
+              <% }) %>
+            </ul>
+            <% if (p.primary) { %>
+              <a href="/auxora/v3/app" class="v3-btn-primary"><%= p.cta %> &rarr;</a>
+            <% } else { %>
+              <button class="v3-btn-secondary"><%= p.cta %></button>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+
+    <footer class="v3-landing-footer">
+      Powered by OpenClaw — Autonomous advertising AI
+    </footer>
+
+  </div>
+</body>
+</html>

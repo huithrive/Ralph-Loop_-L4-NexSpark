@@ -6,6 +6,8 @@ var alexandarConversations = require('../data/alexandar-conversations');
 var sakuraDemo = require('../data/sakura-demo');
 var vibeDemo = require('../data/vibe-demo');
 var auxoraDemo = require('../data/auxora-demo');
+var auxoraV2 = require('../data/auxora-v2-data');
+var auxoraV3 = require('../data/auxora-v3-data');
 
 function renderAsync(res, template, data) {
   return new Promise(function (resolve) {
@@ -48,6 +50,22 @@ router.get('/auxora/openclaw', function (req, res) {
 
 router.get('/auxora/results', function (req, res) {
   res.render('auxora/results', { demo: auxoraDemo });
+});
+
+router.get('/auxora/v2', function (req, res) {
+  res.render('auxora/demo-v2', { demo: auxoraV2 });
+});
+
+router.get('/auxora/v3', function (req, res) {
+  res.render('auxora/v3-landing', { demo: auxoraV3 });
+});
+
+router.get('/auxora/v3/app', function (req, res) {
+  res.render('auxora/v3-app', {
+    stages: auxoraV3.stages || [],
+    cards: auxoraV3.cards || {},
+    canvasData: auxoraV3.canvasData || {}
+  });
 });
 
 /* ── Alexandar CGO Demo ── */
