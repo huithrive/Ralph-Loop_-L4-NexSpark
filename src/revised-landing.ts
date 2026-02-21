@@ -1023,32 +1023,33 @@ export const REVISED_LANDING_HTML = `
         <div class="price-popular" style="padding:36px;">
           <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:#BF6744;color:#FAF7F4;font-size:11px;font-weight:600;letter-spacing:0.12em;padding:5px 16px;border-radius:0 0 12px 12px;white-space:nowrap;">MOST POPULAR</div>
           <p class="eyebrow" style="color:#A8A09A;margin-top:16px;margin-bottom:16px;">Growth</p>
-          <div class="editorial" style="font-size:52px;color:#FAF7F4;margin-bottom:4px;line-height:1;">$450</div>
-          <div style="font-size:13px;color:#A8A09A;margin-bottom:32px;font-weight:500;">per month · vs $5K–20K agency · pay for results</div>
+          <div class="editorial" style="font-size:52px;color:#FAF7F4;margin-bottom:4px;line-height:1;">$200</div>
+          <div style="font-size:13px;color:#A8A09A;margin-bottom:8px;font-weight:500;">one-time build · vs $12K agency · pay for results</div>
+          <div style="font-size:11px;color:#BF6744;font-weight:600;letter-spacing:0.06em;margin-bottom:24px;">⚡ Begin to see revenue in 48 hours</div>
           <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px;">
             <li style="font-size:14px;color:#A8A09A;display:flex;gap:10px;align-items:flex-start;line-height:1.5;">
               <i class="fas fa-check" style="color:#BF6744;font-size:12px;margin-top:3px;flex-shrink:0;"></i>
-              Everything in Starter
+              GTM strategy &amp; brand positioning
             </li>
             <li style="font-size:14px;color:#A8A09A;display:flex;gap:10px;align-items:flex-start;line-height:1.5;">
               <i class="fas fa-check" style="color:#BF6744;font-size:12px;margin-top:3px;flex-shrink:0;"></i>
-              Meta + Google auto-management
+              Conversion-optimised landing page
             </li>
             <li style="font-size:14px;color:#A8A09A;display:flex;gap:10px;align-items:flex-start;line-height:1.5;">
               <i class="fas fa-check" style="color:#BF6744;font-size:12px;margin-top:3px;flex-shrink:0;"></i>
-              Weekly AI optimisation
+              AI-generated ad creatives (video + static)
             </li>
             <li style="font-size:14px;color:#A8A09A;display:flex;gap:10px;align-items:flex-start;line-height:1.5;">
               <i class="fas fa-check" style="color:#BF6744;font-size:12px;margin-top:3px;flex-shrink:0;"></i>
-              Email + SMS automation
+              1 ads channel launched &amp; live
             </li>
             <li style="font-size:14px;color:#A8A09A;display:flex;gap:10px;align-items:flex-start;line-height:1.5;">
               <i class="fas fa-check" style="color:#BF6744;font-size:12px;margin-top:3px;flex-shrink:0;"></i>
-              Live performance dashboard
+              SEO &amp; GEO-optimised copy
             </li>
           </ul>
           <button onclick="startJourney()" class="btn-rust" style="width:100%;justify-content:center;font-size:14px;">
-            Activate growth →
+            Launch in 24 hours →
           </button>
         </div>
 
