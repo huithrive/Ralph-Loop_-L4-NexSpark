@@ -554,6 +554,137 @@ export const REVISED_LANDING_HTML = `
 
 
   <!-- ══════════════════════════════
+       RESULTS / CASE STUDY
+  ══════════════════════════════ -->
+  <section id="results" class="section" style="background:#FAF7F4;">
+    <div style="max-width:1200px;margin:0 auto;">
+
+      <div style="max-width:560px;margin:0 auto 48px;text-align:center;">
+        <p class="eyebrow" style="margin-bottom:16px;">Real results</p>
+        <h2 class="editorial" style="font-size:clamp(40px,4.5vw,62px);color:#1C1917;">
+          Founders who stopped<br/>
+          <em style="color:#BF6744;">grinding and grew.</em>
+        </h2>
+      </div>
+
+      <!-- Brand social proof chips -->
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:760px;margin:0 auto 56px;">
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">Yamabushi Farms <span style="color:#BF6744;margin-left:4px;">10× revenue</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">Mourish <span style="color:#4A6741;margin-left:4px;">3× ROAS</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">Profeliz <span style="color:#BF6744;margin-left:4px;">live in 24h</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">Sakura Floor <span style="color:#4A6741;margin-left:4px;">62% lower CAC</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">NoExit <span style="color:#BF6744;margin-left:4px;">profitable in 6wk</span></span>
+      </div>
+
+      <!-- Hero case study card -->
+      <div class="case-cols card" style="overflow:hidden;max-width:920px;margin:0 auto 24px;display:grid;grid-template-columns:1fr 1fr;border:1px solid #EDE4D9;">
+
+        <!-- Video side -->
+        <div style="position:relative;cursor:pointer;background:#E8DDD0;min-height:320px;overflow:hidden;" onclick="openVideoModal(0)">
+          <img
+            src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
+            alt="Yamabushi Farms case study"
+            style="width:100%;height:100%;object-fit:cover;display:block;"
+          />
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,25,23,0.1),rgba(28,25,23,0.5));"></div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+            <div class="play-circle">
+              <i class="fas fa-play" style="color:#1C1917;font-size:20px;margin-left:3px;"></i>
+            </div>
+          </div>
+          <div style="position:absolute;top:16px;left:16px;">
+            <span class="badge badge-rust" style="font-size:11px;">🛒 D2C Case Study</span>
+          </div>
+          <div style="position:absolute;bottom:20px;left:20px;">
+            <div class="editorial" style="font-size:20px;color:white;font-style:italic;">Watch the story →</div>
+          </div>
+        </div>
+
+        <!-- Stats side -->
+        <div style="padding:36px;background:white;">
+          <p class="eyebrow" style="margin-bottom:10px;">Verified results</p>
+          <h3 class="editorial" style="font-size:34px;color:#1C1917;margin-bottom:4px;">Yamabushi Farms</h3>
+          <p style="font-size:13px;color:#A8A09A;margin-bottom:28px;">Japanese wellness · D2C direct</p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
+            <div style="background:#FDF2EE;border-radius:14px;padding:16px;text-align:center;">
+              <div class="editorial" style="font-size:38px;color:#BF6744;line-height:1;">10×</div>
+              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">Revenue · 2 months</div>
+            </div>
+            <div style="background:#EEF3EC;border-radius:14px;padding:16px;text-align:center;">
+              <div class="editorial" style="font-size:38px;color:#4A6741;line-height:1;">3×</div>
+              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">ROAS · month 1</div>
+            </div>
+            <div style="background:#F5EFE8;border-radius:14px;padding:16px;text-align:center;">
+              <div class="editorial" style="font-size:38px;color:#3D3530;line-height:1;">62%</div>
+              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">CAC reduction</div>
+            </div>
+            <div style="background:#FDF2EE;border-radius:14px;padding:16px;text-align:center;">
+              <div class="editorial" style="font-size:38px;color:#BF6744;line-height:1;">6wk</div>
+              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">To profitability</div>
+            </div>
+          </div>
+
+          <button onclick="openVideoModal(0)" class="btn-outline" style="width:100%;justify-content:center;">
+            <i class="fas fa-play-circle" style="color:#BF6744;"></i> Watch the full story
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Testimonials -->
+      <div class="testi-cols" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:920px;margin:0 auto;">
+
+        <div class="card" style="padding:32px;background:white;">
+          <span class="quote-open">"</span>
+          <p class="editorial-body" style="font-size:15px;color:#3D3530;line-height:1.8;margin-bottom:24px;">
+            I was paying $5K a month to an agency with nothing to show for it. Auxora gave me a real strategy in 10 minutes — and the numbers started moving within two weeks.
+          </p>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#BF6744,#D4845C);display:flex;align-items:center;justify-content:center;color:white;font-family:'Playfair Display',serif;font-size:17px;font-weight:600;flex-shrink:0;">S</div>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;color:#1C1917;">Sarah K.</div>
+              <div class="eyebrow" style="font-size:10px;">Skincare founder</div>
+            </div>
+            <div style="display:flex;gap:2px;">
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:32px;background:white;">
+          <span class="quote-open">"</span>
+          <p class="editorial-body" style="font-size:15px;color:#3D3530;line-height:1.8;margin-bottom:24px;">
+            The $4.99 report was the most valuable thing I bought this year. It showed me exactly why my Meta ads weren't working and gave me a step-by-step fix. Genuinely insane value.
+          </p>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#4A6741,#6E8B5E);display:flex;align-items:center;justify-content:center;color:white;font-family:'Playfair Display',serif;font-size:17px;font-weight:600;flex-shrink:0;">M</div>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;color:#1C1917;">Marcus T.</div>
+              <div class="eyebrow" style="font-size:10px;">Pet accessories brand</div>
+            </div>
+            <div style="display:flex;gap:2px;">
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <!-- ══════════════════════════════
        CATEGORY BAR
   ══════════════════════════════ -->
   <div style="background:#F5EFE8;padding:20px 24px;border-top:1px solid #EDE4D9;border-bottom:1px solid #EDE4D9;overflow:hidden;">
@@ -813,127 +944,6 @@ export const REVISED_LANDING_HTML = `
       </div>
     </div>
   </section>
-
-
-  <!-- ══════════════════════════════
-       RESULTS / CASE STUDY
-  ══════════════════════════════ -->
-  <section id="results" class="section" style="background:#FAF7F4;">
-    <div style="max-width:1200px;margin:0 auto;">
-
-      <div style="max-width:560px;margin:0 auto 72px;text-align:center;">
-        <p class="eyebrow" style="margin-bottom:16px;">Real results</p>
-        <h2 class="editorial" style="font-size:clamp(40px,4.5vw,62px);color:#1C1917;">
-          Founders who stopped<br/>
-          <em style="color:#BF6744;">grinding and grew.</em>
-        </h2>
-      </div>
-
-      <!-- Hero case study card -->
-      <div class="case-cols card" style="overflow:hidden;max-width:920px;margin:0 auto 24px;display:grid;grid-template-columns:1fr 1fr;border:1px solid #EDE4D9;">
-
-        <!-- Video side -->
-        <div style="position:relative;cursor:pointer;background:#E8DDD0;min-height:320px;overflow:hidden;" onclick="openVideoModal(0)">
-          <img
-            src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
-            alt="Yamabushi Farms case study"
-            style="width:100%;height:100%;object-fit:cover;display:block;"
-          />
-          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,25,23,0.1),rgba(28,25,23,0.5));"></div>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-            <div class="play-circle">
-              <i class="fas fa-play" style="color:#1C1917;font-size:20px;margin-left:3px;"></i>
-            </div>
-          </div>
-          <div style="position:absolute;top:16px;left:16px;">
-            <span class="badge badge-rust" style="font-size:11px;">🛒 D2C Case Study</span>
-          </div>
-          <div style="position:absolute;bottom:20px;left:20px;">
-            <div class="editorial" style="font-size:20px;color:white;font-style:italic;">Watch the story →</div>
-          </div>
-        </div>
-
-        <!-- Stats side -->
-        <div style="padding:36px;background:white;">
-          <p class="eyebrow" style="margin-bottom:10px;">Verified results</p>
-          <h3 class="editorial" style="font-size:34px;color:#1C1917;margin-bottom:4px;">Yamabushi Farms</h3>
-          <p style="font-size:13px;color:#A8A09A;margin-bottom:28px;">Japanese wellness · D2C direct</p>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
-            <div style="background:#FDF2EE;border-radius:14px;padding:16px;text-align:center;">
-              <div class="editorial" style="font-size:38px;color:#BF6744;line-height:1;">10×</div>
-              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">Revenue · 2 months</div>
-            </div>
-            <div style="background:#EEF3EC;border-radius:14px;padding:16px;text-align:center;">
-              <div class="editorial" style="font-size:38px;color:#4A6741;line-height:1;">3×</div>
-              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">ROAS · month 1</div>
-            </div>
-            <div style="background:#F5EFE8;border-radius:14px;padding:16px;text-align:center;">
-              <div class="editorial" style="font-size:38px;color:#3D3530;line-height:1;">62%</div>
-              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">CAC reduction</div>
-            </div>
-            <div style="background:#FDF2EE;border-radius:14px;padding:16px;text-align:center;">
-              <div class="editorial" style="font-size:38px;color:#BF6744;line-height:1;">6wk</div>
-              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">To profitability</div>
-            </div>
-          </div>
-
-          <button onclick="openVideoModal(0)" class="btn-outline" style="width:100%;justify-content:center;">
-            <i class="fas fa-play-circle" style="color:#BF6744;"></i> Watch the full story
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Testimonials -->
-      <div class="testi-cols" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:920px;margin:0 auto;">
-
-        <div class="card" style="padding:32px;background:white;">
-          <span class="quote-open">"</span>
-          <p class="editorial-body" style="font-size:15px;color:#3D3530;line-height:1.8;margin-bottom:24px;">
-            I was paying $5K a month to an agency with nothing to show for it. Auxora gave me a real strategy in 10 minutes — and the numbers started moving within two weeks.
-          </p>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#BF6744,#D4845C);display:flex;align-items:center;justify-content:center;color:white;font-family:'Playfair Display',serif;font-size:17px;font-weight:600;flex-shrink:0;">S</div>
-            <div style="flex:1;">
-              <div style="font-size:14px;font-weight:600;color:#1C1917;">Sarah K.</div>
-              <div class="eyebrow" style="font-size:10px;">Skincare founder</div>
-            </div>
-            <div style="display:flex;gap:2px;">
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" style="padding:32px;background:white;">
-          <span class="quote-open">"</span>
-          <p class="editorial-body" style="font-size:15px;color:#3D3530;line-height:1.8;margin-bottom:24px;">
-            The $4.99 report was the most valuable thing I bought this year. It showed me exactly why my Meta ads weren't working and gave me a step-by-step fix. Genuinely insane value.
-          </p>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#4A6741,#6E8B5E);display:flex;align-items:center;justify-content:center;color:white;font-family:'Playfair Display',serif;font-size:17px;font-weight:600;flex-shrink:0;">M</div>
-            <div style="flex:1;">
-              <div style="font-size:14px;font-weight:600;color:#1C1917;">Marcus T.</div>
-              <div class="eyebrow" style="font-size:10px;">Pet accessories brand</div>
-            </div>
-            <div style="display:flex;gap:2px;">
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-              <i class="fas fa-star" style="color:#D4795A;font-size:12px;"></i>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
 
   <!-- ══════════════════════════════
        PRICING
