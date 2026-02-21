@@ -489,60 +489,14 @@ export const REVISED_LANDING_HTML = `
         </form>
       </div>
 
-      <div class="fade-up d5" style="text-align:center;margin-bottom:0;display:flex;justify-content:center;gap:24px;flex-wrap:wrap;">
-        <span style="font-size:13px;color:#A8A09A;display:flex;align-items:center;gap:5px;">
-          <i class="fas fa-bolt" style="color:#BF6744;font-size:11px;"></i> Live in 1 day
-        </span>
-        <span style="color:#D6CCBF;font-size:13px;">·</span>
-        <span style="font-size:13px;color:#A8A09A;display:flex;align-items:center;gap:5px;">
-          <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:12px;"></i> $200 vs $12,000 agency
-        </span>
-        <span style="color:#D6CCBF;font-size:13px;">·</span>
-        <span style="font-size:13px;color:#A8A09A;display:flex;align-items:center;gap:5px;">
-          <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:12px;"></i> Strategy built for $100M ARR
+      <div class="fade-up d5" style="text-align:center;margin-bottom:0;">
+        <span style="font-size:13px;color:#A8A09A;">
+          No credit card to start &nbsp;·&nbsp; First audit $4.99 &nbsp;·&nbsp; Cancel anytime
         </span>
       </div>
 
-      <!-- Hero: 3 USP cards + Agency vs Auxora comparison -->
+      <!-- Hero: Agency vs Auxora comparison -->
       <div style="margin-top:60px;">
-
-        <!-- 3 USP Pill Cards -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:0 auto 32px;">
-
-          <!-- USP 1: 1 Day -->
-          <div style="background:white;border:2px solid #F0CEBE;border-radius:20px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;">
-            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#BF6744,#E8946A);"></div>
-            <div class="editorial" style="font-size:clamp(36px,4vw,54px);color:#BF6744;line-height:1;margin-bottom:8px;">1 day</div>
-            <div style="font-size:14px;font-weight:700;color:#1C1917;margin-bottom:6px;">Full launch. Day one.</div>
-            <p style="font-size:12px;color:#A8A09A;line-height:1.6;">Strategy, ads, email, SEO — all running within 24 hours, not 30 days.</p>
-            <div style="margin-top:12px;padding-top:12px;border-top:1px solid #F0D8CE;">
-              <span style="font-size:10px;color:#BF6744;font-weight:600;letter-spacing:0.06em;">vs. 30 DAYS WITH AN AGENCY</span>
-            </div>
-          </div>
-
-          <!-- USP 2: $100M ARR -->
-          <div style="background:white;border:2px solid #C8D8C2;border-radius:20px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;">
-            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4A6741,#8AAB78);"></div>
-            <div class="editorial" style="font-size:clamp(36px,4vw,54px);color:#4A6741;line-height:1;margin-bottom:8px;">$100M</div>
-            <div style="font-size:14px;font-weight:700;color:#1C1917;margin-bottom:6px;">ARR-ready infrastructure</div>
-            <p style="font-size:12px;color:#A8A09A;line-height:1.6;">Built by a team that grew a brand $100K → $15M in 10 months. Now automated for you.</p>
-            <div style="margin-top:12px;padding-top:12px;border-top:1px solid #C8D8C2;">
-              <span style="font-size:10px;color:#4A6741;font-weight:600;letter-spacing:0.06em;">FOUNDER-MARKET FIT PROVEN</span>
-            </div>
-          </div>
-
-          <!-- USP 3: $200 -->
-          <div style="background:white;border:2px solid #EDE4D9;border-radius:20px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;">
-            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#1C1917,#3D3530);"></div>
-            <div class="editorial" style="font-size:clamp(36px,4vw,54px);color:#1C1917;line-height:1;margin-bottom:8px;">$200</div>
-            <div style="font-size:14px;font-weight:700;color:#1C1917;margin-bottom:6px;">Full service. 1/10th cost.</div>
-            <p style="font-size:12px;color:#A8A09A;line-height:1.6;">What agencies charge $12,000 for. We deliver the same — often better — for $200.</p>
-            <div style="margin-top:12px;padding-top:12px;border-top:1px solid #EDE4D9;">
-              <span style="font-size:10px;color:#3D3530;font-weight:600;letter-spacing:0.06em;">vs. $12,000 TRADITIONAL AGENCY</span>
-            </div>
-          </div>
-
-        </div>
 
         <!-- Agency Timeline vs Auxora -->
         <div style="background:#F5EFE8;border-radius:24px;padding:36px;max-width:900px;margin:0 auto;">
