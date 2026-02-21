@@ -500,7 +500,7 @@ export const REVISED_LANDING_HTML = `
         <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#A8A09A;width:100%;text-align:center;margin-bottom:4px;">Brands already growing with Auxora</div>
         <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Yamabushi Farms <span style="color:#BF6744;margin-left:4px;">10× revenue</span></span>
         <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Mourish <span style="color:#4A6741;margin-left:4px;">3× ROAS</span></span>
-        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Profeliz <span style="color:#BF6744;margin-left:4px;">live in 24h</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Profeliz <span style="color:#BF6744;margin-left:4px;">ROAS 5× · $1M MRR</span></span>
         <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Sakura Floor <span style="color:#4A6741;margin-left:4px;">62% lower CAC</span></span>
         <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">NoExit <span style="color:#BF6744;margin-left:4px;">profitable in 6wk</span></span>
       </div>
@@ -1286,7 +1286,11 @@ export const REVISED_LANDING_HTML = `
   <script>
     // ── Video data ──
     const videos = [
-      { id: 'nw1XYryhdIU', title: 'Yamabushi Farms', desc: 'D2C Brand · 10× Revenue in 2 Months · 3× ROAS' }
+      { id: 'nw1XYryhdIU', title: 'Yamabushi Farms', desc: 'D2C Brand · 10× Revenue in 2 Months · 3× ROAS' },
+      { id: '', title: 'Mourish', desc: '3× ROAS' },
+      { id: '', title: 'Profeliz', desc: 'ROAS 5× · $1M MRR' },
+      { id: '', title: 'Sakura Floor', desc: '62% lower CAC' },
+      { id: '', title: 'NoExit', desc: 'Profitable in 6 weeks' }
     ];
 
     function openVideoModal(i) {
