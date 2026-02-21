@@ -464,19 +464,12 @@ export const REVISED_LANDING_HTML = `
         </h1>
       </div>
 
-      <!-- Slogan — honest outcome positioning, not false pure-performance claim -->
-      <div class="fade-up d2" style="text-align:center;margin-bottom:24px;">
-        <p style="font-size:15px;color:#7A6E65;max-width:580px;margin:0 auto;line-height:1.6;">
-          End-to-end revenue delivery — strategy, builds, ads and growth, fully automated.
-          <br/><strong style="color:#1C1917;">Start for $4.99. No retainers. Priced for results, not overhead.</strong>
-        </p>
-      </div>
-
-      <!-- Sub-headline -->
+      <!-- Sub-headline — single clean statement, no repetition -->
       <div class="fade-up d3" style="text-align:center;margin-bottom:48px;">
-        <p style="font-size:18px;color:#7A6E65;max-width:620px;margin:0 auto;line-height:1.75;">
-          Strategy → landing page → ad creatives → campaigns → A/B testing → email LTV → SEO.
-          Every step. Fully automated. Live in <strong style="color:#1C1917;">24 hours</strong>. Built to scale to <strong style="color:#1C1917;">$100M ARR</strong>.
+        <p style="font-size:19px;color:#7A6E65;max-width:640px;margin:0 auto;line-height:1.8;">
+          Strategy · landing page · ads · email · SEO — fully automated,
+          live in <strong style="color:#1C1917;">24 hours</strong>, built to scale to <strong style="color:#1C1917;">$100M ARR</strong>.
+          <br/><span style="font-size:15px;color:#A8A09A;">Priced for results, not retainers.</span>
         </p>
       </div>
 
