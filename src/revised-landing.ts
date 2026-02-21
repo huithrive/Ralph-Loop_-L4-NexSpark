@@ -467,8 +467,8 @@ export const REVISED_LANDING_HTML = `
       <!-- Sub-headline — single clean statement, no repetition -->
       <div class="fade-up d3" style="text-align:center;margin-bottom:48px;">
         <p style="font-size:19px;color:#7A6E65;max-width:640px;margin:0 auto;line-height:1.8;">
-          Strategy · landing page · ads · email · SEO — fully automated,
-          live in <strong style="color:#1C1917;">24 hours</strong>, built to scale to <strong style="color:#1C1917;">$100M ARR</strong>.
+          Strategy · landing page · ads · email · SEO — fully automated.
+          <br/>Live in <strong style="color:#1C1917;">24 hours</strong>, built to scale to <strong style="color:#1C1917;">$100M ARR</strong>.
           <br/><span style="font-size:15px;color:#A8A09A;">Priced for results, not retainers.</span>
         </p>
       </div>
