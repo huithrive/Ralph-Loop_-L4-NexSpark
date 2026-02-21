@@ -554,6 +554,24 @@ export const REVISED_LANDING_HTML = `
         </div>
       </div>
 
+      <!-- Video thumbnail — directly under Yamabushi stats card -->
+      <div style="max-width:920px;margin:24px auto;border-radius:20px;overflow:hidden;cursor:pointer;position:relative;" onclick="openVideoModal(0)">
+        <img
+          src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
+          alt="Yamabushi Farms — watch the full story"
+          style="width:100%;display:block;object-fit:cover;max-height:420px;"
+        />
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,25,23,0.05),rgba(28,25,23,0.55));"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <div class="play-circle" style="width:72px;height:72px;">
+            <i class="fas fa-play" style="color:#1C1917;font-size:24px;margin-left:4px;"></i>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:28px;left:0;right:0;text-align:center;">
+          <div class="editorial" style="font-size:22px;color:white;font-style:italic;text-shadow:0 1px 6px rgba(0,0,0,0.4);">Watch the full story →</div>
+        </div>
+      </div>
+
       <!-- Testimonials -->
       <div class="testi-cols" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:920px;margin:0 auto;">
 
@@ -599,24 +617,6 @@ export const REVISED_LANDING_HTML = `
           </div>
         </div>
 
-      </div>
-
-      <!-- Video thumbnail — below testimonials -->
-      <div style="max-width:920px;margin:24px auto 0;border-radius:20px;overflow:hidden;cursor:pointer;position:relative;" onclick="openVideoModal(0)">
-        <img
-          src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
-          alt="Yamabushi Farms — watch the full story"
-          style="width:100%;display:block;object-fit:cover;max-height:420px;"
-        />
-        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,25,23,0.05),rgba(28,25,23,0.55));"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-          <div class="play-circle" style="width:72px;height:72px;">
-            <i class="fas fa-play" style="color:#1C1917;font-size:24px;margin-left:4px;"></i>
-          </div>
-        </div>
-        <div style="position:absolute;bottom:28px;left:0;right:0;text-align:center;">
-          <div class="editorial" style="font-size:22px;color:white;font-style:italic;text-shadow:0 1px 6px rgba(0,0,0,0.4);">Watch the full story →</div>
-        </div>
       </div>
 
     </div>
