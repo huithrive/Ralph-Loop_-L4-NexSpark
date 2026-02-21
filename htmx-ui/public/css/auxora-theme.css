@@ -1,68 +1,74 @@
-/* Auxora.ai - Warm Amber/Orange Theme */
-/* AI Growth Co-Founder in OpenClaw Mode */
+/* Auxora.ai - Warm Earthy Premium Theme */
+/* AI Growth Partner for D2C Brands */
 
 :root {
-  /* Primary Colors - Warm Amber */
-  --auxora-primary-50: #FFFBEB;
-  --auxora-primary-100: #FEF3C7;
-  --auxora-primary-200: #FDE68A;
-  --auxora-primary-300: #FCD34D;
-  --auxora-primary-400: #FBBF24;
-  --auxora-primary-500: #F59E0B;
-  --auxora-primary-600: #D97706;
-  --auxora-primary-700: #B45309;
-  --auxora-primary-800: #92400E;
-  --auxora-primary-900: #78350F;
-  --auxora-primary-950: #451A03;
+  /* Primary Colors - Rust / Warm Earth */
+  --auxora-primary-50: #FDF2EE;
+  --auxora-primary-100: #FAE5DC;
+  --auxora-primary-200: #F0C5B1;
+  --auxora-primary-300: #E8946A;
+  --auxora-primary-400: #D4794A;
+  --auxora-primary-500: #BF6744;
+  --auxora-primary-600: #A85A3C;
+  --auxora-primary-700: #8B4A32;
+  --auxora-primary-800: #6E3A28;
+  --auxora-primary-900: #5A2F20;
+  --auxora-primary-950: #3D1F15;
 
-  /* Secondary Colors - Warm Orange */
-  --auxora-secondary-50: #FFF7ED;
-  --auxora-secondary-100: #FFEDD5;
-  --auxora-secondary-200: #FED7AA;
-  --auxora-secondary-300: #FDBA74;
-  --auxora-secondary-400: #FB923C;
-  --auxora-secondary-500: #F97316;
-  --auxora-secondary-600: #EA580C;
-  --auxora-secondary-700: #C2410C;
-  --auxora-secondary-800: #9A3412;
-  --auxora-secondary-900: #7C2D12;
+  /* Secondary Colors - Forest / Sage */
+  --auxora-secondary-50: #EEF3EC;
+  --auxora-secondary-100: #D8E5D3;
+  --auxora-secondary-200: #B5CDA9;
+  --auxora-secondary-300: #8AAB78;
+  --auxora-secondary-400: #6E8B5E;
+  --auxora-secondary-500: #4A6741;
+  --auxora-secondary-600: #3D5636;
+  --auxora-secondary-700: #30442B;
+  --auxora-secondary-800: #243320;
+  --auxora-secondary-900: #1A2617;
 
-  /* Neutral Colors */
-  --auxora-neutral-50: #FAFAF9;
-  --auxora-neutral-100: #F5F5F4;
-  --auxora-neutral-200: #E7E5E4;
-  --auxora-neutral-300: #D6D3D1;
-  --auxora-neutral-400: #A8A29E;
-  --auxora-neutral-500: #78716C;
-  --auxora-neutral-600: #57534E;
-  --auxora-neutral-700: #44403C;
-  --auxora-neutral-800: #292524;
+  /* Neutral Colors - Warm Earthy */
+  --auxora-neutral-50: #FAF7F4;
+  --auxora-neutral-100: #F5EFE8;
+  --auxora-neutral-200: #EDE4D9;
+  --auxora-neutral-300: #D6CCBF;
+  --auxora-neutral-400: #C4BAB0;
+  --auxora-neutral-500: #A8A09A;
+  --auxora-neutral-600: #7A6E65;
+  --auxora-neutral-700: #57504A;
+  --auxora-neutral-800: #3D3530;
   --auxora-neutral-900: #1C1917;
 
-  /* Success/Warning/Error */
-  --auxora-success: #22C55E;
-  --auxora-success-light: #DCFCE7;
-  --auxora-warning: #EAB308;
-  --auxora-warning-light: #FEF9C3;
-  --auxora-error: #EF4444;
-  --auxora-error-light: #FEE2E2;
-  --auxora-info: #3B82F6;
-  --auxora-info-light: #DBEAFE;
+  /* Semantic Colors */
+  --auxora-success: #4A6741;
+  --auxora-success-light: #EEF3EC;
+  --auxora-warning: #D4794A;
+  --auxora-warning-light: #FDF2EE;
+  --auxora-error: #C44B3C;
+  --auxora-error-light: #FDF0EE;
+  --auxora-info: #5B7B9A;
+  --auxora-info-light: #EEF2F6;
 
   /* Heartbeat Pulse */
-  --auxora-heartbeat: #22C55E;
-  --auxora-heartbeat-glow: rgba(34, 197, 94, 0.4);
+  --auxora-heartbeat: #4A6741;
+  --auxora-heartbeat-glow: rgba(74, 103, 65, 0.4);
 
-  /* Shadows */
-  --auxora-shadow-sm: 0 1px 2px rgba(120, 53, 15, 0.05);
-  --auxora-shadow: 0 4px 6px -1px rgba(120, 53, 15, 0.1), 0 2px 4px -2px rgba(120, 53, 15, 0.1);
-  --auxora-shadow-md: 0 10px 15px -3px rgba(120, 53, 15, 0.1), 0 4px 6px -4px rgba(120, 53, 15, 0.1);
-  --auxora-shadow-lg: 0 20px 25px -5px rgba(120, 53, 15, 0.1), 0 8px 10px -6px rgba(120, 53, 15, 0.1);
+  /* Backgrounds */
+  --auxora-bg-cream: #FAF7F4;
+  --auxora-bg-canvas: #F5EFE8;
+  --auxora-bg-card: #FFFFFF;
+
+  /* Shadows - warm tones */
+  --auxora-shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04);
+  --auxora-shadow: 0 4px 6px -1px rgba(28, 25, 23, 0.06), 0 2px 4px -2px rgba(28, 25, 23, 0.04);
+  --auxora-shadow-md: 0 10px 15px -3px rgba(28, 25, 23, 0.06), 0 4px 6px -4px rgba(28, 25, 23, 0.04);
+  --auxora-shadow-lg: 0 20px 25px -5px rgba(28, 25, 23, 0.08), 0 8px 10px -6px rgba(28, 25, 23, 0.04);
 
   /* Gradients */
-  --auxora-gradient-primary: linear-gradient(135deg, var(--auxora-primary-500) 0%, var(--auxora-secondary-500) 100%);
-  --auxora-gradient-warm: linear-gradient(135deg, var(--auxora-primary-400) 0%, var(--auxora-primary-600) 100%);
-  --auxora-gradient-hero: linear-gradient(180deg, var(--auxora-primary-50) 0%, #FFFFFF 100%);
+  --auxora-gradient-primary: linear-gradient(135deg, #6B4C3B 0%, #8B6B5A 100%);
+  --auxora-gradient-warm: linear-gradient(135deg, #BF6744 0%, #D4794A 100%);
+  --auxora-gradient-hero: linear-gradient(180deg, #FAF7F4 0%, #FFFFFF 100%);
+  --auxora-gradient-rust: linear-gradient(135deg, #BF6744 0%, #E8946A 100%);
 
   /* Border Radius */
   --auxora-radius-sm: 0.375rem;
@@ -79,8 +85,8 @@
 
 /* Base Styles */
 .auxora-app {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--auxora-primary-50);
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--auxora-bg-cream);
   color: var(--auxora-neutral-900);
   min-height: 100vh;
 }
@@ -89,21 +95,23 @@
 .auxora-heading-1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--auxora-primary-900);
+  color: var(--auxora-neutral-900);
   line-height: 1.2;
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 .auxora-heading-2 {
   font-size: 1.875rem;
   font-weight: 600;
-  color: var(--auxora-primary-800);
+  color: var(--auxora-neutral-800);
   line-height: 1.3;
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 .auxora-heading-3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--auxora-primary-800);
+  color: var(--auxora-neutral-800);
   line-height: 1.4;
 }
 
@@ -132,41 +140,41 @@
   padding: 0.75rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 600;
-  border-radius: var(--auxora-radius);
+  border-radius: 100px;
   border: none;
   cursor: pointer;
   transition: var(--auxora-transition);
 }
 
 .auxora-btn-primary {
-  background: var(--auxora-gradient-primary);
-  color: white;
+  background: var(--auxora-neutral-900);
+  color: var(--auxora-neutral-50);
   box-shadow: var(--auxora-shadow);
 }
 
 .auxora-btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: var(--auxora-shadow-md);
+  box-shadow: 0 6px 24px rgba(28, 25, 23, 0.2);
 }
 
 .auxora-btn-secondary {
   background: white;
-  color: var(--auxora-primary-700);
-  border: 2px solid var(--auxora-primary-200);
+  color: var(--auxora-neutral-800);
+  border: 1.5px solid var(--auxora-neutral-300);
 }
 
 .auxora-btn-secondary:hover {
-  background: var(--auxora-primary-50);
-  border-color: var(--auxora-primary-400);
+  background: var(--auxora-neutral-50);
+  border-color: var(--auxora-neutral-400);
 }
 
 .auxora-btn-ghost {
   background: transparent;
-  color: var(--auxora-primary-600);
+  color: var(--auxora-primary-500);
 }
 
 .auxora-btn-ghost:hover {
-  background: var(--auxora-primary-100);
+  background: var(--auxora-primary-50);
 }
 
 .auxora-btn-sm {
@@ -182,16 +190,16 @@
 /* Cards */
 .auxora-card {
   background: white;
-  border-radius: var(--auxora-radius-lg);
+  border-radius: 24px;
   box-shadow: var(--auxora-shadow);
-  border: 1px solid var(--auxora-primary-100);
+  border: 1px solid var(--auxora-neutral-200);
   overflow: hidden;
 }
 
 .auxora-card-header {
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--auxora-primary-100);
-  background: var(--auxora-primary-50);
+  border-bottom: 1px solid var(--auxora-neutral-200);
+  background: var(--auxora-neutral-50);
 }
 
 .auxora-card-body {
@@ -200,7 +208,7 @@
 
 .auxora-card-footer {
   padding: 1rem 1.5rem;
-  border-top: 1px solid var(--auxora-primary-100);
+  border-top: 1px solid var(--auxora-neutral-200);
   background: var(--auxora-neutral-50);
 }
 
@@ -209,20 +217,20 @@
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  border: 2px solid var(--auxora-primary-200);
-  border-radius: var(--auxora-radius);
+  border: 1.5px solid var(--auxora-neutral-300);
+  border-radius: 100px;
   background: white;
   transition: var(--auxora-transition);
 }
 
 .auxora-input:focus {
   outline: none;
-  border-color: var(--auxora-primary-500);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+  border-color: var(--auxora-neutral-800);
+  box-shadow: 0 0 0 3px rgba(28, 25, 23, 0.06);
 }
 
 .auxora-input::placeholder {
-  color: var(--auxora-neutral-400);
+  color: var(--auxora-neutral-500);
 }
 
 /* Labels */
@@ -230,7 +238,7 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--auxora-primary-800);
+  color: var(--auxora-neutral-800);
   margin-bottom: 0.5rem;
 }
 
@@ -239,48 +247,55 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
+  padding: 0.375rem 0.8rem;
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: var(--auxora-radius-full);
+  border: 1px solid var(--auxora-neutral-200);
+  background: white;
 }
 
 .auxora-badge-primary {
-  background: var(--auxora-primary-100);
-  color: var(--auxora-primary-700);
+  background: var(--auxora-primary-50);
+  color: var(--auxora-primary-500);
+  border-color: transparent;
 }
 
 .auxora-badge-success {
   background: var(--auxora-success-light);
-  color: #166534;
+  color: var(--auxora-success);
+  border-color: transparent;
 }
 
 .auxora-badge-warning {
   background: var(--auxora-warning-light);
-  color: #854D0E;
+  color: var(--auxora-primary-700);
+  border-color: transparent;
 }
 
 .auxora-badge-error {
   background: var(--auxora-error-light);
-  color: #991B1B;
+  color: var(--auxora-error);
+  border-color: transparent;
 }
 
 .auxora-badge-info {
   background: var(--auxora-info-light);
-  color: #1E40AF;
+  color: var(--auxora-info);
+  border-color: transparent;
 }
 
 /* Progress */
 .auxora-progress {
   height: 0.5rem;
-  background: var(--auxora-primary-100);
+  background: var(--auxora-neutral-200);
   border-radius: var(--auxora-radius-full);
   overflow: hidden;
 }
 
 .auxora-progress-bar {
   height: 100%;
-  background: var(--auxora-gradient-primary);
+  background: var(--auxora-gradient-warm);
   border-radius: var(--auxora-radius-full);
   transition: width 0.5s ease-out;
 }
@@ -288,10 +303,10 @@
 /* Metrics Cards */
 .auxora-metric-card {
   background: white;
-  border-radius: var(--auxora-radius-lg);
+  border-radius: 24px;
   padding: 1.5rem;
   box-shadow: var(--auxora-shadow);
-  border: 1px solid var(--auxora-primary-100);
+  border: 1px solid var(--auxora-neutral-200);
 }
 
 .auxora-metric-label {
@@ -299,14 +314,15 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--auxora-neutral-500);
+  color: var(--auxora-neutral-600);
   margin-bottom: 0.5rem;
 }
 
 .auxora-metric-value {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--auxora-primary-900);
+  color: var(--auxora-neutral-900);
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 .auxora-metric-change {
@@ -336,7 +352,7 @@
   border-radius: var(--auxora-radius-full);
   font-size: 0.875rem;
   font-weight: 500;
-  color: #166534;
+  color: var(--auxora-success);
 }
 
 .auxora-heartbeat-pulse {
@@ -364,7 +380,7 @@
 
 .auxora-heartbeat.alert {
   background: var(--auxora-warning-light);
-  color: #854D0E;
+  color: var(--auxora-primary-700);
 }
 
 .auxora-heartbeat.alert .auxora-heartbeat-pulse {
@@ -387,7 +403,7 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  border-radius: var(--auxora-radius);
+  border-radius: var(--auxora-radius-md);
   border-left: 4px solid;
 }
 
@@ -422,19 +438,19 @@
 .auxora-chat-message {
   max-width: 80%;
   padding: 1rem;
-  border-radius: var(--auxora-radius-lg);
+  border-radius: 24px;
 }
 
 .auxora-chat-message.auxora {
-  background: var(--auxora-gradient-warm);
-  color: white;
+  background: var(--auxora-neutral-900);
+  color: var(--auxora-neutral-50);
   align-self: flex-start;
   border-bottom-left-radius: 4px;
 }
 
 .auxora-chat-message.user {
   background: white;
-  border: 1px solid var(--auxora-primary-200);
+  border: 1px solid var(--auxora-neutral-300);
   align-self: flex-end;
   border-bottom-right-radius: 4px;
 }
@@ -451,8 +467,8 @@
 }
 
 .auxora-chat-avatar.auxora {
-  background: var(--auxora-primary-500);
-  color: white;
+  background: var(--auxora-neutral-900);
+  color: var(--auxora-neutral-50);
 }
 
 /* Navigation */
@@ -462,7 +478,7 @@
   gap: 0.5rem;
   padding: 0.5rem;
   background: white;
-  border-radius: var(--auxora-radius-lg);
+  border-radius: 24px;
   box-shadow: var(--auxora-shadow-sm);
 }
 
@@ -471,26 +487,26 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--auxora-neutral-600);
-  border-radius: var(--auxora-radius);
+  border-radius: 100px;
   cursor: pointer;
   transition: var(--auxora-transition);
 }
 
 .auxora-nav-item:hover {
-  background: var(--auxora-primary-50);
-  color: var(--auxora-primary-700);
+  background: var(--auxora-neutral-50);
+  color: var(--auxora-neutral-800);
 }
 
 .auxora-nav-item.active {
-  background: var(--auxora-gradient-primary);
-  color: white;
+  background: var(--auxora-neutral-900);
+  color: var(--auxora-neutral-50);
 }
 
 /* Sidebar */
 .auxora-sidebar {
   width: 280px;
   background: white;
-  border-right: 1px solid var(--auxora-primary-100);
+  border-right: 1px solid var(--auxora-neutral-200);
   height: 100vh;
   position: fixed;
   left: 0;
@@ -509,8 +525,8 @@
 .auxora-sidebar-logo-icon {
   width: 40px;
   height: 40px;
-  background: var(--auxora-gradient-primary);
-  border-radius: var(--auxora-radius);
+  background: var(--auxora-neutral-900);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -522,7 +538,8 @@
 .auxora-sidebar-logo-text {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--auxora-primary-800);
+  color: var(--auxora-neutral-900);
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 .auxora-sidebar-section {
@@ -534,7 +551,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--auxora-neutral-400);
+  color: var(--auxora-neutral-500);
   margin-bottom: 0.75rem;
   padding-left: 0.75rem;
 }
@@ -552,13 +569,13 @@
 }
 
 .auxora-sidebar-item:hover {
-  background: var(--auxora-primary-50);
-  color: var(--auxora-primary-700);
+  background: var(--auxora-neutral-50);
+  color: var(--auxora-neutral-800);
 }
 
 .auxora-sidebar-item.active {
-  background: var(--auxora-primary-100);
-  color: var(--auxora-primary-700);
+  background: var(--auxora-neutral-100);
+  color: var(--auxora-neutral-900);
   font-weight: 500;
 }
 
@@ -597,7 +614,7 @@
 
 .auxora-voice-modal {
   background: white;
-  border-radius: var(--auxora-radius-xl);
+  border-radius: 24px;
   padding: 2.5rem;
   width: 90%;
   max-width: 500px;
@@ -607,7 +624,7 @@
 .auxora-voice-avatar {
   width: 100px;
   height: 100px;
-  background: var(--auxora-gradient-primary);
+  background: var(--auxora-neutral-900);
   border-radius: 50%;
   margin: 0 auto 1.5rem;
   display: flex;
@@ -621,7 +638,7 @@
 @keyframes voice-pulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 0 0 rgba(28, 25, 23, 0.3);
   }
   50% {
     transform: scale(1.05);
@@ -662,12 +679,12 @@
 /* Payment Gate */
 .auxora-payment-gate {
   background: white;
-  border-radius: var(--auxora-radius-xl);
+  border-radius: 24px;
   padding: 2rem;
   max-width: 400px;
   margin: 0 auto;
   box-shadow: var(--auxora-shadow-lg);
-  border: 2px solid var(--auxora-primary-200);
+  border: 1px solid var(--auxora-neutral-200);
 }
 
 .auxora-payment-price {
@@ -678,7 +695,8 @@
 .auxora-payment-amount {
   font-size: 3rem;
   font-weight: 700;
-  color: var(--auxora-primary-700);
+  color: var(--auxora-neutral-900);
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 .auxora-payment-amount .currency {
@@ -688,7 +706,7 @@
 
 .auxora-payment-label {
   font-size: 0.875rem;
-  color: var(--auxora-neutral-500);
+  color: var(--auxora-neutral-600);
 }
 
 .auxora-payment-features {
@@ -707,7 +725,7 @@
 }
 
 .auxora-payment-features li::before {
-  content: "✓";
+  content: "\2713";
   color: var(--auxora-success);
   font-weight: 600;
 }
@@ -718,7 +736,7 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background: var(--auxora-success-light);
-  color: #166534;
+  color: var(--auxora-success);
   border-radius: var(--auxora-radius-full);
   font-weight: 600;
   margin-top: 1rem;
@@ -737,7 +755,7 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: var(--auxora-primary-200);
+  background: var(--auxora-neutral-300);
 }
 
 .auxora-timeline-item {
@@ -770,7 +788,7 @@
 
 @keyframes timeline-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 0 0 rgba(191, 103, 68, 0.4);
   }
   50% {
     box-shadow: 0 0 0 8px transparent;
@@ -779,8 +797,8 @@
 
 /* Charts placeholder */
 .auxora-chart {
-  background: var(--auxora-primary-50);
-  border-radius: var(--auxora-radius);
+  background: var(--auxora-neutral-100);
+  border-radius: var(--auxora-radius-md);
   padding: 1rem;
   min-height: 200px;
   display: flex;
@@ -801,20 +819,20 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--auxora-neutral-500);
-  background: var(--auxora-primary-50);
-  border-bottom: 1px solid var(--auxora-primary-100);
+  color: var(--auxora-neutral-600);
+  background: var(--auxora-neutral-50);
+  border-bottom: 1px solid var(--auxora-neutral-200);
 }
 
 .auxora-table td {
   padding: 1rem;
-  border-bottom: 1px solid var(--auxora-primary-100);
+  border-bottom: 1px solid var(--auxora-neutral-200);
   font-size: 0.875rem;
   color: var(--auxora-neutral-700);
 }
 
 .auxora-table tr:hover {
-  background: var(--auxora-primary-50);
+  background: var(--auxora-neutral-50);
 }
 
 /* Responsive */

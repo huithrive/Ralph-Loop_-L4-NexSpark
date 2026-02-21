@@ -336,6 +336,10 @@ var V3 = (function() {
         handleAgentAction(data);
         break;
 
+      case 'keepalive':
+        // Heartbeat to keep SSE connection alive during long operations
+        break;
+
       case 'done':
         hideTyping();
         break;
@@ -837,9 +841,9 @@ var V3 = (function() {
         var reportData = resolveCardData(entry.cardData);
         if (reportData) {
           state.liveReport = reportData;
-          showCanvasDetail('gtm-report', 'Growth Strategy Report');
+          showCanvasDetail('gtm-report', 'Go-to-Market Strategy Report');
           // Also show a compact summary in chat
-          html = renderPreviewCard('report', entry.cardData, 'gtm-report', 'Comprehensive GTM strategy with ' + ((reportData.reportSections || reportData.sections || []).length) + ' sections');
+          html = renderPreviewCard('report', entry.cardData, 'gtm-report', 'Consulting-grade GTM strategy with ' + ((reportData.sections || reportData.reportSections || []).length) + ' sections + executive summary');
         }
         break;
       case 'competitor-research':
@@ -2209,10 +2213,14 @@ var V3 = (function() {
     state.canvasDetailActive = true;
 
     var data = resolveCardData(dataKey);
+    // For GTM report, prefer live report from state
+    if (dataKey === 'gtm-report' && state.liveReport) {
+      data = state.liveReport;
+    }
     var html = '';
 
     // Route to the appropriate detail renderer
-    if (dataKey === 'gtm-report' || (data && data.reportSections)) {
+    if (dataKey === 'gtm-report' || (data && (data.reportSections || data.executiveSummary || (data.sections && data.sections[0] && data.sections[0].sectionNumber)))) {
       html = renderGTMReportDetail(data);
     } else if (dataKey === 'competitor-analysis' || (data && data.competitors)) {
       html = renderCompetitorDetail(data);
@@ -2366,42 +2374,52 @@ var V3 = (function() {
     return html;
   }
 
-  // ─── GTM REPORT RENDERER (WS3 - Euopho-style) ──────
+  // ─── GTM REPORT RENDERER (McKinsey-style, Lovart 9-section framework) ──────
 
   function renderGTMReportDetail(d) {
     if (!d) return '';
-    var sections = d.reportSections || d.sections || [];
+    var sections = d.sections || d.reportSections || [];
     var html = '<div class="v3-gtm-report">';
 
-    // Hero header
+    // ── Hero header (navy gradient) ──
     html += '<div class="v3-report-hero">';
-    html += '<div class="v3-report-hero-label">Growth Strategy Report</div>';
-    html += '<h1 class="v3-report-hero-title">' + esc(d.companyName || d.title || 'GTM Strategy') + '</h1>';
-    if (d.subtitle) html += '<p class="v3-report-hero-subtitle">' + esc(d.subtitle) + '</p>';
+    html += '<div class="v3-report-hero-prepared">Prepared by ' + esc(d.preparedBy || 'Auxora') + ' | ' + esc(d.date || '') + '</div>';
+    html += '<h1 class="v3-report-hero-title">' + esc(d.companyName || 'GTM Strategy') + '</h1>';
+    html += '<div class="v3-report-hero-subtitle">' + esc(d.reportTitle || 'Go-to-Market Strategy Report') + '</div>';
     html += '</div>';
 
-    // KPI stat cards
-    if (d.heroKpis || d.kpis) {
-      var kpis = d.heroKpis || d.kpis;
-      html += '<div class="v3-report-kpi-grid">';
-      kpis.forEach(function(k) {
-        html += '<div class="v3-report-kpi-stat">';
-        html += '<div class="v3-report-kpi-stat-value">' + esc(k.value) + '</div>';
-        html += '<div class="v3-report-kpi-stat-label">' + esc(k.label) + '</div>';
-        if (k.delta) html += '<div class="v3-report-kpi-stat-delta">' + esc(k.delta) + '</div>';
-        html += '</div>';
-      });
+    // ── Executive Summary ──
+    var exec = d.executiveSummary;
+    if (exec) {
+      html += '<div class="v3-report-exec">';
+      html += '<div class="v3-report-section-header"><span class="v3-report-section-num">0</span><span class="v3-report-section-title">Executive Summary</span></div>';
+      if (exec.whatItIs) html += '<p class="v3-report-exec-lead">' + esc(exec.whatItIs) + '</p>';
+      if (exec.marketGap) html += '<div class="v3-report-callout">' + esc(exec.marketGap) + '</div>';
+      if (exec.strategyPhases && exec.strategyPhases.length) {
+        html += '<table class="v3-report-table"><thead><tr><th>Phase</th><th>Timeline</th><th>Focus</th><th>Investment</th><th>Target Outcome</th></tr></thead><tbody>';
+        exec.strategyPhases.forEach(function(p) {
+          html += '<tr><td><strong>' + esc(p.phase) + '</strong></td><td>' + esc(p.timeline) + '</td><td>' + esc(p.focus) + '</td><td>' + esc(p.investment) + '</td><td>' + esc(p.targetOutcome) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      }
+      if (exec.keySuccessFactors && exec.keySuccessFactors.length) {
+        html += '<div class="v3-report-subsection-title">Key Success Factors</div>';
+        html += '<ol class="v3-report-ordered-list">';
+        exec.keySuccessFactors.forEach(function(f) { html += '<li>' + esc(f) + '</li>'; });
+        html += '</ol>';
+      }
       html += '</div>';
     }
 
-    // Navigation + sections layout
+    // ── Navigation + sections layout ──
     html += '<div class="v3-report-layout">';
 
     // Section nav sidebar
     if (sections.length > 0) {
       html += '<nav class="v3-report-nav">';
+      html += '<a class="v3-report-nav-item" href="#gtm-exec" onclick="V3.navigateReportSection(\'gtm-exec\');return false;">Executive Summary</a>';
       sections.forEach(function(s, idx) {
-        html += '<a class="v3-report-nav-item' + (idx === 0 ? ' active' : '') + '" href="#gtm-section-' + idx + '" onclick="V3.navigateReportSection(\'gtm-section-' + idx + '\');return false;">' + esc(s.title) + '</a>';
+        html += '<a class="v3-report-nav-item' + (idx === 0 ? ' active' : '') + '" href="#gtm-section-' + idx + '" onclick="V3.navigateReportSection(\'gtm-section-' + idx + '\');return false;">' + (s.sectionNumber || (idx + 1)) + '. ' + esc(s.title) + '</a>';
       });
       html += '</nav>';
     }
@@ -2410,76 +2428,287 @@ var V3 = (function() {
     html += '<div class="v3-report-sections">';
     sections.forEach(function(s, idx) {
       html += '<div class="v3-report-section-card" id="gtm-section-' + idx + '">';
-      html += '<h3>' + esc(s.title) + '</h3>';
+      html += '<div class="v3-report-section-header"><span class="v3-report-section-num">' + (s.sectionNumber || (idx + 1)) + '</span><span class="v3-report-section-title">' + esc(s.title) + '</span></div>';
+      html += '<div class="v3-report-section-body">';
 
-      // Render different content types
-      if (s.kpis) {
-        html += '<div class="v3-report-section-kpis">';
-        s.kpis.forEach(function(k) {
-          html += '<div class="v3-report-mini-kpi"><span class="v3-report-mini-kpi-val">' + esc(k.value) + '</span><span class="v3-report-mini-kpi-label">' + esc(k.label) + '</span></div>';
-        });
-        html += '</div>';
+      // ── Section 1: Growth Opportunity ──
+      if (s.bigInsight) {
+        html += '<blockquote class="v3-report-big-insight">' + esc(s.bigInsight.quote) + '</blockquote>';
+        if (s.bigInsight.analysis) {
+          s.bigInsight.analysis.split('\n\n').forEach(function(para) {
+            html += '<p>' + esc(para) + '</p>';
+          });
+        }
+        if (s.bigInsight.bottomLine) {
+          html += '<div class="v3-report-callout"><strong>What this means for you:</strong> ' + esc(s.bigInsight.bottomLine) + '</div>';
+        }
       }
 
-      if (s.personas) {
-        html += '<div class="v3-report-persona-grid">';
-        s.personas.forEach(function(p) {
-          html += '<div class="v3-report-persona">';
-          html += '<div class="v3-report-persona-name">' + esc(p.name) + '</div>';
-          html += '<div class="v3-report-persona-demo">' + esc(p.demographics || '') + '</div>';
-          if (p.interests) html += '<div class="v3-report-persona-interests">' + esc(p.interests) + '</div>';
-          if (p.painPoints) html += '<div class="v3-report-persona-pain">' + esc(p.painPoints) + '</div>';
+      // ── Section 2: Market Landscape ──
+      if (s.marketOverview) {
+        s.marketOverview.split('\n\n').forEach(function(para) {
+          html += '<p>' + esc(para) + '</p>';
+        });
+      }
+      if (s.keyStrategicInsight) {
+        html += '<div class="v3-report-callout"><strong>Key Strategic Insight:</strong> ' + esc(s.keyStrategicInsight) + '</div>';
+      }
+
+      // ── Section 3: Competitor Deep Dive ──
+      if (s.competitors && s.competitors.length) {
+        s.competitors.forEach(function(c, ci) {
+          html += '<div class="v3-report-competitor-card">';
+          html += '<div class="v3-report-competitor-header">';
+          html += '<div class="v3-report-competitor-name">Competitor ' + (ci + 1) + ': ' + esc(c.name).toUpperCase() + '</div>';
+          if (c.website) html += '<div class="v3-report-competitor-url">' + esc(c.website) + '</div>';
+          html += '</div>';
+
+          // Key metrics
+          if (c.keyMetrics) {
+            html += '<div class="v3-report-kpi-row">';
+            if (c.keyMetrics.traffic) html += '<div class="v3-report-kpi-chip"><span class="v3-report-kpi-chip-val">' + esc(c.keyMetrics.traffic) + '</span><span class="v3-report-kpi-chip-label">Monthly Traffic</span></div>';
+            if (c.keyMetrics.revenue) html += '<div class="v3-report-kpi-chip"><span class="v3-report-kpi-chip-val">' + esc(c.keyMetrics.revenue) + '</span><span class="v3-report-kpi-chip-label">Revenue</span></div>';
+            if (c.keyMetrics.stage) html += '<div class="v3-report-kpi-chip"><span class="v3-report-kpi-chip-val">' + esc(c.keyMetrics.stage) + '</span><span class="v3-report-kpi-chip-label">Stage</span></div>';
+            html += '</div>';
+          }
+
+          // Traffic sources bar
+          if (c.trafficSources && c.trafficSources.length) {
+            html += '<div class="v3-report-traffic-sources">';
+            c.trafficSources.forEach(function(ts) {
+              var pct = parseInt(ts.percentage) || 0;
+              html += '<div class="v3-report-traffic-row"><span class="v3-report-traffic-label">' + esc(ts.source) + '</span><div class="v3-report-traffic-bar"><div class="v3-report-traffic-fill" style="width:' + Math.min(pct, 100) + '%"></div></div><span class="v3-report-traffic-pct">' + esc(ts.percentage) + '</span></div>';
+            });
+            html += '</div>';
+          }
+
+          // Strengths & weaknesses
+          html += '<div class="v3-report-sw-grid">';
+          if (c.strengths && c.strengths.length) {
+            html += '<div class="v3-report-sw-col"><div class="v3-report-sw-title strengths">Strengths</div>';
+            c.strengths.forEach(function(st) { html += '<div class="v3-report-sw-item">' + esc(st) + '</div>'; });
+            html += '</div>';
+          }
+          if (c.weaknesses && c.weaknesses.length) {
+            html += '<div class="v3-report-sw-col"><div class="v3-report-sw-title weaknesses">Vulnerabilities</div>';
+            c.weaknesses.forEach(function(w) { html += '<div class="v3-report-sw-item">' + esc(w) + '</div>'; });
+            html += '</div>';
+          }
+          html += '</div>';
+
+          if (c.keyTakeaway) {
+            html += '<div class="v3-report-callout"><strong>Key Takeaway:</strong> ' + esc(c.keyTakeaway) + '</div>';
+          }
+          html += '</div>'; // competitor card
+        });
+      }
+
+      // ── Section 4: Ideal Customer Profile ──
+      if (s.primaryPersona) {
+        var pp = s.primaryPersona;
+        html += '<div class="v3-report-persona-card">';
+        html += '<div class="v3-report-persona-header">Primary Customer Persona</div>';
+        html += '<div class="v3-report-persona-name">' + esc(pp.name) + '</div>';
+        if (pp.demographics && pp.demographics.length) {
+          html += '<div class="v3-report-persona-section"><div class="v3-report-persona-section-title">Demographics</div>';
+          pp.demographics.forEach(function(d) { html += '<div class="v3-report-persona-bullet">' + esc(d) + '</div>'; });
+          html += '</div>';
+        }
+        if (pp.psychographics && pp.psychographics.length) {
+          html += '<div class="v3-report-persona-section"><div class="v3-report-persona-section-title">Psychographics</div>';
+          pp.psychographics.forEach(function(d) { html += '<div class="v3-report-persona-bullet">' + esc(d) + '</div>'; });
+          html += '</div>';
+        }
+        if (pp.onlineBehavior && pp.onlineBehavior.length) {
+          html += '<div class="v3-report-persona-section"><div class="v3-report-persona-section-title">Online Behavior</div>';
+          pp.onlineBehavior.forEach(function(d) { html += '<div class="v3-report-persona-bullet">' + esc(d) + '</div>'; });
+          html += '</div>';
+        }
+        if (pp.triggerEvent) {
+          html += '<div class="v3-report-persona-section"><div class="v3-report-persona-section-title">Trigger Event</div><p>' + esc(pp.triggerEvent) + '</p></div>';
+        }
+        html += '</div>'; // persona card
+      }
+      if (s.secondaryICPs && s.secondaryICPs.length) {
+        html += '<div class="v3-report-subsection-title">Secondary ICP Options</div>';
+        html += '<table class="v3-report-table"><thead><tr><th>Persona</th><th>Key Difference</th><th>Test Priority</th></tr></thead><tbody>';
+        s.secondaryICPs.forEach(function(icp) {
+          var prioClass = (icp.testPriority || '').toLowerCase();
+          html += '<tr><td><strong>' + esc(icp.persona) + '</strong></td><td>' + esc(icp.keyDifference) + '</td><td><span class="v3-report-priority-badge ' + prioClass + '">' + esc(icp.testPriority) + '</span></td></tr>';
+        });
+        html += '</tbody></table>';
+      }
+      if (s.validationPlan && s.validationPlan.length) {
+        html += '<div class="v3-report-subsection-title">ICP Validation Plan</div>';
+        html += '<ol class="v3-report-ordered-list">';
+        s.validationPlan.forEach(function(v) { html += '<li>' + esc(v) + '</li>'; });
+        html += '</ol>';
+      }
+
+      // ── Section 5: Geographic Opportunity ──
+      if (s.marketTiers && s.marketTiers.length) {
+        html += '<div class="v3-report-tier-grid">';
+        s.marketTiers.forEach(function(t) {
+          html += '<div class="v3-report-tier-card"><div class="v3-report-tier-label">' + esc(t.tier) + ': ' + esc(t.label) + '</div>';
+          t.markets.forEach(function(m) { html += '<div class="v3-report-tier-market">' + esc(m) + '</div>'; });
           html += '</div>';
         });
         html += '</div>';
       }
+      if (s.costComparison && s.costComparison.length) {
+        html += '<div class="v3-report-subsection-title">Cost Comparison</div>';
+        html += '<table class="v3-report-table"><thead><tr><th>Market</th><th>Est. CPC</th><th>Est. CPM</th><th>Language</th><th>Recommendation</th></tr></thead><tbody>';
+        s.costComparison.forEach(function(c) {
+          html += '<tr><td>' + esc(c.market) + '</td><td>' + esc(c.cpc) + '</td><td>' + esc(c.cpm) + '</td><td>' + esc(c.language) + '</td><td>' + esc(c.recommendation) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      }
+      if (s.launchStrategy && s.launchStrategy.length) {
+        html += '<div class="v3-report-subsection-title">Geographic Launch Strategy</div>';
+        html += '<ol class="v3-report-ordered-list">';
+        s.launchStrategy.forEach(function(l) { html += '<li>' + esc(l) + '</li>'; });
+        html += '</ol>';
+      }
 
-      if (s.competitors) {
-        html += '<table class="v3-detail-table"><thead><tr><th>Competitor</th><th>Strengths</th><th>Weaknesses</th><th>Est. Ad Spend</th></tr></thead><tbody>';
-        s.competitors.forEach(function(c) {
-          html += '<tr><td><strong>' + esc(c.name) + '</strong></td><td>' + esc(c.strengths) + '</td><td>' + esc(c.weaknesses) + '</td><td>' + esc(c.adSpend || 'N/A') + '</td></tr>';
+      // ── Section 6: SEO & Keyword Opportunity ──
+      if (s.brandAnalysis) {
+        html += '<div class="v3-report-callout">' + esc(s.brandAnalysis) + '</div>';
+      }
+      if (s.categoryKeywords && s.categoryKeywords.length) {
+        html += '<div class="v3-report-subsection-title">Category Keyword Opportunities</div>';
+        html += '<table class="v3-report-table"><thead><tr><th>Keyword</th><th>Monthly Searches</th><th>CPC</th><th>Competition</th><th>Priority</th></tr></thead><tbody>';
+        s.categoryKeywords.forEach(function(k) {
+          var prioClass = (k.priority || '').toLowerCase().indexOf('high') >= 0 ? 'high' : '';
+          html += '<tr class="' + prioClass + '"><td><strong>' + esc(k.keyword) + '</strong></td><td>' + esc(k.monthlySearches) + '</td><td>' + esc(k.cpc) + '</td><td>' + esc(k.competition) + '</td><td>' + esc(k.priority) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      }
+      if (s.contentGaps && s.contentGaps.length) {
+        html += '<div class="v3-report-subsection-title">Content Gap Analysis</div>';
+        html += '<table class="v3-report-table"><thead><tr><th>Topic</th><th>Competitor Ranking</th><th>Difficulty</th><th>Content Type</th></tr></thead><tbody>';
+        s.contentGaps.forEach(function(g) {
+          html += '<tr><td>' + esc(g.topic) + '</td><td>' + esc(g.competitorRanking) + '</td><td>' + esc(g.difficulty) + '</td><td>' + esc(g.contentType) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      }
+      if (s.quickWins && s.quickWins.length) {
+        html += '<div class="v3-report-subsection-title">Quick Win Recommendations</div>';
+        html += '<ol class="v3-report-ordered-list">';
+        s.quickWins.forEach(function(w) { html += '<li>' + esc(w) + '</li>'; });
+        html += '</ol>';
+      }
+
+      // ── Section 7: Growth Roadmap ──
+      if (s.phases && s.phases.length) {
+        s.phases.forEach(function(phase, pi) {
+          html += '<div class="v3-report-phase-card">';
+          html += '<div class="v3-report-phase-header">';
+          html += '<span class="v3-report-phase-num">Phase ' + (pi + 1) + '</span>';
+          html += '<span class="v3-report-phase-name">' + esc(phase.name).toUpperCase() + '</span>';
+          html += '<span class="v3-report-phase-period">' + esc(phase.period) + '</span>';
+          html += '</div>';
+          if (phase.goal) html += '<div class="v3-report-phase-goal"><strong>Goal:</strong> ' + esc(phase.goal) + '</div>';
+          if (phase.budget) html += '<div class="v3-report-phase-budget">Budget: ' + esc(phase.budget) + '</div>';
+
+          if (phase.keyStrategies && phase.keyStrategies.length) {
+            html += '<div class="v3-report-subsection-title">Key Strategies</div><ul class="v3-report-bullet-list">';
+            phase.keyStrategies.forEach(function(st) { html += '<li>' + esc(st) + '</li>'; });
+            html += '</ul>';
+          }
+          if (phase.successMetrics && phase.successMetrics.length) {
+            html += '<div class="v3-report-subsection-title">Success Metrics</div><ul class="v3-report-check-list">';
+            phase.successMetrics.forEach(function(m) { html += '<li>' + esc(m) + '</li>'; });
+            html += '</ul>';
+          }
+          if (phase.keyMilestone) {
+            html += '<div class="v3-report-milestone-badge">' + esc(phase.keyMilestone) + '</div>';
+          }
+          html += '</div>'; // phase card
+        });
+      }
+
+      // ── Section 8: Budget & Metrics ──
+      if (s.monthlyAllocation && s.monthlyAllocation.length) {
+        html += '<div class="v3-report-subsection-title">Monthly Budget Allocation</div>';
+        html += '<table class="v3-report-table"><thead><tr><th>Channel</th><th>Amount</th><th>%</th></tr></thead><tbody>';
+        s.monthlyAllocation.forEach(function(a) {
+          html += '<tr><td>' + esc(a.channel) + '</td><td><strong>' + esc(a.amount) + '</strong></td><td>' + esc(a.percentage) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      }
+      if (s.scalingRules) {
+        html += '<div class="v3-report-rules-grid">';
+        if (s.scalingRules.scaleWhen && s.scalingRules.scaleWhen.length) {
+          html += '<div class="v3-report-rule-box scale"><div class="v3-report-rule-title">Scale When</div>';
+          s.scalingRules.scaleWhen.forEach(function(r) { html += '<div class="v3-report-rule-item">' + esc(r) + '</div>'; });
+          html += '</div>';
+        }
+        if (s.scalingRules.safetyRules && s.scalingRules.safetyRules.length) {
+          html += '<div class="v3-report-rule-box safety"><div class="v3-report-rule-title">Safety Rules</div>';
+          s.scalingRules.safetyRules.forEach(function(r) { html += '<div class="v3-report-rule-item">' + esc(r) + '</div>'; });
+          html += '</div>';
+        }
+        if (s.scalingRules.pauseWhen && s.scalingRules.pauseWhen.length) {
+          html += '<div class="v3-report-rule-box pause"><div class="v3-report-rule-title">Pause When</div>';
+          s.scalingRules.pauseWhen.forEach(function(r) { html += '<div class="v3-report-rule-item">' + esc(r) + '</div>'; });
+          html += '</div>';
+        }
+        html += '</div>';
+      }
+      if (s.kpiTargets && s.kpiTargets.length) {
+        html += '<div class="v3-report-subsection-title">KPI Targets by Phase</div>';
+        html += '<table class="v3-report-table"><thead><tr><th>Metric</th><th>Months 1-2</th><th>Months 3-4</th><th>Months 5-6</th></tr></thead><tbody>';
+        s.kpiTargets.forEach(function(k) {
+          html += '<tr><td><strong>' + esc(k.metric) + '</strong></td><td>' + esc(k.month1_2) + '</td><td>' + esc(k.month3_4) + '</td><td>' + esc(k.month5_6) + '</td></tr>';
         });
         html += '</tbody></table>';
       }
 
-      if (s.timeline) {
-        html += '<div class="v3-report-timeline">';
-        s.timeline.forEach(function(phase, pi) {
-          html += '<div class="v3-report-timeline-phase">';
-          html += '<div class="v3-report-timeline-marker">' + (pi + 1) + '</div>';
-          html += '<div class="v3-report-timeline-content">';
-          html += '<div class="v3-report-timeline-name">' + esc(phase.name) + '</div>';
-          html += '<div class="v3-report-timeline-desc">' + esc(phase.description) + '</div>';
+      // ── Section 9: Next Steps ──
+      if (s.immediateActions && s.immediateActions.length) {
+        html += '<div class="v3-report-subsection-title">Immediate Actions (This Week)</div>';
+        s.immediateActions.forEach(function(a, ai) {
+          html += '<div class="v3-report-action-row">';
+          html += '<div class="v3-report-action-num">' + (ai + 1) + '</div>';
+          html += '<div class="v3-report-action-info">';
+          html += '<div class="v3-report-action-name">' + esc(a.action) + '</div>';
+          if (a.timeEstimate) html += '<div class="v3-report-action-meta">Time: ' + esc(a.timeEstimate) + '</div>';
+          if (a.whyItMatters) html += '<div class="v3-report-action-why">' + esc(a.whyItMatters) + '</div>';
           html += '</div></div>';
         });
-        html += '</div>';
+      }
+      if (s.recommendedTools && s.recommendedTools.length) {
+        html += '<div class="v3-report-subsection-title">Recommended Tools</div>';
+        html += '<table class="v3-report-table"><thead><tr><th>Category</th><th>Tool</th><th>Cost</th><th>Why</th></tr></thead><tbody>';
+        s.recommendedTools.forEach(function(t) {
+          html += '<tr><td>' + esc(t.category) + '</td><td><strong>' + esc(t.tool) + '</strong></td><td>' + esc(t.cost) + '</td><td>' + esc(t.why) + '</td></tr>';
+        });
+        html += '</tbody></table>';
       }
 
-      if (s.risks) {
-        html += '<div class="v3-report-risks">';
-        s.risks.forEach(function(r) {
-          var severityClass = (r.severity || 'medium').toLowerCase();
-          html += '<div class="v3-report-risk ' + severityClass + '">';
-          html += '<div class="v3-report-risk-label">' + esc(r.risk) + '</div>';
-          html += '<div class="v3-report-risk-mitigation">' + esc(r.mitigation) + '</div>';
-          html += '</div>';
+      // ── Fallback for legacy content types ──
+      if (s.text && !s.bigInsight && !s.marketOverview && !s.brandAnalysis) {
+        s.text.split('\n\n').forEach(function(para) {
+          html += '<p>' + esc(para) + '</p>';
+        });
+      }
+      if (s.kpis && !s.kpiTargets) {
+        html += '<div class="v3-report-kpi-row">';
+        s.kpis.forEach(function(k) {
+          html += '<div class="v3-report-kpi-chip"><span class="v3-report-kpi-chip-val">' + esc(k.value) + '</span><span class="v3-report-kpi-chip-label">' + esc(k.label) + '</span></div>';
         });
         html += '</div>';
       }
-
-      if (s.items && s.items.length) {
-        html += '<ul>';
+      if (s.items && !s.immediateActions && !s.quickWins) {
+        html += '<ul class="v3-report-bullet-list">';
         s.items.forEach(function(item) { html += '<li>' + esc(item) + '</li>'; });
         html += '</ul>';
       }
 
-      if (s.text) {
-        html += '<p>' + esc(s.text) + '</p>';
-      }
-
-      html += '</div>';
+      html += '</div>'; // section-body
+      html += '</div>'; // section-card
     });
-    html += '</div></div>'; // close layout
+    html += '</div></div>'; // close sections + layout
 
     html += '</div>'; // close v3-gtm-report
     return html;
@@ -2501,7 +2730,7 @@ var V3 = (function() {
     var d = resolveCardData(cardData);
     if (!d) return '';
     var id = nextCardId('prev');
-    var title = d.title || cardType;
+    var title = d.title || d.reportTitle || cardType;
     var html = '<div class="v3-card preview" id="' + id + '">';
     html += '<div class="v3-card-body">';
     html += '<div class="v3-preview-header">';

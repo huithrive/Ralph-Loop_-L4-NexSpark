@@ -16,12 +16,17 @@ function streamSSE(res, generator) {
     'Connection': 'keep-alive',
     'X-Accel-Buffering': 'no'
   });
+  // Ensure headers are flushed immediately
+  if (typeof res.flushHeaders === 'function') res.flushHeaders();
 
   (async function() {
     try {
       for await (var item of generator) {
+        console.log('[SSE] Sending:', item.event, JSON.stringify(item.data).substring(0, 80));
         res.write('event: ' + item.event + '\n');
         res.write('data: ' + JSON.stringify(item.data) + '\n\n');
+        // Explicitly flush to ensure SSE events reach client immediately
+        if (typeof res.flush === 'function') res.flush();
       }
     } catch (err) {
       console.error('SSE stream error:', err.message);

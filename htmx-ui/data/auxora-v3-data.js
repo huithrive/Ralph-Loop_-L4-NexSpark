@@ -813,7 +813,7 @@ var auxoraV3 = {
       allocation: [
         { type: 'Interest Audiences', pct: 50, amount: '$210/day', color: '#3B82F6', detail: 'Wagyu Enthusiasts + Health Foodies' },
         { type: 'Lookalike Audiences', pct: 25, amount: '$105/day', color: '#8B5CF6', detail: 'Gift Buyers (similar to your best customers)' },
-        { type: 'Remarketing', pct: 25, amount: '$105/day', color: '#F59E0B', detail: 'Site visitors who didn\'t buy (capped at 50%)' }
+        { type: 'Remarketing', pct: 25, amount: '$105/day', color: '#BF6744', detail: 'Site visitors who didn\'t buy (capped at 50%)' }
       ],
       rules: [
         { rule: 'Remarketing \u2264 50% of total spend', status: 'pass', detail: 'Currently 25%. Over-reliance on remarketing leads to audience exhaustion.' },
@@ -1182,133 +1182,247 @@ var auxoraV3 = {
     // ─── GTM REPORT TEMPLATE (fallback/demo) ──────────
     gtm_report_template: {
       companyName: 'YamaBushi Farms',
-      reportTitle: 'Growth Strategy Report',
+      reportTitle: 'Go-to-Market Strategy Report',
+      preparedBy: 'Auxora',
       date: 'February 2026',
-      heroKpis: [
-        { label: 'Total Addressable Market', value: '$7.2B' },
-        { label: 'Monthly Budget', value: '$13,000' },
-        { label: 'Time to Revenue', value: '48 hours' },
-        { label: 'Target ROAS', value: '4.0x' }
-      ],
-      reportSections: [
+      executiveSummary: {
+        whatItIs: 'YamaBushi Farms is the only premium A5 Japanese Wagyu brand combining authentic Japanese sourcing with a DTC-first digital strategy — positioned to capture the $7.2B premium beef market through paid acquisition.',
+        marketGap: 'Current Wagyu DTC competitors rely on broad targeting and static imagery. YamaBushi Farms can own the "authentic A5 experience" positioning through video-first creative and precision audience targeting at 40-60% lower acquisition costs.',
+        strategyPhases: [
+          { phase: 'Discovery', timeline: 'Months 1-2', focus: 'Find winning audiences & creatives', investment: '$3,250/mo', targetOutcome: 'CAC <$45, ROAS 3.0+' },
+          { phase: 'Foundation', timeline: 'Months 3-4', focus: 'Scale winners + email & SEO', investment: '$6,500/mo', targetOutcome: '3+ revenue channels' },
+          { phase: 'Scale', timeline: 'Months 5-6', focus: 'Maximize + diversify', investment: '$13,000/mo', targetOutcome: '$50K/mo revenue, CAC <$30' }
+        ],
+        keySuccessFactors: [
+          'Own the "authentic A5 Wagyu experience" positioning before competitors claim it',
+          'Lead with video-first creative: sizzle reels, unboxing, and cooking content',
+          'Target high-income food enthusiasts ready to upgrade from restaurant to at-home experiences',
+          'Build email as a profit center — 25%+ of revenue by Month 6',
+          'Geographic focus on top US metro areas before expanding nationally'
+        ]
+      },
+      sections: [
         {
-          id: 'executive-summary',
-          title: 'Executive Summary',
-          contentType: 'text',
-          text: 'YamaBushi Farms is positioned to capture significant market share in the premium A5 Japanese Wagyu DTC segment. The $7.2B premium beef market is growing at 8.3% annually, with DTC channels accounting for an increasing share as consumers seek restaurant-quality experiences at home.\n\nWith a $13,000 monthly ad budget allocated across Google and Meta, we project reaching profitability within 48 hours of launch, achieving 4.0x ROAS by Week 2, and scaling to $50,000+ monthly revenue within 90 days.'
+          id: 'growth-opportunity',
+          title: 'Your Growth Opportunity',
+          sectionNumber: 1,
+          bigInsight: {
+            quote: 'Your Competitors Are Selling Meat. You\'re Selling an Experience — And the Market Doesn\'t Know It Yet.',
+            analysis: 'Based on our analysis of YamaBushi Farms, we discovered a significant positioning gap in the $7.2B premium beef DTC market. Snake River Farms ($25-35K/mo ad spend) positions as "American Wagyu" — not authentic Japanese A5. Crowd Cow ($40-60K/mo) competes on variety and subscriptions. Holy Grail Steak Co. focuses on luxury gifting.\n\nNone of them own the "authentic A5 Japanese Wagyu experience" narrative — the story of sourcing, grading, preparation, and the culture behind the beef. This creates a window for YamaBushi Farms to capture the high-intent, premium-seeking consumer at an estimated 40-60% lower acquisition cost than competing for generic "buy wagyu online" keywords.',
+            bottomLine: 'While competitors fight for "wagyu delivery" searches ($4-6 CPC), you can own "A5 Japanese Wagyu" and "authentic Wagyu experience" keywords at $1.50-2.50 CPC — and build a brand category before anyone else claims it.'
+          }
         },
         {
-          id: 'business-profile',
-          title: 'Business Profile',
-          contentType: 'text',
-          text: 'YamaBushi Farms sells premium A5 Japanese Wagyu beef direct-to-consumer through their Shopify store. Current monthly revenue is approximately $8,000 with a 6-month goal of $50,000/month.\n\nThe brand differentiates through authentic Japanese sourcing, premium packaging, and educational content about Wagyu grades and preparation methods. Current marketing relies primarily on organic social media and word-of-mouth referrals.'
+          id: 'market-landscape',
+          title: 'Market Landscape',
+          sectionNumber: 2,
+          marketOverview: 'The premium beef DTC market has grown to an estimated $7.2B in 2025, expanding at 8.3% annually as consumers increasingly seek restaurant-quality dining experiences at home. The post-pandemic shift toward premium home cooking has created sustained demand for luxury food products sold direct-to-consumer.\n\nHowever, a critical gap exists: current Wagyu DTC brands compete primarily on product photography and discount offers. They sell cuts of meat — not the experience, culture, and story behind authentic A5 Japanese Wagyu. This creates significant differentiation opportunity for a brand that can combine premium sourcing with compelling storytelling and video-first content.',
+          keyStrategicInsight: 'YamaBushi Farms occupies a unique position — the only DTC brand with genuine Japanese A5 sourcing AND a compelling brand narrative. Competitors cluster in the "premium meat delivery" space, competing on price and selection. This positioning allows YamaBushi Farms to command premium pricing while targeting consumers who value authenticity over convenience.'
         },
         {
-          id: 'market-opportunity',
-          title: 'Market Opportunity',
-          contentType: 'kpis',
-          text: 'The premium beef market presents a strong growth opportunity for DTC brands with authentic positioning.',
-          kpis: [
-            { label: 'Market Size (TAM)', value: '$7.2B' },
-            { label: 'Annual Growth Rate', value: '8.3%' },
-            { label: 'DTC Penetration', value: '12%' },
-            { label: 'Avg Order Value', value: '$156' }
-          ]
-        },
-        {
-          id: 'competitive-landscape',
-          title: 'Competitive Landscape',
-          contentType: 'competitors',
-          text: 'Three primary competitors operate in the premium Wagyu DTC space:',
+          id: 'competitor-deep-dive',
+          title: 'Competitor Deep Dive',
+          sectionNumber: 3,
           competitors: [
-            { name: 'Snake River Farms', strengths: 'Brand recognition, photography', weaknesses: 'Limited video, broad targeting', estSpend: '$25-35K/mo' },
-            { name: 'Crowd Cow', strengths: 'High volume testing, unboxing videos', weaknesses: 'Discount dependency, high CAC', estSpend: '$40-60K/mo' },
-            { name: 'Holy Grail Steak Co.', strengths: 'Premium positioning, gift campaigns', weaknesses: 'Low frequency, Meta only', estSpend: '$10-15K/mo' }
+            {
+              name: 'Snake River Farms',
+              website: 'snakeriverfarms.com',
+              keyMetrics: { traffic: '850K monthly visitors', revenue: '$45M ARR (est.)', stage: 'Mature (Market Leader)' },
+              trafficSources: [
+                { source: 'Direct', percentage: '45%' },
+                { source: 'Organic', percentage: '30%' },
+                { source: 'Paid', percentage: '15%' },
+                { source: 'Social', percentage: '7%' },
+                { source: 'Referral', percentage: '3%' }
+              ],
+              strengths: ['Strong brand recognition in premium American Wagyu', 'Professional product photography and packaging', 'Repeat purchase engine with subscription model', 'SEO dominance on "American Wagyu" keywords'],
+              weaknesses: ['Limited video content — mostly static imagery', 'Broad audience targeting (not niche-specific)', 'No authentic Japanese A5 positioning', 'Creative refresh cycle is slow (same ads run 6+ weeks)'],
+              keyTakeaway: 'Don\'t compete on "American Wagyu." Position as the authentic Japanese A5 alternative for consumers who\'ve outgrown domestic Wagyu. Messaging: "Snake River Farms sells great beef. YamaBushi Farms brings you the real A5 experience from Japan."'
+            },
+            {
+              name: 'Crowd Cow',
+              website: 'crowdcow.com',
+              keyMetrics: { traffic: '1.2M monthly visitors', revenue: '$60M ARR (est.)', stage: 'Growth (VC-backed)' },
+              trafficSources: [
+                { source: 'Direct', percentage: '35%' },
+                { source: 'Organic', percentage: '28%' },
+                { source: 'Paid', percentage: '22%' },
+                { source: 'Social', percentage: '10%' },
+                { source: 'Referral', percentage: '5%' }
+              ],
+              strengths: ['High-volume creative testing (100+ ad variations)', 'Strong unboxing and UGC content', 'Wide product variety (craft meats, seafood, Wagyu)', 'Aggressive retargeting across channels'],
+              weaknesses: ['Discount-dependent acquisition (heavy promo codes)', 'High CAC from broad market targeting', 'No premium positioning — competes on value, not luxury', 'Subscription churn reportedly high'],
+              keyTakeaway: 'Target Crowd Cow\'s premium segment who want higher quality. Many Crowd Cow customers are "trading up" — capture them with messaging: "Ready for the real thing? A5 grade you can\'t find in any subscription box."'
+            },
+            {
+              name: 'Holy Grail Steak Co.',
+              website: 'holygrailsteak.com',
+              keyMetrics: { traffic: '180K monthly visitors', revenue: '$12M ARR (est.)', stage: 'Growth (Premium Niche)' },
+              trafficSources: [
+                { source: 'Direct', percentage: '40%' },
+                { source: 'Organic', percentage: '25%' },
+                { source: 'Paid', percentage: '20%' },
+                { source: 'Social', percentage: '10%' },
+                { source: 'Referral', percentage: '5%' }
+              ],
+              strengths: ['Strong luxury/gift positioning', 'Premium pricing accepted by audience', 'Good Meta Ads creative quality', 'Holiday campaign expertise'],
+              weaknesses: ['Narrow product focus limits repeat purchases', 'Low creative variety — same 3-4 ads rotate', 'Meta-only advertising (no Google Shopping)', 'Minimal email marketing or retention strategy'],
+              keyTakeaway: 'Holy Grail proves premium Wagyu DTC can command high prices. Compete by offering broader product range + multi-channel ads. Your edge: video content showing the A5 sourcing story that Holy Grail can\'t match.'
+            }
           ]
         },
         {
           id: 'ideal-customer-profile',
           title: 'Ideal Customer Profile',
-          contentType: 'personas',
-          personas: [
-            { name: 'The Wagyu Enthusiast', description: 'Passionate about premium beef, follows food influencers, willing to pay for quality. Household income $120K+, age 28-55.', tags: ['Foodies', 'Premium Buyers', '$120K+ Income', 'Food Instagram'] },
-            { name: 'The Gift Buyer', description: 'Looking for unique, memorable gifts for special occasions. Searches around holidays, birthdays, Father\'s Day.', tags: ['Gift Seekers', 'Seasonal', 'High AOV', 'Corporate Gifts'] },
-            { name: 'The Home Chef', description: 'Loves cooking at home, watches cooking shows, invests in quality ingredients. Sees Wagyu as the ultimate cooking challenge.', tags: ['Home Cooking', 'YouTube Foodies', 'Kitchen Gear', 'Recipe Blogs'] }
+          sectionNumber: 4,
+          primaryPersona: {
+            name: 'The Wagyu Enthusiast',
+            demographics: ['Age: 28-55', 'Location: US metro areas (NYC, LA, SF, Chicago, Miami)', 'Household income: $120K+', 'Occupation: Professional, executive, entrepreneur', 'Education: College-educated, food-culture aware'],
+            psychographics: ['Values authenticity, sourcing story, and craft over convenience', 'Pain points: Can\'t find real A5 Wagyu locally, tired of "American Wagyu" substitutes', 'Aspiration: Restaurant-quality A5 experience at home, impressing dinner guests'],
+            onlineBehavior: ['Platforms: Instagram (food accounts), YouTube (cooking channels), Reddit (r/steak, r/wagyu)', 'Search terms: "A5 Wagyu delivery," "real Japanese Wagyu online," "Wagyu grade comparison"', 'Content consumption: Food YouTube, cooking podcasts, premium lifestyle blogs'],
+            triggerEvent: 'Tries A5 Wagyu at a high-end restaurant, wants to recreate the experience at home — Googles "buy A5 Wagyu online" and finds mostly American Wagyu or unclear sourcing.'
+          },
+          secondaryICPs: [
+            { persona: 'The Premium Gift Buyer', keyDifference: 'Searches around holidays/occasions; values presentation and gifting experience', testPriority: 'High' },
+            { persona: 'The Home Chef', keyDifference: 'Cooking hobbyist seeking premium ingredients; watches cooking content', testPriority: 'High' },
+            { persona: 'The Corporate Entertainer', keyDifference: 'Buys premium food for client entertainment, team events; bulk orders', testPriority: 'Medium' },
+            { persona: 'The Health-Conscious Foodie', keyDifference: 'Values grass-fed, clean sourcing; willing to pay premium for quality', testPriority: 'Medium' }
+          ],
+          validationPlan: [
+            'Audience Test A: Target food enthusiasts who follow Wagyu/steak accounts — test "authentic A5 experience" messaging',
+            'Audience Test B: Target gift buyers around Valentine\'s/Father\'s Day — test "the ultimate gift" messaging',
+            'Audience Test C: Target home cooking enthusiasts (MasterClass, cooking YouTube) — test "cook like a Michelin chef" messaging',
+            'Success Metric: Winning audience achieves CTR >2.5% and purchase conversion >3%'
           ]
         },
         {
-          id: 'budget-strategy',
-          title: 'Budget Strategy',
-          contentType: 'text',
-          text: 'Monthly budget of $13,000 allocated in three phases:\n\n**Phase 1 — Test (Days 1-10):** $3,900 (30%)\nBroad testing across audiences and creatives. Goal: identify winning combinations.\n\n**Phase 2 — Optimize (Days 11-25):** $6,240 (48%)\nDouble down on winners, pause underperformers. Goal: achieve 3.0x+ ROAS.\n\n**Phase 3 — Scale (Days 26-31):** $2,860 (22%)\nMaximize returns from proven campaigns. Goal: establish sustainable growth.'
-        },
-        {
-          id: 'platform-strategy',
-          title: 'Platform Strategy',
-          contentType: 'text',
-          text: '**Google Ads (70% — $9,100/mo):**\nGoogle Shopping for product discovery, Search for high-intent buyers ("buy wagyu online"), Performance Max for cross-channel reach. Expected ROAS: 4-6x.\n\n**Meta Ads (30% — $3,900/mo):**\nVideo-first creative for awareness, retargeting for conversions, Lookalike audiences from existing customers. Expected ROAS: 2.5-4x.\n\nGoogle gets the majority allocation because high-intent search drives the most efficient conversions for premium food products.'
-        },
-        {
-          id: 'content-creative-strategy',
-          title: 'Content & Creative Strategy',
-          contentType: 'items',
-          items: [
-            'Video-first approach: 60% video, 40% static — video drives 2.3x higher engagement for food products',
-            'Hero creative: "Sizzle Reel" — 15-second cooking video showcasing the marbling and sear',
-            'Unboxing experience video — premium packaging creates shareable moments',
-            'Lifestyle scenes — dinner party, date night, family BBQ settings',
-            'UGC testimonial clips from real customers',
-            'Product photography with close-up marbling detail for Shopping ads',
-            'Seasonal campaigns: Valentine\'s, Father\'s Day, Holiday Gift Guides'
+          id: 'geographic-opportunity',
+          title: 'Geographic Opportunity',
+          sectionNumber: 5,
+          marketTiers: [
+            { tier: 'Tier 1', label: 'Premium Metro Markets', markets: ['New York Metro', 'Los Angeles', 'San Francisco / Bay Area', 'Chicago'] },
+            { tier: 'Tier 2', label: 'High-Income Secondary Markets', markets: ['Miami', 'Seattle', 'Boston', 'Dallas / Houston'] },
+            { tier: 'Tier 3', label: 'Test Markets', markets: ['Atlanta', 'Denver', 'Washington DC', 'Austin'] }
+          ],
+          costComparison: [
+            { market: 'New York', cpc: '$3.50', cpm: '$15.00', language: 'English', recommendation: 'Priority 1 — Highest density of food enthusiasts' },
+            { market: 'Los Angeles', cpc: '$3.20', cpm: '$14.00', language: 'English', recommendation: 'Priority 1 — Strong foodie culture' },
+            { market: 'San Francisco', cpc: '$3.80', cpm: '$16.00', language: 'English', recommendation: 'Priority 1 — Highest income, premium buyers' },
+            { market: 'Chicago', cpc: '$2.50', cpm: '$11.00', language: 'English', recommendation: 'Priority 1 — Lower cost, high steak culture' },
+            { market: 'Miami', cpc: '$2.80', cpm: '$12.00', language: 'English/Spanish', recommendation: 'Priority 2 — Luxury market' },
+            { market: 'Seattle', cpc: '$2.60', cpm: '$11.50', language: 'English', recommendation: 'Priority 2 — Tech income, food-forward' },
+            { market: 'Atlanta', cpc: '$1.80', cpm: '$8.00', language: 'English', recommendation: 'Priority 3 — Test market, lower CPC' },
+            { market: 'Denver', cpc: '$2.00', cpm: '$9.00', language: 'English', recommendation: 'Priority 3 — Outdoor/quality lifestyle' }
+          ],
+          launchStrategy: [
+            'Months 1-2: Focus on Tier 1 metros (NYC, LA, SF, Chicago) — validate creative and audience with highest-value customers',
+            'Months 3-4: Expand to Tier 2 markets with proven creative — maintain CPC benchmarks',
+            'Months 5-6: Test Tier 3 markets for efficient scale — compare against national campaigns'
           ]
         },
         {
-          id: 'success-metrics',
-          title: 'Success Metrics & KPIs',
-          contentType: 'kpis',
-          kpis: [
-            { label: 'Target ROAS', value: '4.0x by Week 4' },
-            { label: 'Customer Acquisition Cost', value: 'Under $45' },
-            { label: 'Click-Through Rate', value: '2.5%+ average' },
-            { label: 'Conversion Rate', value: '3.0%+ from ads' },
-            { label: 'Monthly Revenue from Ads', value: '$50,000 by Month 3' },
-            { label: 'Repeat Purchase Rate', value: '25%+ by Month 2' }
+          id: 'seo-keyword-opportunity',
+          title: 'SEO & Keyword Opportunity',
+          sectionNumber: 6,
+          brandAnalysis: 'YamaBushi Farms currently ranks Position 1 for branded search. No competitor ads on brand terms (monitor weekly as you scale). Brand search volume is low — growth opportunity through category keyword ownership.',
+          categoryKeywords: [
+            { keyword: 'A5 Wagyu delivery', monthlySearches: '4,400', cpc: '$2.20', competition: 'Medium', priority: 'HIGH — Core category' },
+            { keyword: 'buy Japanese Wagyu online', monthlySearches: '2,900', cpc: '$1.80', competition: 'Low', priority: 'HIGH — Own this' },
+            { keyword: 'authentic A5 Wagyu', monthlySearches: '1,600', cpc: '$1.50', competition: 'Low', priority: 'HIGH — Brand positioning' },
+            { keyword: 'Wagyu beef subscription', monthlySearches: '3,200', cpc: '$3.10', competition: 'High', priority: 'Medium' },
+            { keyword: 'best Wagyu delivery service', monthlySearches: '5,800', cpc: '$3.50', competition: 'High', priority: 'Medium' },
+            { keyword: 'Wagyu gift box', monthlySearches: '2,100', cpc: '$2.40', competition: 'Medium', priority: 'Medium — Seasonal' },
+            { keyword: 'A5 Wagyu vs American Wagyu', monthlySearches: '3,600', cpc: '$0.80', competition: 'Low', priority: 'HIGH — Education play' }
+          ],
+          contentGaps: [
+            { topic: 'A5 Wagyu grading explained', competitorRanking: 'No dominant', difficulty: 'Easy', contentType: 'Ultimate Guide' },
+            { topic: 'How to cook A5 Wagyu at home', competitorRanking: 'YouTube #3-5', difficulty: 'Medium', contentType: 'Video + Guide' },
+            { topic: 'Wagyu delivery comparison', competitorRanking: 'Crowd Cow #2', difficulty: 'Medium', contentType: 'Comparison Article' },
+            { topic: 'Japanese Wagyu sourcing regions', competitorRanking: 'None ranking', difficulty: 'Easy', contentType: 'Thought Leadership' },
+            { topic: 'Best gifts for steak lovers', competitorRanking: 'Various #3-8', difficulty: 'Hard', contentType: 'Gift Guide (seasonal)' }
+          ],
+          quickWins: [
+            'CREATE an "A5 Wagyu Guide" pillar page — define the category, target long-tail keywords, estimated 3,000+ monthly visits in 6 months',
+            'PUBLISH 3 comparison articles: "YamaBushi vs Snake River Farms," "Japanese A5 vs American Wagyu," "Best Wagyu Delivery 2026"',
+            'OPTIMIZE product pages for "buy A5 Wagyu online" + "authentic Japanese Wagyu delivery" — add to meta titles, H1s, descriptions'
           ]
         },
         {
-          id: 'risk-assessment',
-          title: 'Risk Assessment',
-          contentType: 'risks',
-          risks: [
-            { level: 'medium', risk: 'High CAC during learning phase', mitigation: 'Start with smaller test budgets, scale only proven audiences' },
-            { level: 'low', risk: 'Seasonal demand fluctuation', mitigation: 'Gift-focused campaigns during holidays, subscription push in off-season' },
-            { level: 'medium', risk: 'Creative fatigue after 3-4 weeks', mitigation: 'Rotate 6+ creative variants, refresh top performers biweekly' },
-            { level: 'high', risk: 'Supply chain constraints if demand spikes', mitigation: 'Coordinate with operations team, set daily spend caps aligned with inventory' },
-            { level: 'low', risk: 'Competitor price undercutting', mitigation: 'Differentiate on quality and authenticity, avoid price wars' }
-          ]
-        },
-        {
-          id: 'ninety-day-roadmap',
-          title: '90-Day Roadmap',
-          contentType: 'timeline',
+          id: 'growth-roadmap',
+          title: 'Six-Month Growth Roadmap',
+          sectionNumber: 7,
           phases: [
-            { name: 'Foundation', period: 'Days 1-14', description: 'Launch campaigns, complete learning phase, identify winning audiences and creatives. Target: first sales within 48 hours.' },
-            { name: 'Growth', period: 'Days 15-45', description: 'Scale winning campaigns, add retargeting, launch email capture. Target: $25K/month revenue, 3.0x+ ROAS.' },
-            { name: 'Scale', period: 'Days 46-90', description: 'Increase budgets on proven channels, add TikTok, launch referral program. Target: $50K/month revenue, 4.0x+ ROAS.' }
+            {
+              name: 'Discovery',
+              period: 'Months 1-2',
+              goal: 'Find winning audience + creative combination',
+              budget: '$3,250/month',
+              keyStrategies: ['Launch Google Shopping + Search campaigns targeting A5-specific keywords', 'Test 4 Meta audience segments with video-first creative', 'A/B test "authentic experience" vs "premium quality" vs "gift-worthy" messaging', 'Set up retargeting for site visitors and abandoned carts'],
+              successMetrics: ['Identify top-performing audience (CTR > 2.5%)', 'Find winning creative direction (3+ ads with >2% CTR)', 'Achieve CAC under $45 for first-time purchases', 'Generate 50+ customers in Month 1', 'Document learnings for Phase 2 scale'],
+              keyMilestone: 'Validated customer profile with repeatable acquisition path'
+            },
+            {
+              name: 'Foundation',
+              period: 'Months 3-4',
+              goal: 'Build sustainable multi-channel revenue',
+              budget: '$6,500/month',
+              keyStrategies: ['Scale winning Google campaigns by 30% monthly', 'Launch email welcome sequence + abandoned cart recovery', 'Publish SEO pillar content targeting A5 Wagyu keywords', 'Expand Meta Ads to Tier 2 markets'],
+              successMetrics: ['Email list: 1,000+ subscribers', 'Email-attributed revenue: 15% of total', 'Organic traffic: 50% month-over-month growth', 'Paid ROAS: 4.0+ (improved from Phase 1)', 'Revenue: $25,000+/month'],
+              keyMilestone: 'Revenue from 3+ channels — no longer dependent on single source'
+            },
+            {
+              name: 'Scale',
+              period: 'Months 5-6',
+              goal: 'Hit $50K/month revenue target',
+              budget: '$13,000/month',
+              keyStrategies: ['Scale proven campaigns to full budget allocation', 'Add TikTok Ads with video-first content repurposing', 'Launch referral program for existing customers', 'Test influencer partnerships (food content creators)'],
+              successMetrics: ['Monthly revenue: $50,000+', 'Blended CAC: $30 (improved from Phase 2)', 'Channel mix: No single channel > 50% of revenue', 'Email list: 3,000+ subscribers', 'Repeat purchase rate: 25%+', 'Monthly recurring subscribers: 50+'],
+              keyMilestone: 'Sustainable growth engine with diversified channels at target revenue'
+            }
+          ]
+        },
+        {
+          id: 'budget-metrics',
+          title: 'Budget & Metrics Framework',
+          sectionNumber: 8,
+          monthlyAllocation: [
+            { channel: 'Google Ads (Search + Shopping)', amount: '$9,100', percentage: '70%' },
+            { channel: 'Meta Ads (FB + IG)', amount: '$2,600', percentage: '20%' },
+            { channel: 'Creative Production', amount: '$650', percentage: '5%' },
+            { channel: 'Tools & Software', amount: '$650', percentage: '5%' }
+          ],
+          scalingRules: {
+            scaleWhen: ['ROAS exceeds 3.0 for 2 consecutive weeks', 'CAC is below $45 target', 'Creative fatigue not present (CTR stable)'],
+            safetyRules: ['Never increase weekly spend by more than 30% at once', 'Start Phase 1 at $3,250/mo, scale gradually through phases', 'Pause campaigns if ROAS drops below 2.0 for 1 week'],
+            pauseWhen: ['ROAS below 2.0 for 7+ days', 'CAC exceeds $60', 'No winning creative after 10+ ad variations tested']
+          },
+          kpiTargets: [
+            { metric: 'ROAS', month1_2: '3.0', month3_4: '4.0', month5_6: '5.0+' },
+            { metric: 'CAC', month1_2: '$45', month3_4: '$35', month5_6: '$30' },
+            { metric: 'Monthly Revenue', month1_2: '$15,000', month3_4: '$30,000', month5_6: '$50,000' },
+            { metric: 'Customers/Month', month1_2: '50', month3_4: '120', month5_6: '200+' },
+            { metric: 'Email List', month1_2: '500', month3_4: '1,500', month5_6: '3,000' },
+            { metric: 'Repeat Purchase Rate', month1_2: '10%', month3_4: '18%', month5_6: '25%' },
+            { metric: 'Organic Traffic', month1_2: '500', month3_4: '1,500', month5_6: '4,000' }
           ]
         },
         {
           id: 'next-steps',
-          title: 'Summary & Next Steps',
-          contentType: 'items',
-          items: [
-            'Connect your Shopify store for product catalog sync',
-            'Link Meta Business Manager for Facebook/Instagram campaigns',
-            'Set up Google Ads account with Merchant Center',
-            'Install tracking pixels (Meta Pixel + Google Tags) on your store',
-            'Provide 3-5 high-quality product photos and any existing video content',
-            'Review and approve campaign structure and audience targeting',
-            'Launch campaigns — expected first sale within 48 hours'
+          title: 'Next Steps & Resources',
+          sectionNumber: 9,
+          immediateActions: [
+            { action: 'Connect Shopify store for product catalog sync', timeEstimate: '30 minutes', whyItMatters: 'Foundation for all campaign automation' },
+            { action: 'Link Meta Business Manager + install Pixel', timeEstimate: '1 hour', whyItMatters: 'Required for Facebook/Instagram ad campaigns' },
+            { action: 'Set up Google Ads with Merchant Center', timeEstimate: '1 hour', whyItMatters: 'Enables Shopping + Search campaigns for high-intent buyers' },
+            { action: 'Provide 3-5 sizzle/cooking video clips (15-30 sec)', timeEstimate: '2 hours', whyItMatters: 'Video outperforms static 2.3x for food products' },
+            { action: 'Review and approve audience targeting + campaign structure', timeEstimate: '30 minutes', whyItMatters: 'Ensures campaigns align with brand positioning' }
+          ],
+          recommendedTools: [
+            { category: 'Email', tool: 'Klaviyo', cost: '$45/mo', why: 'Built for e-commerce; best Shopify integration' },
+            { category: 'Analytics', tool: 'Triple Whale', cost: '$129/mo', why: 'Cross-platform attribution for DTC brands' },
+            { category: 'SEO', tool: 'Ahrefs Lite', cost: '$99/mo', why: 'Keyword research + competitor tracking' },
+            { category: 'Creative', tool: 'Canva Pro', cost: '$15/mo', why: 'Quick ad creative iterations and templates' },
+            { category: 'Reviews', tool: 'Judge.me', cost: '$15/mo', why: 'Product reviews and UGC collection for social proof' }
           ]
         }
       ]
@@ -1470,7 +1584,7 @@ var auxoraV3 = {
       allocation: [
         { type: 'Interest', pct: 50, amount: 210, color: '#3B82F6' },
         { type: 'Lookalike', pct: 25, amount: 105, color: '#8B5CF6' },
-        { type: 'Remarketing', pct: 25, amount: 105, color: '#F59E0B' }
+        { type: 'Remarketing', pct: 25, amount: 105, color: '#BF6744' }
       ],
       remarkCap: { max: 50, current: 25, status: 'healthy' }
     },

@@ -63,7 +63,7 @@ function buildDiscoveryPrompt(session) {
 
   if (!collectedList) collectedList = 'Nothing yet';
 
-  return 'You are Auxora, an AI growth partner for D2C brands. You help brands grow through paid advertising on Meta and Google.\n\n' +
+  return 'You are Auxora, the world\'s first Vibe Business Agent for D2C brands. You deliver end-to-end revenue — strategy, landing page, ads, email, SEO — fully automated in 24 hours. You\'re AI-native and outcome-aligned: you don\'t take your cut until the ROAS proves the model is working.\n\n' +
     'You\'re having a conversation to learn about the user\'s business. Collect these 5 data points:\n' +
     '- Website URL\n' +
     '- What they sell / industry\n' +
@@ -97,7 +97,7 @@ function buildStrategyPrompt(session) {
     sectionTitles = session.report.sections.map(function(s) { return s.title; }).join(', ');
   }
 
-  return 'You are Auxora, an AI growth partner. The user has completed onboarding and you\'ve generated their GTM strategy report.\n\n' +
+  return 'You are Auxora, the world\'s first Vibe Business Agent for D2C brands. The user has completed onboarding and you\'ve generated their GTM strategy report.\n\n' +
     'BUSINESS DATA:\n' +
     '- Website: ' + (d.website || 'N/A') + '\n' +
     '- Product: ' + (d.product || 'N/A') + '\n' +
@@ -119,45 +119,153 @@ function buildStrategyPrompt(session) {
     'Respond ONLY with the JSON array. No markdown, no explanation.';
 }
 
-var REPORT_PROMPT = 'Generate a comprehensive GTM growth strategy report as JSON matching this EXACT schema:\n' +
+var REPORT_PROMPT = 'Generate a comprehensive Go-to-Market Strategy Report as JSON matching this EXACT schema.\n' +
+  'This is a professional consulting-grade report (McKinsey-style) with 9 detailed sections + executive summary.\n\n' +
   '{\n' +
   '  "companyName": "string",\n' +
-  '  "reportTitle": "Growth Strategy Report",\n' +
+  '  "reportTitle": "Go-to-Market Strategy Report",\n' +
+  '  "preparedBy": "Auxora",\n' +
   '  "date": "string (e.g. February 2026)",\n' +
-  '  "heroKpis": [\n' +
-  '    { "label": "string", "value": "string" }\n' +
-  '  ],\n' +
-  '  "reportSections": [\n' +
+  '  "executiveSummary": {\n' +
+  '    "whatItIs": "string — 1-2 sentence description of the company and its unique positioning",\n' +
+  '    "marketGap": "string — the strategic opportunity the company can capture",\n' +
+  '    "strategyPhases": [\n' +
+  '      { "phase": "Discovery|Foundation|Scale", "timeline": "Months X-Y", "focus": "string", "investment": "$X,XXX/mo", "targetOutcome": "string" }\n' +
+  '    ],\n' +
+  '    "keySuccessFactors": ["string — 5 bullet points"]\n' +
+  '  },\n' +
+  '  "sections": [\n' +
   '    {\n' +
-  '      "id": "string (kebab-case)",\n' +
-  '      "title": "string",\n' +
-  '      "contentType": "text|kpis|competitors|personas|timeline|risks|items",\n' +
-  '      "text": "string (markdown-like, for text sections)",\n' +
-  '      "kpis": [{ "label": "string", "value": "string" }],\n' +
-  '      "competitors": [{ "name": "string", "strengths": "string", "weaknesses": "string", "estSpend": "string" }],\n' +
-  '      "personas": [{ "name": "string", "description": "string", "tags": ["string"] }],\n' +
-  '      "phases": [{ "name": "string", "period": "string", "description": "string" }],\n' +
-  '      "risks": [{ "level": "high|medium|low", "risk": "string", "mitigation": "string" }],\n' +
-  '      "items": ["string"]\n' +
+  '      "id": "growth-opportunity",\n' +
+  '      "title": "Your Growth Opportunity",\n' +
+  '      "sectionNumber": 1,\n' +
+  '      "bigInsight": {\n' +
+  '        "quote": "string — bold, attention-grabbing 1-liner insight in quotes",\n' +
+  '        "analysis": "string — 2-3 paragraphs of market analysis with specific numbers",\n' +
+  '        "bottomLine": "string — What this means for you: actionable takeaway"\n' +
+  '      }\n' +
+  '    },\n' +
+  '    {\n' +
+  '      "id": "market-landscape",\n' +
+  '      "title": "Market Landscape",\n' +
+  '      "sectionNumber": 2,\n' +
+  '      "marketOverview": "string — 2 paragraphs about market size, growth, key dynamics",\n' +
+  '      "keyStrategicInsight": "string — the strategic positioning opportunity"\n' +
+  '    },\n' +
+  '    {\n' +
+  '      "id": "competitor-deep-dive",\n' +
+  '      "title": "Competitor Deep Dive",\n' +
+  '      "sectionNumber": 3,\n' +
+  '      "competitors": [\n' +
+  '        {\n' +
+  '          "name": "string",\n' +
+  '          "website": "string",\n' +
+  '          "keyMetrics": { "traffic": "string", "revenue": "string", "stage": "string" },\n' +
+  '          "trafficSources": [{ "source": "Direct|Organic|Paid|Social|Referral", "percentage": "string" }],\n' +
+  '          "strengths": ["string"],\n' +
+  '          "weaknesses": ["string"],\n' +
+  '          "keyTakeaway": "string — actionable insight about how to position against this competitor"\n' +
+  '        }\n' +
+  '      ]\n' +
+  '    },\n' +
+  '    {\n' +
+  '      "id": "ideal-customer-profile",\n' +
+  '      "title": "Ideal Customer Profile",\n' +
+  '      "sectionNumber": 4,\n' +
+  '      "primaryPersona": {\n' +
+  '        "name": "string — archetype name in quotes (e.g. The Overwhelmed Creative)",\n' +
+  '        "demographics": ["string — 4-5 bullet points"],\n' +
+  '        "psychographics": ["string — 3-4 bullet points"],\n' +
+  '        "onlineBehavior": ["string — 3-4 bullet points"],\n' +
+  '        "triggerEvent": "string — what makes them search for a solution"\n' +
+  '      },\n' +
+  '      "secondaryICPs": [\n' +
+  '        { "persona": "string", "keyDifference": "string", "testPriority": "High|Medium|Low" }\n' +
+  '      ],\n' +
+  '      "validationPlan": ["string — 3-4 audience test descriptions"]\n' +
+  '    },\n' +
+  '    {\n' +
+  '      "id": "geographic-opportunity",\n' +
+  '      "title": "Geographic Opportunity",\n' +
+  '      "sectionNumber": 5,\n' +
+  '      "marketTiers": [\n' +
+  '        { "tier": "Tier 1|Tier 2|Tier 3", "label": "string (e.g. Premium Markets)", "markets": ["string"] }\n' +
+  '      ],\n' +
+  '      "costComparison": [\n' +
+  '        { "market": "string", "cpc": "string", "cpm": "string", "language": "string", "recommendation": "string" }\n' +
+  '      ],\n' +
+  '      "launchStrategy": ["string — phased geographic launch plan"]\n' +
+  '    },\n' +
+  '    {\n' +
+  '      "id": "seo-keyword-opportunity",\n' +
+  '      "title": "SEO & Keyword Opportunity",\n' +
+  '      "sectionNumber": 6,\n' +
+  '      "brandAnalysis": "string — current brand search position",\n' +
+  '      "categoryKeywords": [\n' +
+  '        { "keyword": "string", "monthlySearches": "string", "cpc": "string", "competition": "Low|Medium|High", "priority": "string" }\n' +
+  '      ],\n' +
+  '      "contentGaps": [\n' +
+  '        { "topic": "string", "competitorRanking": "string", "difficulty": "Easy|Medium|Hard", "contentType": "string" }\n' +
+  '      ],\n' +
+  '      "quickWins": ["string — 3 immediate SEO actions"]\n' +
+  '    },\n' +
+  '    {\n' +
+  '      "id": "growth-roadmap",\n' +
+  '      "title": "Six-Month Growth Roadmap",\n' +
+  '      "sectionNumber": 7,\n' +
+  '      "phases": [\n' +
+  '        {\n' +
+  '          "name": "Discovery|Foundation|Scale",\n' +
+  '          "period": "Months X-Y",\n' +
+  '          "goal": "string",\n' +
+  '          "budget": "string",\n' +
+  '          "keyStrategies": ["string — 3-4 strategy bullet points"],\n' +
+  '          "successMetrics": ["string — 4-6 measurable targets"],\n' +
+  '          "keyMilestone": "string"\n' +
+  '        }\n' +
+  '      ]\n' +
+  '    },\n' +
+  '    {\n' +
+  '      "id": "budget-metrics",\n' +
+  '      "title": "Budget & Metrics Framework",\n' +
+  '      "sectionNumber": 8,\n' +
+  '      "monthlyAllocation": [\n' +
+  '        { "channel": "string", "amount": "string", "percentage": "string" }\n' +
+  '      ],\n' +
+  '      "scalingRules": {\n' +
+  '        "scaleWhen": ["string"],\n' +
+  '        "safetyRules": ["string"],\n' +
+  '        "pauseWhen": ["string"]\n' +
+  '      },\n' +
+  '      "kpiTargets": [\n' +
+  '        { "metric": "string", "month1_2": "string", "month3_4": "string", "month5_6": "string" }\n' +
+  '      ]\n' +
+  '    },\n' +
+  '    {\n' +
+  '      "id": "next-steps",\n' +
+  '      "title": "Next Steps & Resources",\n' +
+  '      "sectionNumber": 9,\n' +
+  '      "immediateActions": [\n' +
+  '        { "action": "string", "timeEstimate": "string", "whyItMatters": "string" }\n' +
+  '      ],\n' +
+  '      "recommendedTools": [\n' +
+  '        { "category": "string", "tool": "string", "cost": "string", "why": "string" }\n' +
+  '      ]\n' +
   '    }\n' +
   '  ]\n' +
   '}\n\n' +
-  'REQUIRED SECTIONS (12 sections in this order):\n' +
-  '1. executive-summary (contentType: "text") — 2-3 paragraph overview with key takeaways\n' +
-  '2. business-profile (contentType: "text") — company overview, products, current channels\n' +
-  '3. market-opportunity (contentType: "kpis") — TAM, growth rate, market positioning. Include kpis array with 4 market metrics.\n' +
-  '4. competitive-landscape (contentType: "competitors") — top 3 competitors with strengths, weaknesses, est monthly ad spend\n' +
-  '5. ideal-customer-profile (contentType: "personas") — 3 persona cards with name, description, demographic/interest tags\n' +
-  '6. budget-strategy (contentType: "text") — allocation breakdown, monthly projection, phased spending approach\n' +
-  '7. platform-strategy (contentType: "text") — channel selection rationale (Google, Meta, etc.), expected performance per channel\n' +
-  '8. content-creative-strategy (contentType: "items") — creative categories, content types, messaging themes as bullet items\n' +
-  '9. success-metrics (contentType: "kpis") — 4-6 KPI definitions with target values in kpis array\n' +
-  '10. risk-assessment (contentType: "risks") — 4-5 risks with severity level and mitigation strategies\n' +
-  '11. ninety-day-roadmap (contentType: "timeline") — 3 phases (Foundation/Growth/Scale) with period and description in phases array\n' +
-  '12. next-steps (contentType: "items") — 5-7 concrete action items as bullet items array\n\n' +
-  'heroKpis should have exactly 4 items: TAM, Monthly Budget, Timeline to Revenue, Target ROAS.\n' +
-  'Use realistic, specific numbers based on the business data. Be data-driven and actionable.\n' +
-  'Respond ONLY with the JSON object. No markdown, no code fences, no explanation.';
+  'RULES:\n' +
+  '- Generate ALL 9 sections in the "sections" array, in order (sectionNumber 1-9)\n' +
+  '- executiveSummary must have exactly 3 strategyPhases and 5 keySuccessFactors\n' +
+  '- Section 3 (competitors): exactly 3 competitors, each with 3 strengths and 3 weaknesses\n' +
+  '- Section 4 (ICP): 1 primary persona and 3 secondary ICPs\n' +
+  '- Section 5 (geo): 3 market tiers with 3-4 markets each, plus 4 rows in costComparison\n' +
+  '- Section 6 (SEO): 4 category keywords, 2 content gaps, 3 quick wins\n' +
+  '- Section 7 (roadmap): exactly 3 phases (Discovery/Foundation/Scale) with 3 strategies and 3 metrics each\n' +
+  '- Section 8 (budget): 4 channels in allocation, 4 KPI rows\n' +
+  '- Section 9 (next steps): 5 immediate actions, 4 recommended tools\n' +
+  '- Keep text fields concise (1-2 sentences max for analysis). Use realistic numbers.\n' +
+  '- Respond ONLY with the JSON object. No markdown, no code fences, no explanation.';
 
 // ─── CLAUDE CALLS ──────────────────────────────────
 
@@ -334,18 +442,33 @@ async function* processMessage(sessionId, userText) {
         ]
       } };
 
-      // Agent transparency: show what we're doing (enhanced for 12-section report)
-      yield { event: 'agent_action', data: { id: 'rpt1', text: 'Analyzing market size and opportunity...', duration: 2500 } };
-      yield { event: 'agent_action', data: { id: 'rpt2', text: 'Profiling top competitors...', duration: 3000 } };
-      yield { event: 'agent_action', data: { id: 'rpt3', text: 'Building ideal customer personas...', duration: 2000 } };
-      yield { event: 'agent_action', data: { id: 'rpt4', text: 'Designing budget allocation model...', duration: 2500 } };
-      yield { event: 'agent_action', data: { id: 'rpt5', text: 'Selecting advertising platforms...', duration: 2000 } };
-      yield { event: 'agent_action', data: { id: 'rpt6', text: 'Planning creative strategy...', duration: 2000 } };
-      yield { event: 'agent_action', data: { id: 'rpt7', text: 'Assessing risks and building roadmap...', duration: 2500 } };
-      yield { event: 'agent_action', data: { id: 'rpt8', text: 'Compiling 12-section growth report...', duration: 3000 } };
+      // Agent transparency: show what we're doing (9-section Lovart framework)
+      yield { event: 'agent_action', data: { id: 'rpt1', text: 'Identifying growth opportunity...', duration: 2500 } };
+      yield { event: 'agent_action', data: { id: 'rpt2', text: 'Mapping competitive landscape...', duration: 3000 } };
+      yield { event: 'agent_action', data: { id: 'rpt3', text: 'Deep-diving competitor strategies...', duration: 2500 } };
+      yield { event: 'agent_action', data: { id: 'rpt4', text: 'Building ideal customer profile...', duration: 2000 } };
+      yield { event: 'agent_action', data: { id: 'rpt5', text: 'Analyzing geographic opportunities...', duration: 2000 } };
+      yield { event: 'agent_action', data: { id: 'rpt6', text: 'Researching SEO & keyword gaps...', duration: 2500 } };
+      yield { event: 'agent_action', data: { id: 'rpt7', text: 'Constructing 6-month growth roadmap...', duration: 2500 } };
+      yield { event: 'agent_action', data: { id: 'rpt8', text: 'Compiling consulting-grade GTM report...', duration: 3000 } };
 
-      // Generate report
-      var report = await generateReport(session);
+      // Generate report (with keepalive heartbeats to prevent browser timeout)
+      var reportResult = null;
+      var reportDone = false;
+      var reportErr = null;
+      generateReport(session).then(function(r) {
+        reportResult = r;
+        reportDone = true;
+      }).catch(function(e) {
+        reportErr = e;
+        reportDone = true;
+      });
+      while (!reportDone) {
+        yield { event: 'keepalive', data: { status: 'generating' } };
+        await sleep(3000);
+      }
+      var report = reportResult;
+      if (reportErr) console.error('Report generation error:', reportErr.message);
       session.report = report;
       session.stage = 'strategy';
 
@@ -364,7 +487,7 @@ async function* processMessage(sessionId, userText) {
           ]
         } } };
 
-        yield { event: 'message', data: { type: 'text', sender: 'auxora', text: 'Your comprehensive growth strategy is ready! I\'ve analyzed your market, competitors, and audiences across 12 detailed sections.' } };
+        yield { event: 'message', data: { type: 'text', sender: 'auxora', text: 'Your Go-to-Market Strategy Report is ready — 9 sections of consulting-grade analysis covering your growth opportunity, competitors, customers, and a full 6-month roadmap.' } };
 
         yield { event: 'card', data: { type: 'card', sender: 'auxora', cardType: 'gtm-report', cardData: report } };
 
@@ -1254,15 +1377,15 @@ async function* getGreeting(sessionId) {
   // Use Claude for the greeting too
   try {
     var systemPrompt = buildDiscoveryPrompt(session);
-    var messages = [{ role: 'user', content: 'Hi, I just arrived. Please greet me and ask your first question to learn about my business.' }];
+    var messages = [{ role: 'user', content: 'Hi, I just arrived. Greet me briefly — introduce yourself as Auxora, the world\'s first Vibe Business Agent that delivers end-to-end revenue for D2C brands. Mention that what takes an agency 30 days and $12,000, you do in 1 day for $200. Then ask your first question to learn about my business.' }];
 
     var response = await callClaude(systemPrompt, messages);
     var entries = parseClaudeResponse(response);
 
     if (!entries || !Array.isArray(entries)) {
       // Fallback greeting
-      yield { event: 'message', data: { type: 'text', sender: 'auxora', text: 'Hi! I\'m Auxora, your AI growth partner. I help D2C brands grow revenue through paid advertising on Meta and Google.' } };
-      yield { event: 'message', data: { type: 'text', sender: 'auxora', text: 'Let me learn about your business to create a personalized growth strategy.' } };
+      yield { event: 'message', data: { type: 'text', sender: 'auxora', text: 'Hey! I\'m Auxora — the world\'s first Vibe Business Agent for D2C brands. What takes an agency 30 days & $12,000, I do in 1 day for $200.' } };
+      yield { event: 'message', data: { type: 'text', sender: 'auxora', text: 'Strategy, landing page, ads, email, SEO — fully automated and live in 24 hours. Let\'s get you there.' } };
       yield { event: 'card', data: { type: 'card', sender: 'auxora', cardType: 'question', cardData: { question: 'What\'s your website URL?', inputType: 'text', placeholder: 'e.g. mybrand.com' } } };
       yield { event: 'done', data: {} };
       return;
@@ -1282,7 +1405,7 @@ async function* getGreeting(sessionId) {
     }
 
     // Store in session history (the hidden user prompt + assistant response)
-    session.messages.push({ role: 'user', content: 'Hi, I just arrived. Please greet me and ask your first question to learn about my business.' });
+    session.messages.push({ role: 'user', content: 'Hi, I just arrived. Greet me briefly — introduce yourself as Auxora, the world\'s first Vibe Business Agent that delivers end-to-end revenue for D2C brands. Mention that what takes an agency 30 days and $12,000, you do in 1 day for $200. Then ask your first question to learn about my business.' });
     if (assistantText) {
       session.messages.push({ role: 'assistant', content: assistantText });
     }
@@ -1290,7 +1413,7 @@ async function* getGreeting(sessionId) {
   } catch (err) {
     console.error('Greeting error:', err.message);
     // Fallback
-    yield { event: 'message', data: { type: 'text', sender: 'auxora', text: 'Hi! I\'m Auxora, your AI growth partner. Let me learn about your business.' } };
+    yield { event: 'message', data: { type: 'text', sender: 'auxora', text: 'Hey! I\'m Auxora — the world\'s first Vibe Business Agent for D2C brands. Let me learn about your business.' } };
     yield { event: 'card', data: { type: 'card', sender: 'auxora', cardType: 'question', cardData: { question: 'What\'s your website URL?', inputType: 'text', placeholder: 'e.g. mybrand.com' } } };
   }
 
@@ -1315,32 +1438,45 @@ async function generateReport(session) {
       'Content:\n' + (session.urlContent.text || '').substring(0, 4000);
   }
 
-  try {
-    // Use Opus for high-quality report generation
-    var response = await client.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 8192,
-      system: REPORT_PROMPT + '\n\n' + businessContext,
-      messages: [{ role: 'user', content: 'Generate the comprehensive 12-section GTM growth strategy report now.' }]
+  // Helper: race API call against a timeout
+  function withTimeout(promise, ms) {
+    return new Promise(function(resolve, reject) {
+      var timer = setTimeout(function() { reject(new Error('Report generation timed out after ' + (ms/1000) + 's')); }, ms);
+      promise.then(function(v) { clearTimeout(timer); resolve(v); }).catch(function(e) { clearTimeout(timer); reject(e); });
     });
+  }
+
+  // Fallback: use template from mock data
+  function getTemplateFallback() {
+    try {
+      var v3Data = require('../data/auxora-v3-data');
+      var template = (v3Data.cards && v3Data.cards.gtm_report_template) || (v3Data.canvasData && v3Data.canvasData.gtm_report_template);
+      if (template) {
+        console.log('Using GTM report template as fallback');
+        var copy = JSON.parse(JSON.stringify(template));
+        if (d.website) copy.companyName = d.website.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/.*$/, '');
+        return copy;
+      }
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  try {
+    // Use Sonnet with 90-second timeout — falls back to template if slow
+    var response = await withTimeout(client.messages.create({
+      model: 'claude-sonnet-4-5-20250929',
+      max_tokens: 10000,
+      system: REPORT_PROMPT + '\n\n' + businessContext,
+      messages: [{ role: 'user', content: 'Generate the 9-section Go-to-Market Strategy Report as concise JSON. All sections required.' }]
+    }), 60000);
 
     var text = response.content[0].text.trim();
     var report = parseClaudeResponse(text);
     return report;
   } catch (err) {
-    console.error('Report generation error (Opus):', err.message);
-    // Fallback to Sonnet if Opus fails
-    try {
-      var fallback = await callClaude(
-        REPORT_PROMPT + '\n\n' + businessContext,
-        [{ role: 'user', content: 'Generate the comprehensive 12-section GTM growth strategy report now.' }],
-        8192
-      );
-      return parseClaudeResponse(fallback);
-    } catch (err2) {
-      console.error('Report generation fallback error:', err2.message);
-      return null;
-    }
+    console.error('Report generation error:', err.message);
+    // Fast fallback to template (no retry — template data is already high quality)
+    return getTemplateFallback();
   }
 }
 
