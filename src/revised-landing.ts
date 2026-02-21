@@ -813,14 +813,18 @@ export const REVISED_LANDING_HTML = `
           <div style="font-size:10px;color:#5A5040;font-weight:600;letter-spacing:0.08em;">LIVE</div>
         </div>
 
-        <!-- GIF container — fills the full width, maintains 1200:738 ratio -->
+        <!-- Video container — autoplay, loop, muted, 3x speed -->
         <div style="position:relative;width:100%;background:#FAF7F4;">
-          <img
-            src="/static/auxora_demo.gif"
-            alt="Auxora conversation demo — strategy, landing page, ads and analytics from one chat"
-            style="width:100%;display:block;image-rendering:auto;"
-            loading="lazy"
-          />
+          <video
+            autoplay
+            loop
+            muted
+            playsinline
+            style="width:100%;display:block;"
+          >
+            <source src="/static/auxora_demo.webm" type="video/webm" />
+            <source src="/static/auxora_demo.mp4" type="video/mp4" />
+          </video>
           <!-- Subtle gradient overlay at bottom -->
           <div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,rgba(28,25,23,0.4),transparent);pointer-events:none;"></div>
         </div>
