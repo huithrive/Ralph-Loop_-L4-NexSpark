@@ -452,7 +452,7 @@ export const REVISED_LANDING_HTML = `
       <!-- Definition line — what Auxora IS -->
       <div class="fade-up d1" style="text-align:center;margin-bottom:28px;">
         <p style="font-size:13px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#A8A09A;margin:0;">
-          <span style="color:#1C1917;">Auxora:</span>&nbsp; The World's First &nbsp;<span style="color:#BF6744;">Vibe Business Agent</span>
+          <span style="color:#1C1917;">Auxora:</span>&nbsp; The World's First &nbsp;<span style="color:#BF6744;">Vibe Business Agent</span>&nbsp;<span style="color:#A8A09A;">for D2C Brands</span>
         </p>
       </div>
 
@@ -644,95 +644,6 @@ export const REVISED_LANDING_HTML = `
             <div style="color:#3D3530;font-size:14px;">→</div>
             <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:#6E8B5E;font-family:'Playfair Display',serif;">60×</div><div style="font-size:10px;color:#7A6E65;">cheaper</div></div>
           </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ══════════════════════════════
-       THE PROBLEM
-  ══════════════════════════════ -->
-  <section class="section" style="background:#FFFFFF;">
-    <div style="max-width:1200px;margin:0 auto;">
-
-      <div style="max-width:680px;margin:0 auto 80px;text-align:center;">
-        <p class="eyebrow" style="margin-bottom:16px;">The D2C founder’s reality</p>
-        <h2 class="editorial" style="font-size:clamp(40px,4.5vw,64px);color:#1C1917;margin-bottom:20px;">
-          Agencies take 30 days.<br/>
-          <em style="color:#BF6744;">Charge $12,000.</em>
-        </h2>
-        <p style="font-size:17px;color:#7A6E65;line-height:1.75;font-weight:400;">
-          By the time your agency finishes strategy, builds the landing page, creates ad assets, sets up campaigns, runs A/B tests, and builds email flows — your competitor has already launched and taken your market.
-        </p>
-      </div>
-
-      <!-- Two-column compare -->
-      <div class="compare-cols" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;margin:0 auto;">
-
-        <!-- Before -->
-        <div style="background:#FDF7F5;border:1px solid #F0D8CE;border-radius:24px;padding:36px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
-            <div style="width:28px;height:28px;border-radius:50%;background:#F0D8CE;display:flex;align-items:center;justify-content:center;">
-              <i class="fas fa-times" style="color:#BF6744;font-size:11px;"></i>
-            </div>
-            <span class="eyebrow" style="color:#BF6744;">Before Auxora</span>
-          </div>
-          <ul style="list-style:none;display:flex;flex-direction:column;gap:16px;">
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;"><strong>30 days</strong> to complete the full launch process</span>
-            </li>
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;"><strong>$12,000</strong> full-service package, paid upfront with no ROI guarantee</span>
-            </li>
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Strategy, creatives, emails all done manually — slow to change</span>
-            </li>
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Hits a ceiling — built for $500K, breaks at $5M scale</span>
-            </li>
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <span style="color:#E0A090;font-size:16px;margin-top:1px;flex-shrink:0;">—</span>
-              <span style="font-size:15px;color:#7A6E65;line-height:1.6;">Your competitor launched in week one while you waited</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- After -->
-        <div style="background:#F1F5EF;border:1px solid #C8D8C2;border-radius:24px;padding:36px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
-            <div style="width:28px;height:28px;border-radius:50%;background:#C8D8C2;display:flex;align-items:center;justify-content:center;">
-              <i class="fas fa-check" style="color:#4A6741;font-size:11px;"></i>
-            </div>
-            <span class="eyebrow" style="color:#4A6741;">With Auxora</span>
-          </div>
-          <ul style="list-style:none;display:flex;flex-direction:column;gap:16px;">
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;"><strong>Everything live in 24 hours</strong> — strategy, ads, emails, A/B tests, SEO</span>
-            </li>
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;"><strong>$200 total</strong> — same deliverables as a $12,000 agency</span>
-            </li>
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;"><strong>Strategy built to scale to $100M ARR</strong> — not just your first $100K</span>
-            </li>
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">AI executes ads, email, A/B tests autonomously 24/7</span>
-            </li>
-            <li style="display:flex;gap:14px;align-items:flex-start;">
-              <i class="fas fa-check-circle" style="color:#6E8B5E;font-size:14px;margin-top:3px;flex-shrink:0;"></i>
-              <span style="font-size:15px;color:#3D4A38;line-height:1.6;">You build your product. Auxora handles the growth.</span>
-            </li>
-          </ul>
         </div>
 
       </div>
