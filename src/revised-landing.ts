@@ -443,19 +443,33 @@ export const REVISED_LANDING_HTML = `
     <div style="max-width:1200px;margin:0 auto;">
 
       <!-- Eyebrow -->
-      <div class="fade-up d1" style="text-align:center;margin-bottom:24px;">
+      <div class="fade-up d1" style="text-align:center;margin-bottom:20px;">
         <span class="badge badge-rust" style="font-size:12px;">
           <span style="width:7px;height:7px;border-radius:50%;background:#BF6744;display:inline-block;animation:pulse 2s infinite;"></span>
           Trusted by 200+ D2C founders &nbsp;·&nbsp; Built by team behind $15M in 10 months
         </span>
       </div>
 
+      <!-- Definition line — what Auxora IS -->
+      <div class="fade-up d1" style="text-align:center;margin-bottom:28px;">
+        <p style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#A8A09A;margin:0;">
+          The World's First &nbsp;<span style="color:#BF6744;">Vibe Business Agent</span>
+        </p>
+      </div>
+
       <!-- Headline -->
-      <div class="fade-up d2" style="text-align:center;margin-bottom:28px;">
+      <div class="fade-up d2" style="text-align:center;margin-bottom:20px;">
         <h1 class="editorial" style="font-size:clamp(44px,6vw,88px);color:#1C1917;max-width:980px;margin:0 auto;line-height:1.05;">
           What takes an agency 30 days &amp; $12,000<br/>
           <em style="color:#BF6744;font-style:italic;">we do in 1 day for $200.</em>
         </h1>
+      </div>
+
+      <!-- Slogan — sharp one-liner definition -->
+      <div class="fade-up d2" style="text-align:center;margin-bottom:24px;">
+        <p style="font-size:16px;color:#1C1917;font-weight:600;max-width:680px;margin:0 auto;line-height:1.5;border-left:3px solid #BF6744;padding:10px 20px;background:#FDF7F4;border-radius:0 8px 8px 0;text-align:left;display:inline-block;">
+          End-to-end revenue delivery — from zero to live in 24 h. &nbsp;<span style="color:#BF6744;">You pay only when you grow.</span>
+        </p>
       </div>
 
       <!-- Sub-headline -->
