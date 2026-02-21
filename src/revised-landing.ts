@@ -837,6 +837,57 @@ export const REVISED_LANDING_HTML = `
         </h2>
       </div>
 
+      <!-- Agency vs Auxora comparison — under “The full stack / handled” headline -->
+      <div style="margin-bottom:56px;">
+        <div style="background:#F5EFE8;border-radius:24px;padding:36px;max-width:900px;margin:0 auto;">
+          <p class="eyebrow" style="text-align:center;margin-bottom:28px;">The same full service — done in 1 day, not 30</p>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start;">
+
+            <!-- Agency -->
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#BF6744;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">Agency · 30 days · $12,000</div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">7 days</span></div><span style="font-size:13px;color:#7A6E65;">Strategy &amp; positioning</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5 days</span></div><span style="font-size:13px;color:#7A6E65;">Landing page &amp; website</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5 days</span></div><span style="font-size:13px;color:#7A6E65;">Ad creative production</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5 days</span></div><span style="font-size:13px;color:#7A6E65;">Campaign setup &amp; launch</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">4 days</span></div><span style="font-size:13px;color:#7A6E65;">A/B testing setup</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">4 days</span></div><span style="font-size:13px;color:#7A6E65;">Email flows for LTV</span></div>
+              </div>
+              <div style="margin-top:14px;padding:10px 16px;background:#FDF2EE;border-radius:12px;border:1px solid #F0CEBE;">
+                <div style="font-size:18px;font-weight:800;color:#BF6744;font-family:'Playfair Display',serif;">30 days total</div>
+                <div style="font-size:11px;color:#A8A09A;margin-top:2px;">$12,000 · paid upfront · no guarantee</div>
+              </div>
+            </div>
+
+            <!-- VS -->
+            <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px;">
+              <div style="flex:1;width:1px;background:linear-gradient(to bottom,transparent,#D6CCBF);"></div>
+              <div style="font-size:12px;font-weight:700;color:#1C1917;background:white;border:1.5px solid #D6CCBF;border-radius:100px;padding:5px 10px;margin:8px 0;">VS</div>
+              <div style="flex:1;width:1px;background:linear-gradient(to bottom,#D6CCBF,transparent);"></div>
+            </div>
+
+            <!-- Auxora -->
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#4A6741;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">Auxora · 24 hours · $200</div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">2 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Strategy &amp; positioning</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">4 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Landing page &amp; website</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">3 hrs</span></div><span style="font-size:13px;color:#3D4A38;">AI-generated ad creatives</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">4 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Auto campaign setup &amp; launch</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">3 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Automated A/B testing</span></div>
+                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">4 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Email &amp; LTV automation</span></div>
+              </div>
+              <div style="margin-top:14px;padding:10px 16px;background:#EEF3EC;border-radius:12px;border:1px solid #C8D8C2;">
+                <div style="font-size:18px;font-weight:800;color:#4A6741;font-family:'Playfair Display',serif;">24 hours total</div>
+                <div style="font-size:11px;color:#A8A09A;margin-top:2px;">$200 · pay as you go · cancel anytime</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
       <div class="agent-cols" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:960px;margin:0 auto;">
 
         <div class="card" style="padding:28px;">
@@ -932,57 +983,6 @@ export const REVISED_LANDING_HTML = `
           <em style="color:#BF6744;">Scale with the agent.</em>
         </h2>
         <p style="font-size:16px;color:#7A6E65;margin-top:16px;line-height:1.7;">No surprise fees. Cancel anytime. Your first report pays for itself.</p>
-      </div>
-
-      <!-- Agency vs Auxora comparison — under pricing headline -->
-      <div style="margin-bottom:56px;">
-        <div style="background:#F5EFE8;border-radius:24px;padding:36px;max-width:900px;margin:0 auto;">
-          <p class="eyebrow" style="text-align:center;margin-bottom:28px;">The same full service — done in 1 day, not 30</p>
-          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start;">
-
-            <!-- Agency -->
-            <div>
-              <div style="font-size:11px;font-weight:700;color:#BF6744;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">Agency · 30 days · $12,000</div>
-              <div style="display:flex;flex-direction:column;gap:9px;">
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">7 days</span></div><span style="font-size:13px;color:#7A6E65;">Strategy &amp; positioning</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5 days</span></div><span style="font-size:13px;color:#7A6E65;">Landing page &amp; website</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5 days</span></div><span style="font-size:13px;color:#7A6E65;">Ad creative production</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">5 days</span></div><span style="font-size:13px;color:#7A6E65;">Campaign setup &amp; launch</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">4 days</span></div><span style="font-size:13px;color:#7A6E65;">A/B testing setup</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#F0D8CE;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#BF6744;font-weight:700;">4 days</span></div><span style="font-size:13px;color:#7A6E65;">Email flows for LTV</span></div>
-              </div>
-              <div style="margin-top:14px;padding:10px 16px;background:#FDF2EE;border-radius:12px;border:1px solid #F0CEBE;">
-                <div style="font-size:18px;font-weight:800;color:#BF6744;font-family:'Playfair Display',serif;">30 days total</div>
-                <div style="font-size:11px;color:#A8A09A;margin-top:2px;">$12,000 · paid upfront · no guarantee</div>
-              </div>
-            </div>
-
-            <!-- VS -->
-            <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px;">
-              <div style="flex:1;width:1px;background:linear-gradient(to bottom,transparent,#D6CCBF);"></div>
-              <div style="font-size:12px;font-weight:700;color:#1C1917;background:white;border:1.5px solid #D6CCBF;border-radius:100px;padding:5px 10px;margin:8px 0;">VS</div>
-              <div style="flex:1;width:1px;background:linear-gradient(to bottom,#D6CCBF,transparent);"></div>
-            </div>
-
-            <!-- Auxora -->
-            <div>
-              <div style="font-size:11px;font-weight:700;color:#4A6741;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">Auxora · 24 hours · $200</div>
-              <div style="display:flex;flex-direction:column;gap:9px;">
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">2 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Strategy &amp; positioning</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">4 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Landing page &amp; website</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">3 hrs</span></div><span style="font-size:13px;color:#3D4A38;">AI-generated ad creatives</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">4 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Auto campaign setup &amp; launch</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">3 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Automated A/B testing</span></div>
-                <div style="display:flex;align-items:center;gap:10px;"><div style="width:46px;height:22px;border-radius:100px;background:#C8D8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:#4A6741;font-weight:700;">4 hrs</span></div><span style="font-size:13px;color:#3D4A38;">Email &amp; LTV automation</span></div>
-              </div>
-              <div style="margin-top:14px;padding:10px 16px;background:#EEF3EC;border-radius:12px;border:1px solid #C8D8C2;">
-                <div style="font-size:18px;font-weight:800;color:#4A6741;font-family:'Playfair Display',serif;">24 hours total</div>
-                <div style="font-size:11px;color:#A8A09A;margin-top:2px;">$200 · pay as you go · cancel anytime</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
       </div>
 
       <div class="price-cols" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto;">
