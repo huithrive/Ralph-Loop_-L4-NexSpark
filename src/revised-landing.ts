@@ -410,15 +410,14 @@ export const REVISED_LANDING_HTML = `
     <div style="max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
 
       <!-- Logo -->
-      <a href="/" style="text-decoration:none;display:flex;align-items:center;gap:8px;">
-        <!-- Auxora logomark: flowing A shape -->
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="32" height="32" rx="10" fill="#1C1917"/>
-          <path d="M10 23L16 9l6 14" stroke="#FAF7F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12.5 18h7" stroke="#BF6744" stroke-width="2" stroke-linecap="round"/>
+      <a href="/" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
+        <!-- Auxora logomark: A mark on dark pill -->
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="11" fill="#1C1917"/>
+          <path d="M11.5 25.5L18 10.5l6.5 15" stroke="#FAF7F4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 20.5h8" stroke="#BF6744" stroke-width="2.2" stroke-linecap="round"/>
         </svg>
-        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:18px;color:#1C1917;letter-spacing:-0.03em;">Auxora</span>
-        <span style="font-size:11px;color:#B09A85;font-weight:500;letter-spacing:0.05em;margin-left:2px;">.ai</span>
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:19px;color:#1C1917;letter-spacing:-0.04em;line-height:1;">Auxora</span>
       </a>
 
       <!-- Links -->
@@ -1338,7 +1337,7 @@ export const REVISED_LANDING_HTML = `
             <path d="M10 23L16 9l6 14" stroke="#1C1917" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M12.5 18h7" stroke="#BF6744" stroke-width="2" stroke-linecap="round"/>
           </svg>
-          <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:16px;color:#FAF7F4;letter-spacing:-0.02em;">Auxora<span style="color:#B09A85;">.ai</span></span>
+          <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:16px;color:#FAF7F4;letter-spacing:-0.04em;line-height:1;">Auxora</span>
         </div>
 
         <!-- Links -->
