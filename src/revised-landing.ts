@@ -577,60 +577,35 @@ export const REVISED_LANDING_HTML = `
         </h2>
       </div>
 
-      <!-- Hero case study card -->
-      <div class="case-cols card" style="overflow:hidden;max-width:920px;margin:0 auto 24px;display:grid;grid-template-columns:1fr 1fr;border:1px solid #EDE4D9;">
-
-        <!-- Video side -->
-        <div style="position:relative;cursor:pointer;background:#E8DDD0;min-height:320px;overflow:hidden;" onclick="openVideoModal(0)">
-          <img
-            src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
-            alt="Yamabushi Farms case study"
-            style="width:100%;height:100%;object-fit:cover;display:block;"
-          />
-          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,25,23,0.1),rgba(28,25,23,0.5));"></div>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-            <div class="play-circle">
-              <i class="fas fa-play" style="color:#1C1917;font-size:20px;margin-left:3px;"></i>
-            </div>
+      <!-- Yamabushi stats card (full width, no video column) -->
+      <div class="card" style="overflow:hidden;max-width:920px;margin:0 auto 24px;border:1px solid #EDE4D9;background:white;padding:36px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:24px;">
+          <div>
+            <p class="eyebrow" style="margin-bottom:10px;">Verified results</p>
+            <h3 class="editorial" style="font-size:34px;color:#1C1917;margin-bottom:4px;">Yamabushi Farms</h3>
+            <p style="font-size:13px;color:#A8A09A;margin-bottom:0;">Japanese wellness · D2C direct</p>
           </div>
-          <div style="position:absolute;top:16px;left:16px;">
-            <span class="badge badge-rust" style="font-size:11px;">🛒 D2C Case Study</span>
-          </div>
-          <div style="position:absolute;bottom:20px;left:20px;">
-            <div class="editorial" style="font-size:20px;color:white;font-style:italic;">Watch the story →</div>
-          </div>
+          <span class="badge badge-rust" style="font-size:11px;align-self:center;">🛒 D2C Case Study</span>
         </div>
 
-        <!-- Stats side -->
-        <div style="padding:36px;background:white;">
-          <p class="eyebrow" style="margin-bottom:10px;">Verified results</p>
-          <h3 class="editorial" style="font-size:34px;color:#1C1917;margin-bottom:4px;">Yamabushi Farms</h3>
-          <p style="font-size:13px;color:#A8A09A;margin-bottom:28px;">Japanese wellness · D2C direct</p>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
-            <div style="background:#FDF2EE;border-radius:14px;padding:16px;text-align:center;">
-              <div class="editorial" style="font-size:38px;color:#BF6744;line-height:1;">10×</div>
-              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">Revenue · 2 months</div>
-            </div>
-            <div style="background:#EEF3EC;border-radius:14px;padding:16px;text-align:center;">
-              <div class="editorial" style="font-size:38px;color:#4A6741;line-height:1;">3×</div>
-              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">ROAS · month 1</div>
-            </div>
-            <div style="background:#F5EFE8;border-radius:14px;padding:16px;text-align:center;">
-              <div class="editorial" style="font-size:38px;color:#3D3530;line-height:1;">62%</div>
-              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">CAC reduction</div>
-            </div>
-            <div style="background:#FDF2EE;border-radius:14px;padding:16px;text-align:center;">
-              <div class="editorial" style="font-size:38px;color:#BF6744;line-height:1;">6wk</div>
-              <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">To profitability</div>
-            </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px;margin-bottom:0;">
+          <div style="background:#FDF2EE;border-radius:14px;padding:16px;text-align:center;">
+            <div class="editorial" style="font-size:38px;color:#BF6744;line-height:1;">10×</div>
+            <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">Revenue · 2 months</div>
           </div>
-
-          <button onclick="openVideoModal(0)" class="btn-outline" style="width:100%;justify-content:center;">
-            <i class="fas fa-play-circle" style="color:#BF6744;"></i> Watch the full story
-          </button>
+          <div style="background:#EEF3EC;border-radius:14px;padding:16px;text-align:center;">
+            <div class="editorial" style="font-size:38px;color:#4A6741;line-height:1;">3×</div>
+            <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">ROAS · month 1</div>
+          </div>
+          <div style="background:#F5EFE8;border-radius:14px;padding:16px;text-align:center;">
+            <div class="editorial" style="font-size:38px;color:#3D3530;line-height:1;">62%</div>
+            <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">CAC reduction</div>
+          </div>
+          <div style="background:#FDF2EE;border-radius:14px;padding:16px;text-align:center;">
+            <div class="editorial" style="font-size:38px;color:#BF6744;line-height:1;">6wk</div>
+            <div style="font-size:11px;color:#A8A09A;margin-top:4px;font-weight:500;">To profitability</div>
+          </div>
         </div>
-
       </div>
 
       <!-- Testimonials -->
@@ -679,6 +654,25 @@ export const REVISED_LANDING_HTML = `
         </div>
 
       </div>
+
+      <!-- Video thumbnail — below testimonials -->
+      <div style="max-width:920px;margin:24px auto 0;border-radius:20px;overflow:hidden;cursor:pointer;position:relative;" onclick="openVideoModal(0)">
+        <img
+          src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
+          alt="Yamabushi Farms — watch the full story"
+          style="width:100%;display:block;object-fit:cover;max-height:420px;"
+        />
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,25,23,0.05),rgba(28,25,23,0.55));"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <div class="play-circle" style="width:72px;height:72px;">
+            <i class="fas fa-play" style="color:#1C1917;font-size:24px;margin-left:4px;"></i>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:28px;left:0;right:0;text-align:center;">
+          <div class="editorial" style="font-size:22px;color:white;font-style:italic;text-shadow:0 1px 6px rgba(0,0,0,0.4);">Watch the full story →</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
