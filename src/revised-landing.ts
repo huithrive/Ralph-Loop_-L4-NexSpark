@@ -495,6 +495,16 @@ export const REVISED_LANDING_HTML = `
         </span>
       </div>
 
+      <!-- Brand proof chips — right under CTA -->
+      <div class="fade-up d5" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:680px;margin:28px auto 0;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#A8A09A;width:100%;text-align:center;margin-bottom:4px;">Brands already growing with Auxora</div>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Yamabushi Farms <span style="color:#BF6744;margin-left:4px;">10× revenue</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Mourish <span style="color:#4A6741;margin-left:4px;">3× ROAS</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Profeliz <span style="color:#BF6744;margin-left:4px;">live in 24h</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">Sakura Floor <span style="color:#4A6741;margin-left:4px;">62% lower CAC</span></span>
+        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:6px 16px;">NoExit <span style="color:#BF6744;margin-left:4px;">profitable in 6wk</span></span>
+      </div>
+
       <!-- Hero: Agency vs Auxora comparison -->
       <div style="margin-top:60px;">
 
@@ -565,15 +575,6 @@ export const REVISED_LANDING_HTML = `
           Founders who stopped<br/>
           <em style="color:#BF6744;">grinding and grew.</em>
         </h2>
-      </div>
-
-      <!-- Brand social proof chips -->
-      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:760px;margin:0 auto 56px;">
-        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">Yamabushi Farms <span style="color:#BF6744;margin-left:4px;">10× revenue</span></span>
-        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">Mourish <span style="color:#4A6741;margin-left:4px;">3× ROAS</span></span>
-        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">Profeliz <span style="color:#BF6744;margin-left:4px;">live in 24h</span></span>
-        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">Sakura Floor <span style="color:#4A6741;margin-left:4px;">62% lower CAC</span></span>
-        <span style="font-size:12px;font-weight:600;color:#1C1917;background:white;border:1.5px solid #EDE4D9;border-radius:100px;padding:7px 18px;letter-spacing:0.02em;">NoExit <span style="color:#BF6744;margin-left:4px;">profitable in 6wk</span></span>
       </div>
 
       <!-- Hero case study card -->
@@ -722,62 +723,95 @@ export const REVISED_LANDING_HTML = `
   <!-- ══════════════════════════════
        WHY AUXORA IS DIFFERENT
   ══════════════════════════════ -->
-  <section style="background:#1C1917;padding:60px 24px;">
-    <div style="max-width:1000px;margin:0 auto;">
+  <section style="background:#1C1917;padding:72px 24px;">
+    <div style="max-width:1060px;margin:0 auto;">
 
-      <p style="text-align:center;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#7A6E65;margin-bottom:40px;">Why Auxora is different — from the team that’s done it before</p>
+      <!-- Section header with new-generation slogan -->
+      <div style="text-align:center;margin-bottom:16px;">
+        <p style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#7A6E65;margin-bottom:20px;">A new generation of business partner</p>
+        <h2 class="editorial" style="font-size:clamp(32px,3.5vw,48px);color:#FAF7F4;line-height:1.15;max-width:760px;margin:0 auto 16px;">
+          Skin in the game.<br/><em style="color:#BF6744;">AI in the engine.</em>
+        </h2>
+        <p style="font-size:15px;color:#7A6E65;max-width:580px;margin:0 auto 48px;line-height:1.75;">
+          We don&#39;t hand over reports — we hand over revenue. Auxora is AI-native and outcome-aligned: we don&#39;t take our cut until your ROAS proves the model is working.
+        </p>
+      </div>
 
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px;">
 
-        <!-- Card 1: Speed -->
+        <!-- Card 1: The $200 Model -->
         <div style="background:#252220;border:1px solid #3D3530;border-radius:20px;padding:32px 26px;position:relative;overflow:hidden;">
           <div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:rgba(191,103,68,0.07);"></div>
           <div style="width:40px;height:40px;border-radius:12px;background:#3D3530;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
-            <i class="fas fa-bolt" style="color:#BF6744;font-size:15px;"></i>
+            <i class="fas fa-layer-group" style="color:#BF6744;font-size:15px;"></i>
           </div>
-          <div class="editorial" style="font-size:clamp(36px,3.5vw,50px);color:#FAF7F4;line-height:1;margin-bottom:6px;">1 day<br/><span style="color:#BF6744;font-size:0.5em;font-style:italic;">not 30 days</span></div>
-          <p style="font-size:13px;color:#7A6E65;line-height:1.65;margin-top:10px;margin-bottom:16px;">An agency takes 30 days to do strategy, landing page, creatives, campaign setup, A/B tests, and email flows. Auxora’s AI does all of it in <strong style="color:#A8A09A;">24 hours</strong>.</p>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;">
-            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Strategy</span>
-            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Landing page</span>
-            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Creatives</span>
-            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Campaigns</span>
-            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">A/B Tests</span>
-            <span style="font-size:10px;padding:3px 9px;background:#1C1917;border:1px solid #3D3530;border-radius:100px;color:#7A6E65;">Email LTV</span>
+          <div class="editorial" style="font-size:clamp(28px,3vw,40px);color:#FAF7F4;line-height:1;margin-bottom:6px;">$200 <span style="color:#BF6744;font-size:0.45em;font-style:italic;">to start</span></div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.7;margin-top:12px;margin-bottom:16px;">This covers our actual AI costs — not profit. Generating a full GTM strategy, video ad creatives, and a conversion-optimised landing page is token-intensive. We charge only what it costs to build.</p>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#1C1917;border-radius:8px;border:1px solid #3D3530;">
+              <span style="font-size:11px;color:#7A6E65;">Website &amp; landing page</span>
+              <span style="font-size:11px;color:#FAF7F4;font-weight:600;">$99</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#1C1917;border-radius:8px;border:1px solid #3D3530;">
+              <span style="font-size:11px;color:#7A6E65;">Video ad creatives (AI tokens)</span>
+              <span style="font-size:11px;color:#FAF7F4;font-weight:600;">$79</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#1C1917;border-radius:8px;border:1px solid #3D3530;">
+              <span style="font-size:11px;color:#7A6E65;">SEO &amp; GEO optimisation</span>
+              <span style="font-size:11px;color:#FAF7F4;font-weight:600;">incl.</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:#3D3530;border-radius:8px;">
+              <span style="font-size:11px;color:#A8A09A;font-weight:600;">Total AI build cost</span>
+              <span style="font-size:13px;color:#BF6744;font-weight:800;">~$200</span>
+            </div>
           </div>
         </div>
 
-        <!-- Card 2: Scale -->
+        <!-- Card 2: The $100M Playbook -->
         <div style="background:#252220;border:1px solid #3D3530;border-radius:20px;padding:32px 26px;position:relative;overflow:hidden;">
           <div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:rgba(74,103,65,0.07);"></div>
           <div style="width:40px;height:40px;border-radius:12px;background:#3D3530;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
-            <i class="fas fa-chart-line" style="color:#6E8B5E;font-size:15px;"></i>
+            <i class="fas fa-chess-king" style="color:#6E8B5E;font-size:15px;"></i>
           </div>
-          <div class="editorial" style="font-size:clamp(36px,3.5vw,50px);color:#FAF7F4;line-height:1;margin-bottom:6px;">$100M<br/><span style="color:#6E8B5E;font-size:0.5em;font-style:italic;">ARR-ready</span></div>
-          <p style="font-size:13px;color:#7A6E65;line-height:1.65;margin-top:10px;margin-bottom:16px;">Our founding team scaled a product from <strong style="color:#A8A09A;">$100K → $15M ARR in 10 months</strong>. That same playbook — now fully automated and available to every founder.</p>
+          <div class="editorial" style="font-size:clamp(28px,3vw,40px);color:#FAF7F4;line-height:1;margin-bottom:6px;">$100M <span style="color:#6E8B5E;font-size:0.45em;font-style:italic;">playbook</span></div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.7;margin-top:12px;margin-bottom:16px;">Our founding team built a GTM machine that took a brand from $100K to $15M ARR in 10 months. A Fortune 500-level go-to-market audit costs $499+. We run that same strategy — fully automated, fully aligned across creatives, landing page, and campaigns — for every founder.</p>
+          <div style="padding:10px 14px;background:#1C1917;border-radius:10px;border:1px solid #3D3530;margin-bottom:8px;">
+            <div style="font-size:11px;color:#7A6E65;">Strategy aligned across: <span style="color:#FAF7F4;font-weight:600;">Creatives · Landing page · Ads · Email · SEO</span></div>
+          </div>
           <div style="padding:10px 14px;background:#1C1917;border-radius:10px;border:1px solid #3D3530;">
             <div style="font-size:11px;color:#7A6E65;">Track record: <span style="color:#FAF7F4;font-weight:600;">LAIX (FluentU) · XNG · Silicon Valley</span></div>
           </div>
         </div>
 
-        <!-- Card 3: Cost -->
-        <div style="background:#252220;border:1px solid #3D3530;border-radius:20px;padding:32px 26px;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:rgba(250,247,244,0.03);"></div>
+        <!-- Card 3: Aligned Incentives -->
+        <div style="background:#252220;border:2px solid #BF6744;border-radius:20px;padding:32px 26px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-40px;right:-40px;width:100px;height:100px;border-radius:50%;background:rgba(191,103,68,0.1);"></div>
           <div style="width:40px;height:40px;border-radius:12px;background:#3D3530;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
-            <i class="fas fa-coins" style="color:#B09A85;font-size:15px;"></i>
+            <i class="fas fa-handshake" style="color:#BF6744;font-size:15px;"></i>
           </div>
-          <div class="editorial" style="font-size:clamp(36px,3.5vw,50px);color:#FAF7F4;line-height:1;margin-bottom:6px;">$200<br/><span style="color:#B09A85;font-size:0.5em;font-style:italic;">not $12,000</span></div>
-          <p style="font-size:13px;color:#7A6E65;line-height:1.65;margin-top:10px;margin-bottom:16px;">Agencies charge <strong style="color:#A8A09A;">$12,000</strong> for the same full-service package — paid upfront with no performance guarantee. Auxora delivers it for <strong style="color:#A8A09A;">$200</strong>.</p>
-          <div style="padding:10px 14px;background:#1C1917;border-radius:10px;border:1px solid #3D3530;display:flex;align-items:center;justify-content:space-around;">
-            <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:#BF6744;font-family:'Playfair Display',serif;">$12K</div><div style="font-size:10px;color:#7A6E65;">Agency</div></div>
-            <div style="color:#3D3530;font-size:14px;">→</div>
-            <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:#FAF7F4;font-family:'Playfair Display',serif;">$200</div><div style="font-size:10px;color:#7A6E65;">Auxora</div></div>
-            <div style="color:#3D3530;font-size:14px;">→</div>
-            <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:#6E8B5E;font-family:'Playfair Display',serif;">60×</div><div style="font-size:10px;color:#7A6E65;">cheaper</div></div>
+          <div class="editorial" style="font-size:clamp(22px,2.5vw,32px);color:#FAF7F4;line-height:1.15;margin-bottom:6px;">We don&#39;t get paid<br/><em style="color:#BF6744;">until you do.</em></div>
+          <p style="font-size:13px;color:#7A6E65;line-height:1.7;margin-top:12px;margin-bottom:16px;">We stay with you until you&#39;re profitable. We don&#39;t take our revenue share until your ROAS hits a baseline — usually <strong style="color:#A8A09A;">0.7×</strong> on first conversion ($0.70 back per $1 spent). Once you&#39;re scaling, we take a small % of ad spend and incremental revenue.</p>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;padding:7px 10px;background:#1C1917;border-radius:8px;border:1px solid #3D3530;">
+              <span style="color:#BF6744;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;">Day 1</span>
+              <span style="font-size:11px;color:#7A6E65;">Full launch. $200 covers AI build costs only.</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;padding:7px 10px;background:#1C1917;border-radius:8px;border:1px solid #3D3530;">
+              <span style="color:#A8A09A;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;">ROAS &lt; 0.7×</span>
+              <span style="font-size:11px;color:#7A6E65;">We keep optimising. No revenue share taken.</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 10px;background:#3D3530;border-radius:8px;">
+              <span style="color:#6E8B5E;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;">Profitable</span>
+              <span style="font-size:11px;color:#A8A09A;">Small % of ad spend + incremental revenue. We grow together.</span>
+            </div>
           </div>
         </div>
 
       </div>
+
+      <!-- Bottom tagline -->
+      <p style="text-align:center;font-size:13px;color:#5A5040;letter-spacing:0.05em;">This is end-to-end revenue delivery — not consulting, not tooling. &nbsp;<span style="color:#7A6E65;">An AI-native partner with skin in the game.</span></p>
+
     </div>
   </section>
 
