@@ -452,8 +452,8 @@ export const REVISED_LANDING_HTML = `
 
       <!-- Definition line — what Auxora IS -->
       <div class="fade-up d1" style="text-align:center;margin-bottom:28px;">
-        <p style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#A8A09A;margin:0;">
-          The World's First &nbsp;<span style="color:#BF6744;">Vibe Business Agent</span>
+        <p style="font-size:13px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:#A8A09A;margin:0;">
+          <span style="color:#1C1917;">Auxora:</span>&nbsp; The World's First &nbsp;<span style="color:#BF6744;">Vibe Business Agent</span>
         </p>
       </div>
 
@@ -465,10 +465,11 @@ export const REVISED_LANDING_HTML = `
         </h1>
       </div>
 
-      <!-- Slogan — sharp one-liner definition -->
+      <!-- Slogan — honest outcome positioning, not false pure-performance claim -->
       <div class="fade-up d2" style="text-align:center;margin-bottom:24px;">
-        <p style="font-size:16px;color:#1C1917;font-weight:600;max-width:680px;margin:0 auto;line-height:1.5;border-left:3px solid #BF6744;padding:10px 20px;background:#FDF7F4;border-radius:0 8px 8px 0;text-align:left;display:inline-block;">
-          End-to-end revenue delivery — from zero to live in 24 h. &nbsp;<span style="color:#BF6744;">You pay only when you grow.</span>
+        <p style="font-size:15px;color:#7A6E65;max-width:580px;margin:0 auto;line-height:1.6;">
+          End-to-end revenue delivery — strategy, builds, ads and growth, fully automated.
+          <br/><strong style="color:#1C1917;">Start for $4.99. No retainers. Priced for results, not overhead.</strong>
         </p>
       </div>
 
