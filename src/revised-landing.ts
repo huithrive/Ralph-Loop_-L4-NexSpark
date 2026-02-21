@@ -757,6 +757,107 @@ export const REVISED_LANDING_HTML = `
 
 
   <!-- ══════════════════════════════
+       CONVERSATION DEMO — Digital Head of Growth
+  ══════════════════════════════ -->
+  <section id="demo" class="section" style="background:#1C1917;padding:80px 24px;">
+    <div style="max-width:1200px;margin:0 auto;">
+
+      <!-- Section header -->
+      <div style="text-align:center;margin-bottom:56px;">
+        <p style="font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#7A6E65;margin-bottom:20px;">The next generation of work</p>
+        <h2 class="editorial" style="font-size:clamp(32px,3.8vw,52px);color:#FAF7F4;line-height:1.15;max-width:820px;margin:0 auto 20px;">
+          Your digital Head of Growth.<br/>
+          <em style="color:#BF6744;">Available 24/7. Costs $200, not $500K.</em>
+        </h2>
+        <p style="font-size:15px;color:#7A6E65;max-width:620px;margin:0 auto 0;line-height:1.8;">
+          This is not another AI tool. It is the first time you can have a colleague with high agency — proactively texting you, monitoring performance, building everything from a single conversation.
+        </p>
+      </div>
+
+      <!-- Capability pills row -->
+      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:40px;">
+        <span style="background:#252220;border:1px solid #3D3530;border-radius:100px;padding:7px 18px;font-size:12px;color:#A8A09A;display:flex;align-items:center;gap:7px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#BF6744;flex-shrink:0;"></span>Strategy &amp; GTM
+        </span>
+        <span style="background:#252220;border:1px solid #3D3530;border-radius:100px;padding:7px 18px;font-size:12px;color:#A8A09A;display:flex;align-items:center;gap:7px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#BF6744;flex-shrink:0;"></span>Landing page builds
+        </span>
+        <span style="background:#252220;border:1px solid #3D3530;border-radius:100px;padding:7px 18px;font-size:12px;color:#A8A09A;display:flex;align-items:center;gap:7px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#BF6744;flex-shrink:0;"></span>Ad creatives
+        </span>
+        <span style="background:#252220;border:1px solid #3D3530;border-radius:100px;padding:7px 18px;font-size:12px;color:#A8A09A;display:flex;align-items:center;gap:7px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#6E8B5E;flex-shrink:0;"></span>Campaign setup
+        </span>
+        <span style="background:#252220;border:1px solid #3D3530;border-radius:100px;padding:7px 18px;font-size:12px;color:#A8A09A;display:flex;align-items:center;gap:7px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#6E8B5E;flex-shrink:0;"></span>Analytics &amp; optimisation
+        </span>
+        <span style="background:#252220;border:1px solid #BF6744;border-radius:100px;padding:7px 18px;font-size:12px;color:#BF6744;font-weight:600;display:flex;align-items:center;gap:7px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#BF6744;flex-shrink:0;animation:pulse 1.5s infinite;"></span>All from one conversation
+        </span>
+      </div>
+
+      <!-- Browser chrome + GIF demo -->
+      <div style="max-width:1100px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.06);">
+
+        <!-- Browser top bar -->
+        <div style="background:#2A2522;padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #3D3530;">
+          <div style="display:flex;gap:6px;">
+            <div style="width:12px;height:12px;border-radius:50%;background:#E85C4A;"></div>
+            <div style="width:12px;height:12px;border-radius:50%;background:#E8B84A;"></div>
+            <div style="width:12px;height:12px;border-radius:50%;background:#4AE87A;"></div>
+          </div>
+          <div style="flex:1;background:#1C1917;border-radius:6px;padding:5px 12px;display:flex;align-items:center;gap:8px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#4AE87A;flex-shrink:0;animation:pulse 2s infinite;"></div>
+            <span style="font-size:11px;color:#7A6E65;font-family:monospace;">app.auxora.ai/workspace</span>
+          </div>
+          <div style="font-size:10px;color:#5A5040;font-weight:600;letter-spacing:0.08em;">LIVE</div>
+        </div>
+
+        <!-- GIF container — fills the full width, maintains 1200:738 ratio -->
+        <div style="position:relative;width:100%;background:#FAF7F4;">
+          <img
+            src="/static/auxora_demo.gif"
+            alt="Auxora conversation demo — strategy, landing page, ads and analytics from one chat"
+            style="width:100%;display:block;image-rendering:auto;"
+            loading="lazy"
+          />
+          <!-- Subtle gradient overlay at bottom -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,rgba(28,25,23,0.4),transparent);pointer-events:none;"></div>
+        </div>
+
+      </div>
+
+      <!-- Three callout chips below the demo -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:36px auto 0;">
+        <div style="background:#252220;border:1px solid #3D3530;border-radius:16px;padding:20px 22px;text-align:center;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#BF6744;margin-bottom:8px;">Traditional Head of Growth</div>
+          <div class="editorial" style="font-size:28px;color:#FAF7F4;margin-bottom:4px;">$500K</div>
+          <div style="font-size:12px;color:#5A5040;">annual salary · 9-to-5 · one hire</div>
+        </div>
+        <div style="background:#252220;border:2px solid #BF6744;border-radius:16px;padding:20px 22px;text-align:center;position:relative;">
+          <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:#BF6744;color:#FAF7F4;font-size:10px;font-weight:700;letter-spacing:0.1em;padding:4px 12px;border-radius:0 0 8px 8px;white-space:nowrap;">AUXORA</div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#BF6744;margin-bottom:8px;margin-top:8px;">Your Digital Colleague</div>
+          <div class="editorial" style="font-size:28px;color:#FAF7F4;margin-bottom:4px;">$200</div>
+          <div style="font-size:12px;color:#6E8B5E;">one-time build · 24/7 · fully autonomous</div>
+        </div>
+        <div style="background:#252220;border:1px solid #3D3530;border-radius:16px;padding:20px 22px;text-align:center;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6E65;margin-bottom:8px;">Traditional Agency</div>
+          <div class="editorial" style="font-size:28px;color:#FAF7F4;margin-bottom:4px;">$12K</div>
+          <div style="font-size:12px;color:#5A5040;">per project · 30 days · no guarantee</div>
+        </div>
+      </div>
+
+      <!-- Bottom proof line -->
+      <p style="text-align:center;font-size:13px;color:#5A5040;margin-top:28px;letter-spacing:0.04em;">
+        No prompt engineering. No tool-switching. Just type — and watch it get done.
+        <span style="color:#7A6E65;margin-left:6px;">Like texting the best colleague you've ever had.</span>
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════
        HOW IT WORKS
   ══════════════════════════════ -->
   <section id="how-it-works" class="section" style="background:#FAF7F4;">
