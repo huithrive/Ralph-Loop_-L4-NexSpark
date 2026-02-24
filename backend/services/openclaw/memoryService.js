@@ -105,13 +105,22 @@ async function assembleContext(clientId) {
 
 /**
  * Append an entry to today's daily log file.
+ * Supports both string entries (human-readable) and structured objects (for compaction).
  */
 async function appendDailyLog(clientId, entry) {
   const file = dailyFile(clientId);
   await ensureDir(path.dirname(file));
 
   const timestamp = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  const line = `\n- **${timestamp}** — ${entry}\n`;
+  
+  let line;
+  if (typeof entry === 'object') {
+    // Structured entry (Phase D.2) — store as JSON for machine parsing
+    line = `\n<!-- structured:${JSON.stringify(entry)} -->\n`;
+  } else {
+    // Human-readable entry
+    line = `\n- **${timestamp}** — ${entry}\n`;
+  }
 
   // Create file with header if it doesn't exist
   try {
@@ -140,6 +149,149 @@ async function updateMemory(clientId, insight) {
   const dateStr = new Date().toISOString().slice(0, 10);
   const line = `\n- [${dateStr}] ${insight}\n`;
   await fs.appendFile(file, line, 'utf-8');
+}
+
+/**
+ * Weekly memory compaction: summarize daily logs from the past 7 days
+ * and append key insights to MEMORY.md. Delete old daily logs (>30 days).
+ * 
+ * This is called by heartbeat on Sunday mornings or manually.
+ * Phase D.4 implementation.
+ */
+async function compactMemory(clientId) {
+  const now = new Date();
+  const memoryFile = path.join(clientDir(clientId), 'MEMORY.md');
+  await ensureDir(clientDir(clientId));
+
+  // 1. Read daily logs from past 7 days
+  const dailyLogs = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const file = dailyFile(clientId, d);
+    const content = await readFileSafe(file);
+    if (content) {
+      dailyLogs.push({ date: d.toISOString().slice(0, 10), content });
+    }
+  }
+
+  if (dailyLogs.length === 0) {
+    console.log(`[memoryService] No daily logs to compact for client ${clientId}`);
+    return;
+  }
+
+  // 2. Extract key events, decisions, learnings from structured and human-readable logs
+  const stats = {
+    totalHeartbeats: 0,
+    autoExecuted: 0,
+    queued: 0,
+    errors: 0,
+    milestones: [],
+    criticalEvents: [],
+    avgRoas: [],
+    avgSpend: [],
+  };
+
+  for (const log of dailyLogs) {
+    const lines = log.content.split('\n');
+    for (const line of lines) {
+      // Parse structured data
+      const structMatch = line.match(/<!-- structured:(.*?) -->/);
+      if (structMatch) {
+        try {
+          const data = JSON.parse(structMatch[1]);
+          if (data.type === 'heartbeat') {
+            stats.totalHeartbeats++;
+            stats.autoExecuted += data.autoExecuted || 0;
+            stats.queued += data.cardsGenerated - (data.autoExecuted || 0);
+            if (data.metricsSnapshot?.roas) stats.avgRoas.push(data.metricsSnapshot.roas);
+            if (data.metricsSnapshot?.spend) stats.avgSpend.push(data.metricsSnapshot.spend);
+          }
+        } catch { /* skip malformed JSON */ }
+      }
+
+      // Parse human-readable critical events
+      if (line.includes('🏆 Milestone')) {
+        stats.milestones.push(line.trim());
+      }
+      if (line.includes('❌') || line.includes('⚠️')) {
+        stats.criticalEvents.push(line.trim());
+      }
+      if (line.includes('🔄 Phase boundary')) {
+        stats.criticalEvents.push(line.trim());
+      }
+    }
+  }
+
+  // Calculate averages
+  const avgRoas = stats.avgRoas.length
+    ? (stats.avgRoas.reduce((a, b) => a + b, 0) / stats.avgRoas.length).toFixed(2)
+    : 'N/A';
+  const avgSpend = stats.avgSpend.length
+    ? (stats.avgSpend.reduce((a, b) => a + b, 0) / stats.avgSpend.length).toFixed(2)
+    : 'N/A';
+
+  // 3. Format as a weekly summary entry
+  const weekStart = new Date(now);
+  weekStart.setDate(weekStart.getDate() - 6);
+  const weekLabel = `${weekStart.toISOString().slice(0, 10)} to ${now.toISOString().slice(0, 10)}`;
+
+  let summary = `\n## Week of ${weekLabel}\n\n`;
+  summary += `**Activity Summary:**\n`;
+  summary += `- Heartbeats: ${stats.totalHeartbeats}\n`;
+  summary += `- Actions auto-executed: ${stats.autoExecuted}\n`;
+  summary += `- Actions queued for review: ${stats.queued}\n`;
+  summary += `- Average ROAS: ${avgRoas}\n`;
+  summary += `- Average daily spend: $${avgSpend}\n\n`;
+
+  if (stats.milestones.length > 0) {
+    summary += `**Milestones:**\n`;
+    for (const m of stats.milestones.slice(0, 5)) { // Top 5 milestones
+      summary += `${m}\n`;
+    }
+    summary += `\n`;
+  }
+
+  if (stats.criticalEvents.length > 0) {
+    summary += `**Critical Events:**\n`;
+    for (const e of stats.criticalEvents.slice(0, 5)) { // Top 5 critical events
+      summary += `${e}\n`;
+    }
+    summary += `\n`;
+  }
+
+  // 4. Append to MEMORY.md
+  try {
+    await fs.access(memoryFile);
+  } catch {
+    await fs.writeFile(memoryFile, `# Long-Term Memory\n\n`, 'utf-8');
+  }
+
+  await fs.appendFile(memoryFile, summary, 'utf-8');
+  console.log(`[memoryService] Weekly memory compacted for client ${clientId}`);
+
+  // 5. Delete old daily logs (>30 days)
+  const cutoffDate = new Date(now);
+  cutoffDate.setDate(cutoffDate.getDate() - 30);
+
+  try {
+    const memoryDir = path.join(clientDir(clientId), 'memory');
+    const files = await fs.readdir(memoryDir);
+    
+    for (const file of files) {
+      if (!file.endsWith('.md')) continue;
+      const match = file.match(/^(\d{4}-\d{2}-\d{2})\.md$/);
+      if (match) {
+        const fileDate = new Date(match[1]);
+        if (fileDate < cutoffDate) {
+          await fs.unlink(path.join(memoryDir, file));
+          console.log(`[memoryService] Deleted old daily log: ${file}`);
+        }
+      }
+    }
+  } catch (deleteErr) {
+    console.warn(`[memoryService] Failed to delete old logs: ${deleteErr.message}`);
+  }
 }
 
 /**
@@ -239,6 +391,7 @@ module.exports = {
   appendDailyLog,
   updateMemory,
   getUserPreferences,
+  compactMemory,
   // Expose for testing
   _internals: { BASE_PATH, clientDir, dailyFile, readFileSafe },
 };

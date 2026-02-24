@@ -1,36 +1,37 @@
 /**
- * heartbeatLoop.js — The Nervous System
+ * heartbeatLoop.js — The Nervous System (v2 — Effect Pipeline)
  *
  * Core scheduler that runs every N minutes (default 30), iterates over
- * active clients, pulls metrics, evaluates optimizer rules, generates
- * action cards, auto-executes L1 cards, queues L2/L3, logs everything,
- * and checks milestones + special time-based triggers.
+ * active clients, pulls metrics, routes through module registry,
+ * and emits effects through the unified pipeline.
+ *
+ * v2 changes:
+ * - Uses moduleRegistry to find modules with evaluateMetrics/generateCards
+ * - All side effects (memory, DB, notifications) go through effectPipeline
+ * - Heartbeat itself emits effects instead of calling services directly
  */
 
 const cron = require('node-cron');
 const openclawConfig = require('../../config/openclawConfig');
 const memoryService = require('./memoryService');
 const permissionService = require('./permissionService');
+const registry = require('./moduleRegistry');
+const { Effect, EffectType, pipeline } = require('./effectSystem');
+const agentContext = require('./agentContext');
 
 // Existing analyzer services
 const analyticsService = require('../analyzer/analyticsService');
-const optimizerService = require('../analyzer/optimizerService');
 const reportService = require('../analyzer/reportService');
 
-// TODO: actionCardService will be created separately
-// const actionCardService = require('./actionCardService');
-// const notificationService = require('./notificationService');
-
-// Placeholder DB access — replace with real pool/knex when wired
+// DB access
 let db;
 try {
   db = require('../../db');
 } catch {
-  // Fallback: no DB available yet — stub it
-  db = {
-    query: async () => ({ rows: [] }),
-  };
+  db = { query: async () => ({ rows: [] }) };
 }
+
+const logger = require('../../utils/logger');
 
 // ---------------------------------------------------------------------------
 // State
@@ -45,9 +46,6 @@ let isRunning = false;
 // Helpers
 // ---------------------------------------------------------------------------
 
-/**
- * Get list of active client IDs from the database.
- */
 async function getActiveClients() {
   try {
     const result = await db.query(
@@ -55,85 +53,23 @@ async function getActiveClients() {
     );
     return result.rows.map((r) => r.client_id);
   } catch (err) {
-    console.error('[heartbeat] Failed to fetch active clients:', err.message);
+    logger.error('[heartbeat] Failed to fetch active clients:', err);
     return [];
   }
 }
 
-/**
- * Check if now is a special trigger time.
- */
 function getSpecialTriggers(now) {
   const triggers = [];
-  const day = now.getDay(); // 0=Sun, 1=Mon
+  const day = now.getDay();
   const hour = now.getHours();
   const date = now.getDate();
 
-  // Monday 9 AM → weekly report
-  if (day === 1 && hour === 9) {
-    triggers.push('weekly_report');
-  }
-
-  // 1st of month, 9 AM → monthly report
-  if (date === 1 && hour === 9) {
-    triggers.push('monthly_report');
-  }
+  if (day === 1 && hour === 9) triggers.push('weekly_report');
+  if (date === 1 && hour === 9) triggers.push('monthly_report');
 
   return triggers;
 }
 
-/**
- * Check milestones for a client against current metrics.
- */
-async function checkMilestones(clientId, metrics) {
-  const { milestones } = openclawConfig;
-  const crossed = [];
-
-  // ROAS targets
-  if (metrics.roas) {
-    for (const target of milestones.roasTargets) {
-      if (metrics.roas >= target) {
-        crossed.push({ type: 'roas_target', value: target, current: metrics.roas });
-      }
-    }
-  }
-
-  // Revenue targets
-  if (metrics.totalRevenue) {
-    for (const target of milestones.revenueTargets) {
-      if (metrics.totalRevenue >= target) {
-        crossed.push({ type: 'revenue_target', value: target, current: metrics.totalRevenue });
-      }
-    }
-  }
-
-  // Customer targets
-  if (metrics.customerCount) {
-    for (const target of milestones.customerTargets) {
-      if (metrics.customerCount >= target) {
-        crossed.push({ type: 'customer_target', value: target, current: metrics.customerCount });
-      }
-    }
-  }
-
-  // TODO: Deduplicate against already-celebrated milestones stored in client memory
-  // For now, log all crossed milestones and let actionCardService handle dedup
-
-  for (const m of crossed) {
-    await memoryService.appendDailyLog(
-      clientId,
-      `🏆 Milestone: ${m.type} crossed ${m.value} (current: ${m.current})`
-    );
-    // TODO: actionCardService.generateMilestoneCard(clientId, m)
-    // TODO: notificationService.sendMilestoneNotification(clientId, m)
-  }
-
-  return crossed;
-}
-
-/**
- * Detect phase boundaries based on config and metrics.
- */
 function detectPhaseBoundary(metrics) {
   const { phases } = openclawConfig;
   if (!metrics.daysActive) return null;
@@ -147,15 +83,16 @@ function detectPhaseBoundary(metrics) {
 }
 
 // ---------------------------------------------------------------------------
-// Core Heartbeat Logic
+// Core Heartbeat Logic — Now Effect-driven
 // ---------------------------------------------------------------------------
 
 /**
  * Process a single client's heartbeat cycle.
- * Isolated so one client's error doesn't affect others.
+ * Routes through module registry and emits effects.
  */
 async function processClient(clientId) {
   const startMs = Date.now();
+  const effects = [];
 
   // 1. Get metrics snapshot
   const metrics = await analyticsService.getClientMetricsSnapshot(clientId);
@@ -164,99 +101,203 @@ async function processClient(clientId) {
     return { clientId, skipped: true, reason: 'no_metrics' };
   }
 
-  // 2. Evaluate optimizer rules
-  const triggeredRules = await optimizerService.evaluateRules(metrics);
+  // 2. Find all modules that can evaluate metrics
+  const metricsModules = registry.getAllModules().filter(m => m.evaluateMetrics);
 
-  // 3. Assemble context for card generation
-  const context = await memoryService.assembleContext(clientId);
+  // 3. Evaluate rules across all modules
+  let allRules = [];
+  for (const mod of metricsModules) {
+    try {
+      const rules = await mod.evaluateMetrics(clientId, metrics);
+      if (rules && rules.length > 0) {
+        // Tag each rule with its source module
+        for (const rule of rules) {
+          rule._sourceModule = mod.name;
+        }
+        allRules.push(...rules);
+      }
+    } catch (err) {
+      logger.error(`[heartbeat] ${mod.name}.evaluateMetrics failed for ${clientId}:`, err);
+    }
+  }
 
-  // 4. Get client preferences for trust classification
+  // 4. Build agent context for card enrichment
+  let agentCtx = null;
+  try {
+    agentCtx = await agentContext.buildContext(clientId, 'analyzer', {
+      trigger: 'heartbeat',
+      metricsSnapshot: metrics,
+      rulesTriggered: allRules.length,
+    });
+  } catch (e) {
+    logger.warn(`[heartbeat] agentContext not available for ${clientId}: ${e.message}`);
+  }
+
+  // 5. Generate cards from rules (via modules or default actionCardService)
+  const results = { autoExecuted: [], queued: [], errors: [] };
   const clientPrefs = await memoryService.getUserPreferences(clientId);
 
-  // 5. Process each triggered rule
-  const results = { autoExecuted: [], queued: [], errors: [] };
-
-  for (const rule of (triggeredRules || [])) {
+  for (const rule of allRules) {
     try {
-      // Classify trust level
+      // Find the module that generated this rule
+      const mod = registry.getModule(rule._sourceModule);
+      let cards = [];
+
+      if (mod && mod.generateCards) {
+        cards = await mod.generateCards(clientId, [rule], {
+          clientPrefs,
+          agentContext: agentCtx,
+        });
+      }
+
+      if (!cards || cards.length === 0) continue;
+      const card = cards[0];
+
+      // 6. Trust classification
       const classification = permissionService.classifyAction(
-        rule.actionType || rule.type,
+        rule.actionType || rule.type || rule.rule,
         { ...rule.params, ...metrics },
         clientPrefs
       );
 
-      // TODO: Generate action card via actionCardService
-      // const card = await actionCardService.generateCard({
-      //   clientId,
-      //   rule,
-      //   classification,
-      //   context,
-      //   metrics,
-      // });
-
       if (classification.trustLevel === 'L1' || classification.emergency) {
-        // L1 → auto-execute
+        // L1 → auto-execute via effect
         if (permissionService.canAutoExecute({
-          actionType: rule.actionType || rule.type,
+          actionType: rule.actionType || rule.type || rule.rule,
           params: { ...rule.params, ...metrics },
           clientId,
           clientPrefs,
         })) {
-          // TODO: await actionCardService.executeCard(card);
+          // Emit auto-action effect
+          effects.push(new Effect(EffectType.AUTO_ACTION_TAKEN, {
+            card,
+            rule,
+            action: rule.actionType || rule.type || rule.rule,
+            targetId: rule.targetId || rule.campaignId,
+            reason: classification.reason,
+            trustLevel: 'L1',
+          }, { source: rule._sourceModule || 'analyzer', clientId }));
+
           permissionService.incrementDailyCount(clientId);
           results.autoExecuted.push(rule);
-
-          await memoryService.appendDailyLog(
-            clientId,
-            `✅ L1 auto-executed: ${rule.actionType || rule.type} — ${classification.reason}`
-          );
         } else {
-          // Daily limit reached — queue instead
+          // Daily limit reached — queue
+          effects.push(new Effect(EffectType.CARD_QUEUED, {
+            card,
+            rule,
+            reason: 'L1 daily limit reached',
+            trustLevel: 'L1',
+          }, { source: rule._sourceModule || 'analyzer', clientId }));
           results.queued.push(rule);
-          await memoryService.appendDailyLog(
-            clientId,
-            `⏸️ L1 daily limit reached, queued: ${rule.actionType || rule.type}`
-          );
         }
       } else {
-        // L2/L3 → queue in DB + trigger notification
-        // TODO: await actionCardService.queueCard(card);
-        // TODO: await notificationService.notify(clientId, card);
+        // L2/L3 → queue and notify
+        effects.push(new Effect(EffectType.CARD_QUEUED, {
+          card,
+          rule,
+          reason: classification.reason,
+          trustLevel: classification.trustLevel,
+        }, { source: rule._sourceModule || 'analyzer', clientId }));
         results.queued.push(rule);
-
-        await memoryService.appendDailyLog(
-          clientId,
-          `📋 ${classification.trustLevel} queued: ${rule.actionType || rule.type} — ${classification.reason}`
-        );
       }
     } catch (ruleErr) {
       results.errors.push({ rule: rule.actionType || rule.type, error: ruleErr.message });
-      console.error(`[heartbeat] Rule error for client ${clientId}:`, ruleErr.message);
+      effects.push(new Effect(EffectType.ERROR_OCCURRED, {
+        action: 'heartbeat_rule',
+        rule: rule.actionType || rule.type,
+        error: ruleErr.message,
+      }, { source: rule._sourceModule || 'analyzer', clientId }));
     }
   }
 
-  // 6. Check milestones
-  const milestones = await checkMilestones(clientId, metrics);
-
-  // 7. Phase boundary detection
-  const phaseBoundary = detectPhaseBoundary(metrics);
-  if (phaseBoundary) {
-    await memoryService.appendDailyLog(
-      clientId,
-      `🔄 Phase boundary detected: ${phaseBoundary.from} → ${phaseBoundary.to}`
-    );
-    // TODO: actionCardService.generateCard({ clientId, rule: { type: 'phase_transition', ...phaseBoundary }, ... })
-    // TODO: notificationService.notify(clientId, phaseCard)
+  // 7. Check milestones
+  const milestones = checkMilestones(clientId, metrics);
+  for (const m of milestones) {
+    effects.push(new Effect(EffectType.MILESTONE_REACHED, {
+      type: m.type,
+      title: `${m.type} reached ${m.value}`,
+      value: m.current,
+      target: m.value,
+    }, { source: 'analyzer', clientId }));
   }
 
-  // 8. Summary log
+  // 8. Phase boundary detection
+  const phaseBoundary = detectPhaseBoundary(metrics);
+  if (phaseBoundary) {
+    effects.push(new Effect(EffectType.PHASE_TRANSITIONED, {
+      from: phaseBoundary.from,
+      to: phaseBoundary.to,
+      label: phaseBoundary.to.charAt(0).toUpperCase() + phaseBoundary.to.slice(1),
+    }, { source: 'analyzer', clientId }));
+  }
+
+  // 9. Process ALL effects through unified pipeline
+  const pipelineResult = await pipeline.process(effects, { clientId, metrics });
+
+  if (pipelineResult.errors.length > 0) {
+    logger.warn(`[heartbeat] ${pipelineResult.errors.length} pipeline errors for ${clientId}:`, 
+      pipelineResult.errors.slice(0, 3));
+  }
+
+  // 10. Structured heartbeat log
   const elapsed = Date.now() - startMs;
+  await memoryService.appendDailyLog(clientId, {
+    type: 'heartbeat',
+    timestamp: new Date().toISOString(),
+    metricsSnapshot: {
+      roas: metrics.blendedRoas || metrics.roas,
+      spend: metrics.totals?.spend || metrics.spend,
+      budget: metrics.totals?.dailyBudget || metrics.dailyBudget,
+    },
+    rulesTriggered: allRules.length,
+    effectsEmitted: effects.length,
+    autoExecuted: results.autoExecuted.length,
+    queued: results.queued.length,
+    milestones: milestones.length,
+    phaseBoundary: phaseBoundary ? `${phaseBoundary.from} → ${phaseBoundary.to}` : null,
+    elapsedMs: elapsed,
+  });
+
   await memoryService.appendDailyLog(
     clientId,
-    `💓 Heartbeat complete: ${results.autoExecuted.length} auto, ${results.queued.length} queued, ${results.errors.length} errors, ${milestones.length} milestones (${elapsed}ms)`
+    `💓 Heartbeat: ${effects.length} effects (${results.autoExecuted.length} auto, ${results.queued.length} queued, ${milestones.length} milestones) [${elapsed}ms]`
   );
 
-  return { clientId, results, milestones, phaseBoundary, elapsedMs: elapsed };
+  return { clientId, results, milestones, phaseBoundary, effects: effects.length, elapsedMs: elapsed };
+}
+
+/**
+ * Check milestones — pure function, no side effects
+ */
+function checkMilestones(clientId, metrics) {
+  const { milestones } = openclawConfig;
+  const crossed = [];
+
+  if (metrics.roas) {
+    for (const target of milestones.roasTargets) {
+      if (metrics.roas >= target) {
+        crossed.push({ type: 'roas_target', value: target, current: metrics.roas });
+      }
+    }
+  }
+
+  if (metrics.totalRevenue) {
+    for (const target of milestones.revenueTargets) {
+      if (metrics.totalRevenue >= target) {
+        crossed.push({ type: 'revenue_target', value: target, current: metrics.totalRevenue });
+      }
+    }
+  }
+
+  if (metrics.customerCount) {
+    for (const target of milestones.customerTargets) {
+      if (metrics.customerCount >= target) {
+        crossed.push({ type: 'customer_target', value: target, current: metrics.customerCount });
+      }
+    }
+  }
+
+  return crossed;
 }
 
 /**
@@ -264,67 +305,59 @@ async function processClient(clientId) {
  */
 async function runHeartbeat() {
   if (isRunning) {
-    console.warn('[heartbeat] Already running — skipping overlapping cycle.');
+    logger.warn('[heartbeat] Already running — skipping.');
     return;
   }
 
   isRunning = true;
   const cycleStart = new Date();
-  console.log(`[heartbeat] Starting cycle at ${cycleStart.toISOString()}`);
+  logger.info(`[heartbeat] Starting cycle at ${cycleStart.toISOString()}`);
 
   try {
     const clientIds = await getActiveClients();
     if (!clientIds.length) {
-      console.log('[heartbeat] No active clients found.');
+      logger.info('[heartbeat] No active clients.');
       lastRunTime = cycleStart;
       return;
     }
 
-    // Check special triggers
     const specialTriggers = getSpecialTriggers(cycleStart);
+    const isSunday = cycleStart.getDay() === 0;
+    const isMorning = cycleStart.getHours() >= 6 && cycleStart.getHours() < 12;
 
-    // Process each client — isolated error handling
-    const clientResults = [];
     let alertCount = 0;
 
     for (const clientId of clientIds) {
       try {
         const result = await processClient(clientId);
-        clientResults.push(result);
         if (result.results) {
           alertCount += result.results.queued.length;
         }
-      } catch (clientErr) {
-        console.error(`[heartbeat] Client ${clientId} failed:`, clientErr.message);
-        clientResults.push({ clientId, error: clientErr.message });
 
-        // Log the failure but continue with other clients
+        // Weekly memory compaction on Sunday mornings
+        if (isSunday && isMorning) {
+          try {
+            await memoryService.compactMemory(clientId);
+            await memoryService.appendDailyLog(clientId, '🗂️ Weekly memory compaction completed');
+          } catch (compactErr) {
+            logger.error(`[heartbeat] Memory compaction failed for ${clientId}:`, compactErr);
+          }
+        }
+      } catch (clientErr) {
+        logger.error(`[heartbeat] Client ${clientId} failed:`, clientErr);
         try {
-          await memoryService.appendDailyLog(
-            clientId,
-            `❌ Heartbeat failed: ${clientErr.message}`
-          );
+          await memoryService.appendDailyLog(clientId, `❌ Heartbeat failed: ${clientErr.message}`);
         } catch { /* best effort */ }
       }
     }
 
-    // Handle special triggers for all clients
+    // Special triggers (weekly/monthly reports)
     for (const trigger of specialTriggers) {
       for (const clientId of clientIds) {
         try {
-          if (trigger === 'weekly_report') {
-            // TODO: const report = await reportService.generateWeeklyReport(clientId);
-            // TODO: const card = await actionCardService.generateReportCard(clientId, 'weekly', report);
-            // TODO: await notificationService.notify(clientId, card);
-            await memoryService.appendDailyLog(clientId, '📊 Weekly report triggered');
-          } else if (trigger === 'monthly_report') {
-            // TODO: const report = await reportService.generateMonthlyReport(clientId);
-            // TODO: const card = await actionCardService.generateReportCard(clientId, 'monthly', report);
-            // TODO: await notificationService.notify(clientId, card);
-            await memoryService.appendDailyLog(clientId, '📊 Monthly report triggered');
-          }
+          await handleSpecialTrigger(trigger, clientId);
         } catch (triggerErr) {
-          console.error(`[heartbeat] ${trigger} failed for ${clientId}:`, triggerErr.message);
+          logger.error(`[heartbeat] ${trigger} failed for ${clientId}:`, triggerErr);
         }
       }
     }
@@ -333,11 +366,38 @@ async function runHeartbeat() {
     lastRunTime = cycleStart;
 
     const elapsed = Date.now() - cycleStart.getTime();
-    console.log(
-      `[heartbeat] Cycle complete: ${clientIds.length} clients, ${alertCount} alerts, ${elapsed}ms`
-    );
+    logger.info(`[heartbeat] Cycle complete: ${clientIds.length} clients, ${alertCount} alerts, ${elapsed}ms`);
   } finally {
     isRunning = false;
+  }
+}
+
+/**
+ * Handle weekly/monthly report triggers via effect pipeline
+ */
+async function handleSpecialTrigger(trigger, clientId) {
+  const effects = [];
+
+  if (trigger === 'weekly_report') {
+    const report = await reportService.generateWeeklyReport(clientId);
+    effects.push(new Effect(EffectType.MILESTONE_REACHED, {
+      type: 'weekly_report',
+      title: 'Weekly Performance Report',
+      report,
+      period: 'weekly',
+    }, { source: 'analyzer', clientId }));
+  } else if (trigger === 'monthly_report') {
+    const report = await reportService.generateMonthlyReport(clientId);
+    effects.push(new Effect(EffectType.MILESTONE_REACHED, {
+      type: 'monthly_report',
+      title: 'Monthly Performance Report',
+      report,
+      period: 'monthly',
+    }, { source: 'analyzer', clientId }));
+  }
+
+  if (effects.length > 0) {
+    await pipeline.process(effects, { clientId });
   }
 }
 
@@ -345,59 +405,51 @@ async function runHeartbeat() {
 // Public API
 // ---------------------------------------------------------------------------
 
-/**
- * Start the heartbeat cron loop.
- */
 function start() {
   if (cronTask) {
-    console.warn('[heartbeat] Already started.');
+    logger.warn('[heartbeat] Already started.');
     return;
   }
+
+  // Ensure modules are registered
+  const modules = registry.getAllModules();
+  const metricsModules = modules.filter(m => m.evaluateMetrics);
+  logger.info(`[heartbeat] ${modules.length} modules registered, ${metricsModules.length} have evaluateMetrics`);
 
   const intervalMin = openclawConfig.heartbeat.intervalMin || 30;
   const cronExpr = `*/${intervalMin} * * * *`;
 
   cronTask = cron.schedule(cronExpr, () => {
     runHeartbeat().catch((err) => {
-      console.error('[heartbeat] Unhandled error in cycle:', err);
+      logger.error('[heartbeat] Unhandled error:', err);
     });
   });
 
-  console.log(`[heartbeat] Started with schedule: ${cronExpr}`);
+  logger.info(`[heartbeat] Started: ${cronExpr} (every ${intervalMin}min)`);
 }
 
-/**
- * Stop the heartbeat cron loop.
- */
 function stop() {
   if (cronTask) {
     cronTask.stop();
     cronTask = null;
-    console.log('[heartbeat] Stopped.');
+    logger.info('[heartbeat] Stopped.');
   }
 }
 
-/**
- * Manually trigger a heartbeat for a single client.
- * @param {string} clientId
- * @returns {Promise<Object>} Result of the single-client heartbeat
- */
 async function triggerNow(clientId) {
-  console.log(`[heartbeat] Manual trigger for client: ${clientId}`);
+  logger.info(`[heartbeat] Manual trigger for: ${clientId}`);
   return processClient(clientId);
 }
 
-/**
- * Get current heartbeat status.
- * @returns {Object} Status info
- */
 function getStatus() {
   const intervalMin = openclawConfig.heartbeat.intervalMin || 30;
   let nextRun = null;
-
   if (lastRunTime) {
     nextRun = new Date(lastRunTime.getTime() + intervalMin * 60 * 1000);
   }
+
+  const modules = registry.getAllModules();
+  const metricsModules = modules.filter(m => m.evaluateMetrics);
 
   return {
     running: !!cronTask,
@@ -406,6 +458,8 @@ function getStatus() {
     nextRun: nextRun ? nextRun.toISOString() : null,
     activeAlertCount,
     intervalMin,
+    modulesRegistered: modules.length,
+    metricsModules: metricsModules.map(m => m.name),
   };
 }
 
@@ -414,7 +468,6 @@ module.exports = {
   stop,
   triggerNow,
   getStatus,
-  // Expose for testing
   _internals: {
     runHeartbeat,
     processClient,

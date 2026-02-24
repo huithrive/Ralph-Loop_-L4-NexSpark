@@ -92,7 +92,7 @@ const CARD_TEMPLATES = {
     cardType: 'emergency_pause',
     severity: 'critical',
     title: 'We paused your ads to protect your budget',
-    body: 'Your ad spend was running far ahead of plan — more than double the daily target. We hit the brakes to make sure you don't overspend.',
+    body: 'Your ad spend was running far ahead of plan - more than double the daily target. We hit the brakes to make sure you don\'t overspend.',
     impact: 'Prevents unexpected charges on your ad account',
     actionType: 'pause_campaign',
   },
@@ -151,7 +151,8 @@ const CARD_TEMPLATES = {
 // ---------------------------------------------------------------------------
 
 function resolveTemplateKey(rule) {
-  const { type, severity } = rule;
+  const type = rule.type || rule.rule; // optimizerService uses 'rule', our mock uses 'type'
+  const severity = rule.severity;
 
   if (type === 'low_roas') {
     return severity === 'critical' ? 'low_roas_critical' : 'low_roas_warning';
@@ -246,11 +247,11 @@ function rowToActionCard(row) {
  * Generate ActionCards from triggered optimizer rules.
  *
  * @param {Array<Object>} triggeredRules - e.g. [{ type: 'low_roas', severity: 'critical', targetId: '...', params: {...}, metrics: {...} }]
- * @param {Object} clientContext - { clientId, clientPrefs, heartbeatId }
+ * @param {Object} clientContext - { clientId, clientPrefs, heartbeatId, agentContext (optional) }
  * @returns {Promise<ActionCard[]>}
  */
 async function generateCards(triggeredRules, clientContext) {
-  const { clientId, clientPrefs, heartbeatId } = clientContext;
+  const { clientId, clientPrefs, heartbeatId, agentContext } = clientContext;
   const cards = [];
 
   for (const rule of triggeredRules) {
@@ -280,11 +281,31 @@ async function generateCards(triggeredRules, clientContext) {
       impact: template.impact,
       action: {
         type: actionType,
-        targetId: rule.targetId || null,
-        params: rule.params || {},
+        targetId: rule.targetId || rule.campaignId || null,
+        params: rule.params || { current: rule.current, threshold: rule.threshold, message: rule.message },
       },
       heartbeatId: heartbeatId || null,
     });
+
+    // Enrich card with agent context if available (Phase D.2)
+    if (agentContext) {
+      try {
+        const agentContextModule = require('./agentContext');
+        const enriched = agentContextModule.enrichCardWithContext(card, agentContext);
+        if (enriched.body) card.body = enriched.body;
+        if (enriched.cause) {
+          // Store cause in action params for now (until cause column is added to DB)
+          card.action.params.cause = enriched.cause;
+        }
+        if (enriched.attribution) {
+          card.action.params.attribution = enriched.attribution;
+        }
+        logger.info(`[actionCardService] Card ${card.id} enriched with agent context`);
+      } catch (e) {
+        // agentContext module not available yet — skip enrichment
+        logger.debug(`[actionCardService] agentContext not available for enrichment: ${e.message}`);
+      }
+    }
 
     // If emergency flag, auto-execute immediately
     if (classification.emergency) {
@@ -302,50 +323,82 @@ async function generateCards(triggeredRules, clientContext) {
 }
 
 /**
- * Execute a card's action (stub — logs and returns mock result).
+ * Execute a card's action — now wired to real services via executionBridge.
  *
  * @param {ActionCard|Object} card
  * @returns {Promise<Object>} execution result
  */
 async function executeCard(card) {
   const actionType = card.action?.type || card.action_type;
+  const targetId = card.action?.targetId || card.action_target_id;
+  const params = card.action?.params || card.action_params || {};
+  const clientId = card.clientId || card.client_id;
 
   if (!actionType) {
     logger.info(`[actionCardService] Card ${card.id} has no action type — informational only.`);
     return { success: true, mock: true, skipped: true, reason: 'informational' };
   }
 
-  logger.info(`[actionCardService] Executing card ${card.id} — action: ${actionType}, target: ${card.action?.targetId || card.action_target_id}`);
+  logger.info(`[actionCardService] Executing card ${card.id} — action: ${actionType}, target: ${targetId}`);
 
-  // Stub: switch on action type for future wiring
-  switch (actionType) {
-    case 'pause_campaign':
-      logger.info(`[actionCardService] STUB: Would pause campaign ${card.action?.targetId}`);
-      break;
-    case 'pause_ad_set':
-      logger.info(`[actionCardService] STUB: Would pause ad set ${card.action?.targetId}`);
-      break;
-    case 'adjust_budget':
-      logger.info(`[actionCardService] STUB: Would adjust budget for ${card.action?.targetId}`, card.action?.params);
-      break;
-    case 'creative_swap':
-      logger.info(`[actionCardService] STUB: Would swap creative for ${card.action?.targetId}`);
-      break;
-    case 'neg_keywords':
-      logger.info(`[actionCardService] STUB: Would add negative keywords for ${card.action?.targetId}`);
-      break;
-    case 'phase_transition':
-      logger.info(`[actionCardService] STUB: Would transition phase for client`);
-      break;
-    default:
-      logger.info(`[actionCardService] STUB: Unknown action type "${actionType}" — no-op`);
+  const executionBridge = require('./executionBridge');
+  let result;
+
+  // Wire to real services via executionBridge
+  try {
+    switch (actionType) {
+      case 'pause_campaign':
+        result = await executionBridge.pauseEntity(clientId, targetId, 'campaign');
+        break;
+
+      case 'pause_ad_set':
+        result = await executionBridge.pauseEntity(clientId, targetId, 'ad_set');
+        break;
+
+      case 'adjust_budget':
+        result = await executionBridge.adjustBudget(clientId, targetId, params.newBudget);
+        break;
+
+      case 'creative_swap':
+        result = await executionBridge.swapCreative(clientId, targetId, params.newCreativeId);
+        break;
+
+      case 'neg_keywords':
+        result = await executionBridge.addNegativeKeywords(clientId, targetId, params.keywords);
+        break;
+
+      case 'phase_transition':
+        result = await executionBridge.transitionPhase(clientId, params);
+        break;
+
+      default:
+        logger.warn(`[actionCardService] Unknown action type "${actionType}" — no-op`);
+        result = { success: false, error: `Unknown action type: ${actionType}` };
+    }
+
+    // Handle pending status (methods not yet implemented)
+    if (result.pending) {
+      await updateCardStatus(card.id, 'execution_pending', { executedAt: new Date() });
+      logger.warn(`[actionCardService] Card ${card.id} marked as execution_pending: ${result.message}`);
+      return result;
+    }
+
+    // Mark as executed in DB
+    if (result.success) {
+      await updateCardStatus(card.id, 'executed', { executedAt: new Date() });
+      logger.info(`[actionCardService] Card ${card.id} executed successfully`);
+    } else {
+      await updateCardStatus(card.id, 'execution_failed', { executedAt: new Date() });
+      logger.error(`[actionCardService] Card ${card.id} execution failed: ${result.error}`);
+    }
+
+    return result;
+
+  } catch (error) {
+    logger.error(`[actionCardService] Execution error for card ${card.id}`, error);
+    await updateCardStatus(card.id, 'execution_failed', { executedAt: new Date() });
+    return { success: false, error: error.message };
   }
-
-  // Mark executed in DB
-  const cardId = card.id;
-  await updateCardStatus(cardId, 'executed', { executedAt: new Date() });
-
-  return { success: true, mock: true };
 }
 
 /**

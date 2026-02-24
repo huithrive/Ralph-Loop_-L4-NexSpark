@@ -79,12 +79,9 @@ app.get('/api/health', async (req, res) => {
 });
 
 // API routes - Strategist Module
-const researchRoutes = require('./api/strategist/research');
-const interviewRoutes = require('./api/strategist/interview');
-const reportRoutes = require('./api/strategist/reports');
-app.use('/api/strategist', researchRoutes);
-app.use('/api/strategist/interview', interviewRoutes);
-app.use('/api/strategist/reports', reportRoutes);
+// Strategist Part I baseline is proxied to an external runtime (backend/strategist package).
+const { createStrategistProxyRouter } = require('./api/strategistProxy');
+app.use('/api/strategist', createStrategistProxyRouter());
 
 // API routes - Executor Module
 const landingPageRoutes = require('./api/executor/landingPages');
@@ -173,14 +170,7 @@ async function startServer() {
       console.log(`📊 Environment: ${process.env.NODE_ENV}`);
       console.log('\n📋 Available endpoints:');
       console.log('   GET  /api/health - Health check');
-      console.log('   POST /api/strategist/research - Market research');
-      console.log('   GET  /api/strategist/research/:id - Get research');
-      console.log('   POST /api/strategist/interview/start - Start interview');
-      console.log('   POST /api/strategist/interview/:id/respond - Submit response');
-      console.log('   POST /api/strategist/interview/:id/complete - Complete interview');
-      console.log('   POST /api/strategist/reports/generate - Generate GTM report');
-      console.log('   POST /api/strategist/reports/preview - Generate report preview');
-      console.log('   GET  /api/strategist/reports/health - Report service health');
+      console.log('   ALL  /api/strategist/* - Proxied to STRATEGIST_RUNTIME_URL');
       console.log('   POST /api/executor/creative/generate - Generate video from image');
       console.log('   GET  /api/executor/creative/:id - Get creative details');
       console.log('   GET  /api/executor/creative/:id/status - Poll status updates');
