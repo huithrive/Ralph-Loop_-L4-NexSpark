@@ -1,0 +1,13 @@
+<div class="chapter-progress" id="chapterProgress">
+  <% chapters.forEach(function(ch, i) { %>
+    <div class="progress-node upcoming locked" data-chapter="<%= ch.id %>" onclick="goToChapter(<%= ch.id %>)">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="progress-dot"><%= ch.icon %></div>
+        <div class="progress-label"><%= ch.short %></div>
+      </div>
+    </div>
+    <% if (i < chapters.length - 1) { %>
+      <div class="progress-connector" data-after="<%= ch.id %>"></div>
+    <% } %>
+  <% }); %>
+</div>

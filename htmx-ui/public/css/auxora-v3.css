@@ -4713,3 +4713,203 @@ body.pro-mode .v3-pro-detail {
     print-color-adjust: exact;
   }
 }
+
+/* ── Agent Attribution Badge ─────────────────────────────── */
+.v3-card-attribution {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #999;
+  margin-top: 4px;
+  padding: 2px 8px;
+  background: #F5F0EB;
+  border-radius: 10px;
+}
+.v3-attr-icon { 
+  font-size: 12px; 
+}
+.v3-attr-label {
+  font-weight: 500;
+}
+
+/* ── Monitor Tab Red Dot Indicator ─────────────────────────── */
+.v3-tab-dot {
+  display: none;
+  width: 8px;
+  height: 8px;
+  background: #D64545;
+  border-radius: 50%;
+  margin-left: 4px;
+  animation: pulse-dot 1.5s infinite;
+  vertical-align: middle;
+}
+
+@keyframes pulse-dot { 
+  0%, 100% { opacity: 1; } 
+  50% { opacity: 0.3; } 
+}
+
+/* ── OpenClaw Pending Cards (v0.2 Pattern) ─────────────────── */
+.v3-openclaw-pending-section {
+  margin: 20px 0;
+}
+
+.v3-openclaw-pending-section h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1C1917;
+  margin-bottom: 12px;
+}
+
+.v3-openclaw-pending-card {
+  background: white;
+  border: 1px solid #E7E5E4;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.v3-openclaw-pending-card:hover {
+  border-color: #BF6744;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transform: translateX(2px);
+}
+
+.v3-openclaw-pending-card.severity-critical {
+  border-left: 4px solid #DC2626;
+}
+
+.v3-openclaw-pending-card.severity-warning {
+  border-left: 4px solid #EA580C;
+}
+
+.v3-openclaw-pending-card.severity-info {
+  border-left: 4px solid #2563EB;
+}
+
+.v3-openclaw-pending-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1C1917;
+  margin-bottom: 4px;
+}
+
+.v3-openclaw-pending-summary {
+  font-size: 12px;
+  color: #78716C;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.v3-openclaw-tap-hint {
+  font-size: 11px;
+  color: #BF6744;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.v3-openclaw-no-pending {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 14px;
+  color: #78716C;
+}
+
+.v3-openclaw-loading {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 14px;
+  color: #78716C;
+  animation: pulse 1.5s infinite;
+}
+
+/* ── Card Detail View ─────────────────────────── */
+.v3-card-detail-view {
+  padding: 20px;
+}
+
+.v3-card-detail-header {
+  margin-bottom: 20px;
+}
+
+.v3-card-detail-back {
+  background: transparent;
+  border: 1px solid #E7E5E4;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1C1917;
+  transition: all 0.2s ease;
+}
+
+.v3-card-detail-back:hover {
+  border-color: #BF6744;
+  color: #BF6744;
+}
+
+.v3-card-detail-content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1C1917;
+  margin-bottom: 12px;
+}
+
+.v3-card-detail-body,
+.v3-card-detail-cause,
+.v3-card-detail-rec,
+.v3-card-detail-impact {
+  margin: 12px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #44403C;
+}
+
+.v3-card-detail-cause strong,
+.v3-card-detail-rec strong,
+.v3-card-detail-impact strong {
+  color: #1C1917;
+  font-weight: 600;
+}
+
+.v3-card-detail-metrics {
+  margin: 20px 0;
+  padding: 16px;
+  background: #FAF7F4;
+  border-radius: 8px;
+}
+
+.v3-card-detail-metrics h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1C1917;
+  margin-bottom: 12px;
+}
+
+.v3-metric-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #E7E5E4;
+}
+
+.v3-metric-row:last-child {
+  border-bottom: none;
+}
+
+.v3-metric-label {
+  font-size: 13px;
+  color: #78716C;
+}
+
+.v3-metric-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1C1917;
+}

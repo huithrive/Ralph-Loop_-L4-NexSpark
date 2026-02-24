@@ -1,0 +1,113 @@
+<div class="chapter-content" id="chapter-6">
+  <h2 class="chapter-title">Launch & Testing</h2>
+  <p class="chapter-subtitle">Week 1-2 performance, audience breakdown, and learning phase</p>
+
+  <!-- Week 1-2 Performance Table -->
+  <div class="v2-card">
+    <div class="v2-card-header">📈 Weekly Performance — Weeks 1-2</div>
+    <div class="v2-card-body">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Week</th><th>Phase</th><th class="num">Spend</th><th class="num">Impr.</th>
+            <th class="num">CPM</th><th class="num">Clicks</th><th class="num">CTR</th>
+            <th class="num">CPC</th><th class="num">ATC</th><th class="num">Purch.</th>
+            <th class="num">CPA</th><th class="num">GMV</th><th class="num">ROAS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.weeks.forEach(function(w) { %>
+            <tr>
+              <td><strong>Wk <%= w.week %></strong></td>
+              <td><span class="status-badge <%= w.status %>"><%= w.phase %></span></td>
+              <td class="num">$<%= w.metrics.spend.toFixed(2) %></td>
+              <td class="num"><%= w.metrics.impressions.toLocaleString() %></td>
+              <td class="num">$<%= w.metrics.cpm.toFixed(2) %></td>
+              <td class="num"><%= w.metrics.clicks %></td>
+              <td class="num"><%= w.metrics.ctr %></td>
+              <td class="num">$<%= w.metrics.cpc.toFixed(2) %></td>
+              <td class="num"><%= w.metrics.addToCart %></td>
+              <td class="num highlight-cell"><%= w.metrics.purchases %></td>
+              <td class="num">$<%= w.metrics.cpa.toFixed(2) %></td>
+              <td class="num">$<%= w.metrics.gmv.toFixed(2) %></td>
+              <td class="num <%= w.metrics.roas >= 1.5 ? 'success-cell' : 'highlight-cell' %>"><%= w.metrics.roas.toFixed(2) %>x</td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- By Audience -->
+  <div class="v2-card">
+    <div class="v2-card-header">👥 By Audience Breakdown</div>
+    <div class="v2-card-body">
+      <table class="data-table">
+        <thead>
+          <tr><th>Audience</th><th class="num">Spend</th><th class="num">Purchases</th><th class="num">ROAS</th><th class="num">CPA</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <% data.byAudience.forEach(function(a) { %>
+            <tr>
+              <td><%= a.name %></td>
+              <td class="num">$<%= a.spend.toFixed(2) %></td>
+              <td class="num"><%= a.purchases %></td>
+              <td class="num <%= a.roas >= 1.5 ? 'success-cell' : (a.roas < 1 ? 'danger-cell' : '') %>"><%= a.roas.toFixed(2) %>x</td>
+              <td class="num">$<%= a.cpa.toFixed(2) %></td>
+              <td><span class="tag <%= a.verdict === 'Top performer' ? 'tag-winner' : (a.verdict === 'Strong intent' ? 'tag-decent' : 'tag-underperforming') %>"><%= a.verdict %></span></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- By Creative -->
+  <div class="v2-card">
+    <div class="v2-card-header">🎬 By Creative Breakdown</div>
+    <div class="v2-card-body">
+      <table class="data-table">
+        <thead>
+          <tr><th>Creative</th><th class="num">Impressions</th><th class="num">CTR</th><th class="num">Purchases</th><th class="num">ROAS</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <% data.byCreative.forEach(function(c) { %>
+            <tr>
+              <td><%= c.name %></td>
+              <td class="num"><%= c.impressions.toLocaleString() %></td>
+              <td class="num"><%= c.ctr %></td>
+              <td class="num"><%= c.purchases %></td>
+              <td class="num <%= c.roas >= 1.5 ? 'success-cell' : (c.roas < 1 ? 'danger-cell' : '') %>"><%= c.roas.toFixed(2) %>x</td>
+              <td><span class="tag tag-<%= c.verdict.toLowerCase() %>"><%= c.verdict %></span></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Analysis -->
+  <div class="v2-card">
+    <div class="v2-card-header">📝 Weekly Analysis</div>
+    <div class="v2-card-body">
+      <div style="font-size:0.875rem;color:#44403C;line-height:1.6;margin-bottom:12px;">
+        <%= data.analysis.en %>
+      </div>
+      <div style="font-size:0.8125rem;color:#78716C;line-height:1.6;font-style:italic;">
+        <%= data.analysis.zh %>
+      </div>
+    </div>
+  </div>
+
+  <!-- OpenClaw Actions -->
+  <div class="v2-card">
+    <div class="v2-card-header">🤖 OpenClaw Autonomous Actions</div>
+    <div class="v2-card-body">
+      <ul class="action-log">
+        <% data.openclawActions.forEach(function(a) { %>
+          <li><span style="color:#F59E0B;font-weight:700;">⚡</span> <span class="action-text"><%= a %></span></li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+</div>

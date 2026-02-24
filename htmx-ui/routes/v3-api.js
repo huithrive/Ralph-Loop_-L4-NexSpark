@@ -5,7 +5,10 @@
 
 var express = require('express');
 var router = express.Router();
-var chat = require('../services/auxora-chat');
+// Initialize OpenClaw module system
+require('../../backend/services/openclaw/init');
+// Use OpenClaw chatRouter (drop-in replacement for auxora-chat)
+var chat = require('../../backend/services/openclaw/chatRouter');
 var v3Data = require('../data/auxora-v3-data');
 
 // Helper: stream async generator as SSE events
@@ -42,6 +45,9 @@ function mockResponse(res, data, delayMs) {
     res.json(data);
   }, delayMs || 300);
 }
+
+// Enable JSON body parsing for POST requests
+router.use(express.json());
 
 // ═══════════════════════════════════════════════════════════════
 // CHAT SESSION ENDPOINTS (existing)
@@ -337,52 +343,54 @@ router.get('/api/analyzer/campaigns/learning-status', function(req, res) {
 // ANALYZER API — OpenClaw Monitoring
 // ═══════════════════════════════════════════════════════════════
 
-// GET /api/analyzer/openclaw/health — Monitoring status
-router.get('/api/analyzer/openclaw/health', function(req, res) {
-  mockResponse(res, {
-    status: 'active',
-    lastCheck: new Date(Date.now() - 8 * 60000).toISOString(),
-    nextCheck: new Date(Date.now() + 22 * 60000).toISOString(),
-    activeAlerts: 0,
-    todayActions: 1,
-    uptime: '99.8%',
-    monitoring: [
-      'Cost per customer across all audiences',
-      'Click rates on all ad creatives',
-      'Tracking pixel health & data accuracy',
-      'Budget pacing (spending too fast or too slow)'
-    ]
-  });
+// GET /api/analyzer/openclaw/health — Monitoring status (REAL BACKEND)
+router.get('/api/analyzer/openclaw/health', async function(req, res) {
+  try {
+    const heartbeatLoop = require('../../backend/services/openclaw/heartbeatLoop');
+    const status = heartbeatLoop.getStatus();
+    res.json(status);
+  } catch(e) {
+    console.error('[OpenClaw Health] Error:', e.message);
+    res.json({ status: 'inactive', error: e.message });
+  }
 });
 
-// GET /api/analyzer/openclaw/actions — Auto-action log
-router.get('/api/analyzer/openclaw/actions', function(req, res) {
-  mockResponse(res, {
-    actions: [
-      { id: 'act_1', time: '2:14 PM', title: 'Added 12 Negative Keywords', impact: '$45/week savings', type: 'keywords', reversible: true },
-      { id: 'act_2', time: 'Yesterday 3:22 PM', title: 'Adjusted Shopping bid strategy', impact: '+8% impression share', type: 'bidding', reversible: true },
-      { id: 'act_3', time: '2 days ago', title: 'Paused underperforming ad variant', impact: '$12/week savings', type: 'creative', reversible: true }
-    ],
-    totalActions: 23,
-    totalSavings: '$340/month',
-    totalAdditionalRevenue: '$1,200/month estimated'
-  });
+// GET /api/analyzer/openclaw/actions — Auto-action log (REAL BACKEND)
+router.get('/api/analyzer/openclaw/actions', async function(req, res) {
+  try {
+    const actionCardService = require('../../backend/services/openclaw/actionCardService');
+    const clientId = req.query.clientId || 'demo';
+    const cards = await actionCardService.getActiveCards(clientId);
+    const history = await actionCardService.getCardHistory(clientId, 7);
+    res.json({ active: cards, history: history, total: history.length });
+  } catch(e) {
+    console.error('[OpenClaw Actions] Error:', e.message);
+    res.json({ active: [], history: [], error: e.message });
+  }
 });
 
 // ═══════════════════════════════════════════════════════════════
 // ANALYZER API — Recommendations & Alerts
 // ═══════════════════════════════════════════════════════════════
 
-// POST /api/analyzer/recommendations/approve — Approve optimization
-router.post('/api/analyzer/recommendations/approve', function(req, res) {
-  var body = req.body || {};
-  mockResponse(res, {
-    status: 'approved',
-    recommendationId: body.recommendationId || 'rec_' + Date.now(),
-    action: body.action || 'approved',
-    appliedAt: new Date().toISOString(),
-    expectedImpact: body.expectedImpact || 'Improvement expected within 48 hours'
-  });
+// POST /api/analyzer/recommendations/approve — Approve optimization (REAL BACKEND)
+router.post('/api/analyzer/recommendations/approve', async function(req, res) {
+  try {
+    const actionCardService = require('../../backend/services/openclaw/actionCardService');
+    const { cardId, action } = req.body;
+    if (action === 'approve' || action === 'approved') {
+      const result = await actionCardService.approveCard(cardId);
+      res.json({ status: 'approved', ...result });
+    } else if (action === 'reject' || action === 'rejected') {
+      const result = await actionCardService.rejectCard(cardId, req.body.reason);
+      res.json({ status: 'rejected', ...result });
+    } else {
+      res.json({ status: 'acknowledged', action });
+    }
+  } catch(e) {
+    console.error('[OpenClaw Approve] Error:', e.message);
+    res.status(400).json({ error: e.message });
+  }
 });
 
 // POST /api/analyzer/alerts/respond — Respond to alert
@@ -429,6 +437,206 @@ router.get('/api/analyzer/campaigns/health', function(req, res) {
       { name: 'Meta — Lookalike', health: 'learning', pacing: 'on_track' }
     ]
   });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// OPENCLAW API — Real Backend Integration
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────────
+// Heartbeat Control & Status
+// ─────────────────────────────────────────────────
+
+// GET /api/openclaw/heartbeat/status — Current heartbeat status
+router.get('/api/openclaw/heartbeat/status', async function(req, res) {
+  try {
+    const heartbeatLoop = require('../../backend/services/openclaw/heartbeatLoop');
+    const status = heartbeatLoop.getStatus();
+    res.json(status);
+  } catch(e) {
+    console.error('[OpenClaw Heartbeat Status] Error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /api/openclaw/heartbeat/last — Last heartbeat details
+router.get('/api/openclaw/heartbeat/last', async function(req, res) {
+  try {
+    const heartbeatLoop = require('../../backend/services/openclaw/heartbeatLoop');
+    const lastHeartbeat = heartbeatLoop.getLastHeartbeat();
+    res.json(lastHeartbeat || { message: 'No heartbeat recorded yet' });
+  } catch(e) {
+    console.error('[OpenClaw Last Heartbeat] Error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// POST /api/openclaw/heartbeat/start — Start heartbeat loop
+router.post('/api/openclaw/heartbeat/start', async function(req, res) {
+  try {
+    const heartbeatLoop = require('../../backend/services/openclaw/heartbeatLoop');
+    const clientId = req.body.clientId || 'demo';
+    const intervalMinutes = req.body.intervalMinutes || 30;
+    await heartbeatLoop.start(clientId, intervalMinutes);
+    res.json({ status: 'started', clientId, intervalMinutes });
+  } catch(e) {
+    console.error('[OpenClaw Start Heartbeat] Error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// POST /api/openclaw/heartbeat/stop — Stop heartbeat loop
+router.post('/api/openclaw/heartbeat/stop', async function(req, res) {
+  try {
+    const heartbeatLoop = require('../../backend/services/openclaw/heartbeatLoop');
+    heartbeatLoop.stop();
+    res.json({ status: 'stopped' });
+  } catch(e) {
+    console.error('[OpenClaw Stop Heartbeat] Error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─────────────────────────────────────────────────
+// Action Cards Management
+// ─────────────────────────────────────────────────
+
+// GET /api/openclaw/actions — Get active action cards
+router.get('/api/openclaw/actions', async function(req, res) {
+  try {
+    const actionCardService = require('../../backend/services/openclaw/actionCardService');
+    const clientId = req.query.clientId || 'demo';
+    const cards = await actionCardService.getActiveCards(clientId);
+    res.json({ cards, count: cards.length });
+  } catch(e) {
+    console.error('[OpenClaw Get Actions] Error:', e.message);
+    res.status(500).json({ error: e.message, cards: [] });
+  }
+});
+
+// GET /api/openclaw/actions/:id — Get specific action card by ID
+router.get('/api/openclaw/actions/:id', async function(req, res) {
+  try {
+    const actionCardService = require('../../backend/services/openclaw/actionCardService');
+    const clientId = req.query.clientId || 'demo';
+    const cards = await actionCardService.getActiveCards(clientId);
+    const card = cards.find(c => c.id === req.params.id);
+    if (!card) {
+      return res.status(404).json({ error: 'Card not found' });
+    }
+    res.json(card);
+  } catch(e) {
+    console.error('[OpenClaw Get Action by ID] Error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// POST /api/openclaw/actions/:id/approve — Approve action card
+router.post('/api/openclaw/actions/:id/approve', async function(req, res) {
+  try {
+    const actionCardService = require('../../backend/services/openclaw/actionCardService');
+    const result = await actionCardService.approveCard(req.params.id);
+    res.json({ status: 'approved', cardId: req.params.id, ...result });
+  } catch(e) {
+    console.error('[OpenClaw Approve Card] Error:', e.message);
+    res.status(400).json({ error: e.message });
+  }
+});
+
+// POST /api/openclaw/actions/:id/reject — Reject action card
+router.post('/api/openclaw/actions/:id/reject', async function(req, res) {
+  try {
+    const actionCardService = require('../../backend/services/openclaw/actionCardService');
+    const reason = req.body.reason || 'User rejected';
+    const result = await actionCardService.rejectCard(req.params.id, reason);
+    res.json({ status: 'rejected', cardId: req.params.id, reason, ...result });
+  } catch(e) {
+    console.error('[OpenClaw Reject Card] Error:', e.message);
+    res.status(400).json({ error: e.message });
+  }
+});
+
+// GET /api/openclaw/actions/history — Get action card history
+router.get('/api/openclaw/actions/history', async function(req, res) {
+  try {
+    const actionCardService = require('../../backend/services/openclaw/actionCardService');
+    const clientId = req.query.clientId || 'demo';
+    const days = parseInt(req.query.days) || 30;
+    const history = await actionCardService.getCardHistory(clientId, days);
+    res.json({ history, count: history.length, days });
+  } catch(e) {
+    console.error('[OpenClaw Get History] Error:', e.message);
+    res.status(500).json({ error: e.message, history: [] });
+  }
+});
+
+// ─────────────────────────────────────────────────
+// Notification Preferences
+// ─────────────────────────────────────────────────
+
+// GET /api/openclaw/notifications/preferences — Get notification preferences
+router.get('/api/openclaw/notifications/preferences', async function(req, res) {
+  try {
+    const notificationService = require('../../backend/services/openclaw/notificationService');
+    const clientId = req.query.clientId || 'demo';
+    const preferences = await notificationService.getPreferences(clientId);
+    res.json(preferences);
+  } catch(e) {
+    console.error('[OpenClaw Get Preferences] Error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// PUT /api/openclaw/notifications/preferences — Update notification preferences
+router.put('/api/openclaw/notifications/preferences', async function(req, res) {
+  try {
+    const notificationService = require('../../backend/services/openclaw/notificationService');
+    const clientId = req.body.clientId || 'demo';
+    const updates = req.body.preferences || req.body;
+    await notificationService.updatePreferences(clientId, updates);
+    res.json({ status: 'updated', clientId, updates });
+  } catch(e) {
+    console.error('[OpenClaw Update Preferences] Error:', e.message);
+    res.status(400).json({ error: e.message });
+  }
+});
+
+// GET /api/openclaw/notifications/log — Get notification log (placeholder)
+router.get('/api/openclaw/notifications/log', async function(req, res) {
+  try {
+    const clientId = req.query.clientId || 'demo';
+    // Future: implement notification logging in notificationService
+    res.json({ 
+      clientId, 
+      log: [], 
+      message: 'Notification logging not yet implemented' 
+    });
+  } catch(e) {
+    console.error('[OpenClaw Notification Log] Error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─────────────────────────────────────────────────
+// Memory & Context
+// ─────────────────────────────────────────────────
+
+// GET /api/openclaw/memory/:clientId/context — Get USER.md + MEMORY.md summary
+router.get('/api/openclaw/memory/:clientId/context', async function(req, res) {
+  try {
+    const memoryService = require('../../backend/services/openclaw/memoryService');
+    const clientId = req.params.clientId;
+    const userContext = await memoryService.readUserContext(clientId);
+    const memoryContext = await memoryService.readMemory(clientId);
+    res.json({ 
+      clientId, 
+      userContext: userContext || 'No USER.md found',
+      memoryContext: memoryContext || 'No MEMORY.md found'
+    });
+  } catch(e) {
+    console.error('[OpenClaw Memory Context] Error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // ═══════════════════════════════════════════════════════════

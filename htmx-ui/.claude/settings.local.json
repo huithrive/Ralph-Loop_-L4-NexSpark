@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node server.js:*)",
+      "Bash(curl:*)",
+      "Bash(test:*)",
+      "Bash(timeout 5 node:*)",
+      "Bash(node -e:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(python3:*)",
+      "Bash(open http://localhost:3001/auxora/v3/app)",
+      "Bash(__NEW_LINE_fe9a345512506b9c__ echo -e \"\\\\n--- Connections Status ---\")",
+      "Bash(__NEW_LINE_b0f9899e56f53ae2__ echo -e \"\\\\n--- Campaign Status ---\")",
+      "Bash(node --check:*)",
+      "Bash(pip3 install:*)",
+      "WebFetch(domain:mp.weixin.qq.com)",
+      "WebSearch",
+      "WebFetch(domain:web.archive.org)",
+      "WebFetch(domain:webcache.googleusercontent.com)",
+      "WebFetch(domain:www.sogou.com)",
+      "WebFetch(domain:www.woshipm.com)",
+      "WebFetch(domain:blog.csdn.net)",
+      "WebFetch(domain:stevenjokess.github.io)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:3000-iuiqfv7yjexsx0p7qqz1x-c81df28e.sandbox.novita.ai)",
+      "Bash(xargs:*)",
+      "Bash(node:*)",
+      "Bash(brew install:*)",
+      "Bash(pdftoppm:*)",
+      "Bash(pdftotext:*)",
+      "Bash(git status:*)"
+    ]
+  }
+}

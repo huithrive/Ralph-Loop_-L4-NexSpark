@@ -1,0 +1,150 @@
+<div class="chapter-content" id="chapter-8">
+  <h2 class="chapter-title">Scale & Results</h2>
+  <p class="chapter-subtitle">5-week transformation, final metrics, and scaling plan</p>
+
+  <!-- Hero Result -->
+  <div class="result-highlight">
+    <div class="result-number"><%= data.finalMetrics.peakROAS %>X</div>
+    <div class="result-label">Peak ROAS Achieved (Week 5)</div>
+  </div>
+
+  <!-- Final Metrics -->
+  <div class="metrics-row">
+    <div class="metric-card success">
+      <div class="metric-value">$<%= data.finalMetrics.totalRevenue.toLocaleString() %></div>
+      <div class="metric-label">Total Revenue</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">$<%= data.finalMetrics.totalSpend.toFixed(2) %></div>
+      <div class="metric-label">Total Spend</div>
+    </div>
+    <div class="metric-card highlight">
+      <div class="metric-value"><%= data.finalMetrics.finalROAS %>X</div>
+      <div class="metric-label">Overall ROAS</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value"><%= data.finalMetrics.totalPurchases %></div>
+      <div class="metric-label">Total Purchases</div>
+    </div>
+  </div>
+
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="metric-value">$<%= data.finalMetrics.avgCPA.toFixed(2) %></div>
+      <div class="metric-label">Avg CPA</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">$<%= data.finalMetrics.avgOrderValue.toFixed(2) %></div>
+      <div class="metric-label">Avg Order Value</div>
+    </div>
+    <div class="metric-card highlight">
+      <div class="metric-value" style="font-size:1rem;"><%= data.finalMetrics.bestAudience %></div>
+      <div class="metric-label">Best Audience</div>
+    </div>
+    <div class="metric-card highlight">
+      <div class="metric-value" style="font-size:1rem;"><%= data.finalMetrics.bestCreative %></div>
+      <div class="metric-label">Best Creative</div>
+    </div>
+  </div>
+
+  <!-- Revenue Chart -->
+  <div class="v2-card">
+    <div class="v2-card-header">💰 5-Week Revenue Growth</div>
+    <div class="v2-card-body">
+      <div class="chart-container">
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROAS Progression -->
+  <div class="v2-card">
+    <div class="v2-card-header">📈 ROAS Progression</div>
+    <div class="v2-card-body">
+      <div class="chart-container">
+        <canvas id="roasChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week 5 Details -->
+  <div class="v2-card">
+    <div class="v2-card-header">🏆 Week 5 Breakthrough</div>
+    <div class="v2-card-body">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="num">Spend</th><th class="num">Impr.</th><th class="num">CTR</th>
+            <th class="num">CPC</th><th class="num">Purch.</th><th class="num">CPA</th>
+            <th class="num">GMV</th><th class="num">ROAS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">$<%= data.week5.metrics.spend.toFixed(2) %></td>
+            <td class="num"><%= data.week5.metrics.impressions.toLocaleString() %></td>
+            <td class="num"><%= data.week5.metrics.ctr %></td>
+            <td class="num">$<%= data.week5.metrics.cpc.toFixed(2) %></td>
+            <td class="num highlight-cell"><%= data.week5.metrics.purchases %></td>
+            <td class="num success-cell">$<%= data.week5.metrics.cpa.toFixed(2) %></td>
+            <td class="num success-cell">$<%= data.week5.metrics.gmv.toFixed(2) %></td>
+            <td class="num success-cell" style="font-size:1.125rem;"><%= data.week5.metrics.roas.toFixed(2) %>x</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Best Performers -->
+  <div class="section-header">🌟 Best Performers</div>
+  <div class="card-grid">
+    <div class="info-card">
+      <div class="info-card-title">👥 Best Audience</div>
+      <div style="font-weight:600;color:#78350F;margin-bottom:4px;"><%= data.bestPerformers.audience.name %></div>
+      <div class="info-card-row"><span class="label">ROAS</span><span class="success-cell"><%= data.bestPerformers.audience.roas %>X</span></div>
+      <div style="font-size:0.6875rem;color:#78716C;margin-top:6px;"><%= data.bestPerformers.audience.detail %></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">🎬 Best Creative</div>
+      <div style="font-weight:600;color:#78350F;margin-bottom:4px;"><%= data.bestPerformers.creative.name %></div>
+      <div class="info-card-row"><span class="label">ROAS</span><span class="success-cell"><%= data.bestPerformers.creative.roas %>X</span></div>
+      <div style="font-size:0.6875rem;color:#78716C;margin-top:6px;"><%= data.bestPerformers.creative.detail %></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">📊 Best Platform</div>
+      <div style="font-weight:600;color:#78350F;margin-bottom:4px;"><%= data.bestPerformers.platform.name %></div>
+      <div class="info-card-row"><span class="label">ROAS</span><span class="success-cell"><%= data.bestPerformers.platform.roas %>X</span></div>
+      <div style="font-size:0.6875rem;color:#78716C;margin-top:6px;"><%= data.bestPerformers.platform.detail %></div>
+    </div>
+  </div>
+
+  <!-- Month 2 Scaling Plan -->
+  <div class="v2-card">
+    <div class="v2-card-header">🚀 Month 2 Scaling Plan — $<%= data.scalingPlan.month2Budget.toLocaleString() %>/mo</div>
+    <div class="v2-card-body">
+      <div style="margin-bottom:10px;">
+        <span style="font-size:0.75rem;color:#A8A29E;">New Channels:</span>
+        <% data.scalingPlan.newChannels.forEach(function(ch) { %>
+          <span class="tag tag-medium" style="margin-left:4px;"><%= ch %></span>
+        <% }); %>
+      </div>
+      <ul class="strategy-list">
+        <% data.scalingPlan.strategies.forEach(function(s) { %>
+          <li><%= s %></li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Holiday Strategy -->
+  <div class="v2-card">
+    <div class="v2-card-header">🎄 <%= data.holidayStrategy.event %> Strategy — <%= data.holidayStrategy.budget %></div>
+    <div class="v2-card-body">
+      <ul class="strategy-list">
+        <% data.holidayStrategy.tactics.forEach(function(t) { %>
+          <li><%= t %></li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+</div>

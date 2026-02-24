@@ -1,0 +1,130 @@
+<div class="chapter-content" id="chapter-7">
+  <h2 class="chapter-title">Optimization</h2>
+  <p class="chapter-subtitle">Week 3-4 scaling, actions log, and trend analysis</p>
+
+  <!-- Week 3-4 Performance -->
+  <div class="v2-card">
+    <div class="v2-card-header">📈 Weekly Performance — Weeks 3-4</div>
+    <div class="v2-card-body">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Week</th><th>Phase</th><th class="num">Spend</th><th class="num">Impr.</th>
+            <th class="num">Clicks</th><th class="num">CTR</th><th class="num">ATC</th>
+            <th class="num">Purch.</th><th class="num">CPA</th><th class="num">GMV</th><th class="num">ROAS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.weeks.forEach(function(w) { %>
+            <tr>
+              <td><strong>Wk <%= w.week %></strong></td>
+              <td><%= w.phase %></td>
+              <td class="num">$<%= w.metrics.spend.toFixed(2) %></td>
+              <td class="num"><%= w.metrics.impressions.toLocaleString() %></td>
+              <td class="num"><%= w.metrics.clicks %></td>
+              <td class="num"><%= w.metrics.ctr %>%</td>
+              <td class="num"><%= w.metrics.addToCart %></td>
+              <td class="num highlight-cell"><%= w.metrics.purchases %></td>
+              <td class="num">$<%= w.metrics.cpa.toFixed(2) %></td>
+              <td class="num">$<%= w.metrics.gmv.toFixed(2) %></td>
+              <td class="num success-cell"><%= w.metrics.roas.toFixed(2) %>x</td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Weeks 1-2 vs 3-4 Comparison -->
+  <div class="section-header">📊 Weeks 1-2 vs Weeks 3-4</div>
+  <div class="comparison-row">
+    <div class="comparison-card">
+      <div class="comparison-label">Spend (W1-2)</div>
+      <div class="comparison-value">$<%= data.comparison.w12.spend.toFixed(2) %></div>
+    </div>
+    <div class="comparison-card improved">
+      <div class="comparison-label">Spend (W3-4)</div>
+      <div class="comparison-value">$<%= data.comparison.w34.spend.toFixed(2) %></div>
+      <div class="comparison-change positive"><%= data.comparison.change.spend %></div>
+    </div>
+    <div class="comparison-card">
+      <div class="comparison-label">ROAS (W1-2)</div>
+      <div class="comparison-value"><%= data.comparison.w12.roas %>x</div>
+    </div>
+    <div class="comparison-card improved">
+      <div class="comparison-label">ROAS (W3-4)</div>
+      <div class="comparison-value"><%= data.comparison.w34.roas %>x</div>
+      <div class="comparison-change positive"><%= data.comparison.change.roas %></div>
+    </div>
+  </div>
+
+  <div class="comparison-row">
+    <div class="comparison-card">
+      <div class="comparison-label">Purchases (W1-2)</div>
+      <div class="comparison-value"><%= data.comparison.w12.purchases %></div>
+    </div>
+    <div class="comparison-card improved">
+      <div class="comparison-label">Purchases (W3-4)</div>
+      <div class="comparison-value"><%= data.comparison.w34.purchases %></div>
+      <div class="comparison-change positive"><%= data.comparison.change.purchases %></div>
+    </div>
+    <div class="comparison-card">
+      <div class="comparison-label">CPA (W1-2)</div>
+      <div class="comparison-value">$<%= data.comparison.w12.cpa.toFixed(2) %></div>
+    </div>
+    <div class="comparison-card improved">
+      <div class="comparison-label">CPA (W3-4)</div>
+      <div class="comparison-value">$<%= data.comparison.w34.cpa.toFixed(2) %></div>
+      <div class="comparison-change positive"><%= data.comparison.change.cpa %></div>
+    </div>
+  </div>
+
+  <!-- Trend Chart -->
+  <div class="v2-card">
+    <div class="v2-card-header">📉 4-Week Performance Trends</div>
+    <div class="v2-card-body">
+      <div class="chart-container">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optimization Actions Log -->
+  <div class="v2-card">
+    <div class="v2-card-header">⚡ Optimization Actions Log</div>
+    <div class="v2-card-body">
+      <ul class="action-log">
+        <% data.actions.forEach(function(a) { %>
+          <li>
+            <span class="action-date"><%= a.date %></span>
+            <div>
+              <div class="action-text"><%= a.action %></div>
+              <div class="action-impact"><%= a.impact %></div>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="section-header">💡 Recommendations</div>
+  <% data.recommendations.forEach(function(r) { %>
+    <div class="rec-card <%= r.priority %>">
+      <div class="rec-title"><%= r.title %> <span class="tag tag-<%= r.priority %>"><%= r.priority %></span></div>
+      <div class="rec-detail"><%= r.detail %></div>
+    </div>
+  <% }); %>
+
+  <!-- Meta Strategies -->
+  <div class="v2-card" style="margin-top:16px;">
+    <div class="v2-card-header">📘 Meta Relaunch Strategies</div>
+    <div class="v2-card-body">
+      <ul class="strategy-list">
+        <% data.metaStrategies.forEach(function(s) { %>
+          <li><%= s %></li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+</div>

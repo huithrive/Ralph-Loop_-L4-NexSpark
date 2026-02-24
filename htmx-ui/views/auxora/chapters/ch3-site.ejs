@@ -1,0 +1,80 @@
+<div class="chapter-content" id="chapter-3">
+  <h2 class="chapter-title">Site Build</h2>
+  <p class="chapter-subtitle">Shopify setup, products, payments, plugins, and SEO</p>
+
+  <!-- Template Info -->
+  <div class="metrics-row">
+    <div class="metric-card highlight">
+      <div class="metric-value" style="font-size:1.125rem;"><%= data.template.platform %></div>
+      <div class="metric-label">Platform</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" style="font-size:1.125rem;"><%= data.template.name %></div>
+      <div class="metric-label">Theme</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value"><%= data.template.pages.length %></div>
+      <div class="metric-label">Pages</div>
+    </div>
+  </div>
+
+  <!-- Products -->
+  <div class="v2-card">
+    <div class="v2-card-header">🥩 Product Selection</div>
+    <div class="v2-card-body">
+      <div class="product-grid">
+        <% data.products.forEach(function(p) { %>
+          <div class="product-card <%= p.type === 'hero' ? 'hero' : '' %>">
+            <div class="product-emoji"><%= p.type === 'hero' ? '⭐' : (p.type === 'gift' ? '🎁' : (p.type === 'bundle' ? '📦' : '🥩')) %></div>
+            <div class="product-name"><%= p.name %></div>
+            <div class="product-price"><%= p.price %></div>
+            <div class="product-meta"><%= p.weight %> · Margin <%= p.margin %></div>
+            <% if (p.type === 'hero') { %><span class="tag tag-winner" style="margin-top:4px;">Hero Product</span><% } %>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Gateways -->
+  <div class="v2-card">
+    <div class="v2-card-header">💳 Payment Integrations</div>
+    <div class="v2-card-body">
+      <% data.payments.forEach(function(p) { %>
+        <div class="checklist-item">
+          <span class="check-icon done">✓</span>
+          <span><%= p.icon %> <%= p.name %></span>
+          <span class="status-badge connected"><%= p.status %></span>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Plugins -->
+  <div class="v2-card">
+    <div class="v2-card-header">🔌 Shopify Plugins</div>
+    <div class="v2-card-body">
+      <% data.plugins.forEach(function(p) { %>
+        <div class="checklist-item">
+          <span class="check-icon done">✓</span>
+          <span><strong><%= p.name %></strong> — <%= p.purpose %></span>
+          <span class="status-badge connected"><%= p.status %></span>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- SEO Checklist -->
+  <div class="v2-card">
+    <div class="v2-card-header">🔍 SEO Checklist</div>
+    <div class="v2-card-body">
+      <% data.seo.forEach(function(s) { %>
+        <div class="checklist-item">
+          <span class="check-icon done">✓</span>
+          <span><%= s.item %></span>
+          <span class="checklist-detail"><%= s.status %></span>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>

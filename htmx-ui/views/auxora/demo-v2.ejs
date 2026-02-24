@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auxora.ai V2 — Professional Workspace</title>
+  <link rel="stylesheet" href="/css/auxora-theme.css">
+  <link rel="stylesheet" href="/css/auxora-v2.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="demo-app">
+    <!-- ═══ LEFT: CHAT PANEL ═══ -->
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="chat-avatar">A</div>
+        <div class="chat-info">
+          <h2>Auxora AI</h2>
+          <p>Growth Co-Founder for <%= demo.brand.company %></p>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <!-- Messages injected by auto-play JS -->
+      </div>
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" placeholder="Ask Auxora anything..." readonly>
+        <button class="send-btn">▶</button>
+      </div>
+    </div>
+
+    <!-- ═══ RIGHT: CONTENT PANEL ═══ -->
+    <div class="content-panel">
+      <!-- Progress Chart -->
+      <%- include('chapters/progress-chart', { chapters: demo.chapters }) %>
+
+      <!-- Canvas Split: 70% center + 30% WhatsApp -->
+      <div class="canvas-split">
+        <!-- CENTER PANEL -->
+        <div class="center-panel" id="centerPanel">
+          <%- include('chapters/ch1-discovery', { data: demo.ch1 }) %>
+          <%- include('chapters/ch2-brand', { data: demo.ch2 }) %>
+          <%- include('chapters/ch3-site', { data: demo.ch3 }) %>
+          <%- include('chapters/ch4-adaccounts', { data: demo.ch4 }) %>
+          <%- include('chapters/ch5-campaigns', { data: demo.ch5 }) %>
+          <%- include('chapters/ch6-launch', { data: demo.ch6 }) %>
+          <%- include('chapters/ch7-optimize', { data: demo.ch7 }) %>
+          <%- include('chapters/ch8-results', { data: demo.ch8 }) %>
+        </div>
+
+        <!-- SIDE PANEL: WHATSAPP -->
+        <div class="side-panel">
+          <div class="wa-header">
+            <div class="wa-avatar">A</div>
+            <div class="wa-header-info">
+              <h3>Auxora AI</h3>
+              <p>online</p>
+            </div>
+          </div>
+          <div class="wa-messages" id="waMessages">
+            <!-- Messages injected by JS per chapter -->
+          </div>
+          <div class="wa-input-area">
+            <input type="text" class="wa-input" placeholder="Type a message..." readonly>
+            <button class="wa-send-btn">▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WhatsApp data for JS -->
+  <script>
+    var waData = <%- JSON.stringify(demo.whatsapp) %>;
+  </script>
+  <script src="/js/auxora-v2.js"></script>
+</body>
+</html>

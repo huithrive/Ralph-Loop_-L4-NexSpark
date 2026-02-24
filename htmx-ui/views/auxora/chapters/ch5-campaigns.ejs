@@ -1,0 +1,108 @@
+<div class="chapter-content" id="chapter-5">
+  <h2 class="chapter-title">Campaign Planning</h2>
+  <p class="chapter-subtitle">Budget allocation, 3-phase strategy, audiences, and creatives</p>
+
+  <!-- Budget Overview -->
+  <div class="metrics-row">
+    <div class="metric-card highlight">
+      <div class="metric-value">$<%= data.budget.total.toLocaleString() %></div>
+      <div class="metric-label">Total Budget</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value"><%= data.budget.days %> days</div>
+      <div class="metric-label">Campaign Duration</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">$<%= data.budget.dailyAvg %></div>
+      <div class="metric-label">Daily Average</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value"><%= data.budget.phases %></div>
+      <div class="metric-label">Phases</div>
+    </div>
+  </div>
+
+  <!-- Phase Breakdowns -->
+  <% data.phases.forEach(function(phase) { %>
+    <div class="phase-card">
+      <div class="phase-header">
+        <div>
+          <div class="phase-title">Phase <%= phase.id %>: <%= phase.name %></div>
+          <div class="phase-meta"><%= phase.days %> days · $<%= phase.dailyBudget %>/day</div>
+        </div>
+        <div class="phase-budget">$<%= phase.budget.toLocaleString() %></div>
+      </div>
+      <div class="phase-body">
+        <div class="platform-split">
+          <!-- Google -->
+          <div class="platform-col">
+            <div class="platform-label">
+              Google Ads
+              <span class="platform-pct"><%= phase.google.pct %>% · $<%= phase.google.amount.toLocaleString() %></span>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Campaign</th><th class="num">Budget</th><th>Goal</th></tr></thead>
+              <tbody>
+                <% phase.google.campaigns.forEach(function(c) { %>
+                  <tr><td><%= c.type %></td><td class="num">$<%= c.budget %></td><td style="font-size:0.6875rem;color:#78716C;"><%= c.goal %></td></tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <!-- Meta -->
+          <div class="platform-col">
+            <div class="platform-label">
+              Meta Ads
+              <span class="platform-pct"><%= phase.meta.pct %>% · $<%= phase.meta.amount.toLocaleString() %></span>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Campaign</th><th class="num">Budget</th><th>Goal</th></tr></thead>
+              <tbody>
+                <% phase.meta.campaigns.forEach(function(c) { %>
+                  <tr><td><%= c.type %></td><td class="num">$<%= c.budget %></td><td style="font-size:0.6875rem;color:#78716C;"><%= c.goal %></td></tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Pie Chart -->
+        <div class="pie-split">
+          <div class="pie-chart-wrap">
+            <canvas id="piePhase<%= phase.id %>"></canvas>
+          </div>
+          <div style="font-size:0.75rem;color:#78716C;">
+            Google: <strong><%= phase.google.pct %>%</strong> &nbsp;|&nbsp; Meta: <strong><%= phase.meta.pct %>%</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% }); %>
+
+  <!-- Audience Strategy -->
+  <div class="section-header">🎯 Audience Strategy</div>
+  <div class="card-grid">
+    <% data.audiences.forEach(function(a) { %>
+      <div class="info-card">
+        <div class="info-card-title"><%= a.name %></div>
+        <div class="info-card-row"><span class="label">Platform</span><span><%= a.platform %></span></div>
+        <div class="info-card-row"><span class="label">Targeting</span><span style="font-size:0.6875rem;"><%= a.targeting %></span></div>
+        <div class="info-card-row"><span class="label">Size</span><span><%= a.size %></span></div>
+        <div style="font-size:0.6875rem;color:#78716C;margin-top:6px;padding-top:6px;border-top:1px solid #FEF3C7;"><%= a.rationale %></div>
+      </div>
+    <% }); %>
+  </div>
+
+  <!-- Creative Strategy -->
+  <div class="section-header">🎬 Creative Strategy</div>
+  <div class="card-grid">
+    <% data.creatives.forEach(function(c) { %>
+      <div class="info-card">
+        <div class="info-card-title"><%= c.name %></div>
+        <div class="info-card-row"><span class="label">Format</span><span><%= c.format %></span></div>
+        <div style="font-size:0.75rem;color:#57534E;margin:6px 0;"><%= c.description %></div>
+        <div class="info-card-row"><span class="label">CTA</span><span><%= c.cta %></span></div>
+        <div class="info-card-row"><span class="label">Placement</span><span style="font-size:0.6875rem;"><%= c.placement %></span></div>
+      </div>
+    <% }); %>
+  </div>
+</div>

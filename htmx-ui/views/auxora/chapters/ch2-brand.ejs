@@ -1,0 +1,82 @@
+<div class="chapter-content" id="chapter-2">
+  <h2 class="chapter-title">Brand & Visual Identity</h2>
+  <p class="chapter-subtitle">Color palette, typography, and brand content strategy</p>
+
+  <!-- Color Palette -->
+  <div class="v2-card">
+    <div class="v2-card-header">🎨 Color Palette (3 colors max — per expert Bella)</div>
+    <div class="v2-card-body">
+      <div class="color-palette">
+        <% data.colors.forEach(function(c) { %>
+          <div class="color-swatch">
+            <div class="swatch-circle" style="background:<%= c.hex %>;"></div>
+            <div class="swatch-name"><%= c.label %></div>
+            <div class="swatch-hex"><%= c.hex %></div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typography -->
+  <div class="v2-card">
+    <div class="v2-card-header">🔤 Font Pairing</div>
+    <div class="v2-card-body">
+      <div class="font-preview">
+        <div class="font-row">
+          <div>
+            <div class="font-sample" style="font-family:'Playfair Display',serif;font-weight:700;">YamaBushi Premium Wagyu</div>
+            <div class="font-name"><%= data.fonts.heading.name %> — <%= data.fonts.heading.style %></div>
+          </div>
+        </div>
+        <div class="font-row">
+          <div>
+            <div class="font-sample" style="font-family:'Inter',sans-serif;font-weight:400;">Authentic A5 Japanese Wagyu delivered to your door</div>
+            <div class="font-name"><%= data.fonts.body.name %> — <%= data.fonts.body.style %></div>
+          </div>
+        </div>
+        <div class="font-row">
+          <div>
+            <div class="font-sample" style="font-family:'JetBrains Mono',monospace;font-weight:500;">$149.99 / 12oz Ribeye</div>
+            <div class="font-name"><%= data.fonts.detail.name %> — <%= data.fonts.detail.style %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brand Content -->
+  <div class="v2-card">
+    <div class="v2-card-header">✍️ Brand Content</div>
+    <div class="v2-card-body">
+      <div style="margin-bottom:12px;">
+        <div style="font-size:0.75rem;color:#A8A29E;text-transform:uppercase;margin-bottom:4px;">Slogan</div>
+        <div class="editable-field" contenteditable="true" style="font-size:1.125rem;font-weight:700;color:#78350F;"><%= data.content.slogan %></div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:0.75rem;color:#A8A29E;text-transform:uppercase;margin-bottom:4px;">Mission</div>
+        <div class="editable-field" contenteditable="true"><%= data.content.mission %></div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:0.75rem;color:#A8A29E;text-transform:uppercase;margin-bottom:4px;">Goals</div>
+        <div class="editable-field" contenteditable="true"><%= data.content.goals %></div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:0.75rem;color:#A8A29E;text-transform:uppercase;margin-bottom:4px;">Values</div>
+        <div class="values-list">
+          <% data.content.values.forEach(function(v) { %>
+            <span class="value-tag"><%= v %></span>
+          <% }); %>
+        </div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:0.75rem;color:#A8A29E;text-transform:uppercase;margin-bottom:4px;">Brand Story</div>
+        <div class="editable-field" contenteditable="true"><%= data.content.story %></div>
+      </div>
+      <div>
+        <div style="font-size:0.75rem;color:#A8A29E;text-transform:uppercase;margin-bottom:4px;">Strategy</div>
+        <div class="editable-field" contenteditable="true"><%= data.content.strategy %></div>
+      </div>
+    </div>
+  </div>
+</div>

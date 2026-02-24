@@ -1,0 +1,89 @@
+<div class="chapter-content" id="chapter-1">
+  <h2 class="chapter-title">Discovery & Research</h2>
+  <p class="chapter-subtitle">Market analysis, competitor landscape, and audience profiling</p>
+
+  <!-- Market Size -->
+  <div class="metrics-row">
+    <div class="metric-card highlight">
+      <div class="metric-value"><%= data.market.size %></div>
+      <div class="metric-label"><%= data.market.label %></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value"><%= data.market.growth %></div>
+      <div class="metric-label">Annual Growth</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value"><%= data.market.trend.split(' ')[3] %></div>
+      <div class="metric-label">DTC Premium Food YoY</div>
+    </div>
+  </div>
+
+  <!-- Market Segments -->
+  <div class="v2-card">
+    <div class="v2-card-header">📊 Market Segments</div>
+    <div class="v2-card-body">
+      <table class="data-table">
+        <thead>
+          <tr><th>Segment</th><th class="num">Size</th><th class="num">Share</th></tr>
+        </thead>
+        <tbody>
+          <% data.market.segments.forEach(function(s) { %>
+            <tr><td><%= s.name %></td><td class="num"><%= s.size %></td><td class="num"><%= s.share %></td></tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Competitor Analysis -->
+  <div class="v2-card">
+    <div class="v2-card-header">🏆 Competitor Analysis</div>
+    <div class="v2-card-body">
+      <table class="data-table">
+        <thead>
+          <tr><th>Competitor</th><th>Price</th><th>Strength</th><th>Weakness</th><th class="num">Traffic</th><th class="num">Ad Spend</th></tr>
+        </thead>
+        <tbody>
+          <% data.competitors.forEach(function(c) { %>
+            <tr>
+              <td><strong><%= c.name %></strong></td>
+              <td><%= c.price %></td>
+              <td><%= c.strength %></td>
+              <td><%= c.weakness %></td>
+              <td class="num"><%= c.traffic %></td>
+              <td class="num"><%= c.adSpend %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Seasonality Chart -->
+  <div class="v2-card">
+    <div class="v2-card-header">📈 Google Trends — "Wagyu Beef" Seasonality</div>
+    <div class="v2-card-body">
+      <div class="chart-container">
+        <canvas id="seasonalityChart"></canvas>
+      </div>
+      <div style="font-size:0.75rem;color:#A8A29E;margin-top:4px;">
+        Peaks: <% data.seasonality.peaks.forEach(function(p, i) { %><strong><%= p %></strong><%= i < data.seasonality.peaks.length - 1 ? ', ' : '' %><% }); %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audience Profiles -->
+  <div class="section-header">👥 Target Audience Profiles</div>
+  <div class="card-grid">
+    <% data.audiences.forEach(function(a) { %>
+      <div class="info-card">
+        <div class="info-card-title"><%= a.name %></div>
+        <div class="info-card-row"><span class="label">Size</span><span><%= a.size %></span></div>
+        <div class="info-card-row"><span class="label">Age</span><span><%= a.age %></span></div>
+        <div class="info-card-row"><span class="label">Income</span><span><%= a.income %></span></div>
+        <div class="info-card-row"><span class="label">Interests</span><span><%= a.interests %></span></div>
+        <div class="info-card-row"><span class="label">Platforms</span><span><%= a.platforms %></span></div>
+      </div>
+    <% }); %>
+  </div>
+</div>

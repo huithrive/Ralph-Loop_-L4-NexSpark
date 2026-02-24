@@ -1,0 +1,58 @@
+<div class="chapter-content" id="chapter-4">
+  <h2 class="chapter-title">Ad Accounts Setup</h2>
+  <p class="chapter-subtitle">Meta Business Manager, Google Ads, analytics, and tracking</p>
+
+  <!-- Meta Section -->
+  <div class="v2-card">
+    <div class="v2-card-header">📘 Meta (Facebook / Instagram)</div>
+    <div class="v2-card-body">
+      <% data.meta.items.forEach(function(item) { %>
+        <div class="checklist-item">
+          <span class="check-icon done">✓</span>
+          <span><%= item.icon %> <strong><%= item.name %></strong></span>
+          <span class="status-badge <%= item.status %>"><%= item.status %></span>
+        </div>
+        <div style="margin-left:34px;margin-bottom:8px;font-size:0.75rem;color:#78716C;">
+          <%= item.detail %>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Google Section -->
+  <div class="v2-card">
+    <div class="v2-card-header">🔴 Google (Ads / Analytics / Merchant)</div>
+    <div class="v2-card-body">
+      <% data.google.items.forEach(function(item) { %>
+        <div class="checklist-item">
+          <span class="check-icon done">✓</span>
+          <span><%= item.icon %> <strong><%= item.name %></strong></span>
+          <span class="status-badge <%= item.status %>"><%= item.status %></span>
+        </div>
+        <div style="margin-left:34px;margin-bottom:8px;font-size:0.75rem;color:#78716C;">
+          <%= item.detail %>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="metrics-row">
+    <div class="metric-card success">
+      <div class="metric-value">8/8</div>
+      <div class="metric-label">Accounts Connected</div>
+    </div>
+    <div class="metric-card success">
+      <div class="metric-value">95%</div>
+      <div class="metric-label">Pixel Match Rate</div>
+    </div>
+    <div class="metric-card success">
+      <div class="metric-value">12</div>
+      <div class="metric-label">Products in GMC</div>
+    </div>
+    <div class="metric-card success">
+      <div class="metric-value">8</div>
+      <div class="metric-label">Tracking Events</div>
+    </div>
+  </div>
+</div>

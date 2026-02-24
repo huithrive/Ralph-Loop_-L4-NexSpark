@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Auxora Phase C v2 — Chat-as-Notification + Canvas-as-Workspace</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Georgia, 'Playfair Display', serif; background: #FAF7F4; color: #2D2D2D; overflow: hidden; }
+
+.demo-header { background: #BF6744; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+.demo-header h1 { font-size: 18px; }
+.demo-header .badge { background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 10px; font-size: 11px; }
+
+.layout { display: grid; grid-template-columns: 300px 1fr; height: calc(100vh - 44px); }
+
+/* ═══ LEFT: Chat Panel (Notification Center) ═══ */
+.chat-panel { background: #FAF7F4; border-right: 1px solid #E8E0D8; display: flex; flex-direction: column; }
+.chat-scroll { flex: 1; overflow-y: auto; padding: 12px; }
+.chat-input { padding: 10px 12px; border-top: 1px solid #E8E0D8; display: flex; gap: 8px; }
+.chat-input input { flex:1; padding: 8px 12px; border: 1px solid #E8E0D8; border-radius: 8px; font-family: inherit; font-size: 13px; }
+.chat-input button { background: #BF6744; color: white; border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-family: inherit; }
+
+.chat-msg { margin-bottom: 10px; }
+.bubble { padding: 10px 14px; border-radius: 12px 12px 12px 4px; font-size: 13px; line-height: 1.4; max-width: 260px; }
+.bubble.agent { background: #2D2D2D; color: white; }
+.bubble.system { background: #FFF3ED; color: #BF6744; border: 1px solid #F0D5C5; font-size: 12px; }
+.chat-time { font-size: 9px; color: #bbb; margin-top: 3px; }
+
+/* Compact Alert Card in Chat (notification style) */
+.chat-alert { background: white; border: 1px solid #E8E0D8; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; max-width: 270px; cursor: pointer; transition: all 0.15s; }
+.chat-alert:hover { border-color: #BF6744; box-shadow: 0 2px 8px rgba(191,103,68,0.15); }
+.chat-alert.active { border-color: #BF6744; background: #FFF9F6; }
+.chat-alert.critical { border-left: 3px solid #D64545; }
+.chat-alert.warning { border-left: 3px solid #D4920A; }
+.chat-alert.success { border-left: 3px solid #4A6741; }
+.alert-tag { font-size: 8px; font-weight: bold; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; display: inline-block; margin-bottom: 4px; letter-spacing: 0.5px; }
+.alert-tag.emergency { background: #D64545; color: white; }
+.alert-tag.needs-review { background: #D4920A; color: white; }
+.alert-tag.done { background: #4A6741; color: white; }
+.chat-alert h5 { font-size: 13px; margin-bottom: 2px; }
+.chat-alert .summary { font-size: 11px; color: #888; }
+.chat-alert .tap-hint { font-size: 10px; color: #BF6744; margin-top: 4px; }
+
+/* Return to work button */
+.return-bar { display: none; background: #E8F5E9; border-bottom: 1px solid #C8E6C9; padding: 8px 12px; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+.return-bar:hover { background: #C8E6C9; }
+.return-bar.visible { display: flex; align-items: center; gap: 8px; }
+.return-bar .icon { font-size: 14px; }
+
+/* ═══ RIGHT: Canvas Panel (Workspace) ═══ */
+.canvas-panel { display: flex; flex-direction: column; overflow: hidden; }
+
+/* Tab bar */
+.tabs { display: flex; gap: 0; border-bottom: 2px solid #E8E0D8; padding: 0 24px; flex-shrink: 0; }
+.tab { padding: 10px 16px; font-size: 12px; color: #999; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; position: relative; }
+.tab.active { color: #BF6744; border-bottom-color: #BF6744; font-weight: bold; }
+.tab .alert-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: #D64545; border-radius: 50%; display: none; animation: pulse-dot 1.5s infinite; }
+.tab .alert-dot.visible { display: block; }
+@keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.canvas-scroll { flex: 1; overflow-y: auto; padding: 20px 28px; }
+
+/* ═══ Canvas Views ═══ */
+.canvas-view { display: none; }
+.canvas-view.active { display: block; }
+
+/* Strategy workspace (simulated current work) */
+.strategy-content { }
+.strategy-content h2 { font-size: 18px; margin-bottom: 16px; }
+.strategy-step { background: white; border: 1px solid #E8E0D8; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.strategy-step h4 { font-size: 14px; margin-bottom: 6px; color: #4A6741; }
+.strategy-step p { font-size: 13px; color: #666; }
+
+/* Monitor workspace */
+.monitor-content { }
+.oc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.oc-pulse { width: 12px; height: 12px; border-radius: 50%; background: #4A6741; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.oc-status { font-size: 16px; font-weight: bold; }
+.oc-checks { font-size: 12px; color: #999; margin-left: auto; }
+
+.oc-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+.oc-metric { background: white; border: 1px solid #E8E0D8; border-radius: 8px; padding: 10px; text-align: center; }
+.oc-metric-label { font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+.oc-metric-value { font-size: 18px; font-weight: bold; margin-top: 2px; }
+.oc-metric-value.danger { color: #D64545; }
+.oc-metric-value.warning { color: #D4920A; }
+.oc-metric-value.good { color: #4A6741; }
+
+/* Alert Detail Panel (canvas right-side detail) */
+.alert-detail { background: white; border: 1px solid #E8E0D8; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.alert-detail.critical { border-top: 4px solid #D64545; }
+.alert-detail.warning { border-top: 4px solid #D4920A; }
+.detail-tag { font-size: 10px; font-weight: bold; padding: 3px 10px; border-radius: 4px; text-transform: uppercase; display: inline-block; margin-bottom: 10px; }
+.detail-tag.emergency { background: #FDEAEA; color: #D64545; }
+.detail-tag.warning { background: #FFF8E1; color: #D4920A; }
+.alert-detail h3 { font-size: 18px; margin-bottom: 8px; }
+.alert-detail .body { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 12px; }
+.alert-detail .impact { font-size: 13px; color: #4A6741; font-style: italic; margin-bottom: 16px; padding: 10px 14px; background: #F0F7F0; border-radius: 6px; }
+
+/* Detail metrics */
+.detail-metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.detail-metric { background: #FAF7F4; border-radius: 6px; padding: 10px; text-align: center; }
+.detail-metric .label { font-size: 10px; color: #999; text-transform: uppercase; }
+.detail-metric .value { font-size: 16px; font-weight: bold; margin-top: 2px; }
+
+/* Action buttons in canvas */
+.detail-actions { display: flex; gap: 10px; margin-top: 16px; }
+.detail-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-family: inherit; font-size: 13px; transition: all 0.15s; }
+.detail-btn.primary { background: #BF6744; color: white; border-color: #BF6744; }
+.detail-btn.primary:hover { background: #A5573A; }
+.detail-btn.danger { background: white; color: #D64545; border-color: #D64545; }
+.detail-btn:hover { opacity: 0.85; }
+.detail-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Action history section */
+.section-title { font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 10px; }
+.history-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: white; border: 1px solid #E8E0D8; border-radius: 6px; margin-bottom: 6px; font-size: 13px; }
+.history-time { font-size: 11px; color: #999; min-width: 55px; }
+.history-status { font-size: 9px; padding: 2px 6px; border-radius: 3px; margin-left: auto; font-weight: bold; }
+.history-status.executed { background: #E8F5E9; color: #2E7D32; }
+.history-status.approved { background: #E3F2FD; color: #1565C0; }
+
+/* Previous work context */
+.prev-context { background: #F5F0EB; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 12px; color: #777; }
+.prev-context strong { color: #555; }
+</style>
+</head>
+<body>
+
+<div class="demo-header">
+  <h1>🦁 Auxora v0.2 — Phase C Demo (Chat = 通知, Canvas = 工作台)</h1>
+  <span class="badge">交互模式: 左右联动 · 紧急不打断</span>
+</div>
+
+<div class="layout">
+  <!-- ═══ LEFT: Chat as Notification Center ═══ -->
+  <div class="chat-panel">
+    <!-- Return to previous work bar -->
+    <div class="return-bar" id="return-bar" onclick="returnToWork()">
+      <span class="icon">← </span>
+      <span id="return-text">返回: Strategy Setup</span>
+    </div>
+
+    <div class="chat-scroll" id="chat-scroll">
+      <!-- Normal workflow messages -->
+      <div class="chat-msg"><div class="bubble agent">Hey! I'm Auxora. Let's build your growth strategy. I'll start by analyzing your website.</div><div class="chat-time">7:00 PM</div></div>
+
+      <div class="chat-msg"><div class="bubble agent">Great — I found your Shopify store. Let me research your competitors and market.</div><div class="chat-time">7:02 PM</div></div>
+
+      <div class="chat-msg"><div class="bubble system">📊 Research in progress... analyzing 12 competitors</div><div class="chat-time">7:03 PM</div></div>
+
+      <!-- INTERRUPTION: Emergency alert appears in chat as compact notification -->
+      <div id="alert-section">
+        <div class="chat-msg"><div class="bubble system">🚨 Urgent: Ad budget issue detected while working</div><div class="chat-time">7:08 PM</div></div>
+
+        <div class="chat-alert critical active" id="card-emergency" onclick="showAlertDetail('emergency')">
+          <span class="alert-tag emergency">🚨 Emergency</span>
+          <h5>Budget overspend 258%</h5>
+          <div class="summary">Ads paused automatically. Tap to review →</div>
+        </div>
+
+        <div class="chat-alert warning" id="card-roas" onclick="showAlertDetail('roas')">
+          <span class="alert-tag needs-review">⚠️ Needs Review</span>
+          <h5>Google Ads losing money (0.49x ROAS)</h5>
+          <div class="summary">Tap to review and decide →</div>
+        </div>
+
+        <div class="chat-alert warning" id="card-cpa" onclick="showAlertDetail('cpa')">
+          <span class="alert-tag needs-review">⚠️ Needs Review</span>
+          <h5>Customer cost jumped to $100</h5>
+          <div class="summary">Tap to review and decide →</div>
+        </div>
+
+        <div class="chat-alert success" id="card-auto" onclick="showAlertDetail('auto')">
+          <span class="alert-tag done">✅ Auto-handled</span>
+          <h5>Paused losing Google campaign</h5>
+          <div class="summary">ROAS 0.49x → auto-paused. Tap for details →</div>
+        </div>
+      </div>
+
+      <div class="chat-msg" id="msg-resume" style="display:none"><div class="bubble agent">All caught up! Click "← 返回 Strategy Setup" to continue where you left off. 🛡️</div><div class="chat-time">7:10 PM</div></div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" placeholder="Type your message...">
+      <button>→</button>
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT: Canvas as Workspace ═══ -->
+  <div class="canvas-panel">
+    <div class="tabs">
+      <div class="tab" data-tab="strategy" onclick="switchTab('strategy')">① Build Plan</div>
+      <div class="tab" data-tab="execution" onclick="switchTab('execution')">② Connect & Launch</div>
+      <div class="tab active" data-tab="monitor" onclick="switchTab('monitor')">③ Monitor <span class="alert-dot visible" id="monitor-dot"></span></div>
+      <div class="tab" data-tab="revenue" onclick="switchTab('revenue')">④ Revenue</div>
+    </div>
+
+    <div class="canvas-scroll" id="canvas-scroll">
+      <!-- ═══ Strategy View (user's previous work) ═══ -->
+      <div class="canvas-view" data-view="strategy" id="view-strategy">
+        <div class="strategy-content">
+          <h2>📋 Building Your Growth Strategy</h2>
+          <div class="prev-context">
+            <strong>⏸ Paused at step 2/4</strong> — Your competitor research is still running in background. You were reviewing initial findings when the ad alert came in.
+          </div>
+          <div class="strategy-step">
+            <h4>✅ Step 1: Website Analysis</h4>
+            <p>Found Shopify store with 47 products. Wagyu & specialty meats category. Average order value: $89.</p>
+          </div>
+          <div class="strategy-step">
+            <h4>🔄 Step 2: Competitor Research (in progress)</h4>
+            <p>Analyzing 12 competitors in premium meat D2C space. 8/12 completed. ETA: 3 minutes.</p>
+          </div>
+          <div class="strategy-step" style="opacity:0.5">
+            <h4>Step 3: Customer Interview</h4>
+            <p>5 quick questions to understand your goals and preferences.</p>
+          </div>
+          <div class="strategy-step" style="opacity:0.5">
+            <h4>Step 4: GTM Report</h4>
+            <p>6-month growth roadmap with channel strategy, budget plan, and revenue projections.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Monitor View (alert workspace) ═══ -->
+      <div class="canvas-view active" data-view="monitor" id="view-monitor">
+        <div class="monitor-content">
+          <div class="oc-header">
+            <div class="oc-pulse"></div>
+            <span class="oc-status">Auxora Monitoring</span>
+            <span class="oc-checks">Last check: 2 min ago</span>
+          </div>
+
+          <div class="oc-metrics">
+            <div class="oc-metric"><div class="oc-metric-label">Today Spend</div><div class="oc-metric-value danger">$258</div></div>
+            <div class="oc-metric"><div class="oc-metric-label">Daily Budget</div><div class="oc-metric-value good">$100</div></div>
+            <div class="oc-metric"><div class="oc-metric-label">Blended ROAS</div><div class="oc-metric-value warning">0.73x</div></div>
+            <div class="oc-metric"><div class="oc-metric-label">Pending</div><div class="oc-metric-value" id="pending-count">2</div></div>
+          </div>
+
+          <!-- Alert Detail Area — changes based on which card is clicked -->
+          <div id="alert-detail-area">
+            <!-- Default: show emergency detail -->
+            <div class="alert-detail critical" id="detail-emergency">
+              <span class="detail-tag emergency">🚨 Emergency — Auto-Executed</span>
+              <h3>We paused your ads to protect your budget</h3>
+              <div class="body">Your ad spend was running at <strong>2.6x your daily budget</strong> today — $258 spent against a $100 cap. We automatically paused all campaigns to prevent further overspend.</div>
+              <div class="detail-metrics">
+                <div class="detail-metric"><div class="label">Overspend</div><div class="value" style="color:#D64545">258%</div></div>
+                <div class="detail-metric"><div class="label">Money Saved</div><div class="value" style="color:#4A6741">~$158</div></div>
+                <div class="detail-metric"><div class="label">Time to Detect</div><div class="value">8 min</div></div>
+              </div>
+              <div class="impact">💡 Without Auxora, this overspend would have continued all day — potentially wasting $500+ before you noticed.</div>
+              <div class="detail-actions">
+                <button class="detail-btn primary" onclick="handleAction('emergency', 'resume')">Resume with $100/day cap</button>
+                <button class="detail-btn" onclick="handleAction('emergency', 'keep')">Keep paused</button>
+                <button class="detail-btn" onclick="handleAction('emergency', 'more')">Tell me more</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">📋 Action History</div>
+          <div id="history-area">
+            <div class="history-item">
+              <span class="history-time">7:08 PM</span>
+              <div>
+                <div style="font-weight:500">Auto-paused all campaigns (budget 258% over)</div>
+                <div style="font-size:11px;color:#4A6741">💰 ~$158/day saved</div>
+              </div>
+              <span class="history-status executed">Executed</span>
+            </div>
+            <div class="history-item">
+              <span class="history-time">7:08 PM</span>
+              <div>
+                <div style="font-weight:500">Auto-paused Google Search (ROAS 0.49x)</div>
+                <div style="font-size:11px;color:#4A6741">Losing $25/day → stopped</div>
+              </div>
+              <span class="history-status executed">Auto</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Execution / Revenue views (placeholder) -->
+      <div class="canvas-view" data-view="execution" id="view-execution">
+        <h2 style="padding:40px;color:#ccc;text-align:center">Connect & Launch workspace</h2>
+      </div>
+      <div class="canvas-view" data-view="revenue" id="view-revenue">
+        <h2 style="padding:40px;color:#ccc;text-align:center">Revenue dashboard</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// State
+var currentView = 'monitor';
+var previousView = 'strategy'; // What user was doing before alert
+var alertsHandled = 0;
+
+// Hidden detail panels for each alert type
+var alertDetails = {
+  emergency: document.getElementById('detail-emergency').outerHTML,
+  roas: `
+    <div class="alert-detail warning">
+      <span class="detail-tag warning">⚠️ Needs Your Decision</span>
+      <h3>Your ads are costing more than they earn</h3>
+      <div class="body">Your Google Search campaign has a <strong>ROAS of 0.49x</strong> — for every $1 you spend, you're only getting $0.49 back. This campaign has been auto-paused, but you have two other campaigns that also need attention.</div>
+      <div class="detail-metrics">
+        <div class="detail-metric"><div class="label">Google ROAS</div><div class="value" style="color:#D64545">0.49x</div></div>
+        <div class="detail-metric"><div class="label">Google Spend</div><div class="value">$49</div></div>
+        <div class="detail-metric"><div class="label">Google Revenue</div><div class="value">$24</div></div>
+      </div>
+      <div class="impact">💡 Recommendation: Keep this campaign paused. The broad match keywords are driving irrelevant clicks. When you're ready, we can restructure with exact-match keywords.</div>
+      <div class="detail-actions">
+        <button class="detail-btn primary" onclick="handleAction('roas', 'approve')">Keep paused (recommended)</button>
+        <button class="detail-btn danger" onclick="handleAction('roas', 'resume')">Resume anyway</button>
+        <button class="detail-btn" onclick="handleAction('roas', 'restructure')">Restructure keywords</button>
+      </div>
+    </div>`,
+  cpa: `
+    <div class="alert-detail warning">
+      <span class="detail-tag warning">⚠️ Needs Your Decision</span>
+      <h3>Customer acquisition cost jumped significantly</h3>
+      <div class="body">Your Meta Lifestyle campaign's cost per customer hit <strong>$100</strong> — well above your $75 target. The campaign is still profitable (ROAS 0.89x), but barely. This might be due to audience fatigue or increased competition.</div>
+      <div class="detail-metrics">
+        <div class="detail-metric"><div class="label">Current CPA</div><div class="value" style="color:#D4920A">$100</div></div>
+        <div class="detail-metric"><div class="label">Target CPA</div><div class="value" style="color:#4A6741">$75</div></div>
+        <div class="detail-metric"><div class="label">Meta ROAS</div><div class="value" style="color:#D4920A">0.89x</div></div>
+      </div>
+      <div class="impact">💡 Suggestion: Reduce daily budget by 30% and refresh creatives. Your "Wagyu Enthusiasts" audience is still performing — focus budget there.</div>
+      <div class="detail-actions">
+        <button class="detail-btn primary" onclick="handleAction('cpa', 'reduce')">Reduce budget 30%</button>
+        <button class="detail-btn" onclick="handleAction('cpa', 'pause')">Pause campaign</button>
+        <button class="detail-btn" onclick="handleAction('cpa', 'keep')">Keep running as-is</button>
+      </div>
+    </div>`,
+  auto: `
+    <div class="alert-detail" style="border-top:4px solid #4A6741">
+      <span class="detail-tag" style="background:#E8F5E9;color:#2E7D32">✅ Auto-Handled — No Action Needed</span>
+      <h3>Auto-paused Google Search campaign</h3>
+      <div class="body">This campaign had a ROAS of only 0.49x — losing money on every dollar spent. Auxora automatically paused it based on your L1 safety rules (auto-pause any campaign below 0.5x ROAS).</div>
+      <div class="detail-metrics">
+        <div class="detail-metric"><div class="label">ROAS</div><div class="value" style="color:#D64545">0.49x</div></div>
+        <div class="detail-metric"><div class="label">Wasted Spend</div><div class="value">$25/day</div></div>
+        <div class="detail-metric"><div class="label">Status</div><div class="value" style="color:#4A6741">Paused</div></div>
+      </div>
+      <div class="impact">💡 This was handled automatically. You can undo it if needed, but we recommend keeping it paused until keywords are restructured.</div>
+      <div class="detail-actions">
+        <button class="detail-btn" onclick="handleAction('auto', 'undo')">Undo (resume campaign)</button>
+        <button class="detail-btn primary" onclick="handleAction('auto', 'ok')">Got it, thanks</button>
+      </div>
+    </div>`
+};
+
+function switchTab(tabName) {
+  // Update tab UI
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.getAttribute('data-tab') === tabName);
+  });
+  // Update canvas views
+  document.querySelectorAll('.canvas-view').forEach(v => {
+    v.classList.toggle('active', v.getAttribute('data-view') === tabName);
+  });
+  currentView = tabName;
+
+  // Show return bar if leaving monitor for strategy (or vice versa)
+  var returnBar = document.getElementById('return-bar');
+  if (tabName === 'monitor' && previousView === 'strategy') {
+    returnBar.classList.add('visible');
+    document.getElementById('return-text').textContent = '← 返回: Strategy Setup (研究还在跑)';
+  } else if (tabName === 'strategy') {
+    returnBar.classList.remove('visible');
+  }
+}
+
+function showAlertDetail(alertType) {
+  // Highlight selected card in chat
+  document.querySelectorAll('.chat-alert').forEach(c => c.classList.remove('active'));
+  var card = document.getElementById('card-' + alertType);
+  if (card) card.classList.add('active');
+
+  // Switch to monitor tab if not there
+  if (currentView !== 'monitor') {
+    previousView = currentView;
+    switchTab('monitor');
+  }
+
+  // Update canvas detail area
+  var detailArea = document.getElementById('alert-detail-area');
+  detailArea.innerHTML = alertDetails[alertType] || '';
+
+  // Scroll canvas to top
+  document.getElementById('canvas-scroll').scrollTop = 0;
+}
+
+function handleAction(alertType, action) {
+  alertsHandled++;
+
+  // Update the chat card to show it's been handled
+  var card = document.getElementById('card-' + alertType);
+  if (card) {
+    card.querySelector('.alert-tag').className = 'alert-tag done';
+    card.querySelector('.alert-tag').textContent = '✅ Handled';
+    card.querySelector('.summary').textContent = action === 'approve' || action === 'reduce' || action === 'resume' || action === 'ok' || action === 'keep'
+      ? 'Decision made ✓'
+      : 'Action taken ✓';
+    card.classList.remove('active');
+    card.style.opacity = '0.6';
+  }
+
+  // Update pending count
+  var remaining = Math.max(0, 2 - alertsHandled);
+  document.getElementById('pending-count').textContent = remaining;
+
+  // Show confirmation in detail area
+  var detailArea = document.getElementById('alert-detail-area');
+  detailArea.innerHTML = '<div class="alert-detail" style="border-top:4px solid #4A6741;text-align:center;padding:30px"><h3 style="color:#4A6741">✅ Done!</h3><p style="margin-top:8px;color:#666">Your decision has been saved and will be executed.</p><p style="margin-top:12px;font-size:13px;color:#999">Click another card on the left, or return to your strategy work.</p></div>';
+
+  // Add to history
+  var historyArea = document.getElementById('history-area');
+  var newItem = document.createElement('div');
+  newItem.className = 'history-item';
+  newItem.innerHTML = '<span class="history-time">Just now</span><div><div style="font-weight:500">' + getActionSummary(alertType, action) + '</div></div><span class="history-status approved">Approved</span>';
+  historyArea.insertBefore(newItem, historyArea.firstChild);
+
+  // If all handled, show return prompt
+  if (alertsHandled >= 2) {
+    document.getElementById('msg-resume').style.display = 'block';
+    document.getElementById('monitor-dot').classList.remove('visible');
+    // Scroll chat to bottom
+    var chatScroll = document.getElementById('chat-scroll');
+    chatScroll.scrollTop = chatScroll.scrollHeight;
+  }
+}
+
+function getActionSummary(type, action) {
+  var summaries = {
+    'emergency-resume': 'Resumed campaigns with $100/day cap',
+    'emergency-keep': 'Kept all campaigns paused',
+    'emergency-more': 'Requested detailed analysis',
+    'roas-approve': 'Kept Google campaign paused',
+    'roas-resume': 'Resumed Google campaign',
+    'roas-restructure': 'Requested keyword restructure',
+    'cpa-reduce': 'Reduced Meta budget by 30%',
+    'cpa-pause': 'Paused Meta Lifestyle campaign',
+    'cpa-keep': 'Kept Meta campaign running as-is',
+    'auto-undo': 'Undid auto-pause on Google campaign',
+    'auto-ok': 'Acknowledged auto-pause'
+  };
+  return summaries[type + '-' + action] || 'Action: ' + action;
+}
+
+function returnToWork() {
+  switchTab('strategy');
+}
+
+// Auto-show emergency detail on load
+showAlertDetail('emergency');
+</script>
+</body>
+</html>

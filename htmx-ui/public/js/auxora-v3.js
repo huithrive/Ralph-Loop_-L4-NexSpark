@@ -128,6 +128,11 @@ var V3 = (function() {
         view.classList.remove('active');
       }
     });
+
+    // AUTO-RENDER: Trigger canvas render when switching to monitor tab
+    if (tabName === 'openclaw') {
+      renderOpenclawDashboard();
+    }
   }
 
   // ─── HELPERS ────────────────────────────────────────
@@ -147,6 +152,26 @@ var V3 = (function() {
   function escAttr(str) {
     if (!str) return '';
     return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function timeAgo(dateStr) {
+    if (!dateStr) return 'unknown';
+    var diff = Date.now() - new Date(dateStr).getTime();
+    var mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + ' min ago';
+    var hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    return Math.floor(hrs / 24) + 'd ago';
+  }
+
+  function timeUntil(dateStr) {
+    if (!dateStr) return '';
+    var diff = new Date(dateStr).getTime() - Date.now();
+    var mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'now';
+    if (mins < 60) return mins + ' min';
+    return Math.floor(mins / 60) + 'h';
   }
 
   function nextCardId(prefix) {
@@ -573,6 +598,11 @@ var V3 = (function() {
     }
     html += '</div>';
 
+    // Attribution
+    if (d.attribution) {
+      html += '<div class="v3-card-attribution"><span class="v3-attr-icon">' + esc(d.attribution.icon || '🤖') + '</span><span class="v3-attr-label">' + esc(d.attribution.label || d.attribution.role) + '</span></div>';
+    }
+
     // Body
     if (d.body) {
       html += '<div class="v3-action-body">' + esc(d.body) + '</div>';
@@ -614,8 +644,13 @@ var V3 = (function() {
     }
     html += '</div>';
 
+    // Attribution
+    if (d.attribution) {
+      html += '<div class="v3-card-attribution"><span class="v3-attr-icon">' + esc(d.attribution.icon || '🤖') + '</span><span class="v3-attr-label">' + esc(d.attribution.label || d.attribution.role) + '</span></div>';
+    }
+
     if (d.body) html += '<div class="v3-alert-body">' + esc(d.body) + '</div>';
-    if (d.cause) html += '<div class="v3-alert-cause">' + esc(d.cause) + '</div>';
+    if (d.cause) html += '<div class="v3-alert-cause"><strong>Why:</strong> ' + esc(d.cause) + '</div>';
     if (d.recommendation) html += '<div class="v3-alert-rec">' + esc(d.recommendation) + '</div>';
 
     if (d.actions && d.actions.length) {
@@ -642,6 +677,11 @@ var V3 = (function() {
     html += '<span class="v3-auto-title">' + esc(d.title) + '</span>';
     if (d.timestamp) html += '<span class="v3-auto-time">' + esc(d.timestamp) + '</span>';
     html += '</div>';
+
+    // Attribution
+    if (d.attribution) {
+      html += '<div class="v3-card-attribution"><span class="v3-attr-icon">' + esc(d.attribution.icon || '🤖') + '</span><span class="v3-attr-label">' + esc(d.attribution.label || d.attribution.role) + '</span></div>';
+    }
 
     if (d.body) html += '<div class="v3-auto-body">' + esc(d.body) + '</div>';
     if (d.impact) html += '<div class="v3-auto-impact">' + esc(d.impact) + '</div>';
@@ -837,13 +877,33 @@ var V3 = (function() {
         html = renderNotificationSettingsCard(entry.cardData);
         break;
       case 'gtm-report':
-        // Render full GTM report in canvas detail overlay
+        // Render GTM report - both in canvas overlay and as inline chat card
         var reportData = resolveCardData(entry.cardData);
+        console.log('[V3] GTM Report received:', reportData ? 'valid' : 'null', reportData ? Object.keys(reportData) : []);
         if (reportData) {
           state.liveReport = reportData;
-          showCanvasDetail('gtm-report', 'Go-to-Market Strategy Report');
-          // Also show a compact summary in chat
-          html = renderPreviewCard('report', entry.cardData, 'gtm-report', 'Consulting-grade GTM strategy with ' + ((reportData.sections || reportData.reportSections || []).length) + ' sections + executive summary');
+          // Show in canvas overlay
+          try { showCanvasDetail('gtm-report', 'Go-to-Market Strategy Report'); } catch(e) { console.error('[V3] Canvas overlay error:', e); }
+          // Render inline report summary card in chat
+          var sectionCount = (reportData.sections || reportData.reportSections || []).length;
+          var execSummary = reportData.executiveSummary;
+          var inlineHtml = '<div class="v3-card report-summary" style="max-width:100%;padding:16px;background:linear-gradient(135deg,#FAF7F4,#F3EDE7);border-radius:12px;border:1px solid #E8DDD4">';
+          inlineHtml += '<div style="font-size:16px;font-weight:700;color:#2D3436;margin-bottom:8px">📊 ' + esc(reportData.reportTitle || 'Go-to-Market Strategy Report') + '</div>';
+          inlineHtml += '<div style="font-size:12px;color:#636E72;margin-bottom:12px">Prepared by Auxora for ' + esc(reportData.companyName || 'your brand') + '</div>';
+          if (execSummary) {
+            if (execSummary.whatItIs) inlineHtml += '<div style="font-size:13px;color:#2D3436;margin-bottom:8px"><strong>Overview:</strong> ' + esc(execSummary.whatItIs) + '</div>';
+            if (execSummary.marketGap) inlineHtml += '<div style="font-size:13px;color:#2D3436;margin-bottom:8px"><strong>Market Gap:</strong> ' + esc(execSummary.marketGap) + '</div>';
+          }
+          inlineHtml += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:12px 0">';
+          (reportData.sections || reportData.reportSections || []).forEach(function(s, i) {
+            inlineHtml += '<span style="font-size:11px;padding:4px 8px;background:#BF6744;color:white;border-radius:6px">' + (i+1) + '. ' + esc(s.title || s.id || 'Section') + '</span>';
+          });
+          inlineHtml += '</div>';
+          inlineHtml += '<button class="v3-preview-link" style="margin-top:8px;color:#BF6744;font-weight:600;background:none;border:none;cursor:pointer;font-size:13px" onclick="try{V3.showCanvasDetail(\'gtm-report\',\'Go-to-Market Strategy Report\')}catch(e){console.error(\'showCanvasDetail error:\',e);alert(\'Error opening report: \'+(e.message||e))}">View Full Report →</button>';
+          inlineHtml += '</div>';
+          html = inlineHtml;
+        } else {
+          console.warn('[V3] GTM Report data is null/undefined');
         }
         break;
       case 'competitor-research':
@@ -874,7 +934,7 @@ var V3 = (function() {
     div.className = 'v3-msg-group from-auxora';
     div.innerHTML =
       '<div class="v3-avatar auxora-av">A</div>' +
-      '<div class="v3-bubble-wrap" style="max-width:300px">' + html +
+      '<div class="v3-bubble-wrap" style="max-width:340px">' + html +
         '<span class="v3-msg-time">' + time + '</span>' +
       '</div>';
     chatMessages.appendChild(div);
@@ -1217,32 +1277,102 @@ var V3 = (function() {
     var el = getCanvasEl('openclaw');
     if (!el) return;
 
-    var html = '<div class="v3-openclaw-dashboard">';
+    // Don't override if detail view is active
+    if (state.canvasDetailActive) return;
 
-    // Status header
-    html += '<div class="v3-openclaw-header">';
-    html += '<div class="v3-openclaw-pulse"></div>';
-    html += '<span class="v3-openclaw-status-text">OpenClaw Active</span>';
-    html += '<span class="v3-openclaw-checks">Last check: 8 min ago | Next: 22 min</span>';
-    html += '</div>';
+    // Show loading state
+    el.innerHTML = '<div class="v3-openclaw-loading">Loading monitor data...</div>';
 
-    // What it's watching
-    html += '<div class="v3-openclaw-watching"><h4>Monitoring</h4><ul>';
-    html += '<li>Cost per customer across all audiences</li>';
-    html += '<li>Click rates on all ad creatives</li>';
-    html += '<li>Tracking pixel health & data accuracy</li>';
-    html += '<li>Budget pacing (too fast or too slow)</li>';
-    html += '</ul></div>';
+    // Fetch action cards from API
+    fetch('/api/v1/action-cards')
+      .then(function(res) {
+        if (!res.ok) throw new Error('Failed to fetch action cards');
+        return res.json();
+      })
+      .then(function(data) {
+        var actions = data.actions || { active: [], completed: [] };
+        var html = '<div class="v3-openclaw-dashboard">';
 
-    // Recent actions
-    html += '<div class="v3-openclaw-actions-log"><h4>Recent Actions</h4>';
-    html += '<div class="v3-openclaw-action-item"><span class="v3-openclaw-action-time">2:14 PM</span><div><div class="v3-openclaw-action-text">Added 12 negative keywords</div><div class="v3-openclaw-action-impact">$45/week savings</div></div></div>';
-    html += '<div class="v3-openclaw-action-item"><span class="v3-openclaw-action-time">Yesterday</span><div><div class="v3-openclaw-action-text">Adjusted Shopping bid strategy</div><div class="v3-openclaw-action-impact">+8% impression share</div></div></div>';
-    html += '<div class="v3-openclaw-action-item"><span class="v3-openclaw-action-time">2 days ago</span><div><div class="v3-openclaw-action-text">Paused underperforming ad variant</div><div class="v3-openclaw-action-impact">$12/week savings</div></div></div>';
-    html += '</div>';
+        // Status header
+        html += '<div class="v3-openclaw-header">';
+        html += '<div class="v3-openclaw-pulse"></div>';
+        html += '<span class="v3-openclaw-status-text">OpenClaw Active</span>';
+        html += '<span class="v3-openclaw-checks">Last check: 8 min ago | Next: 22 min</span>';
+        html += '</div>';
 
-    html += '</div>';
-    el.innerHTML = html;
+        // Pending cards section (v0.2 pattern: compact cards that expand on click)
+        if (actions.active && actions.active.length > 0) {
+          html += '<div class="v3-openclaw-pending-section"><h4>Pending Actions (' + actions.active.length + ')</h4>';
+          actions.active.forEach(function(card) {
+            var severity = card.severity || 'info';
+            html += '<div class="v3-openclaw-pending-card severity-' + severity + '" onclick="V3.showCardDetail(\'' + escAttr(card.id) + '\')">';
+            html += '<div class="v3-openclaw-pending-title">' + esc(card.title) + '</div>';
+            html += '<div class="v3-openclaw-pending-summary">' + esc((card.body || '').substring(0, 80));
+            if ((card.body || '').length > 80) html += '...';
+            html += '</div>';
+            html += '<span class="v3-openclaw-tap-hint">Tap to review →</span>';
+            html += '</div>';
+          });
+          html += '</div>';
+
+          // Update badge
+          updateMonitorBadge(actions.active.length);
+        } else {
+          html += '<div class="v3-openclaw-no-pending">✓ No pending actions</div>';
+          updateMonitorBadge(0);
+        }
+
+        // What it's watching
+        html += '<div class="v3-openclaw-watching"><h4>Monitoring</h4><ul>';
+        html += '<li>Cost per customer across all audiences</li>';
+        html += '<li>Click rates on all ad creatives</li>';
+        html += '<li>Tracking pixel health & data accuracy</li>';
+        html += '<li>Budget pacing (too fast or too slow)</li>';
+        html += '</ul></div>';
+
+        // Recent actions (completed)
+        if (actions.completed && actions.completed.length > 0) {
+          html += '<div class="v3-openclaw-actions-log"><h4>Recent Actions</h4>';
+          actions.completed.forEach(function(card) {
+            html += '<div class="v3-openclaw-action-item">';
+            html += '<span class="v3-openclaw-action-time">' + esc(card.timestamp || 'Recently') + '</span>';
+            html += '<div><div class="v3-openclaw-action-text">' + esc(card.title) + '</div>';
+            if (card.impact) html += '<div class="v3-openclaw-action-impact">' + esc(card.impact) + '</div>';
+            html += '</div></div>';
+          });
+          html += '</div>';
+        } else {
+          // Fallback static data
+          html += '<div class="v3-openclaw-actions-log"><h4>Recent Actions</h4>';
+          html += '<div class="v3-openclaw-action-item"><span class="v3-openclaw-action-time">2:14 PM</span><div><div class="v3-openclaw-action-text">Added 12 negative keywords</div><div class="v3-openclaw-action-impact">$45/week savings</div></div></div>';
+          html += '<div class="v3-openclaw-action-item"><span class="v3-openclaw-action-time">Yesterday</span><div><div class="v3-openclaw-action-text">Adjusted Shopping bid strategy</div><div class="v3-openclaw-action-impact">+8% impression share</div></div></div>';
+          html += '<div class="v3-openclaw-action-item"><span class="v3-openclaw-action-time">2 days ago</span><div><div class="v3-openclaw-action-text">Paused underperforming ad variant</div><div class="v3-openclaw-action-impact">$12/week savings</div></div></div>';
+          html += '</div>';
+        }
+
+        html += '</div>';
+        el.innerHTML = html;
+      })
+      .catch(function(err) {
+        console.error('Failed to load OpenClaw dashboard:', err);
+        // Fallback to static content
+        var html = '<div class="v3-openclaw-dashboard">';
+        html += '<div class="v3-openclaw-header">';
+        html += '<div class="v3-openclaw-pulse"></div>';
+        html += '<span class="v3-openclaw-status-text">OpenClaw Active</span>';
+        html += '<span class="v3-openclaw-checks">Last check: 8 min ago | Next: 22 min</span>';
+        html += '</div>';
+        html += '<div class="v3-openclaw-no-pending">✓ No pending actions</div>';
+        html += '<div class="v3-openclaw-watching"><h4>Monitoring</h4><ul>';
+        html += '<li>Cost per customer across all audiences</li>';
+        html += '<li>Click rates on all ad creatives</li>';
+        html += '<li>Tracking pixel health & data accuracy</li>';
+        html += '<li>Budget pacing (too fast or too slow)</li>';
+        html += '</ul></div>';
+        html += '</div>';
+        el.innerHTML = html;
+        updateMonitorBadge(0);
+      });
   }
 
   function renderOpenclawAlert() {
@@ -1252,6 +1382,92 @@ var V3 = (function() {
 
   function renderOpenclawActions() {
     renderOpenclawDashboard();
+  }
+
+  function updateMonitorBadge(pendingCount) {
+    var monitorTab = document.querySelector('.v3-tab[data-tab="openclaw"]');
+    if (!monitorTab) return;
+    var dot = monitorTab.querySelector('.v3-tab-dot');
+    if (!dot) {
+      dot = document.createElement('span');
+      dot.className = 'v3-tab-dot';
+      monitorTab.appendChild(dot);
+    }
+    dot.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+  }
+
+  function showCardDetail(cardId) {
+    if (!cardId) return;
+    
+    // Fetch card detail from API
+    fetch('/api/v1/action-cards/' + encodeURIComponent(cardId))
+      .then(function(res) {
+        if (!res.ok) throw new Error('Failed to fetch card detail');
+        return res.json();
+      })
+      .then(function(data) {
+        var el = getCanvasEl('openclaw');
+        if (!el) return;
+        
+        var card = data.card || data;
+        var html = '<div class="v3-card-detail-view">';
+        
+        // Back button
+        html += '<div class="v3-card-detail-header">';
+        html += '<button class="v3-card-detail-back" onclick="V3.hideCardDetail()">← Back to Monitor</button>';
+        html += '</div>';
+        
+        // Card detail content
+        html += '<div class="v3-card-detail-content">';
+        html += '<h2>' + esc(card.title) + '</h2>';
+        
+        if (card.attribution) {
+          html += '<div class="v3-card-attribution" style="margin: 12px 0;"><span class="v3-attr-icon">' + esc(card.attribution.icon || '🤖') + '</span><span class="v3-attr-label">' + esc(card.attribution.label || card.attribution.role) + '</span></div>';
+        }
+        
+        if (card.body) html += '<div class="v3-card-detail-body">' + esc(card.body) + '</div>';
+        if (card.cause) html += '<div class="v3-card-detail-cause"><strong>Why:</strong> ' + esc(card.cause) + '</div>';
+        if (card.recommendation) html += '<div class="v3-card-detail-rec"><strong>Recommendation:</strong> ' + esc(card.recommendation) + '</div>';
+        if (card.impact) html += '<div class="v3-card-detail-impact"><strong>Impact:</strong> ' + esc(card.impact) + '</div>';
+        
+        // Metrics if available
+        if (card.metrics) {
+          html += '<div class="v3-card-detail-metrics"><h3>Metrics</h3>';
+          for (var key in card.metrics) {
+            html += '<div class="v3-metric-row"><span class="v3-metric-label">' + esc(key) + '</span><span class="v3-metric-value">' + esc(card.metrics[key]) + '</span></div>';
+          }
+          html += '</div>';
+        }
+        
+        // Action buttons
+        if (card.actions && card.actions.length) {
+          html += '<div class="v3-action-buttons-row" style="margin-top: 20px;">';
+          card.actions.forEach(function(action, idx) {
+            var cls = idx === 0 ? 'v3-action-btn primary' : 'v3-action-btn secondary';
+            html += '<button class="' + cls + '" onclick="V3.handleCardAction(\'' + cardId + '\',\'' + escAttr(action) + '\')">' + esc(action) + '</button>';
+          });
+          html += '</div>';
+        }
+        
+        html += '</div></div>';
+        el.innerHTML = html;
+        state.canvasDetailActive = true;
+      })
+      .catch(function(err) {
+        console.error('Failed to load card detail:', err);
+        appendAuxoraMessage('Failed to load card details. Please try again.');
+      });
+  }
+
+  function hideCardDetail() {
+    state.canvasDetailActive = false;
+    renderOpenclawDashboard();
+  }
+
+  function handleCardAction(cardId, action) {
+    // Similar to handleActionBtn but for detail view
+    sendAction(action);
+    hideCardDetail();
   }
 
   // ─── RESULTS DASHBOARDS (Canvas) ───────────────────
@@ -2204,18 +2420,22 @@ var V3 = (function() {
   // ─── CANVAS DETAIL OVERLAY (WS2) ────────────────────
 
   function showCanvasDetail(dataKey, title) {
+    console.log('[V3] showCanvasDetail called:', dataKey, 'title:', title, 'liveReport exists:', !!state.liveReport);
     var overlay = document.getElementById('canvasDetailOverlay');
     var titleEl = document.getElementById('canvasDetailTitle');
     var bodyEl = document.getElementById('canvasDetailBody');
-    if (!overlay || !bodyEl) return;
+    console.log('[V3] overlay:', !!overlay, 'bodyEl:', !!bodyEl);
+    if (!overlay || !bodyEl) { console.warn('[V3] canvasDetailOverlay or body not found'); return; }
 
     if (titleEl) titleEl.textContent = title || '';
     state.canvasDetailActive = true;
 
     var data = resolveCardData(dataKey);
+    console.log('[V3] resolved data:', !!data, dataKey);
     // For GTM report, prefer live report from state
     if (dataKey === 'gtm-report' && state.liveReport) {
       data = state.liveReport;
+      console.log('[V3] Using state.liveReport, sections:', data?.sections?.length);
     }
     var html = '';
 
@@ -2936,7 +3156,9 @@ var V3 = (function() {
     toggleTreeNode: toggleTreeNode,
     showCanvasDetail: showCanvasDetail,
     hideCanvasDetail: hideCanvasDetail,
-    navigateReportSection: navigateReportSection
+    navigateReportSection: navigateReportSection,
+    showCardDetail: showCardDetail,
+    handleCardAction: handleCardAction
   };
 
 })();
