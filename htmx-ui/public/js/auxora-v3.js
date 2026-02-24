@@ -2425,7 +2425,18 @@ var V3 = (function() {
     var titleEl = document.getElementById('canvasDetailTitle');
     var bodyEl = document.getElementById('canvasDetailBody');
     console.log('[V3] overlay:', !!overlay, 'bodyEl:', !!bodyEl);
-    if (!overlay || !bodyEl) { console.warn('[V3] canvasDetailOverlay or body not found'); return; }
+    if (!overlay || !bodyEl) {
+      console.warn('[V3] canvasDetailOverlay not found, creating dynamically');
+      var parent = document.querySelector('.v3-content-panel') || document.body;
+      overlay = document.createElement('div');
+      overlay.id = 'canvasDetailOverlay';
+      overlay.className = 'v3-canvas-detail-overlay';
+      overlay.style.display = 'none';
+      overlay.innerHTML = '<div class="v3-canvas-detail-header"><button class="v3-canvas-detail-back" onclick="V3.hideCanvasDetail()">← Back</button><span id="canvasDetailTitle" class="v3-canvas-detail-title"></span></div><div id="canvasDetailBody" class="v3-canvas-detail-body"></div>';
+      parent.appendChild(overlay);
+      titleEl = document.getElementById('canvasDetailTitle');
+      bodyEl = document.getElementById('canvasDetailBody');
+    }
 
     if (titleEl) titleEl.textContent = title || '';
     state.canvasDetailActive = true;

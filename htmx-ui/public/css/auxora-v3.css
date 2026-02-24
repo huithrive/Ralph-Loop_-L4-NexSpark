@@ -3528,7 +3528,7 @@ body.pro-mode .v3-pro-detail {
   right: 0;
   bottom: 0;
   background: #FAFAF9;
-  z-index: 15;
+  z-index: 25;
   overflow-y: auto;
   animation: fadeIn 300ms ease;
 }
