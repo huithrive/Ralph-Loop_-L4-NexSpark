@@ -9,7 +9,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
-    "migrate": "node scripts/migrate.js"
+    "migrate": "node scripts/migrate.js",
+    "verify:migrations": "node scripts/verify-migrations.js",
+    "import:strategist-part1": "node scripts/import-strategist-part1.js"
   },
   "keywords": [
     "ai",
@@ -30,6 +32,7 @@
     "form-data": "^4.0.5",
     "helmet": "^7.1.0",
     "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
     "pg": "^8.11.3",
     "uuid": "^9.0.1"
   },
