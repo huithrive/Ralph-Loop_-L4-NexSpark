@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #FAF7F4; font-family: Georgia, serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FAF7F4; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF; border-radius: 8px; overflow: hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="padding: 40px 40px 30px; text-align: center; background-color: #FAF7F4;">
+              <h1 style="margin: 0; color: #BF6744; font-size: 32px; font-weight: normal; letter-spacing: 0.5px;">Auxora</h1>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px;">
+              <div style="font-size: 40px; text-align: center; margin-bottom: 20px;">📋</div>
+              
+              <h2 style="margin: 0 0 20px; color: #333; font-size: 24px; font-weight: normal; text-align: center;">Today's automated actions</h2>
+              
+              <p style="margin: 0 0 30px; color: #555; font-size: 16px; line-height: 1.6;">Hi {{clientName}},</p>
+              
+              <p style="margin: 0 0 20px; color: #555; font-size: 15px; line-height: 1.6;">Here's what Auxora did for {{brandName}} today:</p>
+              
+              <!-- Actions List -->
+              <div style="background-color: #FAF7F4; padding: 20px; border-radius: 6px; margin: 0 0 30px;">
+                {{actionsList}}
+              </div>
+              
+              <div style="background-color: #E3F2FD; padding: 20px; border-radius: 6px; margin: 0 0 30px; border-left: 4px solid #2196F3;">
+                <p style="margin: 0; color: #1976D2; font-size: 15px;"><strong>🤖 Total actions today:</strong> {{actionsCount}}</p>
+              </div>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding: 20px 0;">
+                    <a href="{{appUrl}}" style="display: inline-block; padding: 16px 40px; background-color: #BF6744; color: #FFFFFF; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Details</a>
+                  </td>
+                </tr>
+              </table>
+              
+              <p style="margin: 20px 0 0; color: #777; font-size: 14px; line-height: 1.6; text-align: center;">All optimizations are automatic. No action needed from you.</p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 30px 40px; background-color: #FAF7F4; text-align: center;">
+              <p style="margin: 0 0 10px; color: #999; font-size: 13px;">{{brandName}} • Powered by Auxora</p>
+              <p style="margin: 0; color: #999; font-size: 12px;">
+                <a href="{{prefsUrl}}" style="color: #BF6744; text-decoration: none;">Notification Preferences</a> • 
+                <a href="{{prefsUrl}}" style="color: #BF6744; text-decoration: none;">Unsubscribe</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

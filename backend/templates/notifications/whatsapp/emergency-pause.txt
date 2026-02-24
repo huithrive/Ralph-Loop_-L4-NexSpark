@@ -1,0 +1,9 @@
+🚨 *{{brandName}} Alert*
+
+Your ads have been paused to protect your budget.
+
+{{issue}}
+
+💰 Estimated savings: {{savedAmount}}
+
+👉 Review: {{appUrl}}

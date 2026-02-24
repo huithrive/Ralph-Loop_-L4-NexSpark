@@ -1,0 +1,9 @@
+🎉 *{{brandName}} Milestone!*
+
+Congratulations! {{milestoneName}} achieved!
+
+{{milestoneDescription}}
+
+👉 See your progress: {{appUrl}}
+
+Keep up the amazing work! 🚀

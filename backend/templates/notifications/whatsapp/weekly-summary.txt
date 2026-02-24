@@ -1,0 +1,10 @@
+📊 *{{brandName}} Weekly Report*
+
+Revenue: ${{weeklyRevenue}} ({{revenueChange}})
+ROAS: {{roas}}x
+Spend: ${{weeklySpend}}
+
+Top campaign: {{topCampaign}}
+🤖 Auto-actions: {{actionsCount}}
+
+👉 Full report: {{appUrl}}

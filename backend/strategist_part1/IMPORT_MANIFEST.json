@@ -1,0 +1,61 @@
+{
+  "importedAt": "2026-02-18T06:04:03.712Z",
+  "sourceRoot": "/Users/huithrive/nexspark/.tmp/NexSpark-main",
+  "destinationRoot": "/Users/huithrive/nexspark/backend/strategist_part1",
+  "copiedCount": 9,
+  "includePaths": [
+    "src",
+    "migrations",
+    "tests",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json",
+    "vite.config.ts",
+    "wrangler.toml",
+    "README.md",
+    "CLAUDE.md"
+  ],
+  "results": [
+    {
+      "relativePath": "src",
+      "copied": true
+    },
+    {
+      "relativePath": "migrations",
+      "copied": true
+    },
+    {
+      "relativePath": "tests",
+      "copied": true
+    },
+    {
+      "relativePath": "package.json",
+      "copied": true
+    },
+    {
+      "relativePath": "package-lock.json",
+      "copied": true
+    },
+    {
+      "relativePath": "tsconfig.json",
+      "copied": true
+    },
+    {
+      "relativePath": "vite.config.ts",
+      "copied": true
+    },
+    {
+      "relativePath": "wrangler.toml",
+      "copied": true
+    },
+    {
+      "relativePath": "README.md",
+      "copied": false,
+      "reason": "source_not_found"
+    },
+    {
+      "relativePath": "CLAUDE.md",
+      "copied": true
+    }
+  ]
+}

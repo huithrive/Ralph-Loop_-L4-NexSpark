@@ -1,0 +1,7 @@
+⚠️ *{{brandName}} Budget Alert*
+
+Your daily spend has reached *{{spendPercent}}%* of your ${{dailyBudget}} budget.
+
+Current spend: ${{currentSpend}}
+
+👉 Adjust: {{appUrl}}

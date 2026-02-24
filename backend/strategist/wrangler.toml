@@ -1,0 +1,81 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "nexspark-growth"
+main = "dist/index.js"
+account_id = "186da2905220f6e952b5c8c07b668b43"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Deployment settings
+preview_urls = true
+
+# Worker limits
+[limits]
+cpu_ms = 30000
+
+# Static assets (serves public/static/* at /static/*)
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "nexspark-interviews"
+database_id = "694339a5-9b47-4144-ad21-dca6ec2bda18"
+
+# Custom domains (configured in Cloudflare dashboard)
+[[routes]]
+pattern = "nexspark.ai"
+custom_domain = true
+
+[[routes]]
+pattern = "www.nexspark.ai"
+custom_domain = true
+
+# Durable Objects
+[[durable_objects.bindings]]
+name = "REPORT_COORDINATOR"
+class_name = "ReportCoordinator"
+
+# Durable Objects migrations
+[[migrations]]
+tag = "v1"
+new_classes = ["ReportCoordinator"]
+
+# Queue producer (send messages)
+[[queues.producers]]
+binding = "REPORT_QUEUE"
+queue = "report-generation-queue"
+
+# Queue consumer (process messages)
+[[queues.consumers]]
+queue = "report-generation-queue"
+max_batch_size = 1
+max_batch_timeout = 60
+max_retries = 0
+dead_letter_queue = "report-generation-dlq"
+
+# Environment variables (non-sensitive)
+[vars]
+ENVIRONMENT = "production"
+REPORT_FORMAT = "v2"
+LOG_LEVEL = "INFO"
+RAPIDAPI_HOST = "similarweb-traffic-api-for-bulk.p.rapidapi.com"
+GOOGLE_REDIRECT_URI="https://nexspark.ai/auth/google/callback"
+SUPPORT_EMAIL="academy@nexspark.ai"
+DISCORD_URL="https://discord.gg/5PGuB678"
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1

@@ -1,0 +1,9 @@
+📋 *{{brandName}} Daily Update*
+
+Auxora made {{actionsCount}} optimizations today:
+
+{{actionsSummary}}
+
+👉 Details: {{appUrl}}
+
+No action needed from you ✨

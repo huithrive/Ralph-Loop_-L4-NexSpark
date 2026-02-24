@@ -1,0 +1,8 @@
+💡 *{{brandName}} Opportunity*
+
+We found a way to improve your campaigns:
+
+*{{opportunityTitle}}*
+{{opportunityBody}}
+
+👉 Review: {{appUrl}}
