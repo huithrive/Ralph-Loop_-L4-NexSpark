@@ -78,7 +78,12 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-// API routes - Strategist Module
+// API routes - Strategist Module (direct routes before proxy catch-all)
+const researchRoutes = require('./api/strategist/research');
+const interviewDirectRoutes = require('./api/strategist/interview');
+app.use('/api/strategist/research', researchRoutes);
+app.use('/api/strategist/interview', interviewDirectRoutes);
+
 // Strategist Part I baseline is proxied to an external runtime (backend/strategist package).
 const { createStrategistProxyRouter } = require('./api/strategistProxy');
 app.use('/api/strategist', createStrategistProxyRouter());
@@ -90,6 +95,9 @@ const domainRoutes = require('./api/executor/domains');
 const creativeRoutes = require('./api/executor/creative');
 app.use('/api/executor/landing-pages', landingPageRoutes);
 app.use('/api/executor/shopify', shopifyRoutes);
+// Shopify integration router (OAuth flows, connections, project binding)
+const shopifyIntegrationRouter = require('./services/shopify/shopifyRouter');
+app.use('/api/integrations/shopify', shopifyIntegrationRouter);
 app.use('/api/executor/domains', domainRoutes);
 app.use('/api/executor/creative', creativeRoutes);
 
