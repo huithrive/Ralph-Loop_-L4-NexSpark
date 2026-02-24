@@ -538,6 +538,119 @@ class OptimizerService {
   }
 
   /**
+   * Pure function: Evaluate optimization rules against a metrics snapshot.
+   * Used by OpenClaw heartbeatLoop — no side effects, just returns triggered rules.
+   * @param {Object} metrics - From analyticsService.getClientMetricsSnapshot()
+   * @returns {Array<Object>} Triggered rules with severity and recommended action
+   */
+  evaluateRules(metrics) {
+    const triggered = [];
+    const rules = this.optimizationRules;
+
+    if (!metrics || !metrics.hasCampaigns) return triggered;
+
+    // Check each campaign
+    for (const cm of (metrics.campaigns || [])) {
+      // Low ROAS — critical
+      if (cm.roas < (rules.low_roas?.threshold || 1.5) && cm.spend > 10) {
+        const severity = cm.roas < 0.5 ? 'critical' : 'warning';
+        triggered.push({
+          rule: 'low_roas',
+          severity,
+          campaignId: cm.campaignId,
+          platform: cm.platform,
+          current: cm.roas,
+          threshold: rules.low_roas?.threshold || 1.5,
+          message: `ROAS ${cm.roas.toFixed(2)}x is below ${rules.low_roas?.threshold || 1.5}x threshold`,
+          recommendedAction: severity === 'critical' ? 'pause_ad_set' : 'reduce_budget'
+        });
+      }
+
+      // High CPA
+      if (cm.cpa < Infinity && cm.cpa > (rules.high_cpa?.threshold || 75)) {
+        triggered.push({
+          rule: 'high_cpa',
+          severity: 'warning',
+          campaignId: cm.campaignId,
+          platform: cm.platform,
+          current: cm.cpa,
+          threshold: rules.high_cpa?.threshold || 75,
+          message: `CPA $${cm.cpa.toFixed(2)} exceeds $${rules.high_cpa?.threshold || 75} threshold`,
+          recommendedAction: 'adjust_bidding'
+        });
+      }
+
+      // Low CTR
+      if (cm.ctr < (rules.low_ctr?.threshold || 1.0) && cm.spend > 10) {
+        triggered.push({
+          rule: 'low_ctr',
+          severity: 'warning',
+          campaignId: cm.campaignId,
+          platform: cm.platform,
+          current: cm.ctr,
+          threshold: rules.low_ctr?.threshold || 1.0,
+          message: `CTR ${cm.ctr.toFixed(2)}% is below ${rules.low_ctr?.threshold || 1.0}% minimum`,
+          recommendedAction: 'creative_swap'
+        });
+      }
+
+      // High Frequency (ad fatigue)
+      if (cm.frequency > (rules.high_frequency?.threshold || 3.0)) {
+        triggered.push({
+          rule: 'high_frequency',
+          severity: 'warning',
+          campaignId: cm.campaignId,
+          platform: cm.platform,
+          current: cm.frequency,
+          threshold: rules.high_frequency?.threshold || 3.0,
+          message: `Frequency ${cm.frequency.toFixed(1)} exceeds ${rules.high_frequency?.threshold || 3.0} — ad fatigue likely`,
+          recommendedAction: 'creative_refresh'
+        });
+      }
+    }
+
+    // Budget pacing (aggregate level)
+    if (metrics.budgetPacing > 2.0) {
+      triggered.push({
+        rule: 'budget_pacing',
+        severity: 'critical',
+        current: metrics.budgetPacing,
+        threshold: 2.0,
+        message: `Budget pacing at ${(metrics.budgetPacing * 100).toFixed(0)}% — emergency overspend`,
+        recommendedAction: 'emergency_pause'
+      });
+    } else if (metrics.budgetPacing > 1.5) {
+      triggered.push({
+        rule: 'budget_pacing',
+        severity: 'warning',
+        current: metrics.budgetPacing,
+        threshold: 1.5,
+        message: `Budget pacing at ${(metrics.budgetPacing * 100).toFixed(0)}% — overspending`,
+        recommendedAction: 'reduce_bids'
+      });
+    }
+
+    // Milestone checks
+    const config = require('../../config/openclawConfig');
+    if (config.milestones) {
+      for (const target of (config.milestones.roasTargets || [])) {
+        if (metrics.blendedRoas >= target) {
+          triggered.push({
+            rule: 'milestone_roas',
+            severity: 'info',
+            current: metrics.blendedRoas,
+            threshold: target,
+            message: `ROAS milestone reached: ${metrics.blendedRoas.toFixed(2)}x ≥ ${target}x`,
+            recommendedAction: 'celebrate'
+          });
+        }
+      }
+    }
+
+    return triggered;
+  }
+
+  /**
    * Get service health status
    */
   async getHealthStatus() {

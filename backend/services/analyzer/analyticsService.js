@@ -454,6 +454,79 @@ class AnalyticsService {
   /**
    * Get service health status
    */
+  /**
+   * Get a flat metrics snapshot for a client — used by OpenClaw heartbeatLoop
+   * @param {string} clientId - Client identifier
+   * @returns {Promise<Object>} Flat metrics object for rule evaluation
+   */
+  async getClientMetricsSnapshot(clientId) {
+    try {
+      // Get all active campaigns for this client
+      const campaignResult = await pool.query(
+        'SELECT id, platform, status FROM campaigns WHERE client_id = $1 AND status = $2',
+        [clientId, 'active']
+      );
+
+      const campaigns = campaignResult.rows;
+      if (!campaigns.length) {
+        return { clientId, hasCampaigns: false, timestamp: new Date().toISOString() };
+      }
+
+      // Aggregate metrics across all campaigns (last 24h)
+      let totalSpend = 0, totalRevenue = 0, totalPurchases = 0;
+      let totalImpressions = 0, totalClicks = 0;
+      let dailyBudget = 0;
+      const campaignMetrics = [];
+
+      for (const campaign of campaigns) {
+        const metrics = await this.getPerformanceData(campaign.id, {
+          startDate: new Date(Date.now() - 24 * 60 * 60 * 1000),
+          endDate: new Date()
+        });
+
+        const m = metrics.aggregated || metrics;
+        totalSpend += m.spend || 0;
+        totalRevenue += m.revenue || 0;
+        totalPurchases += m.purchases || 0;
+        totalImpressions += m.impressions || 0;
+        totalClicks += m.clicks || 0;
+        dailyBudget += m.dailyBudget || 0;
+
+        campaignMetrics.push({
+          campaignId: campaign.id,
+          platform: campaign.platform,
+          spend: m.spend || 0,
+          revenue: m.revenue || 0,
+          roas: m.spend > 0 ? (m.revenue / m.spend) : 0,
+          cpa: m.purchases > 0 ? (m.spend / m.purchases) : Infinity,
+          ctr: m.impressions > 0 ? ((m.clicks / m.impressions) * 100) : 0,
+          frequency: m.frequency || 0
+        });
+      }
+
+      return {
+        clientId,
+        hasCampaigns: true,
+        timestamp: new Date().toISOString(),
+        // Aggregate metrics
+        totalSpend,
+        totalRevenue,
+        totalPurchases,
+        blendedRoas: totalSpend > 0 ? (totalRevenue / totalSpend) : 0,
+        blendedCpa: totalPurchases > 0 ? (totalSpend / totalPurchases) : Infinity,
+        blendedCtr: totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100) : 0,
+        dailyBudget,
+        budgetPacing: dailyBudget > 0 ? (totalSpend / dailyBudget) : 0,
+        // Per-campaign breakdown
+        campaigns: campaignMetrics,
+        campaignCount: campaigns.length
+      };
+    } catch (error) {
+      logger.error('Failed to get client metrics snapshot', { clientId, error: error.message });
+      return { clientId, hasCampaigns: false, error: error.message, timestamp: new Date().toISOString() };
+    }
+  }
+
   async getHealthStatus() {
     try {
       const gomarbleHealthy = await this.checkGoMarbleHealth();
