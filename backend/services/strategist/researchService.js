@@ -147,7 +147,73 @@ function generateKeywordOpportunities(businessType, website) {
   };
 }
 
+// ─── Deep Research (Phase 2) ─────────────────────────
+
+const { validateResearchInput } = require('../../validators/researchValidator');
+const { DEEP_RESEARCH_SYSTEM_PROMPT, buildResearchUserPrompt } = require('../../prompts/researchPrompts');
+const { callClaudeForJSON } = require('../claudeService');
+const { parseResearchResponse } = require('../../parsers/researchParser');
+const ResearchResult = require('../../models/ResearchResult');
+
+/**
+ * Conduct deep market research via Claude
+ * @param {string} url - Website URL
+ * @param {string} description - Product description
+ * @returns {Promise<{ research_id: string, data: object, cached: boolean }>}
+ */
+async function conductResearch(url, description) {
+  // Validate inputs
+  const validation = validateResearchInput({ website_url: url, product_description: description });
+  if (!validation.valid) {
+    const err = new Error('Validation failed');
+    err.validationErrors = validation.errors;
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Check cache
+  const cached = await ResearchResult.findRecentByUrl(url, 24);
+  if (cached) {
+    return {
+      research_id: cached.id,
+      data: cached.toJSON(),
+      cached: true
+    };
+  }
+
+  // Call Claude
+  const userPrompt = buildResearchUserPrompt(url, description);
+  const claudeResponse = await callClaudeForJSON(DEEP_RESEARCH_SYSTEM_PROMPT, userPrompt, {
+    max_tokens: 8000,
+    temperature: 0.4
+  });
+
+  // Parse response
+  const parsed = parseResearchResponse(
+    typeof claudeResponse.content === 'string' ? claudeResponse.content : JSON.stringify(claudeResponse.content)
+  );
+
+  // Store result
+  const stored = await ResearchResult.create({
+    website_url: url,
+    product_description: description,
+    market_size: parsed.marketSize,
+    competitors: parsed.competitors,
+    target_audience: parsed.targetAudience,
+    channels: parsed.channels,
+    pain_points: parsed.painPoints,
+    raw_response: JSON.stringify(parsed)
+  });
+
+  return {
+    research_id: stored.id,
+    data: stored.toJSON(),
+    cached: false
+  };
+}
+
 module.exports = {
   runBusinessResearch,
-  identifyCompetitors
+  identifyCompetitors,
+  conductResearch
 };
