@@ -292,8 +292,11 @@ export const REVISED_LANDING_HTML = `
     /* ── Pain section ── */
     .pain-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px; margin-top: 48px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px; margin-top: 48px;
+    }
+    @media (max-width: 600px) {
+      .pain-grid { grid-template-columns: 1fr; }
     }
     .pain-card {
       background: white; border: 1px solid var(--border);
@@ -657,7 +660,7 @@ export const REVISED_LANDING_HTML = `
       </p>
     </div>
 
-    <div class="pain-grid" style="max-width:960px;margin:48px auto 0;">
+    <div class="pain-grid" style="max-width:800px;margin:48px auto 0;">
       <div class="pain-card">
         <div class="icon">💸</div>
         <h3>Meta &amp; Google ads feel like a black box</h3>
