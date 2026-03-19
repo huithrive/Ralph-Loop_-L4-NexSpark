@@ -500,7 +500,7 @@ export const REVISED_LANDING_HTML = `
       <a href="#faq">FAQ</a>
     </div>
     <a href="#early-access" class="btn-primary" style="padding:10px 22px;font-size:13px;">
-      Get Early Access <i class="fas fa-arrow-right"></i>
+      Get More Revenue <i class="fas fa-arrow-right"></i>
     </a>
   </div>
 </nav>
@@ -534,7 +534,7 @@ export const REVISED_LANDING_HTML = `
 
     <div class="hero-ctas">
       <a href="#early-access" class="btn-primary" style="font-size:16px;padding:17px 34px;">
-        Get Early Access — Free
+        Get New Paying Customers in 48 Hours
         <i class="fas fa-arrow-right"></i>
       </a>
     </div>
@@ -1131,76 +1131,83 @@ export const REVISED_LANDING_HTML = `
 ═══════════════════════════════════════ -->
 <section class="section" style="background:var(--warm);" id="pricing" aria-labelledby="pricing-h2">
   <div class="container">
-    <div style="max-width:580px;margin:0 auto;text-align:center;">
+    <div style="max-width:600px;margin:0 auto;text-align:center;">
       <p class="eyebrow" style="margin-bottom:16px;">Pricing</p>
       <h2 id="pricing-h2" class="editorial" style="font-size:clamp(32px,4vw,52px);color:var(--ink);line-height:1.15;">
-        Start for $4.99.<br/>
-        <em style="color:var(--rust);">Pay only when it's working.</em>
+        Start free.<br/>
+        <em style="color:var(--rust);">Pay only when customers show up.</em>
       </h2>
       <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">
-        No $2,000 Meta setup fees. No monthly retainer until your ads are profitable.
-        Validate for $4.99, launch for $200, and we only earn a revenue share once your 
-        campaigns are delivering results.
+        No upfront commitment. See your market opportunity for free, then
+        unlock the full strategy and live campaigns from $49 &mdash; and we only
+        earn a revenue share once your ads are bringing in real customers.
       </p>
     </div>
 
     <div class="pricing-grid" style="margin-top:52px;">
 
-      <!-- Starter -->
+      <!-- Free tier -->
       <div class="plan">
-        <p class="eyebrow" style="margin-bottom:16px;">Starter</p>
-        <div class="plan-price"><sup>$</sup>4<span style="font-size:28px;">.99</span></div>
-        <p class="plan-label">one-time · GTM strategy report + execution button</p>
-        <ul class="plan-features">
-          <li><i class="fas fa-check"></i> Full go-to-market audit</li>
-          <li><i class="fas fa-check"></i> ICP &amp; positioning analysis</li>
-          <li><i class="fas fa-check"></i> Channel recommendations</li>
-          <li><i class="fas fa-check"></i> Competitor gap analysis</li>
-          <li><i class="fas fa-check"></i> SEO keyword targets for your niche</li>
-          <li><i class="fas fa-check"></i> Delivered in under 5 minutes</li>
-        </ul>
-        <a href="/report" class="btn-ghost" style="width:100%;justify-content:center;">
-          Get my GTM report <i class="fas fa-arrow-right"></i>
-        </a>
-      </div>
-
-      <!-- Growth (most popular) -->
-      <div class="plan featured">
-        <div class="plan-badge">Most popular</div>
-        <p class="eyebrow" style="margin-bottom:16px;">Growth Build</p>
-        <div class="plan-price"><sup>$</sup>200</div>
-        <p class="plan-label">one-time build fee · your AI marketing stack, fully deployed</p>
-        <p style="font-size:12px;font-weight:700;color:var(--rust);margin-bottom:16px;">
-          ⚡ No $2,000 Meta setup fee — done for you in 24 hours
+        <p class="eyebrow" style="margin-bottom:16px;">Free</p>
+        <div class="plan-price">$<span style="font-size:52px;font-weight:700;letter-spacing:-0.03em;">0</span></div>
+        <p class="plan-label">no credit card &middot; instant market snapshot</p>
+        <p style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:16px;line-height:1.5;">
+          See what&rsquo;s possible before you spend a cent
         </p>
         <ul class="plan-features">
-          <li><i class="fas fa-check"></i> Everything in Starter</li>
-          <li><i class="fas fa-check"></i> GTM strategy &amp; brand positioning</li>
-          <li><i class="fas fa-check"></i> Conversion-ready landing page</li>
-          <li><i class="fas fa-check"></i> AI-generated ad creatives (video + static)</li>
-          <li><i class="fas fa-check"></i> 1 live ad channel (Meta or Google)</li>
-          <li><i class="fas fa-check"></i> SEO &amp; GEO-optimised copy</li>
+          <li><i class="fas fa-check"></i> Competitor landscape overview</li>
+          <li><i class="fas fa-check"></i> Market demand &amp; search volume analysis</li>
+          <li><i class="fas fa-check"></i> Estimated cost-to-acquire a new customer</li>
+          <li><i class="fas fa-check"></i> Top 3 growth channel recommendations</li>
+          <li><i class="fas fa-check"></i> Delivered in under 2 minutes</li>
         </ul>
-        <a href="/report" class="btn-primary" style="width:100%;justify-content:center;">
-          Launch in 24 hours <i class="fas fa-arrow-right"></i>
+        <a href="/report" class="btn-ghost" style="width:100%;justify-content:center;">
+          Get my free snapshot <i class="fas fa-arrow-right"></i>
         </a>
       </div>
 
-      <!-- Scale -->
+      <!-- $4.99 Strategy -->
       <div class="plan">
-        <p class="eyebrow" style="margin-bottom:16px;">Scale</p>
-        <div class="plan-price"><sup>$</sup>1,200</div>
-        <p class="plan-label">per month · white-glove execution</p>
+        <p class="eyebrow" style="margin-bottom:16px;">Strategy</p>
+        <div class="plan-price"><sup>$</sup>4<span style="font-size:28px;">.99</span></div>
+        <p class="plan-label">one-time &middot; full GTM report + light Q&amp;A</p>
+        <p style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:16px;line-height:1.5;">
+          Your complete go-to-market plan, ready to execute
+        </p>
         <ul class="plan-features">
-          <li><i class="fas fa-check"></i> Everything in Growth</li>
-          <li><i class="fas fa-check"></i> Meta + Google auto-management</li>
-          <li><i class="fas fa-check"></i> Weekly AI optimisation</li>
-          <li><i class="fas fa-check"></i> Email + SMS automation</li>
-          <li><i class="fas fa-check"></i> Live performance dashboard</li>
-          <li><i class="fas fa-check"></i> Dedicated growth strategist</li>
+          <li><i class="fas fa-check"></i> Everything in Free</li>
+          <li><i class="fas fa-check"></i> Full ICP &amp; positioning analysis</li>
+          <li><i class="fas fa-check"></i> Messaging framework &amp; brand voice</li>
+          <li><i class="fas fa-check"></i> SEO keyword targets for your niche</li>
+          <li><i class="fas fa-check"></i> Competitive gap &amp; opportunity map</li>
+          <li><i class="fas fa-check"></i> Light Q&amp;A &mdash; ask follow-up questions</li>
+          <li><i class="fas fa-check"></i> One-click execution button to launch</li>
         </ul>
-        <a href="mailto:hello@auxora.ai" class="btn-ghost" style="width:100%;justify-content:center;">
-          Talk to us <i class="fas fa-arrow-right"></i>
+        <a href="/report" class="btn-ghost" style="width:100%;justify-content:center;">
+          Get my strategy report <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- $49 Launch (most popular) -->
+      <div class="plan featured">
+        <div class="plan-badge">Most popular</div>
+        <p class="eyebrow" style="margin-bottom:16px;">Launch</p>
+        <div class="plan-price"><sup>$</sup>49</div>
+        <p class="plan-label">token-based &middot; live ads &amp; new customers in 48 hours</p>
+        <p style="font-size:12px;font-weight:700;color:var(--rust);margin-bottom:16px;">
+          &#x26A1; New paying customers in 48 hours &mdash; done for you
+        </p>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Everything in Strategy</li>
+          <li><i class="fas fa-check"></i> AI-built conversion landing page</li>
+          <li><i class="fas fa-check"></i> Ad creatives &mdash; video &amp; static, AI-generated</li>
+          <li><i class="fas fa-check"></i> 1 live channel: Meta <em>or</em> Google, fully configured</li>
+          <li><i class="fas fa-check"></i> SEO-optimised copy for your niche</li>
+          <li><i class="fas fa-check"></i> Email capture &amp; follow-up flow</li>
+          <li><i class="fas fa-check"></i> Token credits for Q&amp;A &amp; ongoing optimisations</li>
+        </ul>
+        <a href="#early-access" class="btn-primary" style="width:100%;justify-content:center;">
+          Get new customers in 48 hours <i class="fas fa-arrow-right"></i>
         </a>
       </div>
 
@@ -1213,10 +1220,10 @@ export const REVISED_LANDING_HTML = `
         We earn after you do.
       </p>
       <p style="font-size:14px;color:var(--muted);line-height:1.75;">
-        Think of Auxora as a virtual CMO on performance pay. The $200 covers all build costs — 
-        your landing page, ad creatives, campaign setup, SEO copy. That's it.
-        Revenue share only kicks in after your ROAS reaches ≥ 0.7× ($0.70 back per $1 spent — 
-        confirming your ads are working). We scale with you, not ahead of you.
+        Think of Auxora as a virtual CMO on performance pay. Your $49 covers all build
+        costs &mdash; landing page, ad creatives, campaign setup, SEO copy. That&rsquo;s it until
+        you&rsquo;re profitable. Revenue share only kicks in after your ROAS reaches &ge;&nbsp;0.7&times;
+        ($0.70 back per $1 in ad spend). We grow with you, not ahead of you.
       </p>
     </div>
   </div>
@@ -1248,7 +1255,7 @@ export const REVISED_LANDING_HTML = `
       <input type="email" id="ea-email" name="email" placeholder="your@email.com" required
              autocomplete="email" aria-label="Email address">
       <button type="submit" class="btn-primary" style="white-space:nowrap;">
-        Get Early Access <i class="fas fa-arrow-right"></i>
+        Get More Revenue <i class="fas fa-arrow-right"></i>
       </button>
     </form>
 
@@ -1349,10 +1356,10 @@ export const REVISED_LANDING_HTML = `
         },
         {
           "@type": "Question",
-          "name": "What's the difference between the free early access and the $4.99 report?",
+          "name": "What's the difference between Free, Strategy ($4.99) and Launch ($49)?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Early access gives you white-glove onboarding, direct founder contact, and the $4.99 report included at no charge — plus priority access to the full Growth Build at beta pricing. The $4.99 report is the self-serve version: still a complete GTM analysis, delivered instantly, without the manual onboarding session."
+            "text": "Free gives you an instant market snapshot — competitor overview, demand analysis, customer acquisition cost estimate — no card required. Strategy ($4.99) adds the full GTM report, ICP & positioning, messaging framework, SEO keywords, and light Q&A with an execution button. Launch ($49) is token-based and does it all: AI-built landing page, ad creatives, 1 live Meta or Google channel, SEO copy, and email flows — new paying customers in 48 hours."
           }
         }
       ]
@@ -1373,10 +1380,10 @@ export const REVISED_LANDING_HTML = `
          'No. Auxora uses Chat-as-OS: describe your business and goals in plain language, and AI agents handle all technical execution — building pages, connecting ad accounts, pixel setup, and campaign launch. Zero marketing experience required.'],
         ['How does the revenue share model work?',
          'Auxora charges nothing until your ROAS (Return on Ad Spend) reaches at least 0.7x. That means you are getting $0.70 back for every $1 spent on ads. Only then does Auxora take a small percentage of incremental revenue. Your AI team earns after you do.'],
-        ['What is the difference between early access and the $4.99 report?',
-         'Early access gives you white-glove onboarding, direct founder contact, and the $4.99 report free — plus priority access to the full AI growth build at beta pricing. The $4.99 report is the self-serve version: the same GTM analysis, delivered instantly, with an activation button.'],
+        ['What\'s the difference between the Free, $4.99, and $49 plans?',
+         'Free gives you an instant market snapshot (competitors, demand, cost-to-acquire a customer) in 2 minutes — no card needed. The $4.99 Strategy plan adds the full GTM report, ICP & positioning, messaging, SEO keywords, and light Q&A with an execution button. The $49 Launch plan does it all: AI-built landing page, ad creatives, 1 live Meta or Google channel configured, SEO copy, and email flows — new paying customers in 48 hours. Token credits included for ongoing questions and optimisations.'],
         ['Can I cancel anytime?',
-         'Yes. No contracts, no lock-in. The $4.99 report and $200 Growth Build are one-time. The Scale plan is monthly — cancel with one click. No questions asked.'],
+         'Yes. No contracts, no lock-in. Free is free forever. The $4.99 Strategy and $49 Launch plans are one-time purchases. Revenue share only kicks in after your ROAS exceeds 0.7x — you are never locked into a monthly fee until you choose to scale.'],
       ].map(([q, a], i) => `
         <div class="faq-item" id="faq-${i}">
           <div class="faq-q" onclick="toggleFaq(${i})">
@@ -1410,9 +1417,9 @@ export const REVISED_LANDING_HTML = `
       <div>
         <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;">Product</p>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <a href="/report">GTM Report — $4.99</a>
-          <a href="#pricing">Growth Build — $200</a>
-          <a href="#pricing">Scale Plan</a>
+          <a href="/report">Free Market Snapshot</a>
+          <a href="/report">Strategy Report — $4.99</a>
+          <a href="#pricing">Launch — $49</a>
           <a href="#early-access">Early Access</a>
         </div>
       </div>
