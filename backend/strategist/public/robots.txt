@@ -1,0 +1,15 @@
+# Auxora — robots.txt
+# https://auxora.ai/robots.txt
+
+User-agent: *
+Allow: /
+
+# Block internal API routes and analytics endpoints from indexing
+Disallow: /api/
+Disallow: /workspace
+Disallow: /static/auxora_demo.webm
+Disallow: /static/auxora_demo.mp4
+Disallow: /static/auxora_demo.gif
+
+# Sitemap location
+Sitemap: https://auxora.ai/sitemap.xml

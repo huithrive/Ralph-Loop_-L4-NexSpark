@@ -31,16 +31,23 @@ export const REVISED_LANDING_HTML = `
   <meta name="description" content="28 million one-person businesses in the US have no marketing team. Auxora is your AI virtual CMO — marketing strategy, landing page, Meta &amp; Google ads, SEO and email flows. Everything that takes 30 days and $2,000+ to set up, done in 48 hours from $49.">
 
   <!-- Open Graph -->
+  <meta property="og:site_name" content="Auxora">
   <meta property="og:title" content="Auxora — The Virtual CMO for One-Person Businesses">
   <meta property="og:description" content="28M US businesses run solo with no marketing team. Auxora gives you AI-powered strategy, ads, SEO and landing pages — everything that costs $2,000+ to set up elsewhere, done in 48 hours from $49.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://auxora.ai">
   <meta property="og:image" content="https://auxora.ai/static/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Auxora — Your AI virtual CMO for one-person businesses. Strategy, ads and SEO done in 48 hours from $49.">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@auxoraai">
   <meta name="twitter:title" content="Auxora — Virtual CMO for One-Person Businesses">
   <meta name="twitter:description" content="No marketing team? No problem. Auxora handles your strategy, ads, SEO and landing pages — done in 48 hours from $49. 28 million solo businesses. Built for you.">
+  <meta name="twitter:image" content="https://auxora.ai/static/og-image.png">
+  <meta name="twitter:image:alt" content="Auxora — Your AI virtual CMO for one-person businesses. Strategy, ads and SEO done in 48 hours from $49.">
 
   <!-- Canonical -->
   <link rel="canonical" href="https://auxora.ai">
@@ -58,17 +65,24 @@ export const REVISED_LANDING_HTML = `
     "offers": [
       {
         "@type": "Offer",
-        "name": "GTM Strategy Report",
-        "price": "4.99",
+        "name": "Free Market Snapshot",
+        "price": "0",
         "priceCurrency": "USD",
-        "description": "Your complete go-to-market plan — ICP, positioning, channels, SEO keywords — delivered in minutes."
+        "description": "Instant market snapshot — competitor overview, demand analysis, cost-to-acquire estimate, top 3 channels. No credit card required."
       },
       {
         "@type": "Offer",
-        "name": "Growth Build",
-        "price": "200",
+        "name": "Strategy Report",
+        "price": "4.99",
         "priceCurrency": "USD",
-        "description": "Full marketing stack: landing page, ad creatives, 1 live ad channel, email flows — delivered in 24 hours."
+        "description": "Full GTM report: ICP & positioning, messaging framework, SEO keywords, competitive gap map, and light Q&A with one-click execution."
+      },
+      {
+        "@type": "Offer",
+        "name": "Launch",
+        "price": "49",
+        "priceCurrency": "USD",
+        "description": "Done-for-you launch: AI-built landing page, ad creatives, 1 live Meta or Google channel, SEO copy, email flows — new paying customers in 48 hours."
       }
     ],
     "aggregateRating": {
@@ -86,7 +100,7 @@ export const REVISED_LANDING_HTML = `
     "@type": "Organization",
     "name": "Auxora",
     "url": "https://auxora.ai",
-    "description": "AI-powered virtual CMO and done-for-you marketing platform. Your marketing on autopilot — SEO, Meta ads, Google ads, email flows for solo entrepreneurs.",
+    "description": "AI-powered virtual CMO and done-for-you marketing platform for one-person businesses. Strategy, landing pages, Meta & Google ads, SEO and email flows — from $49, live in 48 hours.",
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "customer support",
@@ -103,6 +117,16 @@ export const REVISED_LANDING_HTML = `
     gtag('js', new Date());
     gtag('config', 'G-EBTW4ZCV98');
   </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+
+  <!-- DNS prefetch / preconnect for third-party origins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
@@ -520,32 +544,31 @@ export const REVISED_LANDING_HTML = `
 
     <p class="eyebrow" style="margin-bottom:20px;">
       <i class="fas fa-circle" style="font-size:7px;vertical-align:middle;margin-right:6px;color:var(--sage);"></i>
-      28 million one-person businesses in the US — none of them have a marketing team
+      Built for one-person businesses — 28 million in the US with no marketing team
     </p>
 
     <h1 id="hero-h1">
-      Your marketing,<br/>
-      <em>on autopilot.</em>
+      Your AI growth team.<br/>
+      <em>Done for you.</em>
     </h1>
 
     <p class="hero-sub">
-      Auxora is your <strong>AI-powered virtual CMO</strong> — strategy, landing page, 
-      Meta &amp; Google ads, SEO and email flows. Everything that normally takes 
-      <strong>30 days and $2,000+ to set up</strong>, done for you in 48 hours 
-      starting at <strong>$49</strong>.
+      You run your business. Auxora handles all the marketing — 
+      ads, website, SEO, emails. <strong>New customers in 48 hours.</strong>
+      Starting at <strong>$49.</strong>
     </p>
 
     <div class="hero-ctas">
       <a href="#early-access" class="btn-primary" style="font-size:16px;padding:17px 34px;">
-        Get New Paying Customers in 48 Hours
+        Get New Customers in 48 Hours
         <i class="fas fa-arrow-right"></i>
       </a>
     </div>
 
     <div class="hero-trust">
-      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Start from $49</span>
-      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Clients in 48 hours</span>
-      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Pay only when ads perform</span>
+      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Starts at $49</span>
+      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> New customers in 48 hours</span>
+      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> You only pay when it works</span>
       <span><i class="fas fa-star" style="color:var(--gold);"></i> 4.9 / 5 · 53 early users</span>
     </div>
 
@@ -561,25 +584,25 @@ export const REVISED_LANDING_HTML = `
   <div class="container">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;max-width:900px;margin:0 auto;">
 
-      <!-- Pillar 1: Auto-drive marketing -->
+      <!-- Pillar 1: Done for you -->
       <div style="padding:24px 28px;border-right:1px solid var(--border);text-align:center;" class="resp-card">
-        <div style="font-size:28px;margin-bottom:10px;">🚗</div>
-        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">Marketing on autopilot —<br/>like auto-drive for growth</h3>
-        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Describe your business once. Auxora builds, launches and optimises your ads and content — fully done for you, every day, without lifting a finger.</p>
+        <div style="font-size:28px;margin-bottom:10px;">🙌</div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">We do the marketing.<br/>You do your work.</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Tell us about your business. Auxora builds your ads, website and emails — and keeps them running. No learning curve. No extra hours.</p>
       </div>
 
-      <!-- Pillar 2: Done-for-you results -->
+      <!-- Pillar 2: Real customers, fast -->
       <div style="padding:24px 28px;border-right:1px solid var(--border);text-align:center;" class="resp-card">
-        <div style="font-size:28px;margin-bottom:10px;">📈</div>
-        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">Clients in — not just<br/>a strategy document out</h3>
-        <p style="font-size:13px;color:var(--muted);line-height:1.6;">From your first message to a live campaign with real traffic. We measure success in revenue, not reports.</p>
+        <div style="font-size:28px;margin-bottom:10px;">📞</div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">Real customers calling.<br/>Not just website visits.</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Auxora runs ads and builds pages that turn strangers into paying customers — not just clicks. You see new business in 48 hours.</p>
       </div>
 
-      <!-- Pillar 3: cheaper than Yelp + no setup fees -->
+      <!-- Pillar 3: Affordable -->
       <div style="padding:24px 28px;text-align:center;" class="resp-card">
-        <div style="font-size:28px;margin-bottom:10px;">💰</div>
-        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">From $49 — a fraction of<br/>what it costs anywhere else</h3>
-        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Strategy, ads, SEO and landing pages together normally take 30 days and $2,000+ to set up. Auxora does it all in 48 hours, starting at $49.</p>
+        <div style="font-size:28px;margin-bottom:10px;">💵</div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">Starts at $49.<br/>No surprises.</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">The same work costs $2,000+ and 30 days anywhere else. Auxora gets it done in 48 hours — and you only pay more when customers are coming in.</p>
       </div>
 
     </div>
@@ -695,13 +718,13 @@ export const REVISED_LANDING_HTML = `
     <div style="max-width:580px;margin:0 auto 48px;text-align:center;">
       <p class="eyebrow" style="margin-bottom:16px;color:var(--rust-l);">See it in action</p>
       <h2 id="demo-h2" class="editorial" style="font-size:clamp(28px,3.5vw,48px);color:white;line-height:1.18;">
-        One conversation.<br/>
-        <em style="color:var(--rust-l);">Your AI team builds the rest.</em>
+        Tell us about your business.<br/>
+        <em style="color:var(--rust-l);">We handle everything else.</em>
       </h2>
       <p style="font-size:15px;color:rgba(255,255,255,0.5);margin-top:16px;line-height:1.7;">
-        Chat-as-OS: describe your business in plain language. Auxora's AI agents — 
-        powered by Claude, GoMarble and Shopify integrations — produce your full 
-        virtual CMO stack end-to-end. Not just advice. The actual work, done.
+        Answer a few simple questions about what you do and who your customers are. 
+        Auxora builds your ad, your customer page, and your follow-up emails — 
+        then puts them live. No tech knowledge. No waiting weeks. No hiring anyone.
       </p>
     </div>
 
@@ -716,7 +739,10 @@ export const REVISED_LANDING_HTML = `
         <div class="browser-live">● LIVE</div>
       </div>
       <div class="browser-video">
-        <video autoplay loop muted playsinline style="width:100%;display:block;">
+        <video autoplay loop muted playsinline
+               poster="/static/demo-poster.jpg"
+               aria-label="Auxora product demo — answer 5 questions and get ads live in 48 hours"
+               style="width:100%;display:block;">
           <source src="/static/auxora_demo.webm" type="video/webm">
           <source src="/static/auxora_demo.mp4" type="video/mp4">
         </video>
@@ -881,7 +907,7 @@ export const REVISED_LANDING_HTML = `
       <div class="step">
         <div class="step-num">2</div>
         <h3>We build your full marketing stack — $200</h3>
-        <p>One conversation activates your virtual CMO. AI agents write your landing page, produce ad creatives, configure your Meta or Google campaign, and wire up analytics — all done for you in 24 hours. No $2,000 setup fee.</p>
+        <p>Auxora creates your ad, builds a page for new customers to land on, and sets it live on Google or Facebook. You don't write a word or touch any settings. It's all done for you in 48 hours.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
@@ -915,9 +941,9 @@ export const REVISED_LANDING_HTML = `
         <em style="color:var(--rust);">Auxora was made for you.</em>
       </h2>
       <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">
-        28 million one-person businesses in the US run without a marketing team. 
-        Auxora is your AI virtual CMO that knows your niche, your clients, and 
-        what actually converts in your vertical.
+        28 million one-person businesses in the US have no marketing team. 
+        Auxora was built for them — not big companies, not marketing teams. 
+        Just one person who is great at their work and needs more customers.
       </p>
     </div>
 
@@ -990,14 +1016,15 @@ export const REVISED_LANDING_HTML = `
 <section class="section" style="background:var(--cream);" id="results" aria-labelledby="results-h2">
   <div class="container">
     <div style="max-width:580px;margin:0 auto 52px;text-align:center;">
-      <p class="eyebrow" style="margin-bottom:16px;">Done-for-you results</p>
+      <p class="eyebrow" style="margin-bottom:16px;">Real results</p>
       <h2 id="results-h2" class="editorial" style="font-size:clamp(32px,4vw,52px);color:var(--ink);line-height:1.15;">
-        Founders who stopped<br/>
-        <em style="color:var(--rust);">grinding and grew.</em>
+        One-person businesses<br/>
+        <em style="color:var(--rust);">getting more customers.</em>
       </h2>
       <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">
-        Real results from early Auxora users — solopreneurs, practitioners and local 
-        service businesses who replaced their agency with AI digital staff.
+        Real results from real one-person businesses — 
+        plumbers, therapists, consultants, coaches and local service operators 
+        who now have a steady stream of new customers.
       </p>
     </div>
 
@@ -1109,6 +1136,8 @@ export const REVISED_LANDING_HTML = `
       <div style="border-radius:20px;overflow:hidden;cursor:pointer;position:relative;" onclick="openVideoModal(0)">
         <img src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
              alt="Real founder story: how Auxora grew a solo business 10× in 2 months"
+             loading="lazy" decoding="async"
+             width="960" height="420"
              style="width:100%;display:block;object-fit:cover;max-height:420px;">
         <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,25,23,0.04),rgba(28,25,23,0.6));"></div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
@@ -1245,12 +1274,12 @@ export const REVISED_LANDING_HTML = `
       Early access — limited spots
     </p>
     <h2 id="ea-h2" class="editorial" style="font-size:clamp(36px,5vw,64px);color:white;line-height:1.08;margin-bottom:18px;">
-      Your marketing<br/>
-      <em style="color:var(--rust-l);">runs itself tomorrow.</em>
+      Get more customers.<br/>
+      <em style="color:var(--rust-l);">Starting this week.</em>
     </h2>
     <p style="font-size:16px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:36px;">
-      Join our early cohort. Get white-glove onboarding, direct founder access, 
-      and your $4.99 strategy report free — then your virtual CMO handles the rest.
+      Join early. We'll walk you through everything personally, 
+      give you the strategy report for free, and get your first ads live fast.
     </p>
 
     <!-- Email capture form -->
@@ -1380,7 +1409,7 @@ export const REVISED_LANDING_HTML = `
         ['What exactly does Auxora build for $200?',
          'Your virtual CMO stack: a conversion-optimised landing page, AI-generated ad creatives (video + static, powered by GoMarble), one live ad channel (Meta or Google), SEO-optimised copy, email/LTV automation flows, and connected analytics. The $200 is a one-time build fee — no $2,000 Meta setup charge, no hidden agency fees.'],
         ['Do I need any technical knowledge or marketing experience?',
-         'No. Auxora uses Chat-as-OS: describe your business and goals in plain language, and AI agents handle all technical execution — building pages, connecting ad accounts, pixel setup, and campaign launch. Zero marketing experience required.'],
+         'No tech knowledge needed. Tell Auxora about your business in plain language — what you do, who your customers are, where you work. Auxora builds your ad, customer page, and email follow-up, then puts everything live. No marketing experience required.'],
         ['How does the revenue share model work?',
          'Auxora charges nothing until your ROAS (Return on Ad Spend) reaches at least 0.7x. That means you are getting $0.70 back for every $1 spent on ads. Only then does Auxora take a small percentage of incremental revenue. Your AI team earns after you do.'],
         ['What\'s the difference between the Free, $4.99, and $49 plans?',
