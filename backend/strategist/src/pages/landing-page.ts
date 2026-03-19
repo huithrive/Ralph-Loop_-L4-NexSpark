@@ -536,9 +536,6 @@ export const REVISED_LANDING_HTML = `
         Get Early Access — Free
         <i class="fas fa-arrow-right"></i>
       </a>
-      <a href="/report" class="btn-ghost">
-        Or start with the $4.99 strategy report
-      </a>
     </div>
 
     <div class="hero-trust">
