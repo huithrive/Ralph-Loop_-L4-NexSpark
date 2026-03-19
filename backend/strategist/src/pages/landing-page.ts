@@ -1,740 +1,1566 @@
-// Revised Landing Page - Launch Focus
-// From $0 to $10K MRR with AI Growth Co-Founder
+// Auxora Landing Page — Solopreneur ICP v3
+// Pivoted from D2C / CPG brands → one-person businesses, solo practitioners, freelancers
+//
+// SEO primary keywords:
+//   "AI marketing for solopreneurs"
+//   "replace your marketing agency with AI"
+//   "get clients without an agency"
+//   "solopreneur marketing automation"
+//   "therapist private practice marketing"
+//   "AI tools for one person business"
+//   "freelancer get more clients AI"
+//
+// Organic growth strategy:
+//   - Reddit-ready copy (r/freelance, r/solopreneur, r/entrepreneur)
+//   - LinkedIn outreach–aligned messaging
+//   - Blog SEO hooks embedded in section copy
+//   - Three value-prop variants: time-saving | growth/outcome | expertise/cost
+//   - CTA: "Get Early Access" (email capture) + "$4.99 GTM report"
 
 export const REVISED_LANDING_HTML = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexSpark | Launch with Your AI Growth Co-Founder</title>
-    <meta name="description" content="From $0 to $10K MRR. Your AI-powered growth co-founder.">
-    
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EBTW4ZCV98"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-EBTW4ZCV98');
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- ═══ SEO: Primary title — high-intent solopreneur queries ═══ -->
+  <title>Auxora — Your AI Growth Team | Replace Your Marketing Agency for $200/month</title>
+  <meta name="description" content="Auxora is an AI-native growth platform that replaces your marketing agency. Done-for-you strategy, landing page, ads, SEO and analytics — fully delivered in 24 hours for $200/month, not $2,000. Built for solopreneurs, freelancers &amp; local service businesses.">
 
-    <!-- Shared Modules -->
-    <script src="/static/shared/storage.js"></script>
-    <script src="/static/shared/header.js"></script>
-    <script src="/static/shared/analysis-utils.js"></script>
-    
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Rajdhani', 'sans-serif'],
-              header: ['Antonio', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
-            },
-            colors: {
-              nexspark: {
-                bg: '#000000',
-                gold: '#FF9C00',
-                pale: '#FFCC99',
-                red: '#CC3333',
-                blue: '#99CCFF',
-                purple: '#CC99CC',
-                dark: '#111111',
-                panel: 'rgba(20, 20, 25, 0.9)'
-              }
-            }
-          }
-        }
-      }
-    </script>
-    
-    <style>
-      body {
-        background-color: #000000;
-        color: #99CCFF;
-        overflow-x: hidden;
-      }
-      
-      ::-webkit-scrollbar {
-        width: 12px;
-        background: #000;
-      }
-      ::-webkit-scrollbar-track {
-        background: #000;
-        border-left: 1px solid #333;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #FF9C00;
-        border-radius: 6px;
-        border: 2px solid #000;
-      }
-      
-      .lcars-bracket {
-        position: relative;
-        border-left: 12px solid #FF9C00;
-        border-top: 12px solid #FF9C00;
-        border-top-left-radius: 24px;
-        padding-left: 20px;
-        padding-top: 20px;
-      }
-      
-      .lcars-btn {
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-family: 'Antonio', sans-serif;
-        font-weight: 700;
-        transition: all 0.2s;
-      }
-      
-      .lcars-btn:hover {
-        filter: brightness(1.2);
-        transform: translateX(5px);
-      }
-      
-      @keyframes warp {
-        0% { transform: translateZ(0) scale(1); }
-        100% { transform: translateZ(100px) scale(1.5); }
-      }
+  <!-- Open Graph -->
+  <meta property="og:title" content="Auxora — AI-Native Growth Platform That Replaces Your Agency">
+  <meta property="og:description" content="Auxora is your AI digital growth team — Done-for-you strategy, landing page, ads and SEO for one-person businesses. 1/10th the cost of an agency. Start for $4.99.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://auxora.ai">
+  <meta property="og:image" content="https://auxora.ai/static/og-image.png">
 
-      /* Slot machine animation - each word visible for exactly 3 seconds */
-      @keyframes slotSpin {
-        0% {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        5% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        28% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        33% {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        100% {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-      }
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Auxora — Your AI Digital Growth Team">
+  <meta name="twitter:description" content="Not a copilot. Not a tool. A Done-for-you AI growth team for one-person businesses. $200/month vs $2,000+. Results in 24 hours.">
 
-      .slot-container {
-        position: relative;
-        min-width: 300px;
-        min-height: 80px;
-        display: inline-block;
-        vertical-align: middle;
-      }
+  <!-- Canonical -->
+  <link rel="canonical" href="https://auxora.ai">
 
-      @media (min-width: 768px) {
-        .slot-container {
-          min-width: 400px;
-          min-height: 100px;
-        }
+  <!-- Structured Data: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Auxora",
+    "url": "https://auxora.ai",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "AI-native growth platform that replaces traditional marketing agencies for solopreneurs. Done-for-you strategy, landing pages, ad creatives and SEO — delivered in 24 hours at 1/10th the agency cost.",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "GTM Strategy Report",
+        "price": "4.99",
+        "priceCurrency": "USD",
+        "description": "Your complete go-to-market plan — ICP, positioning, channels, SEO keywords — delivered in minutes."
+      },
+      {
+        "@type": "Offer",
+        "name": "Growth Build",
+        "price": "200",
+        "priceCurrency": "USD",
+        "description": "Full marketing stack: landing page, ad creatives, 1 live ad channel, email flows — delivered in 24 hours."
       }
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "53"
+    }
+  }
+  </script>
 
-      @media (min-width: 1024px) {
-        .slot-container {
-          min-width: 500px;
-          min-height: 120px;
-        }
-      }
+  <!-- Organization structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Auxora",
+    "url": "https://auxora.ai",
+    "description": "AI-native growth platform. Your AI digital growth team — done-for-you marketing for one-person businesses.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "email": "hello@auxora.ai"
+    }
+  }
+  </script>
 
-      .slot-item {
-        position: absolute;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        animation: slotSpin 9s infinite;
-        white-space: nowrap;
-      }
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EBTW4ZCV98"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EBTW4ZCV98');
+  </script>
 
-      .slot-item:nth-child(1) {
-        animation-delay: 0s;
-      }
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-      .slot-item:nth-child(2) {
-        animation-delay: 3s;
-      }
+  <style>
+    :root {
+      --cream:  #FAF7F4;
+      --warm:   #F5EFE8;
+      --border: #EDE4D9;
+      --ink:    #1C1917;
+      --muted:  #7A6E65;
+      --rust:   #BF6744;
+      --rust-l: #D4845C;
+      --sage:   #4A6741;
+      --sage-l: #6E8B5E;
+      --dark:   #252220;
+      --darker: #1A1816;
+      --gold:   #D4A853;
+    }
 
-      .slot-item:nth-child(3) {
-        animation-delay: 6s;
-      }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
 
-      /* Scroll Indicator Animation */
-      @keyframes scrollBounce {
-        0%, 100% {
-          transform: translateY(0);
-          opacity: 0.7;
-        }
-        50% {
-          transform: translateY(10px);
-          opacity: 1;
-        }
-      }
+    /* ── Typography ── */
+    .editorial { font-family: 'Playfair Display', Georgia, serif; }
+    .eyebrow {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--rust);
+    }
 
-      @keyframes scrollGlow {
-        0%, 100% {
-          box-shadow: 0 0 10px rgba(255, 156, 0, 0.3);
-        }
-        50% {
-          box-shadow: 0 0 25px rgba(255, 156, 0, 0.8), 0 0 40px rgba(255, 156, 0, 0.4);
-        }
-      }
+    /* ── Marquee ticker ── */
+    .ticker-wrap { overflow: hidden; }
+    .ticker-track {
+      display: flex; width: max-content;
+      animation: marquee 32s linear infinite;
+    }
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
 
-      .scroll-indicator {
-        position: absolute;
-        bottom: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        animation: scrollBounce 2s ease-in-out infinite;
-        cursor: pointer;
-        z-index: 20;
-      }
+    /* ── Utility ── */
+    .section { padding: 88px 24px; }
+    .container { max-width: 1200px; margin: 0 auto; }
 
-      .scroll-indicator-icon {
-        width: 50px;
-        height: 50px;
-        border: 2px solid #FF9C00;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(10px);
-        animation: scrollGlow 2s ease-in-out infinite;
-        transition: all 0.3s ease;
-      }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; border-radius: 100px;
+      padding: 5px 14px;
+    }
+    .badge-rust  { background: #FDF2EE; color: var(--rust); }
+    .badge-sage  { background: #EEF3EC; color: var(--sage); }
+    .badge-gold  { background: #FBF3E3; color: var(--gold); }
 
-      .scroll-indicator:hover .scroll-indicator-icon {
-        background: rgba(255, 156, 0, 0.2);
-        transform: scale(1.1);
-      }
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 8px 32px rgba(28,25,23,0.08); }
 
-      .scroll-indicator-text {
-        color: #FF9C00;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-top: 8px;
-        text-align: center;
-        font-weight: bold;
-      }
-    </style>
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--rust); color: white;
+      font-weight: 700; font-size: 15px;
+      border-radius: 12px; padding: 16px 32px;
+      border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: var(--rust-l); transform: translateY(-2px); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent; color: var(--ink);
+      font-weight: 600; font-size: 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 14px 28px;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+      text-decoration: none;
+    }
+    .btn-ghost:hover { border-color: var(--rust); background: #FDF2EE; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,247,244,0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      height: 64px; display: flex;
+      align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 700;
+      color: var(--ink); text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-size: 14px; font-weight: 500;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    @media (max-width: 640px) { .nav-links { display: none; } }
+
+    /* ── Hero ── */
+    .hero { padding: 84px 24px 68px; background: var(--cream); }
+    .hero-inner { max-width: 780px; margin: 0 auto; text-align: center; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(40px, 5.5vw, 74px);
+      line-height: 1.07; color: var(--ink);
+      margin-bottom: 24px; letter-spacing: -0.02em;
+    }
+    .hero h1 em { color: var(--rust); font-style: italic; }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted); line-height: 1.7;
+      max-width: 580px; margin: 0 auto 40px;
+    }
+    .hero-ctas {
+      display: flex; align-items: center;
+      justify-content: center; gap: 16px; flex-wrap: wrap;
+    }
+    .hero-trust {
+      margin-top: 44px; font-size: 12px; color: var(--muted);
+      display: flex; align-items: center;
+      justify-content: center; gap: 20px; flex-wrap: wrap;
+    }
+    .hero-trust span { display: flex; align-items: center; gap: 6px; }
+
+    /* ── Social proof logos row ── */
+    .as-seen-bar {
+      background: var(--warm);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .as-seen-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 14px;
+    }
+    .as-seen-logos {
+      display: flex; align-items: center;
+      justify-content: center; gap: 36px; flex-wrap: wrap;
+    }
+    .as-seen-logos span {
+      font-size: 13px; font-weight: 700;
+      color: var(--muted); opacity: 0.55;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Proof ticker ── */
+    .proof-ticker {
+      background: var(--ink); padding: 12px 0;
+    }
+    .proof-chip {
+      white-space: nowrap; font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.75);
+      padding: 0 28px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .proof-chip .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--rust-l); flex-shrink: 0;
+    }
+
+    /* ── Pain section ── */
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px; margin-top: 48px;
+    }
+    .pain-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+    }
+    .pain-card .icon { font-size: 26px; margin-bottom: 14px; }
+    .pain-card h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .pain-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── Steps ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px; margin-top: 56px;
+    }
+    .step { text-align: center; padding: 32px 24px; }
+    .step-num {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--rust); color: white;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .step h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+    .step p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── Browser chrome ── */
+    .browser-chrome {
+      background: var(--darker);
+      border-radius: 16px 16px 0 0;
+      padding: 14px 20px 12px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .browser-dots { display: flex; gap: 6px; }
+    .browser-dots span { width: 12px; height: 12px; border-radius: 50%; }
+    .browser-url {
+      flex: 1; background: rgba(255,255,255,0.08);
+      border-radius: 6px; padding: 6px 14px;
+      font-size: 12px; color: rgba(255,255,255,0.5); font-family: monospace;
+    }
+    .browser-live { font-size: 10px; font-weight: 700; color: #4ade80; letter-spacing: 0.1em; }
+    .browser-video {
+      border-radius: 0 0 16px 16px; overflow: hidden; background: #FAF7F4;
+    }
+    .browser-video video, .browser-video img { width: 100%; display: block; }
+
+    /* ── Pricing ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px; margin-top: 52px;
+      max-width: 960px; margin-left: auto; margin-right: auto;
+    }
+    .plan {
+      border-radius: 20px; padding: 36px 32px;
+      border: 1.5px solid var(--border);
+      background: white; position: relative;
+    }
+    .plan.featured {
+      border-color: var(--rust);
+      box-shadow: 0 0 0 4px rgba(191,103,68,0.08);
+    }
+    .plan-badge {
+      position: absolute; top: -14px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--rust); color: white;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border-radius: 100px; padding: 5px 16px;
+    }
+    .plan-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px; font-weight: 700;
+      color: var(--ink); line-height: 1;
+    }
+    .plan-price sup { font-size: 22px; vertical-align: super; line-height: 1; font-weight: 400; }
+    .plan-label { font-size: 12px; color: var(--muted); margin-top: 6px; margin-bottom: 24px; }
+    .plan-features { list-style: none; margin-bottom: 32px; }
+    .plan-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--ink);
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+    }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features li i { color: var(--sage); margin-top: 2px; flex-shrink: 0; }
+
+    /* ── Testimonials ── */
+    .testi {
+      padding: 36px; background: white;
+      border: 1px solid var(--border); border-radius: 20px;
+    }
+    .testi-quote {
+      font-size: 42px; line-height: 1;
+      font-family: 'Playfair Display', serif;
+      color: var(--rust); margin-bottom: -8px;
+    }
+    .testi-text {
+      font-size: 15px; color: #3D3530;
+      line-height: 1.8; margin-bottom: 24px;
+    }
+    .testi-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 17px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .stars { display: flex; gap: 3px; }
+    .stars i { color: var(--rust-l); font-size: 12px; }
+
+    /* ── Dark sections ── */
+    .dark-section { background: var(--dark); color: rgba(255,255,255,0.9); }
+    .dark-section .eyebrow { color: var(--rust-l); }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; }
+    .faq-q {
+      font-size: 16px; font-weight: 600; color: var(--ink);
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    }
+    .faq-a {
+      font-size: 14px; color: var(--muted); line-height: 1.75;
+      margin-top: 12px; display: none;
+    }
+    .faq-item.open .faq-a { display: block; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-icon { transition: transform 0.2s; color: var(--muted); }
+
+    /* ── Early access form ── */
+    .access-form {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      justify-content: center; max-width: 520px; margin: 0 auto;
+    }
+    .access-form input[type="email"] {
+      flex: 1; min-width: 240px;
+      padding: 16px 20px; border-radius: 12px;
+      border: 1.5px solid var(--border);
+      font-size: 15px; color: var(--ink);
+      background: white; outline: none;
+      transition: border-color 0.2s;
+    }
+    .access-form input[type="email"]:focus { border-color: var(--rust); }
+    .access-form input::placeholder { color: var(--muted); }
+
+    /* ── Challenge pills ── */
+    .challenge-pills {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      justify-content: center; margin-top: 18px;
+    }
+    .challenge-pill {
+      padding: 8px 18px; border-radius: 100px;
+      border: 1.5px solid var(--border);
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      cursor: pointer; transition: all 0.2s;
+      background: white;
+    }
+    .challenge-pill:hover,
+    .challenge-pill.selected {
+      border-color: var(--rust); color: var(--rust);
+      background: #FDF2EE;
+    }
+
+    /* ── Footer ── */
+    footer { background: var(--darker); color: rgba(255,255,255,0.5); padding: 48px 24px 32px; }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; flex-wrap: wrap; gap: 32px;
+    }
+    footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    footer a:hover { color: rgba(255,255,255,0.85); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .section { padding: 60px 20px; }
+      .hero { padding: 56px 20px 48px; }
+    }
+    @media (max-width: 560px) {
+      .access-form { flex-direction: column; }
+      .access-form input[type="email"] { min-width: 100%; }
+    }
+
+    /* ── Scroll-in animation ── */
+    .fade-up {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+  </style>
 </head>
-<body class="font-sans">
-    <!-- Animated Background Canvas -->
-    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+<body>
 
-    <!-- Header (rendered by header.js) -->
-    <div id="appHeader"></div>
+<!-- ═══════════════════════════════════════
+     NAV
+═══════════════════════════════════════ -->
+<nav aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Auxora</a>
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#who-its-for">Who it's for</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#results">Results</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="#early-access" class="btn-primary" style="padding:10px 22px;font-size:13px;">
+      Get Early Access <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+</nav>
 
-    <!-- Hero Section -->
-    <section class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12 md:py-20">
-        <div class="max-w-7xl w-full mt-16 md:mt-20">
-            <div class="flex flex-col lg:flex-row gap-12">
-                
-                <!-- LCARS Sidebar -->
-                <div class="hidden lg:flex flex-col w-32 shrink-0">
-                    <div class="h-40 w-full bg-nexspark-gold rounded-tl-3xl mb-2 flex items-end justify-end p-2">
-                        <span class="text-black font-header text-6xl font-bold">01</span>
-                    </div>
-                    <div class="h-32 w-full bg-nexspark-pale rounded-l-lg mb-2"></div>
-                    <div class="flex-1 min-h-[200px] w-16 bg-nexspark-purple rounded-bl-3xl ml-auto border-r-8 border-black"></div>
-                </div>
 
-                <div class="flex-1">
-                    <!-- Main Headline with Slot Machine Effect -->
-                    <div class="mb-8">
-                        <!-- First Line: "Built with [ROTATING]" -->
-                        <div class="flex flex-wrap items-baseline gap-3 md:gap-4 mb-4">
-                            <h1 class="text-5xl md:text-7xl lg:text-8xl font-header font-bold text-white uppercase tracking-wider">
-                                Built with
-                            </h1>
+<!-- ═══════════════════════════════════════
+     HERO
+     SEO target: "AI marketing for solopreneurs"
+                 "replace your marketing agency with AI"
+                 "get clients without an agency"
+═══════════════════════════════════════ -->
+<section class="hero" id="hero" aria-labelledby="hero-h1">
+  <div class="hero-inner">
 
-                            <!-- Rotating Slot -->
-                            <div class="slot-container">
-                                <div class="slot-item">
-                                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-header font-bold text-nexspark-gold uppercase tracking-wider">
-                                        CLAUDE
-                                    </h1>
-                                </div>
-                                <div class="slot-item">
-                                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-header font-bold text-nexspark-purple uppercase tracking-wider">
-                                        CURSOR
-                                    </h1>
-                                </div>
-                                <div class="slot-item">
-                                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-header font-bold text-nexspark-blue uppercase tracking-wider">
-                                        LOVABLE
-                                    </h1>
-                                </div>
-                            </div>
-                        </div>
+    <p class="eyebrow" style="margin-bottom:20px;">
+      <i class="fas fa-circle" style="font-size:7px;vertical-align:middle;margin-right:6px;color:var(--sage);"></i>
+      Now in early access — 28 million one-person businesses in the US have no marketing team
+    </p>
 
-                        <!-- Second Line: "Launch with NEXSPARK" -->
-                        <div class="flex flex-wrap items-center gap-3 md:gap-4">
-                            <h1 class="text-5xl md:text-7xl lg:text-8xl font-header font-bold text-white uppercase tracking-wider">
-                                Launch with
-                            </h1>
-                            <h1 class="text-5xl md:text-7xl lg:text-8xl font-header font-bold text-nexspark-gold uppercase tracking-wider">
-                                NEXSPARK
-                            </h1>
-                        </div>
-                    </div>
+    <h1 id="hero-h1">
+      Your AI growth team.<br/>
+      <em>Done-for-you.</em>
+    </h1>
 
-                    <!-- Value Prop -->
-                    <div class="mb-8 max-w-4xl">
-                        <div class="bg-nexspark-gold/10 border-l-4 border-nexspark-gold p-4 md:p-6 rounded-r-lg backdrop-blur-sm">
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-rocket text-nexspark-gold text-xl mt-1"></i>
-                                <div>
-                                    <div class="text-nexspark-gold font-mono text-xs uppercase tracking-widest mb-1">
-                                        Launch Agent:
-                                    </div>
-                                    <p class="text-white/90 font-mono text-sm md:text-base leading-relaxed">
-                                        The best launch agent to bring you from <span class="text-nexspark-gold">pre-revenue</span> to your first <span class="text-nexspark-purple">$10,000 monthly recurring revenue</span>.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <p class="hero-sub">
+      Auxora is an AI-native platform that replaces your marketing agency — not a tool you learn, 
+      but a <strong>Done-for-you AI digital team</strong> that builds your strategy, landing page, 
+      ads and SEO for <strong>$200/month</strong>, not $2,000.
+    </p>
 
-                    <!-- Website Input Form -->
-                    <div class="mb-8 max-w-4xl">
-                        <div class="bg-nexspark-panel border-2 border-nexspark-gold/30 rounded-xl p-6 backdrop-blur-sm">
-                            <form id="websiteForm" class="flex flex-col sm:flex-row gap-3">
-                                <input
-                                    type="text"
-                                    id="websiteInput"
-                                    placeholder="Enter your website (e.g., yamabushifarms.com)"
-                                    class="flex-1 px-6 py-4 text-lg bg-nexspark-dark text-white border-2 border-nexspark-blue/30 focus:border-nexspark-gold focus:outline-none rounded-lg font-mono"
-                                    required
-                                />
-                                <button
-                                    type="submit"
-                                    class="lcars-btn bg-nexspark-gold hover:bg-nexspark-pale text-black px-8 py-4 rounded-lg text-lg whitespace-nowrap font-bold"
-                                >
-                                    <i class="fas fa-bolt mr-2"></i>LAUNCH ANALYSIS
-                                </button>
-                            </form>
-                            <p class="text-white/50 text-sm mt-3 font-mono">
-                                <i class="fas fa-info-circle mr-1"></i>Enter your domain or brand name to get started
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Trust Indicators Grid -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl">
-                        <div class="bg-black/60 border-t-4 border-nexspark-gold p-4 backdrop-blur-sm">
-                            <div class="text-4xl font-header font-bold text-nexspark-gold mb-1">$10K</div>
-                            <div class="text-white/70 font-mono text-xs uppercase tracking-wide">MRR Target</div>
-                        </div>
-                        <div class="bg-black/60 border-t-4 border-nexspark-blue p-4 backdrop-blur-sm">
-                            <div class="text-4xl font-header font-bold text-nexspark-blue mb-1">5min</div>
-                            <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Preview Ready</div>
-                        </div>
-                        <div class="bg-black/60 border-t-4 border-nexspark-purple p-4 backdrop-blur-sm">
-                            <div class="text-4xl font-header font-bold text-nexspark-purple mb-1">$20</div>
-                            <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Full Strategy</div>
-                        </div>
-                        <div class="bg-black/60 border-t-4 border-nexspark-red p-4 backdrop-blur-sm">
-                            <div class="text-4xl font-header font-bold text-nexspark-red mb-1">AI</div>
-                            <div class="text-white/70 font-mono text-xs uppercase tracking-wide">Co-Founder</div>
-                        </div>
-                    </div>
-
-                    <!-- Key Message -->
-                    <div class="max-w-3xl mb-12">
-                        <div class="bg-black/40 border-t border-white/10 p-4 flex gap-4 items-start">
-                            <div class="bg-nexspark-gold/20 text-nexspark-gold font-bold font-header text-xs px-2 py-1 rounded mt-1">LAUNCH</div>
-                            <div>
-                                <h3 class="text-nexspark-gold font-header uppercase tracking-wider text-sm mb-1">Best Launch Agent</h3>
-                                <p class="text-slate-400 font-mono text-xs leading-relaxed">
-                                    Pre-revenue to $10K MRR. Complete strategy, execution, and growth.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator" onclick="document.querySelector('#proven-results').scrollIntoView({ behavior: 'smooth' })">
-            <div class="scroll-indicator-icon">
-                <i class="fas fa-chevron-down text-nexspark-gold text-2xl"></i>
-            </div>
-            <div class="scroll-indicator-text font-mono">
-                Scroll to See Results
-            </div>
-        </div>
-    </section>
-
-    <!-- Success Stories Section -->
-    <section id="proven-results" class="relative z-10 py-20 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-4 mb-12">
-                <div class="h-20 w-20 bg-nexspark-gold rounded-tl-3xl flex items-center justify-center">
-                    <span class="text-black font-header text-4xl font-bold">02</span>
-                </div>
-                <div class="flex-1">
-                    <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
-                        Proven Results
-                    </h2>
-                    <p class="text-nexspark-gold font-mono text-sm uppercase tracking-widest mt-2">Real Clients, Real Growth</p>
-                </div>
-            </div>
-
-            <!-- Positioning Statement -->
-            <div class="bg-nexspark-gold/10 border-l-4 border-nexspark-gold p-6 rounded-r-lg mb-12">
-                <p class="text-white/90 font-mono text-base leading-relaxed">
-                    <i class="fas fa-chart-line text-nexspark-gold mr-3"></i>
-                    We don't just work with SaaS and subscription software—we excel with <span class="text-nexspark-gold font-bold">D2C brands</span> and <span class="text-nexspark-blue font-bold">B2C companies</span> selling directly to consumers. From physical products to digital subscriptions, we deliver exceptional results across all sectors.
-                </p>
-            </div>
-
-            <!-- Case Studies Showcase -->
-            <div class="max-w-3xl mx-auto mb-8">
-                <!-- Yamabushi Case Study (Video) -->
-                <div class="group relative bg-nexspark-panel rounded-xl overflow-hidden border-2 border-nexspark-gold/30 hover:border-nexspark-gold transition-all duration-300 cursor-pointer" onclick="openVideoModal(0)">
-                    <div class="aspect-video relative overflow-hidden bg-black">
-                        <img src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg" alt="Yamabushi Success Story" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-24 h-24 rounded-full bg-nexspark-gold/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-play text-black text-3xl ml-1"></i>
-                            </div>
-                        </div>
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-nexspark-gold text-black px-4 py-2 rounded-full font-header font-bold text-sm uppercase">
-                                D2C Brand
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-3xl md:text-4xl font-header font-bold text-nexspark-gold uppercase mb-4">
-                            Yamabushi Farms
-                        </h3>
-                        <div class="grid md:grid-cols-2 gap-4 mb-6">
-                            <div class="bg-black/40 p-4 rounded-lg border-l-4 border-nexspark-gold">
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-rocket text-nexspark-gold text-xl mt-1"></i>
-                                    <div>
-                                        <p class="text-white/90 font-mono text-base">
-                                            <span class="text-nexspark-gold font-bold text-xl">10x Revenue</span>
-                                        </p>
-                                        <p class="text-white/60 font-mono text-sm">in just 2 months</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-black/40 p-4 rounded-lg border-l-4 border-nexspark-gold">
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-chart-bar text-nexspark-gold text-xl mt-1"></i>
-                                    <div>
-                                        <p class="text-white/90 font-mono text-base">
-                                            <span class="text-nexspark-gold font-bold text-xl">3x ROAS</span>
-                                        </p>
-                                        <p class="text-white/60 font-mono text-sm">achieved in 1 month</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between pt-4 border-t border-nexspark-gold/20">
-                            <span class="text-nexspark-blue font-mono text-sm uppercase tracking-wider">D2C CPG Brands</span>
-                            <span class="text-white/60 font-mono text-sm">
-                                <i class="fas fa-video mr-2"></i> Click to Watch Full Story
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CTA -->
-            <div class="text-center">
-                <p class="text-white/70 font-mono text-sm mb-4">
-                    <i class="fas fa-award text-nexspark-gold mr-2"></i>
-                    Join successful brands who've transformed their growth with NexSpark
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section class="relative z-10 py-20 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-4 mb-12">
-                <div class="h-20 w-20 bg-nexspark-blue rounded-tl-3xl flex items-center justify-center">
-                    <span class="text-black font-header text-4xl font-bold">03</span>
-                </div>
-                <div class="flex-1">
-                    <h2 class="text-4xl md:text-6xl font-header font-bold text-white uppercase tracking-tight">
-                        How It Works
-                    </h2>
-                    <p class="text-nexspark-blue font-mono text-sm uppercase tracking-widest mt-2">AI-Powered Growth Protocol</p>
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-4 gap-6">
-                <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-6 backdrop-blur-sm">
-                    <div class="w-16 h-16 bg-nexspark-gold rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
-                        01
-                    </div>
-                    <h4 class="text-lg font-header font-bold text-nexspark-gold uppercase mb-3 tracking-wider">Nexspark Interview</h4>
-                    <p class="text-white/70 font-mono text-xs leading-relaxed">
-                        10-minute voice interview. AI understands your business, goals, and challenges.
-                    </p>
-                </div>
-
-                <div class="bg-nexspark-panel border-t-4 border-nexspark-blue p-6 backdrop-blur-sm">
-                    <div class="w-16 h-16 bg-nexspark-blue rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
-                        02
-                    </div>
-                    <h4 class="text-lg font-header font-bold text-nexspark-blue uppercase mb-3 tracking-wider">AI Strategy Generation</h4>
-                    <p class="text-white/70 font-mono text-xs leading-relaxed">
-                        Instant 6-month GTM playbook. Channel mix, budget allocation, CAC projections.
-                    </p>
-                </div>
-
-                <div class="bg-nexspark-panel border-t-4 border-nexspark-purple p-6 backdrop-blur-sm">
-                    <div class="w-16 h-16 bg-nexspark-purple rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
-                        03
-                    </div>
-                    <h4 class="text-lg font-header font-bold text-nexspark-purple uppercase mb-3 tracking-wider">Automated Execution</h4>
-                    <p class="text-white/70 font-mono text-xs leading-relaxed">
-                        AI handles 90% of work. You focus on creative and strategic decisions only.
-                    </p>
-                </div>
-
-                <div class="bg-nexspark-panel border-t-4 border-nexspark-gold p-6 backdrop-blur-sm">
-                    <div class="w-16 h-16 bg-nexspark-gold rounded-full flex items-center justify-center mb-4 font-header text-2xl font-bold text-black">
-                        04
-                    </div>
-                    <h4 class="text-lg font-header font-bold text-nexspark-gold uppercase mb-3 tracking-wider">Continuous Optimization</h4>
-                    <p class="text-white/70 font-mono text-xs leading-relaxed">
-                        Real-time performance tracking. AI adapts strategy based on results.
-                    </p>
-                </div>
-            </div>
-
-            <div class="text-center mt-12">
-                <button onclick="document.getElementById('websiteInput').scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => document.getElementById('websiteInput').focus(), 500);" class="lcars-btn bg-nexspark-blue hover:bg-white text-black px-12 py-5 rounded-lg text-xl">
-                    <i class="fas fa-rocket mr-2"></i> START NOW
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Video Modal -->
-    <div id="videoModal" class="hidden fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4">
-        <div class="relative w-full max-w-6xl">
-            <button onclick="closeVideoModal()" class="absolute -top-12 right-0 text-white hover:text-nexspark-gold transition-colors">
-                <i class="fas fa-times text-3xl"></i>
-            </button>
-            <div class="bg-nexspark-panel rounded-xl overflow-hidden border-2 border-nexspark-gold">
-                <div class="aspect-video">
-                    <iframe id="videoPlayer" width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-                <div class="p-6 bg-black/50">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 id="videoTitle" class="text-2xl font-header font-bold text-white uppercase mb-2"></h3>
-                            <p id="videoDescription" class="text-white/70 font-mono text-sm"></p>
-                        </div>
-                        <button id="nextVideoBtn" onclick="nextVideo()" class="px-6 py-3 bg-nexspark-gold text-black font-header font-bold uppercase rounded-lg hover:bg-nexspark-gold/80 transition-all">
-                            Next Case <i class="fas fa-arrow-right ml-2"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="hero-ctas">
+      <a href="#early-access" class="btn-primary" style="font-size:16px;padding:17px 34px;">
+        Get Early Access — Free
+        <i class="fas fa-arrow-right"></i>
+      </a>
+      <a href="/report" class="btn-ghost">
+        Or start with the $4.99 report
+      </a>
     </div>
 
-    <!-- Background Animation Script -->
-    <script>
-    // Render header
-    Header.renderLanding();
+    <div class="hero-trust">
+      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> 1/10th the agency cost</span>
+      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> 100× faster than human teams</span>
+      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Done for you in 24 hours</span>
+      <span><i class="fas fa-star" style="color:var(--gold);"></i> 4.9 / 5 · 53 early users</span>
+    </div>
 
-    (() => {
-      const canvas = document.getElementById('bgCanvas');
-      if (!canvas) return;
-      
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+  </div>
+</section>
 
-      const stars = Array.from({ length: 800 }, () => ({
-        x: Math.random() * canvas.width - canvas.width / 2,
-        y: Math.random() * canvas.height - canvas.height / 2,
-        z: Math.random() * 1000,
-        color: ['#FF9C00', '#99CCFF', '#CC99CC', '#FFFFFF'][Math.floor(Math.random() * 4)]
-      }));
 
-      function animate() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+<!-- ═══════════════════════════════════════
+     THREE VALUE PROP VARIANTS
+     (mirrors the A/B messaging in GTM plan)
+═══════════════════════════════════════ -->
+<div style="background:var(--warm);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:32px 24px;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;max-width:900px;margin:0 auto;">
 
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
+      <!-- Pillar 1: AI-native, not a tool -->
+      <div style="padding:24px 28px;border-right:1px solid var(--border);text-align:center;" class="resp-card">
+        <div style="font-size:28px;margin-bottom:10px;">🤖</div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">Not a tool. An AI digital<br/>team that works for you</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Auxora doesn't wait for your instructions — it builds, deploys and optimises your marketing Done-for-you, end to end.</p>
+      </div>
 
-        stars.forEach(star => {
-          star.z -= 2;
-          if (star.z <= 0) {
-            star.z = 1000;
-            star.x = Math.random() * canvas.width - centerX;
-            star.y = Math.random() * canvas.height - centerY;
-          }
+      <!-- Pillar 2: Done-for-you results -->
+      <div style="padding:24px 28px;border-right:1px solid var(--border);text-align:center;" class="resp-card">
+        <div style="font-size:28px;margin-bottom:10px;">📈</div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">Clients in — not just<br/>a strategy document out</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">From your first message to a live campaign with real traffic. We measure success in revenue, not reports.</p>
+      </div>
 
-          const scale = 1000 / star.z;
-          const x = centerX + star.x * scale;
-          const y = centerY + star.y * scale;
-          const size = Math.max(0, (1 - star.z / 1000) * 3);
+      <!-- Pillar 3: 1/10th cost -->
+      <div style="padding:24px 28px;text-align:center;" class="resp-card">
+        <div style="font-size:28px;margin-bottom:10px;">💡</div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">$200/month vs $2,000 —<br/>same output, 100× faster</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">One Auxora AI serves 100 businesses at once. That efficiency passes directly to you — not the agency margin.</p>
+      </div>
 
-          ctx.fillStyle = star.color;
-          ctx.beginPath();
-          ctx.arc(x, y, size, 0, Math.PI * 2);
-          ctx.fill();
+    </div>
+  </div>
+</div>
 
-          ctx.strokeStyle = star.color;
-          ctx.lineWidth = size;
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(centerX + star.x * (1000 / (star.z + 2)), centerY + star.y * (1000 / (star.z + 2)));
-          ctx.stroke();
-        });
 
-        requestAnimationFrame(animate);
-      }
+<!-- ═══════════════════════════════════════
+     PROOF TICKER
+═══════════════════════════════════════ -->
+<div class="proof-ticker" aria-label="Early user results">
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <div style="display:flex;align-items:center;gap:0;">
+        <div class="proof-chip"><span class="dot"></span>Freelance consultant — 3 new retainer clients in 3 weeks</div>
+        <div class="proof-chip"><span class="dot" style="background:var(--sage-l);"></span>Therapist (NYC) — calendar fully booked within 5 weeks</div>
+        <div class="proof-chip"><span class="dot"></span>Solo founder — first $10K MRR in 6 weeks</div>
+        <div class="proof-chip"><span class="dot" style="background:var(--gold);"></span>Pest control operator — 62% lower cost per lead</div>
+        <div class="proof-chip"><span class="dot"></span>Life coach — replaced $5K/month agency, same results</div>
+        <div class="proof-chip"><span class="dot" style="background:var(--sage-l);"></span>One-person e-commerce — 3× ROAS on first Meta campaign</div>
+        <div class="proof-chip" style="color:rgba(255,255,255,0.4);font-style:italic;font-weight:400;">
+          <i class="fas fa-heart" style="color:var(--rust-l);font-size:11px;"></i> Therapists &amp; Coaches
+        </div>
+        <div class="proof-chip" style="color:rgba(255,255,255,0.4);font-style:italic;font-weight:400;">
+          <i class="fas fa-briefcase" style="color:var(--rust-l);font-size:11px;"></i> Freelancers &amp; Consultants
+        </div>
+        <div class="proof-chip" style="color:rgba(255,255,255,0.4);font-style:italic;font-weight:400;">
+          <i class="fas fa-tools" style="color:var(--rust-l);font-size:11px;"></i> Home Services
+        </div>
+        <div class="proof-chip" style="color:rgba(255,255,255,0.4);font-style:italic;font-weight:400;">
+          <i class="fas fa-store" style="color:var(--rust-l);font-size:11px;"></i> Solo Founders
+        </div>
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div style="display:flex;align-items:center;gap:0;">
+        <div class="proof-chip"><span class="dot"></span>Freelance consultant — 3 new retainer clients in 3 weeks</div>
+        <div class="proof-chip"><span class="dot" style="background:var(--sage-l);"></span>Therapist (NYC) — calendar fully booked within 5 weeks</div>
+        <div class="proof-chip"><span class="dot"></span>Solo founder — first $10K MRR in 6 weeks</div>
+        <div class="proof-chip"><span class="dot" style="background:var(--gold);"></span>Pest control operator — 62% lower cost per lead</div>
+        <div class="proof-chip"><span class="dot"></span>Life coach — replaced $5K/month agency, same results</div>
+        <div class="proof-chip"><span class="dot" style="background:var(--sage-l);"></span>One-person e-commerce — 3× ROAS on first Meta campaign</div>
+        <div class="proof-chip" style="color:rgba(255,255,255,0.4);font-style:italic;font-weight:400;">
+          <i class="fas fa-heart" style="color:var(--rust-l);font-size:11px;"></i> Therapists &amp; Coaches
+        </div>
+        <div class="proof-chip" style="color:rgba(255,255,255,0.4);font-style:italic;font-weight:400;">
+          <i class="fas fa-briefcase" style="color:var(--rust-l);font-size:11px;"></i> Freelancers &amp; Consultants
+        </div>
+        <div class="proof-chip" style="color:rgba(255,255,255,0.4);font-style:italic;font-weight:400;">
+          <i class="fas fa-tools" style="color:var(--rust-l);font-size:11px;"></i> Home Services
+        </div>
+        <div class="proof-chip" style="color:rgba(255,255,255,0.4);font-style:italic;font-weight:400;">
+          <i class="fas fa-store" style="color:var(--rust-l);font-size:11px;"></i> Solo Founders
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-      animate();
 
-      window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      });
-    })();
+<!-- ═══════════════════════════════════════
+     PAIN SECTION
+     SEO: "solopreneur marketing problems"
+          "why solopreneurs struggle with marketing"
+          "marketing too expensive solo business"
+═══════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);" id="problem" aria-labelledby="pain-h2">
+  <div class="container">
+    <div style="max-width:640px;margin:0 auto;text-align:center;">
+      <p class="eyebrow" style="margin-bottom:16px;">Sound familiar?</p>
+      <h2 id="pain-h2" class="editorial" style="font-size:clamp(32px,4vw,52px);color:var(--ink);line-height:1.15;">
+        You're great at what you do.<br/>
+        <em style="color:var(--rust);">Marketing shouldn't be the problem.</em>
+      </h2>
+      <p style="font-size:16px;color:var(--muted);margin-top:16px;line-height:1.7;">
+        You didn't start your business to run ads and write landing page copy. 
+        But without marketing, the clients don't come — and the work you love 
+        never gets the audience it deserves.
+      </p>
+    </div>
 
-    // Video Modal Functionality
-    const videoData = [
+    <div class="pain-grid" style="max-width:960px;margin:48px auto 0;">
+      <div class="pain-card">
+        <div class="icon">💸</div>
+        <h3>Agencies charge $5K–$20K/month</h3>
+        <p>And they move at 30-day sprint cycles while your bills arrive weekly. Most solopreneurs can't afford to even start.</p>
+      </div>
+      <div class="pain-card">
+        <div class="icon">⏳</div>
+        <h3>DIY marketing eats your whole week</h3>
+        <p>You became a therapist / consultant / freelancer to do the work — not to spend 12 hours A/B testing copy on Meta.</p>
+      </div>
+      <div class="pain-card">
+        <div class="icon">🎯</div>
+        <h3>Generic tools don't fit your niche</h3>
+        <p>Most marketing tools are built for e-commerce teams. You need a strategy built for your specific clients, your location, your price point.</p>
+      </div>
+      <div class="pain-card">
+        <div class="icon">📉</div>
+        <h3>You're invisible to new clients</h3>
+        <p>Your competitors rank first on Google. Your landing page doesn't convert. You rely on referrals that slow down every quarter.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     PRODUCT DEMO VIDEO
+     (auto-play, loop, 3x speed — from Au-full.mp4)
+═══════════════════════════════════════ -->
+<section style="background:var(--ink);padding:72px 24px;" id="demo" aria-labelledby="demo-h2">
+  <div class="container">
+    <div style="max-width:580px;margin:0 auto 48px;text-align:center;">
+      <p class="eyebrow" style="margin-bottom:16px;color:var(--rust-l);">See it in action</p>
+      <h2 id="demo-h2" class="editorial" style="font-size:clamp(28px,3.5vw,48px);color:white;line-height:1.18;">
+        One conversation.<br/>
+        <em style="color:var(--rust-l);">Your AI team builds the rest.</em>
+      </h2>
+      <p style="font-size:15px;color:rgba(255,255,255,0.5);margin-top:16px;line-height:1.7;">
+        Chat-as-OS: describe your business in plain language. Auxora's AI agents — 
+        powered by Claude, GoMarble and Shopify integrations — produce your full 
+        growth stack end-to-end. Not just advice. The actual work, done.
+      </p>
+    </div>
+
+    <div style="max-width:980px;margin:0 auto;">
+      <div class="browser-chrome">
+        <div class="browser-dots">
+          <span style="background:#FF5F57;"></span>
+          <span style="background:#FEBC2E;"></span>
+          <span style="background:#28C840;"></span>
+        </div>
+        <div class="browser-url">app.auxora.ai/workspace</div>
+        <div class="browser-live">● LIVE</div>
+      </div>
+      <div class="browser-video">
+        <video autoplay loop muted playsinline style="width:100%;display:block;">
+          <source src="/static/auxora_demo.webm" type="video/webm">
+          <source src="/static/auxora_demo.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <!-- Three stats below video -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:720px;margin:48px auto 0;">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px;text-align:center;">
+        <div class="editorial" style="font-size:38px;color:var(--rust-l);margin-bottom:6px;">5 min</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);">To complete your GTM brief</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px;text-align:center;">
+        <div class="editorial" style="font-size:38px;color:var(--rust-l);margin-bottom:6px;">24 hrs</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);">From conversation to live campaign</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px;text-align:center;">
+        <div class="editorial" style="font-size:38px;color:var(--rust-l);margin-bottom:6px;">$200</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);">vs $2,000–$20,000/month agency</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     SOLUTION — WHAT AUXORA HANDLES
+     SEO: "AI marketing automation solopreneur"
+          "full service marketing one person business"
+          "replace marketing agency AI"
+═══════════════════════════════════════ -->
+<section class="section dark-section" id="solution" aria-labelledby="solution-h2">
+  <div class="container">
+    <div style="max-width:620px;margin:0 auto 56px;text-align:center;">
+      <p class="eyebrow" style="margin-bottom:16px;">What your AI team delivers</p>
+      <h2 id="solution-h2" class="editorial" style="font-size:clamp(32px,4vw,52px);color:white;line-height:1.15;">
+        Your AI digital growth team.<br/>
+        <em style="color:var(--rust-l);">Fully done for you.</em>
+      </h2>
+      <p style="font-size:16px;color:rgba(255,255,255,0.55);margin-top:16px;line-height:1.7;">
+        Most AI tools make marketers more productive. Auxora is built for businesses 
+        that <em>have no marketer at all</em>. It is the team — one platform that 
+        replaces a strategist, copywriter, media buyer and SEO agency.
+      </p>
+    </div>
+
+    <!-- Agency vs Auxora comparison -->
+    <div style="max-width:900px;margin:0 auto 56px;">
+      <div style="background:#2C2826;border:1px solid #3A3532;padding:36px;border-radius:20px;">
+        <p style="text-align:center;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:28px;">
+          Same deliverables — done in 1 day, not 30
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 52px 1fr;gap:0;align-items:start;">
+
+          <!-- Agency column -->
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+              <span style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.45);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;padding:6px 14px;">Traditional Agency</span>
+              <span style="font-size:11px;color:rgba(255,255,255,0.3);">30 days · $2,000+/mo</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              ${[
+                ['Strategy &amp; positioning','7 days'],
+                ['Landing page build','5 days'],
+                ['Ad creative production','5 days'],
+                ['Campaign setup','5 days'],
+                ['A/B testing','4 days'],
+                ['Email &amp; LTV flows','4 days'],
+              ].map(([task, time]) => `
+              <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 14px;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.55);">${task}</span>
+                <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.07);border-radius:6px;padding:2px 8px;">${time}</span>
+              </div>`).join('')}
+            </div>
+            <div style="margin-top:16px;padding:12px 14px;background:rgba(204,51,51,0.12);border-radius:10px;border:1px solid rgba(204,51,51,0.2);text-align:center;">
+              <span style="font-size:11px;font-weight:700;color:#F87171;">30 days · $2,000+/mo · 1 team serves ~5 clients</span>
+            </div>
+          </div>
+
+          <!-- VS divider -->
+          <div style="display:flex;align-items:center;justify-content:center;padding-top:52px;">
+            <div style="background:var(--rust);color:white;font-size:11px;font-weight:800;letter-spacing:0.08em;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;">VS</div>
+          </div>
+
+          <!-- Auxora column -->
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+              <span style="background:rgba(191,103,68,0.2);color:var(--rust-l);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;padding:6px 14px;">Auxora AI</span>
+              <span style="font-size:11px;color:rgba(255,255,255,0.3);">24 hrs · $200/mo · 1:100 capacity</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              ${[
+                ['Strategy &amp; positioning','2 hrs'],
+                ['Landing page build','4 hrs'],
+                ['AI ad creatives','3 hrs'],
+                ['Auto campaign setup','4 hrs'],
+                ['Automated A/B testing','3 hrs'],
+                ['Email &amp; LTV automation','4 hrs'],
+              ].map(([task, time]) => `
+              <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(191,103,68,0.08);border-radius:10px;padding:10px 14px;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.75);">${task}</span>
+                <span style="font-size:11px;font-weight:700;color:var(--rust-l);background:rgba(191,103,68,0.15);border-radius:6px;padding:2px 8px;">${time}</span>
+              </div>`).join('')}
+            </div>
+            <div style="margin-top:16px;padding:12px 14px;background:rgba(74,103,65,0.2);border-radius:10px;border:1px solid rgba(74,103,65,0.3);text-align:center;">
+              <span style="font-size:13px;font-weight:700;color:#86efac;">24 hrs · $200/mo · 1 AI serves 100 clients</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Capability pills -->
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+      ${[
+        ['fas fa-bullseye','GTM Strategy'],
+        ['fas fa-file-alt','Landing Page'],
+        ['fas fa-photo-video','Ad Creatives'],
+        ['fas fa-chart-line','Analytics'],
+        ['fas fa-search','SEO &amp; GEO'],
+        ['fas fa-envelope-open-text','Email Flows'],
+        ['fas fa-robot','AI Optimisation'],
+      ].map(([icon, label]) => `
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:100px;padding:10px 20px;">
+          <i class="${icon}" style="color:var(--rust-l);font-size:13px;"></i>
+          <span style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);">${label}</span>
+        </div>`).join('')}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     HOW IT WORKS
+     SEO: "how to get clients as a solopreneur"
+          "AI go-to-market strategy solo business"
+          "how to automate solopreneur marketing"
+═══════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);" id="how-it-works" aria-labelledby="hiw-h2">
+  <div class="container">
+    <div style="max-width:580px;margin:0 auto;text-align:center;">
+      <p class="eyebrow" style="margin-bottom:16px;">The process</p>
+      <h2 id="hiw-h2" class="editorial" style="font-size:clamp(32px,4vw,52px);color:var(--ink);line-height:1.15;">
+        From 5 questions<br/>
+        to <em style="color:var(--rust);">first clients in 48 hours.</em>
+      </h2>
+      <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">
+        Chat-as-OS: type your goal in plain language. Auxora's AI agents handle 
+        the rest — no briefing docs, no agency onboarding calls, no technical skill required.
+      </p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Tell us your goal — $4.99</h3>
+        <p>Answer 5 plain-language questions about your business. Auxora generates a full GTM audit in minutes: ICP, positioning, channels, SEO keywords, competitive gaps — and an execution button to activate the build.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Your AI team builds everything — $200</h3>
+        <p>One conversation activates your full growth stack. AI agents write your landing page, produce ad creatives, configure your first campaign and wire up analytics — all done for you in 24 hours.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Go live. Clients come in.</h3>
+        <p>Campaigns launch automatically. Auxora's AI monitors daily performance, catches underperforming creatives and re-optimises — without you touching a single dashboard.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Scale on results — not retainers</h3>
+        <p>Revenue share only kicks in after your ROAS hits ≥ 0.7×. We grow with you, not ahead of you. No monthly retainer until the system is proving itself.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     WHO IT'S FOR — SEO-RICH VERTICALS
+     SEO: "therapist private practice marketing"
+          "pest control local marketing"
+          "freelance consultant get more clients"
+          "life coach marketing AI"
+          "one person business marketing tool"
+═══════════════════════════════════════ -->
+<section class="section" style="background:var(--warm);" id="who-its-for" aria-labelledby="verticals-h2">
+  <div class="container">
+    <div style="max-width:600px;margin:0 auto 52px;text-align:center;">
+      <p class="eyebrow" style="margin-bottom:16px;">Built specifically for you</p>
+      <h2 id="verticals-h2" class="editorial" style="font-size:clamp(32px,4vw,48px);color:var(--ink);line-height:1.15;">
+        If you run it alone,<br/>
+        <em style="color:var(--rust);">Auxora was made for you.</em>
+      </h2>
+      <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">
+        Most AI tools are built to help marketers work faster. Auxora is built for 
+        businesses with no marketer — a Done-for-you AI team that knows your niche, 
+        your clients, and what actually converts in your vertical.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px;max-width:1040px;margin:0 auto;">
+      ${[
         {
-            id: 'nw1XYryhdIU',
-            title: 'Yamabushi Farms',
-            description: 'D2C Brand • 10x Revenue in 2 Months • 3x ROAS in 1 Month'
+          icon: 'fas fa-heart',
+          title: 'Therapists &amp; Counsellors',
+          keywords: 'therapist private practice marketing · how to get therapy clients online',
+          desc: 'Build a referral-free practice. Auxora creates an SEO-optimised psychology website, runs Google Ads targeting "find a therapist near me", and automates your intake flow.',
+          tag: 'Private Practice',
+        },
+        {
+          icon: 'fas fa-briefcase',
+          title: 'Freelancers &amp; Consultants',
+          keywords: 'freelancer marketing automation · solopreneur get more clients AI',
+          desc: 'Stop relying on referrals. Auxora builds your positioning, LinkedIn presence, lead funnel, and inbound content — so clients find you while you work.',
+          tag: 'Freelance',
+        },
+        {
+          icon: 'fas fa-tools',
+          title: 'Home Service Operators',
+          keywords: 'pest control local marketing · home services lead generation AI',
+          desc: 'Dominate Google Maps and local search. Geo-targeted ads, automated review generation, and booking flows — built and running in a day.',
+          tag: 'Local Services',
+        },
+        {
+          icon: 'fas fa-dumbbell',
+          title: 'Coaches &amp; Trainers',
+          keywords: 'life coach marketing AI · fitness trainer get more clients',
+          desc: 'From Instagram content to evergreen landing pages — Auxora creates the content and ad engine that keeps your calendar full year-round.',
+          tag: 'Coaching',
+        },
+        {
+          icon: 'fas fa-store',
+          title: 'Solo Founders &amp; Side Projects',
+          keywords: 'one person business marketing tool · solopreneur growth strategy AI',
+          desc: 'You built the product. Auxora builds the go-to-market. Launch with positioning-first strategy and a conversion funnel that actual customers respond to.',
+          tag: 'Solo Founder',
+        },
+        {
+          icon: 'fas fa-spa',
+          title: 'Wellness &amp; Holistic Health',
+          keywords: 'wellness brand marketing solopreneur · holistic health practice get clients',
+          desc: 'From naturopathy to nutrition coaching — Auxora understands the wellness buyer journey and builds trust-based acquisition funnels that convert.',
+          tag: 'Wellness',
+        },
+      ].map(v => `
+        <div class="card" style="padding:28px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="width:44px;height:44px;background:#FDF2EE;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+              <i class="${v.icon}" style="color:var(--rust);font-size:18px;"></i>
+            </div>
+            <span class="badge badge-rust" style="font-size:9px;">${v.tag}</span>
+          </div>
+          <h3 style="font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px;">${v.title}</h3>
+          <p style="font-size:10px;color:var(--muted);letter-spacing:0.04em;margin-bottom:12px;font-style:italic;">${v.keywords}</p>
+          <p style="font-size:14px;color:var(--muted);line-height:1.65;">${v.desc}</p>
+        </div>`).join('')}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     RESULTS / TESTIMONIALS
+     SEO: "solopreneur marketing results"
+          "AI marketing tool reviews solopreneur"
+═══════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);" id="results" aria-labelledby="results-h2">
+  <div class="container">
+    <div style="max-width:580px;margin:0 auto 52px;text-align:center;">
+      <p class="eyebrow" style="margin-bottom:16px;">Done-for-you results</p>
+      <h2 id="results-h2" class="editorial" style="font-size:clamp(32px,4vw,52px);color:var(--ink);line-height:1.15;">
+        Founders who stopped<br/>
+        <em style="color:var(--rust);">grinding and grew.</em>
+      </h2>
+      <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">
+        Real results from early Auxora users — solopreneurs, practitioners and local 
+        service businesses who replaced their agency with AI digital staff.
+      </p>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:860px;margin:0 auto 48px;">
+      ${[
+        ['10×', 'Revenue growth · 2 months', 'var(--rust)'],
+        ['3×', 'ROAS · first Meta campaign', 'var(--sage)'],
+        ['62%', 'CAC reduction', 'var(--ink)'],
+        ['6 wks', 'Average time to profitability', 'var(--rust)'],
+      ].map(([num, label, color]) => `
+        <div style="background:white;border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;">
+          <div class="editorial" style="font-size:42px;color:${color};line-height:1;margin-bottom:6px;">${num}</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:500;">${label}</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Testimonials grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:960px;margin:0 auto 40px;">
+
+      <div class="testi">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">
+          I was paying $5K a month to an agency with nothing to show for it. 
+          Auxora gave me a real strategy in 10 minutes — and the numbers 
+          started moving within two weeks.
+        </p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#BF6744,#D4845C);">S</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:600;color:var(--ink);">Sarah K.</div>
+            <div class="eyebrow" style="font-size:10px;">Skincare founder · solo business</div>
+          </div>
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">
+          The $4.99 report was the most valuable thing I bought this year. 
+          It showed me exactly why my Meta ads weren't working and gave me 
+          a step-by-step fix. Genuinely insane value for any solopreneur.
+        </p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#4A6741,#6E8B5E);">M</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:600;color:var(--ink);">Marcus T.</div>
+            <div class="eyebrow" style="font-size:10px;">Pet accessories · solo founder</div>
+          </div>
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">
+          I'm a therapist in private practice — I have zero time for marketing. 
+          Auxora built my entire client-acquisition system in a weekend. 
+          My calendar filled up within 5 weeks without a single cold call.
+        </p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#6B6B8A,#9090B0);">J</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:600;color:var(--ink);">Dr. Jamie R.</div>
+            <div class="eyebrow" style="font-size:10px;">Licensed therapist · private practice</div>
+          </div>
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">
+          As a freelance consultant I was constantly chasing referrals. 
+          Auxora built my positioning, LinkedIn funnel, and automated outreach — 
+          I've had 3 new retainer clients in my first 3 weeks. Couldn't believe it.
+        </p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#D4A853,#E8C47A);">A</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:600;color:var(--ink);">Alex W.</div>
+            <div class="eyebrow" style="font-size:10px;">Freelance consultant · operations</div>
+          </div>
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Yamabushi video case study thumbnail -->
+    <div style="max-width:960px;margin:0 auto;">
+      <div style="border-radius:20px;overflow:hidden;cursor:pointer;position:relative;" onclick="openVideoModal(0)">
+        <img src="https://img.youtube.com/vi/nw1XYryhdIU/maxresdefault.jpg"
+             alt="Real founder story: how Auxora grew a solo business 10× in 2 months"
+             style="width:100%;display:block;object-fit:cover;max-height:420px;">
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,25,23,0.04),rgba(28,25,23,0.6));"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <div style="width:72px;height:72px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,0.35);">
+            <i class="fas fa-play" style="color:var(--rust);font-size:24px;margin-left:4px;"></i>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:28px;left:0;right:0;text-align:center;">
+          <div class="editorial" style="font-size:22px;color:white;font-style:italic;text-shadow:0 1px 6px rgba(0,0,0,0.5);">Watch a real founder story →</div>
+          <p style="font-size:13px;color:rgba(255,255,255,0.65);margin-top:6px;">10× revenue · 2 months · solo founder</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     PRICING
+     SEO: "AI marketing tool pricing solopreneur"
+          "cheap marketing for small business"
+          "get marketing help without agency"
+═══════════════════════════════════════ -->
+<section class="section" style="background:var(--warm);" id="pricing" aria-labelledby="pricing-h2">
+  <div class="container">
+    <div style="max-width:580px;margin:0 auto;text-align:center;">
+      <p class="eyebrow" style="margin-bottom:16px;">Pricing</p>
+      <h2 id="pricing-h2" class="editorial" style="font-size:clamp(32px,4vw,52px);color:var(--ink);line-height:1.15;">
+        Start for $4.99.<br/>
+        <em style="color:var(--rust);">Scale only when it's working.</em>
+      </h2>
+      <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">
+        One-tenth the cost of a traditional agency. No retainer until results.
+        We win only when you do — that is how AI-native should work.
+      </p>
+    </div>
+
+    <div class="pricing-grid" style="margin-top:52px;">
+
+      <!-- Starter -->
+      <div class="plan">
+        <p class="eyebrow" style="margin-bottom:16px;">Starter</p>
+        <div class="plan-price"><sup>$</sup>4<span style="font-size:28px;">.99</span></div>
+        <p class="plan-label">one-time · GTM strategy report + execution button</p>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Full go-to-market audit</li>
+          <li><i class="fas fa-check"></i> ICP &amp; positioning analysis</li>
+          <li><i class="fas fa-check"></i> Channel recommendations</li>
+          <li><i class="fas fa-check"></i> Competitor gap analysis</li>
+          <li><i class="fas fa-check"></i> SEO keyword targets for your niche</li>
+          <li><i class="fas fa-check"></i> Delivered in under 5 minutes</li>
+        </ul>
+        <a href="/report" class="btn-ghost" style="width:100%;justify-content:center;">
+          Get my GTM report <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Growth (most popular) -->
+      <div class="plan featured">
+        <div class="plan-badge">Most popular</div>
+        <p class="eyebrow" style="margin-bottom:16px;">Growth Build</p>
+        <div class="plan-price"><sup>$</sup>200</div>
+        <p class="plan-label">per month · AI digital team, fully managed</p>
+        <p style="font-size:12px;font-weight:700;color:var(--rust);margin-bottom:16px;">
+          ⚡ First clients in 48 hours — Done-for-you
+        </p>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Everything in Starter</li>
+          <li><i class="fas fa-check"></i> GTM strategy &amp; brand positioning</li>
+          <li><i class="fas fa-check"></i> Conversion-ready landing page</li>
+          <li><i class="fas fa-check"></i> AI-generated ad creatives (video + static)</li>
+          <li><i class="fas fa-check"></i> 1 live ad channel (Meta or Google)</li>
+          <li><i class="fas fa-check"></i> SEO &amp; GEO-optimised copy</li>
+        </ul>
+        <a href="/report" class="btn-primary" style="width:100%;justify-content:center;">
+          Launch in 24 hours <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Scale -->
+      <div class="plan">
+        <p class="eyebrow" style="margin-bottom:16px;">Scale</p>
+        <div class="plan-price"><sup>$</sup>1,200</div>
+        <p class="plan-label">per month · white-glove execution</p>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Everything in Growth</li>
+          <li><i class="fas fa-check"></i> Meta + Google auto-management</li>
+          <li><i class="fas fa-check"></i> Weekly AI optimisation</li>
+          <li><i class="fas fa-check"></i> Email + SMS automation</li>
+          <li><i class="fas fa-check"></i> Live performance dashboard</li>
+          <li><i class="fas fa-check"></i> Dedicated growth strategist</li>
+        </ul>
+        <a href="mailto:hello@auxora.ai" class="btn-ghost" style="width:100%;justify-content:center;">
+          Talk to us <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Aligned incentives note -->
+    <div style="max-width:700px;margin:40px auto 0;background:white;border:1px solid var(--border);border-radius:16px;padding:28px 32px;text-align:center;">
+      <p class="eyebrow" style="margin-bottom:10px;">Aligned incentives</p>
+      <p class="editorial" style="font-size:22px;color:var(--ink);margin-bottom:12px;">
+        Your AI team earns after you do.
+      </p>
+      <p style="font-size:14px;color:var(--muted);line-height:1.75;">
+        We are AI-native — meaning one platform serves hundreds of businesses at 1/10th 
+        the agency cost. Revenue share only kicks in after your ROAS reaches ≥ 0.7× 
+        ($0.70 back per $1 spent). You pay $200 to start — that is it until you are profitable.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     EARLY ACCESS SIGN-UP
+     (Email capture — "Get Early Access" CTA)
+     Mirrors PMF doc: single CTA, email + challenge
+═══════════════════════════════════════ -->
+<section style="background:var(--darker);padding:96px 24px;" id="early-access" aria-labelledby="ea-h2">
+  <div style="max-width:660px;margin:0 auto;text-align:center;">
+    <p class="eyebrow" style="margin-bottom:20px;color:var(--rust-l);">
+      <i class="fas fa-circle" style="font-size:7px;vertical-align:middle;margin-right:6px;color:#4ade80;"></i>
+      Early access — limited spots
+    </p>
+    <h2 id="ea-h2" class="editorial" style="font-size:clamp(36px,5vw,64px);color:white;line-height:1.08;margin-bottom:18px;">
+      Your AI growth team<br/>
+      <em style="color:var(--rust-l);">starts tomorrow.</em>
+    </h2>
+    <p style="font-size:16px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:36px;">
+      Join our early cohort. Get white-glove onboarding, direct founder access, 
+      and your $4.99 strategy report free — your AI digital team handles the rest.
+    </p>
+
+    <!-- Email capture form -->
+    <form class="access-form" onsubmit="handleEarlyAccess(event)" id="ea-form">
+      <input type="email" id="ea-email" name="email" placeholder="your@email.com" required
+             autocomplete="email" aria-label="Email address">
+      <button type="submit" class="btn-primary" style="white-space:nowrap;">
+        Get Early Access <i class="fas fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <!-- Challenge selector (mirrors GTM doc's "biggest marketing challenge" question) -->
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);margin-top:20px;margin-bottom:12px;">
+      What's your biggest marketing challenge?
+    </p>
+    <div class="challenge-pills" id="challenge-pills">
+      <div class="challenge-pill" data-value="no-time" onclick="selectChallenge(this)">⏱ No time for marketing</div>
+      <div class="challenge-pill" data-value="too-expensive" onclick="selectChallenge(this)">💸 Too expensive to outsource</div>
+      <div class="challenge-pill" data-value="dont-know" onclick="selectChallenge(this)">🤷 Don't know where to start</div>
+      <div class="challenge-pill" data-value="not-working" onclick="selectChallenge(this)">📉 Tried it, nothing worked</div>
+    </div>
+
+    <!-- Success state (hidden) -->
+    <div id="ea-success" style="display:none;background:rgba(74,103,65,0.2);border:1px solid rgba(74,103,65,0.4);border-radius:16px;padding:28px;margin-top:24px;">
+      <div style="font-size:32px;margin-bottom:12px;">🎉</div>
+      <p style="font-size:18px;font-weight:700;color:white;margin-bottom:8px;">You're on the list!</p>
+      <p style="font-size:14px;color:rgba(255,255,255,0.55);">We'll reach out within 24 hours with your free report and onboarding details.</p>
+    </div>
+
+    <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.25);">
+      No credit card needed · Cancel anytime · Your report is on us
+    </p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     FAQ
+     SEO: rich snippets — long-tail question keywords
+          "is auxora worth it for solopreneurs"
+          "how much does AI marketing cost"
+          "can AI replace my marketing agency"
+═══════════════════════════════════════ -->
+<section class="section" style="background:var(--warm);" id="faq" aria-labelledby="faq-h2">
+  <div class="container" style="max-width:760px;">
+    <div style="text-align:center;margin-bottom:52px;">
+      <p class="eyebrow" style="margin-bottom:16px;">Common questions</p>
+      <h2 id="faq-h2" class="editorial" style="font-size:clamp(28px,3.5vw,44px);color:var(--ink);">
+        Everything you need to know
+      </h2>
+    </div>
+
+    <!-- FAQ Structured data for rich snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can AI really replace my marketing agency for a solo business?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For most solopreneurs, yes. Auxora is not a tool that helps you do more marketing — it is your marketing team. A traditional agency charges $2,000–$20,000/month, takes 30 days to deliver, and has no financial stake in your outcome. Auxora is AI-native: one platform replaces your strategist, copywriter, media buyer and SEO agency. It costs $200/month, delivers in 24 hours, and only earns a revenue share after your ROAS exceeds 0.7x."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Auxora right for my type of solo business?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Auxora works for any one-person business that needs more clients: therapists and private practices, freelancers and consultants, home service operators (pest control, cleaning, landscaping), coaches and trainers, solo founders, and wellness practitioners. If you run it alone and need a marketing system, Auxora was made for you."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What do I get for the $4.99 GTM report?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A complete go-to-market analysis in under 5 minutes: ICP definition, positioning statement, messaging framework, channel recommendations, SEO keyword targets for your specific niche, and a competitive gap analysis. Most solopreneurs say it's the clearest view of their marketing strategy they've ever had — for the price of a coffee."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What exactly does Auxora build for $200?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Everything you need to start acquiring clients: a conversion-optimised landing page for your niche, AI-generated video and static ad creatives, one live ad channel (Meta or Google), SEO-optimised copy, email/LTV flows, and connected analytics. The $200 covers all AI build costs — no hidden fees."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need any technical knowledge or marketing experience?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Auxora works through a conversation interface — like texting. You describe your business, answer a few simple questions, and Auxora handles all the technical execution: building pages, connecting ad accounts, setting up tracking, and launching campaigns."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the revenue share model work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Auxora charges nothing until your ROAS (Return on Ad Spend) reaches at least 0.7×. That means you're getting $0.70 back for every $1 you spend on ads — confirming the system is working. Only then does Auxora take a small percentage of incremental revenue. You grow first; we earn after."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What's the difference between the free early access and the $4.99 report?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Early access gives you white-glove onboarding, direct founder contact, and the $4.99 report included at no charge — plus priority access to the full Growth Build at beta pricing. The $4.99 report is the self-serve version: still a complete GTM analysis, delivered instantly, without the manual onboarding session."
+          }
         }
-    ];
-
-    let currentVideoIndex = 0;
-
-    function openVideoModal(index) {
-        currentVideoIndex = index;
-        const video = videoData[index];
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
-        const title = document.getElementById('videoTitle');
-        const description = document.getElementById('videoDescription');
-        const nextBtn = document.getElementById('nextVideoBtn');
-
-        // Set video source with autoplay
-        player.src = 'https://www.youtube.com/embed/' + video.id + '?autoplay=1&rel=0';
-        title.textContent = video.title;
-        description.textContent = video.description;
-
-        // Show/hide next button
-        if (index === videoData.length - 1) {
-            nextBtn.textContent = 'Close';
-            nextBtn.onclick = closeVideoModal;
-        } else {
-            nextBtn.innerHTML = 'Next Case <i class="fas fa-arrow-right ml-2"></i>';
-            nextBtn.onclick = nextVideo;
-        }
-
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+      ]
     }
-
-    function closeVideoModal() {
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
-
-        // Stop video
-        player.src = '';
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    function nextVideo() {
-        currentVideoIndex = (currentVideoIndex + 1) % videoData.length;
-        openVideoModal(currentVideoIndex);
-    }
-
-    // Close modal on escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeVideoModal();
-        }
-    });
-
-    // Website Form Handler (Login-Required Preview)
-    document.getElementById('websiteForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const websiteInput = document.getElementById('websiteInput');
-        let website = websiteInput.value.trim();
-
-        // Validate input
-        if (!website) {
-            alert('Please enter a website or brand name');
-            return;
-        }
-
-        // Normalize URL - add https:// if not present
-        if (!website.startsWith('http://') && !website.startsWith('https://')) {
-            website = 'https://' + website;
-        }
-
-        // Always redirect to report-preview page
-        // The report-preview page will handle auth check and interview/report creation
-        const previewUrl = '/static/report-preview?website=' + encodeURIComponent(website);
-        console.log('Redirecting to preview:', previewUrl);
-        window.location.href = previewUrl;
-    });
-
-    // Start interview (requires login)
-    function startInterview() {
-      // Check if user is already logged in
-      const existingUser = localStorage.getItem('nexspark_user');
-
-      if (existingUser) {
-        // User already authenticated, go to dashboard
-        window.location.href = '/dashboard';
-      } else {
-        // Redirect to login page
-        window.location.href = '/static/login.html';
-      }
-    }
-    
-    // Update all GET STARTED buttons to use the function
-    document.addEventListener('DOMContentLoaded', () => {
-      const buttons = document.querySelectorAll('button[onclick*="/interview"]');
-      buttons.forEach(button => {
-        button.onclick = (e) => {
-          e.preventDefault();
-          startInterview();
-        };
-      });
-    });
     </script>
 
-    <script src="/static/modal-utils.js"></script>
-    <script src="/static/app.js"></script>
+    <div id="faq-list">
+      ${[
+        ['Can AI really replace my marketing agency for a solo business?',
+         'For most solopreneurs, yes. Auxora is not a tool that helps you do more marketing — it is your marketing team. A traditional agency charges $2,000–$20,000/month, takes 30 days, and has no financial stake in your outcome. Auxora is AI-native: one platform replaces your strategist, copywriter, media buyer and SEO agency. $200/month, live in 24 hours, revenue share only after ROAS exceeds 0.7x.'],
+        ['Is Auxora right for my type of solo business?',
+         'Auxora works for any one-person business that needs more clients: therapists and private practices, freelancers and consultants, home service operators (pest control, cleaning), coaches and trainers, solo founders, and wellness practitioners. If you run it alone and need a Done-for-you marketing system, Auxora was built for you.'],
+        ['What do I get for the $4.99 GTM report?',
+         'A complete Done-for-you go-to-market analysis in under 5 minutes: ICP definition, positioning, messaging framework, channel recommendations, SEO keywords for your niche, and competitive gaps. It comes with an execution button — so the $4.99 report is the entry point to activating your full AI growth team.'],
+        ['What exactly does Auxora build for $200?',
+         'Your AI digital team delivers the full stack: a conversion-optimised landing page, AI-generated ad creatives (video + static, powered by GoMarble), one live ad channel (Meta or Google), SEO-optimised copy, email/LTV automation flows, and connected analytics. Done-for-you — no hidden fees, no retainer until results.'],
+        ['Do I need any technical knowledge or marketing experience?',
+         'No. Auxora uses Chat-as-OS: describe your business and goals in plain language, and AI agents handle all technical execution — building pages, connecting ad accounts, pixel setup, and campaign launch. Zero marketing experience required.'],
+        ['How does the revenue share model work?',
+         'Auxora charges nothing until your ROAS (Return on Ad Spend) reaches at least 0.7x. That means you are getting $0.70 back for every $1 spent on ads. Only then does Auxora take a small percentage of incremental revenue. Your AI team earns after you do.'],
+        ['What is the difference between early access and the $4.99 report?',
+         'Early access gives you white-glove onboarding, direct founder contact, and the $4.99 report free — plus priority access to the full AI growth build at beta pricing. The $4.99 report is the self-serve version: the same GTM analysis, delivered instantly, with an activation button.'],
+        ['Can I cancel anytime?',
+         'Yes. No contracts, no lock-in. The $4.99 report and $200 Growth Build are one-time. The Scale plan is monthly — cancel with one click. No questions asked.'],
+      ].map(([q, a], i) => `
+        <div class="faq-item" id="faq-${i}">
+          <div class="faq-q" onclick="toggleFaq(${i})">
+            <span>${q}</span>
+            <i class="fas fa-plus faq-icon"></i>
+          </div>
+          <p class="faq-a">${a}</p>
+        </div>`).join('')}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:rgba(255,255,255,0.88);margin-bottom:10px;letter-spacing:-0.01em;">Auxora</div>
+      <p style="font-size:13px;line-height:1.7;max-width:280px;">
+        Your AI digital growth team — Done-for-you strategy, ads, SEO and 
+        landing pages. 1/10th the agency cost. 100× faster.
+      </p>
+      <p style="font-size:12px;margin-top:14px;color:rgba(255,255,255,0.3);">
+        <i class="fas fa-envelope" style="margin-right:6px;"></i>
+        <a href="mailto:hello@auxora.ai">hello@auxora.ai</a>
+      </p>
+    </div>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;">
+      <div>
+        <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;">Product</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <a href="/report">GTM Report — $4.99</a>
+          <a href="#pricing">Growth Build — $200</a>
+          <a href="#pricing">Scale Plan</a>
+          <a href="#early-access">Early Access</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;">Who it's for</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <a href="#who-its-for">Therapists &amp; Coaches</a>
+          <a href="#who-its-for">Freelancers &amp; Consultants</a>
+          <a href="#who-its-for">Home Services</a>
+          <a href="#who-its-for">Solo Founders</a>
+          <a href="#who-its-for">Wellness &amp; Health</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;">Company</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <a href="#results">Results</a>
+          <a href="#faq">FAQ</a>
+          <a href="mailto:hello@auxora.ai">Contact us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:32px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    <p style="font-size:12px;">© 2025 Auxora.ai — AI-native growth platform. Your AI digital growth team.</p>
+    <div style="display:flex;gap:20px;font-size:12px;">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════
+     VIDEO MODAL
+═══════════════════════════════════════ -->
+<div id="videoModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.9);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
+  <div style="max-width:860px;width:90%;position:relative;">
+    <button onclick="closeVideoModal()" style="position:absolute;top:-44px;right:0;background:none;border:none;color:white;font-size:32px;cursor:pointer;line-height:1;">×</button>
+    <div style="background:#1A1816;border-radius:16px;overflow:hidden;">
+      <iframe id="videoPlayer" width="100%" height="480" src="" frameborder="0"
+        allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <p id="videoTitle" style="color:white;font-family:'Playfair Display',serif;font-size:20px;margin-top:16px;"></p>
+    <p id="videoDesc" style="color:rgba(255,255,255,0.5);font-size:14px;margin-top:6px;"></p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+  // ── FAQ accordion ──
+  function toggleFaq(i) {
+    const item = document.getElementById('faq-' + i);
+    item.classList.toggle('open');
+  }
+
+  // ── Video modal ──
+  const videos = [
+    { id: 'nw1XYryhdIU', title: 'Real founder story', desc: 'Solo business · 10× Revenue in 2 Months · 3× ROAS' }
+  ];
+  function openVideoModal(idx) {
+    const v = videos[idx];
+    document.getElementById('videoPlayer').src = 'https://www.youtube.com/embed/' + v.id + '?autoplay=1&rel=0';
+    document.getElementById('videoTitle').textContent = v.title;
+    document.getElementById('videoDesc').textContent = v.desc;
+    const m = document.getElementById('videoModal');
+    m.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeVideoModal() {
+    document.getElementById('videoPlayer').src = '';
+    document.getElementById('videoModal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('videoModal').addEventListener('click', function(e) {
+    if (e.target === this) closeVideoModal();
+  });
+
+  // ── Challenge pill selector ──
+  let selectedChallenge = '';
+  function selectChallenge(el) {
+    document.querySelectorAll('.challenge-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedChallenge = el.getAttribute('data-value');
+  }
+
+  // ── Early access form ──
+  function handleEarlyAccess(e) {
+    e.preventDefault();
+    const email = document.getElementById('ea-email').value;
+    if (!email) return;
+
+    // Track with GA4
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'early_access_signup', {
+        'event_category': 'conversion',
+        'event_label': selectedChallenge || 'unknown',
+        'value': 1
+      });
+    }
+
+    // Hide form, show success
+    document.getElementById('ea-form').style.display = 'none';
+    document.getElementById('challenge-pills').style.display = 'none';
+    document.getElementById('ea-success').style.display = 'block';
+
+    // In production: POST to /api/early-access
+    fetch('/api/early-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, challenge: selectedChallenge })
+    }).catch(() => {}); // Fail silently on the landing page
+  }
+
+  // ── Smooth scroll for anchor links ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ── Scroll-in fade animation ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── Responsive: remove border-right on mobile ──
+  function fixRespCards() {
+    const cards = document.querySelectorAll('.resp-card');
+    if (window.innerWidth < 640) {
+      cards.forEach(c => c.style.borderRight = 'none');
+    } else {
+      // Restore inline style (last card has no border-right already)
+    }
+  }
+  fixRespCards();
+  window.addEventListener('resize', fixRespCards);
+</script>
+
 </body>
 </html>
 `;

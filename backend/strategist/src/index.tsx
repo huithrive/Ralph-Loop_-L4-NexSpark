@@ -174,6 +174,43 @@ app.post('/api/register/brand', async (c) => {
 });
 
 // ============================================================================
+// Early Access Sign-Up Endpoint
+// Captures email + biggest marketing challenge from landing page form
+// ============================================================================
+
+app.post('/api/early-access', async (c) => {
+  try {
+    const body = await c.req.json();
+    const { email, challenge } = body;
+
+    if (!email || typeof email !== 'string') {
+      return c.json({ success: false, message: 'Email required' }, 400);
+    }
+
+    // Store in KV if available, otherwise just acknowledge
+    try {
+      const env = c.env as any;
+      if (env?.KV) {
+        const key = `early-access:${Date.now()}:${email.toLowerCase()}`;
+        await env.KV.put(key, JSON.stringify({
+          email: email.toLowerCase().trim(),
+          challenge: challenge || 'unknown',
+          signedUpAt: new Date().toISOString(),
+          source: 'landing-page',
+        }), { expirationTtl: 60 * 60 * 24 * 365 }); // 1 year
+      }
+    } catch (_) {
+      // KV not bound — that's fine in local dev
+    }
+
+    return c.json({ success: true, message: 'You\'re on the list! We\'ll be in touch within 24 hours.' });
+  } catch (error) {
+    return c.json({ success: false, message: 'Sign-up failed. Please try again.' }, 400);
+  }
+});
+
+
+// ============================================================================
 // Page Routes
 // ============================================================================
 
