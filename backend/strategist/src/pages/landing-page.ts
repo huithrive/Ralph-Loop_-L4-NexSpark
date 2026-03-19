@@ -27,20 +27,20 @@ export const REVISED_LANDING_HTML = `
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- ═══ SEO: Primary title — high-intent solopreneur queries ═══ -->
-  <title>Auxora — Your Virtual CMO | Done-for-You Marketing for $200, Not $2,000</title>
-  <meta name="description" content="Auxora is your AI-powered virtual CMO — done-for-you SEO, Meta ads, Google ads, landing pages and email flows for one-person businesses. Start for $4.99. Launch in 24 hours. Pay only when ads perform.">
+  <title>Auxora — Your Virtual CMO | Strategy, Ads &amp; SEO Done in 48 Hours from $49</title>
+  <meta name="description" content="28 million one-person businesses in the US have no marketing team. Auxora is your AI virtual CMO — marketing strategy, landing page, Meta &amp; Google ads, SEO and email flows. Everything that takes 30 days and $2,000+ to set up, done in 48 hours from $49.">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Auxora — Your AI Virtual CMO | Done-for-You Marketing for Solopreneurs">
-  <meta property="og:description" content="Skip the $2,000 Meta ad setup fees. Auxora is your done-for-you AI marketing team — strategy, landing page, ads and SEO delivered in 24 hours. Start for $4.99.">
+  <meta property="og:title" content="Auxora — The Virtual CMO for One-Person Businesses">
+  <meta property="og:description" content="28M US businesses run solo with no marketing team. Auxora gives you AI-powered strategy, ads, SEO and landing pages — everything that costs $2,000+ to set up elsewhere, done in 48 hours from $49.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://auxora.ai">
   <meta property="og:image" content="https://auxora.ai/static/og-image.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Auxora — Virtual CMO for Solopreneurs">
-  <meta name="twitter:description" content="Your marketing on autopilot. Auxora handles Meta ads, Google ads, SEO, email flows — done for you in 24 hours for $200. No agency markups. No setup fees.">
+  <meta name="twitter:title" content="Auxora — Virtual CMO for One-Person Businesses">
+  <meta name="twitter:description" content="No marketing team? No problem. Auxora handles your strategy, ads, SEO and landing pages — done in 48 hours from $49. 28 million solo businesses. Built for you.">
 
   <!-- Canonical -->
   <link rel="canonical" href="https://auxora.ai">
@@ -54,7 +54,7 @@ export const REVISED_LANDING_HTML = `
     "url": "https://auxora.ai",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web",
-    "description": "AI-powered virtual CMO for solopreneurs and one-person businesses. Done-for-you strategy, landing pages, Meta & Google ads, email flows and SEO — delivered in 24 hours at 1/10th the agency cost. Pay only when ads perform.",
+    "description": "AI-powered virtual CMO for one-person businesses. Marketing strategy, landing pages, Meta & Google ads, SEO and email flows — everything that takes 30 days and $2,000+ to set up elsewhere, done in 48 hours from $49.",
     "offers": [
       {
         "@type": "Offer",
@@ -517,7 +517,7 @@ export const REVISED_LANDING_HTML = `
 
     <p class="eyebrow" style="margin-bottom:20px;">
       <i class="fas fa-circle" style="font-size:7px;vertical-align:middle;margin-right:6px;color:var(--sage);"></i>
-      Now in early access — 28 million one-person businesses in the US have no marketing team
+      28 million one-person businesses in the US — none of them have a marketing team
     </p>
 
     <h1 id="hero-h1">
@@ -526,9 +526,10 @@ export const REVISED_LANDING_HTML = `
     </h1>
 
     <p class="hero-sub">
-      Auxora is your <strong>AI-powered virtual CMO</strong> — a done-for-you system that handles 
-      Meta ads, Google ads, SEO, landing pages and email flows for 
-      <strong>$200 flat</strong>, not $2,000+ in agency fees or setup costs.
+      Auxora is your <strong>AI-powered virtual CMO</strong> — strategy, landing page, 
+      Meta &amp; Google ads, SEO and email flows. Everything that normally takes 
+      <strong>30 days and $2,000+ to set up</strong>, done for you in 48 hours 
+      starting at <strong>$49</strong>.
     </p>
 
     <div class="hero-ctas">
@@ -539,8 +540,8 @@ export const REVISED_LANDING_HTML = `
     </div>
 
     <div class="hero-trust">
-      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> $200 flat, not $2,000/month</span>
-      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Live in 24 hours, not 30 days</span>
+      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Start from $49</span>
+      <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Clients in 48 hours</span>
       <span><i class="fas fa-check-circle" style="color:var(--sage);"></i> Pay only when ads perform</span>
       <span><i class="fas fa-star" style="color:var(--gold);"></i> 4.9 / 5 · 53 early users</span>
     </div>
@@ -574,8 +575,8 @@ export const REVISED_LANDING_HTML = `
       <!-- Pillar 3: cheaper than Yelp + no setup fees -->
       <div style="padding:24px 28px;text-align:center;" class="resp-card">
         <div style="font-size:28px;margin-bottom:10px;">💰</div>
-        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">$200 flat — less than<br/>a Yelp plan + real results</h3>
-        <p style="font-size:13px;color:var(--muted);line-height:1.6;">No $2,000 Meta setup fees. No agency markup. Auxora bundles SEO, email, and paid ads in one AI-managed system for a fraction of what you already spend.</p>
+        <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;">From $49 — a fraction of<br/>what it costs anywhere else</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Strategy, ads, SEO and landing pages together normally take 30 days and $2,000+ to set up. Auxora does it all in 48 hours, starting at $49.</p>
       </div>
 
     </div>
@@ -726,12 +727,12 @@ export const REVISED_LANDING_HTML = `
         <div style="font-size:13px;color:rgba(255,255,255,0.45);">To complete your GTM brief</div>
       </div>
       <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px;text-align:center;">
-        <div class="editorial" style="font-size:38px;color:var(--rust-l);margin-bottom:6px;">24 hrs</div>
+        <div class="editorial" style="font-size:38px;color:var(--rust-l);margin-bottom:6px;">48 hrs</div>
         <div style="font-size:13px;color:rgba(255,255,255,0.45);">Build to first live campaign</div>
       </div>
       <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px;text-align:center;">
-        <div class="editorial" style="font-size:38px;color:var(--rust-l);margin-bottom:6px;">$200</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.45);">vs $2,000+ setup + monthly agency fees</div>
+        <div class="editorial" style="font-size:38px;color:var(--rust-l);margin-bottom:6px;">$49</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);">vs $2,000+ setup elsewhere</div>
       </div>
     </div>
   </div>
@@ -753,10 +754,10 @@ export const REVISED_LANDING_HTML = `
         <em style="color:var(--rust-l);">Fully done for you.</em>
       </h2>
       <p style="font-size:16px;color:rgba(255,255,255,0.55);margin-top:16px;line-height:1.7;">
-        Most solopreneurs already spend on TikTok, Instagram or Yelp to get warm leads. 
-        Auxora is the system that turns those sparks into a full inbound engine — 
-        bundling SEO, Meta ads, Google ads, email and landing pages into one 
-        AI-managed stack that runs itself.
+        28 million one-person businesses in the US run without a marketing team. 
+        Auxora is the marketing system built for exactly that — strategy, landing pages, 
+        Meta &amp; Google ads, SEO and email flows bundled into one AI-managed stack 
+        that runs itself.
       </p>
     </div>
 
@@ -802,7 +803,7 @@ export const REVISED_LANDING_HTML = `
           <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
               <span style="background:rgba(191,103,68,0.2);color:var(--rust-l);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;padding:6px 14px;">Auxora AI</span>
-              <span style="font-size:11px;color:rgba(255,255,255,0.3);">24 hrs · $200 flat · no monthly lock-in</span>
+              <span style="font-size:11px;color:rgba(255,255,255,0.3);">48 hrs · from $49 · no monthly lock-in</span>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
               ${[
@@ -819,7 +820,7 @@ export const REVISED_LANDING_HTML = `
               </div>`).join('')}
             </div>
             <div style="margin-top:16px;padding:12px 14px;background:rgba(74,103,65,0.2);border-radius:10px;border:1px solid rgba(74,103,65,0.3);text-align:center;">
-              <span style="font-size:13px;font-weight:700;color:#86efac;">24 hrs · $200 flat · pay-for-performance after that</span>
+              <span style="font-size:13px;font-weight:700;color:#86efac;">48 hrs · from $49 · pay-for-performance after that</span>
             </div>
           </div>
 
@@ -871,8 +872,8 @@ export const REVISED_LANDING_HTML = `
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
-        <h3>Tell us your goal — $4.99</h3>
-        <p>Answer 5 plain-language questions about your business. Auxora generates a full GTM audit in minutes: ICP, positioning, channels, SEO keywords, competitive gaps — and an execution button to activate the build. Validate your strategy before spending a dollar on ads.</p>
+        <h3>Tell us your goal — from $49</h3>
+        <p>Answer 5 plain-language questions about your business. Auxora generates your full marketing strategy in minutes: ICP, positioning, channels, SEO keywords, competitive gaps — and an execution button to activate the build. Validate your strategy before spending a dollar on ads.</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
@@ -911,9 +912,9 @@ export const REVISED_LANDING_HTML = `
         <em style="color:var(--rust);">Auxora was made for you.</em>
       </h2>
       <p style="font-size:15px;color:var(--muted);margin-top:14px;line-height:1.7;">
-        Most AI tools are built to help marketers work faster. Auxora is built for 
-        businesses with no marketer — your AI virtual CMO that knows your niche, 
-        your clients, and what actually converts in your vertical.
+        28 million one-person businesses in the US run without a marketing team. 
+        Auxora is your AI virtual CMO that knows your niche, your clients, and 
+        what actually converts in your vertical.
       </p>
     </div>
 
@@ -1303,7 +1304,7 @@ export const REVISED_LANDING_HTML = `
           "name": "Can AI really act as my virtual CMO for a solo business?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes — think of Auxora as a virtual CMO on performance pay. Most solopreneurs already spend money on TikTok, Instagram or a Yelp subscription for warm leads. Auxora is the next step: a done-for-you AI system that handles Meta ads, Google ads, SEO, landing pages and email flows — without the $2,000 setup fees or ongoing agency markup. $200 flat to launch, then revenue share only after your ads are profitable."
+            "text": "Yes. 28 million one-person businesses in the US run without a marketing team. Auxora was built for exactly that. It is your AI virtual CMO — handling marketing strategy, landing pages, Meta ads, Google ads, SEO, and email flows. Everything that typically takes 30 days and $2,000+ to set up is done for you in 48 hours, starting at $49. And Auxora only earns a revenue share once your ads are profitable."
           }
         },
         {
@@ -1361,7 +1362,7 @@ export const REVISED_LANDING_HTML = `
     <div id="faq-list">
       ${[
         ['Can AI really act as my virtual CMO for a solo business?',
-         'Yes — think of Auxora as a virtual CMO on performance pay. Most solopreneurs already spend on TikTok, Instagram or Yelp for warm leads. Auxora is the system that turns those sparks into a full inbound engine: Meta ads, Google ads, SEO, landing pages and email flows — done for you, no $2,000 setup fees, no agency markup. $200 flat to launch, then revenue share only when your ads are profitable.'],
+         '28 million one-person businesses in the US run without a marketing team — Auxora was built for exactly that. It is your AI virtual CMO: marketing strategy, landing pages, Meta ads, Google ads, SEO and email flows. Everything that takes 30 days and $2,000+ to set up is done in 48 hours from $49. Revenue share kicks in only after your ads are profitable.'],
         ['Is Auxora right for my type of solo business?',
          'Auxora works for any one-person business that needs more clients: therapists and private practices, freelancers and consultants, home service operators (pest control, cleaning), coaches and trainers, solo founders, and wellness practitioners. If you run it alone and need a Done-for-you marketing system, Auxora was built for you.'],
         ['What do I get for the $4.99 GTM report?',
@@ -1397,8 +1398,8 @@ export const REVISED_LANDING_HTML = `
     <div>
       <div style="font-family:'Playfair Display',serif;font-size:22px;color:rgba(255,255,255,0.88);margin-bottom:10px;letter-spacing:-0.01em;">Auxora</div>
       <p style="font-size:13px;line-height:1.7;max-width:280px;">
-        Your AI virtual CMO — done-for-you Meta ads, Google ads, SEO and 
-        landing pages. $200 flat. No setup fees. Pay for performance.
+        Your AI virtual CMO — marketing strategy, ads, SEO and landing pages 
+        for one-person businesses. From $49. Clients in 48 hours.
       </p>
       <p style="font-size:12px;margin-top:14px;color:rgba(255,255,255,0.3);">
         <i class="fas fa-envelope" style="margin-right:6px;"></i>
